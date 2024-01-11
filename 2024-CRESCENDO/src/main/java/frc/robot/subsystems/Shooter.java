@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 
 public class Shooter extends SubsystemBase {
@@ -15,13 +16,17 @@ public class Shooter extends SubsystemBase {
   private TalonFX leftMotor;
   private TalonFX rightMotor;
 
-  private MotorOutputConfigs motorOutputConfig = new MotorOutputConfigs();
-
   private double averageSpeed;
 
   public Shooter() {
     leftMotor = new TalonFX(Constants.ShooterConstants.leftMotorID);
     rightMotor = new TalonFX(Constants.ShooterConstants.rightMotorID);
+
+    leftMotor.getConfigurator().clearStickyFaults();
+    rightMotor.getConfigurator().clearStickyFaults();
+
+    leftMotor.getConfigurator().apply(new TalonFXConfiguration());
+    rightMotor.getConfigurator().apply(new TalonFXConfiguration());
 
     rightMotor.setInverted(false);
 
