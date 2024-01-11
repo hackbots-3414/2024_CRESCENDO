@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Constants {
     public static final class ShooterConstants {
-        public static final int motor1ID = 40;
-        public static final int motor2ID = 41;
+        public static final int leftMotorID = 40;
+        public static final int rightMotorID = 41;
         
     }
 
