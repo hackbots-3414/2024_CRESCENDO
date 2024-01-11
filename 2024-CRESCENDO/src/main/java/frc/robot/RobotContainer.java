@@ -66,6 +66,7 @@ public class RobotContainer {
 
   /* Subsystems */
   private final Shooter m_Shooter = new Shooter();
+  private final Intake m_Intake = new Intake();
 
   private void configureDriverBindings() {
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
@@ -94,6 +95,8 @@ public class RobotContainer {
 
   private void configureOperatorBindings() {
     rightBumper.whileTrue(new ShooterCommand(m_Shooter));
+    leftBumper.whileTrue(new IntakeCommand(m_Intake, Constants.IntakeConstants.intakeSpeed));
+    bButton.whileTrue(new IntakeCommand(m_Intake, Constants.IntakeConstants.ejectSpeed));
   }
 
   public RobotContainer() {
