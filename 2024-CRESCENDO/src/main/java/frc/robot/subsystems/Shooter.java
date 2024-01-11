@@ -7,25 +7,28 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 
-public class Intake extends SubsystemBase {
+public class Shooter extends SubsystemBase {
   
-  private TalonFX motor;
+  private TalonFX leftMotor;
+  private TalonFX rightMotor;
 
-  public Intake() {
-    motor = new TalonFX(Constants.IntakeConstants.motorID);
+  private MotorOutputConfigs motorOutputConfig = new MotorOutputConfigs();
+
+  public Shooter() {
+    leftMotor = new TalonFX(8);
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
   }
 
   public void startMotor() {
-    motor.set(0.1);
+    leftMotor.set(0.1);
   }
 
   public void stopMotor() {
-    motor.set(0);
+    leftMotor.set(0);
   }
 }
