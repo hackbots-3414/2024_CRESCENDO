@@ -21,7 +21,7 @@ import frc.robot.commands.*;
 import frc.robot.Constants;
 
 public class RobotContainer {
-  private double MaxSpeed = 6; // 6 meters per second desired top speed
+  private double MaxSpeed = 4.5; // 6 meters per second desired top speed
   private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
   private final CommandXboxController driver = new CommandXboxController(
