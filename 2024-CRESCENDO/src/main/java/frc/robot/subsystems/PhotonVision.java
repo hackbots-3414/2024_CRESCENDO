@@ -17,8 +17,6 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-
-
 public class PhotonVision extends SubsystemBase {
   private PhotonCamera cameraLeft;
   private PhotonCamera cameraRight;
