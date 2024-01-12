@@ -1,12 +1,7 @@
 package frc.robot;
 
-import java.util.Arrays;
-import java.util.List;
-
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Constants {
     public static final class VisionConstants {
@@ -14,5 +9,26 @@ public class Constants {
         public static final Transform3d rightTransform = new Transform3d(0, 0, 0, new Rotation3d(0, 0, 0)); // FIXME Give me accurate values as well please.
         public static final String leftCameraName = "FIXME"; // FIXME update to the correct name for the LEFT CAMEA on the robot.
         public static final String rightCameraName = "FIXME"; // FIXME update to the correct name
+    }
+
+    public static final class ShooterConstants {
+        public static final int leftMotorID = 40;
+        public static final int rightMotorID = 41;
+    }
+
+    public static final class IntakeConstants {
+        public static final int intakeMotorID = 0;
+        public static final double intakeSpeed = 0.5;
+        public static final double ejectSpeed = -0.5;
+    }
+
+    public static final class InputConstants {
+        public static final int kDriverControllerPort = 0;
+        public static final int kOperatorControllerPort = 1;
+
+        public static final int leftTriggerID = 2;
+        public static final int rightTriggerID = 3;
+
+        public static final double triggerTolerance = 0.5;
     }
 }
