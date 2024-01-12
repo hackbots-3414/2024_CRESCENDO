@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.generated.TunerConstants;
 
 public class RobotContainer {
@@ -21,7 +22,7 @@ public class RobotContainer {
   private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
   /* Setting up bindings for necessary control of the swerve drive platform */
-  private final CommandXboxController joystick = new CommandXboxController(0); // My joystick
+  private final CommandXboxController joystick = new CommandXboxController(Constants.InputConstants.kDriverControllerPort); // My joystick
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -32,7 +33,9 @@ public class RobotContainer {
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
-  private void configureBindings() {
+  private final CommandXboxController operator = new CommandXboxController(Constants.InputConstants.kOperatorControllerPort);
+
+  private void configureDriverBindings() {
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with
                                                                                            // negative Y (forward)
@@ -53,8 +56,38 @@ public class RobotContainer {
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
+  private void configureOperatorBinging() {
+    // operator.a().whileTrue(<ADD COMMAND>);
+    // operator.b().whileTrue(<ADD COMMAND>);
+    // operator.x().whileTrue(<ADD COMMAND>);
+    // operator.y().whileTrue(<ADD COMMAND>);
+    // operator.leftBumper().whileTrue(<ADD COMMAND>);
+    // operator.rightBumper().whileTrue(<ADD COMMAND>);
+    // operator.back().whileTrue(<ADD COMMAND>);
+    // operator.start().whileTrue(<ADD COMMAND>);
+
+    // Left Trigger as Button
+    // operator.axisGreaterThan(Constants.InputConstants.leftTriggerID, Constants.InputConstants.triggerTolerance).whileTrue(<ADD COMMAND>);
+
+    //Right Trigger as Button
+    // operator.axisGreaterThan(Constants.InputConstants.rightTriggerID, Constants.InputConstants.triggerTolerance).whileTrue(<ADD COMMAND>);
+
+    // D-PAD Up
+    // operator.pov(0).whileTrue(<ADD COMMAND>);
+
+    // D-PAD Right
+    // operator.pov(90).whileTrue(<ADD COMMAND>);
+
+    // D-PAD Down
+    // operator.pov(180).whileTrue(<ADD COMMAND>);
+
+    // D-PAD Left
+    // operator.pov(270).whileTrue(<ADD COMMAND>);
+  }
+
   public RobotContainer() {
-    configureBindings();
+    configureDriverBindings();
+    configureOperatorBinging();
   }
 
   public Command getAutonomousCommand() {
