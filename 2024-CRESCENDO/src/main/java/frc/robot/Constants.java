@@ -14,8 +14,9 @@ public class Constants {
     }
 
     public static final class VisionConstants {
-        public static final List<Pose3d> aprilTags = Arrays.asList(new Pose3d(), new Pose3d(), new Pose3d()); // LEAVE the first one with the default values. It does not matter because therre is no april tag with id 0 // Please make these actually correct for the AprilTags
-        public static final Transform3d leftTransform = new Transform3d(0, 0, 0, new Rotation3d(0, 0, 0)); // FIXME Give me values that are accurate please
+        public static final Transform3d leftTransform  = new Transform3d(0, 0, 0, new Rotation3d(0, 0, 0)); // FIXME Give me values that are accurate please
         public static final Transform3d rightTransform = new Transform3d(0, 0, 0, new Rotation3d(0, 0, 0)); // FIXME Give me accurate values as well please.
+        public static final String leftCameraName = "FIXME"; // FIXME update to the correct name for the LEFT CAMEA on the robot.
+        public static final String rightCameraName = "FIXME"; // FIXME update to the correct name
     }
 }
