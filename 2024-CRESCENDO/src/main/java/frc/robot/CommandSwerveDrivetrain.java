@@ -39,6 +39,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         // if (Utils.isSimulation()) {
         //     startSimThread();
         // }
+        photonVision = new PhotonVision();
     }
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
@@ -46,6 +47,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         // if (Utils.isSimulation()) {
         //     startSimThread();
         // }
+        photonVision = new PhotonVision();
     }
 
     private void configurePathPlanner() {
