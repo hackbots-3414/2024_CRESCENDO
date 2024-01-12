@@ -27,12 +27,17 @@ public class PhotonVision extends SubsystemBase {
 
   /** Creates a new PhotonVision. 
    * 
-  * @throws IOException */
-  public PhotonVision() throws IOException {
+   **/
+  public PhotonVision() {
     cameraLeft = new PhotonCamera(Constants.VisionConstants.leftCameraName);
     cameraRight = new PhotonCamera(Constants.VisionConstants.rightCameraName);
     
-    field = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+    try {
+      field = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+    } catch (IOException e) {
+      System.out.println("Error while opening file for april tag locations. Sincerely, PhotonVision.java");
+      System.out.println(AprilTagFields.k2024Crescendo.m_resourceFile);
+    }
     strategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
 
     leftEstimator = new PhotonPoseEstimator(field, strategy, cameraLeft, Constants.VisionConstants.leftTransform);
