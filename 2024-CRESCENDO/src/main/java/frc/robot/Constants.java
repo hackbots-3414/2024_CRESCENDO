@@ -9,10 +9,6 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Constants {
-    public static final class IntakeConstants {
-        public static final int motorID = 1;
-    }
-
     public static final class VisionConstants {
         public static final Transform3d leftTransform  = new Transform3d(0, 0, 0, new Rotation3d(0, 0, 0)); // FIXME Give me values that are accurate please
         public static final Transform3d rightTransform = new Transform3d(0, 0, 0, new Rotation3d(0, 0, 0)); // FIXME Give me accurate values as well please.
