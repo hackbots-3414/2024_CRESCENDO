@@ -31,7 +31,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     // private double m_lastSimTime;
     private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
-    private PhotonVision photonVision;
+    // private PhotonVision photonVision;
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
@@ -39,7 +39,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         // if (Utils.isSimulation()) {
         //     startSimThread();
         // }
-        photonVision = new PhotonVision();
+        // photonVision = new PhotonVision();
     }
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
@@ -47,7 +47,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         // if (Utils.isSimulation()) {
         //     startSimThread();
         // }
-        photonVision = new PhotonVision();
+        // photonVision = new PhotonVision();
     }
 
     private void configurePathPlanner() {
@@ -97,22 +97,22 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     //     m_simNotifier.startPeriodic(kSimLoopPeriod);
     // }
 
-    private void updateOdometry() {
-        Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
-        Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
+    // private void updateOdometry() {
+    //     Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
+    //     Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
 
-        if (leftPoseMaybe.isPresent()) {
-            EstimatedRobotPose leftPose = leftPoseMaybe.get();
-            addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
-        }
-        if (rightPoseMaybe.isPresent()) {
-            EstimatedRobotPose leftPose = leftPoseMaybe.get();
-            addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
-        }
-    }
+    //     if (leftPoseMaybe.isPresent()) {
+    //         EstimatedRobotPose leftPose = leftPoseMaybe.get();
+    //         addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
+    //     }
+    //     if (rightPoseMaybe.isPresent()) {
+    //         EstimatedRobotPose leftPose = leftPoseMaybe.get();
+    //         addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
+    //     }
+    // }
 
-    @Override
-    public void periodic() {
-        updateOdometry();
-    }
+    // @Override
+    // public void periodic() {
+    //     updateOdometry();
+    // }
 }
