@@ -31,6 +31,18 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     // private double m_lastSimTime;
     private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
+    public enum AutonChoice {
+        Test1("TestAuto"),
+        Test2("TestAuto1"),
+        Test3("TestAuto2");
+
+        public final String value;
+
+        AutonChoice(String value) {
+            this.value = value;
+        }
+    }
+
     // private PhotonVision photonVision;
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
@@ -51,7 +63,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     private void configurePathPlanner() {
-        double driveBaseRadius = 0;
+        double driveBaseRadius = 0; // *******************************************************************
         for (var moduleLocation : m_moduleLocations) {
             driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
         }
@@ -65,8 +77,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                                             new PIDConstants(2, 0, 0),
                                             TunerConstants.kSpeedAt12VoltsMps,
                                             driveBaseRadius,
-                                            new ReplanningConfig()),
-            ()->false, // Change this if the path needs to be flipped on red vs blue
+                                            new ReplanningConfig(true, true)),
+            ()->true, // Change this if the path needs to be flipped on red vs blue
             this); // Subsystem for requirements
     }
 
@@ -74,11 +86,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
-    public Command getAutoPath(String pathName) {
-        return new PathPlannerAuto(pathName);
+    public Command getAutoPath(AutonChoice pathName) {
+        return new PathPlannerAuto(pathName.value);
     }
     
-     public ChassisSpeeds getCurrentRobotChassisSpeeds() {
+    public ChassisSpeeds getCurrentRobotChassisSpeeds() {
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
     }
 

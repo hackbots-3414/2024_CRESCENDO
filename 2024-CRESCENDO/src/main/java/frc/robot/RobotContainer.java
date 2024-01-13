@@ -11,9 +11,12 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.CommandSwerveDrivetrain.AutonChoice;
 import frc.robot.generated.TunerConstants;
 
 public class RobotContainer {
@@ -26,15 +29,15 @@ public class RobotContainer {
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
-                                                               // driving in open loop
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric driving in open loop
+      
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
-  private Command runAuto = drivetrain.getAutoPath("TestAuto");
-
   private final CommandXboxController operator = new CommandXboxController(Constants.InputConstants.kOperatorControllerPort);
+
+  SendableChooser<Command> pathChooser = new SendableChooser<>();
 
   private void configureDriverBindings() {
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
@@ -89,9 +92,15 @@ public class RobotContainer {
   public RobotContainer() {
     configureDriverBindings();
     configureOperatorBinging();
+
+    SmartDashboard.putData("Auton Mode", pathChooser);
+
+    pathChooser.setDefaultOption("Test Path 1", drivetrain.getAutoPath(AutonChoice.Test1));
+    pathChooser.addOption("Test Path 2", drivetrain.getAutoPath(AutonChoice.Test2));
+    pathChooser.addOption("Test Path 3", drivetrain.getAutoPath(AutonChoice.Test3));
   }
 
   public Command getAutonomousCommand() {
-    return runAuto;
+    return pathChooser.getSelected();
   }
 }
