@@ -24,6 +24,14 @@ public class Hood extends SubsystemBase {
     hoodMotor.set(0);
   }
 
+  public void setIdle() {
+    hoodMotor.set(Constants.HoodConstants.idleSpeed);
+  }
+
+  public double getMotorSpeed() {
+    return hoodMotor.getRotorVelocity().getValue();
+  }
+
   @Override
   public void periodic() {
   }
