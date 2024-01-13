@@ -32,4 +32,9 @@ public class Constants {
 
         public static final double triggerTolerance = 0.5;
     }
+
+    public static final class HoodConstants {
+        public static final int hoodMotorID = 0;
+        public static final double hoodMotorSpeed = 1.0;
+    }
 }
