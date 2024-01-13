@@ -8,7 +8,7 @@ import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
 
-  TalonFX intakeMotor;
+  private TalonFX intakeMotor;
 
   public Intake() {
     intakeMotor = new TalonFX(Constants.IntakeConstants.intakeMotorID);

@@ -63,7 +63,7 @@ public class RobotContainer {
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
-  private void configureOperatorBinging() {
+  private void configureOperatorBinding() {
     // operator.a().whileTrue(<ADD COMMAND>);
     operator.b().whileTrue(new ShooterCommand(m_Shooter, Constants.ShooterConstants.shootSpeed));
     operator.x().whileTrue(new IntakeCommand(m_Intake, Constants.IntakeConstants.ejectSpeed));
@@ -94,7 +94,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     configureDriverBindings();
-    configureOperatorBinging();
+    configureOperatorBinding();
   }
 
   public Command getAutonomousCommand() {

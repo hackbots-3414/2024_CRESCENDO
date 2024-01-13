@@ -32,4 +32,8 @@ public class Constants {
 
         public static final double triggerTolerance = 0.5;
     }
+
+    public static final class ElevatorConstants {
+        public static final int elevatorMotorID = 50;
+    }
 }
