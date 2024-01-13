@@ -4,105 +4,94 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.*;
-import frc.robot.commands.*;
-import frc.robot.Constants;
 
 public class RobotContainer {
-  private double MaxSpeed = 4.5; // 6 meters per second desired top speed
+  private double MaxSpeed = 6; // 6 meters per second desired top speed
   private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
-  private final CommandXboxController driver = new CommandXboxController(
-      Constants.InputConstants.kDriverControllerPort);
-  private final XboxController operator = new XboxController(
-      Constants.InputConstants.kOperatorControllerPort);
-
-  public final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
+  /* Setting up bindings for necessary control of the swerve drive platform */
+  private final CommandXboxController joystick = new CommandXboxController(Constants.InputConstants.kDriverControllerPort); // My joystick
+  private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
                                                                // driving in open loop
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-  private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-
-  private final JoystickButton rightBumper = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
-  private final JoystickButton leftBumper = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
-
-  private final JoystickButton bButton = new JoystickButton(operator, XboxController.Button.kB.value);
-  private final JoystickButton aButton = new JoystickButton(operator, XboxController.Button.kA.value);
-  private final JoystickButton xButton = new JoystickButton(operator, XboxController.Button.kX.value);
-  private final JoystickButton yButton = new JoystickButton(operator, XboxController.Button.kY.value);
-
-  private final JoystickButton startButton = new JoystickButton(operator, XboxController.Button.kStart.value);
-  private final JoystickButton backButton = new JoystickButton(operator, XboxController.Button.kBack.value);
-
-  private final JoystickButton leftStickButton = new JoystickButton(operator, XboxController.Button.kLeftStick.value);
-  private final JoystickButton rightStickButton = new JoystickButton(operator, XboxController.Button.kRightStick.value);
-
-  private final POVButton dPadUp = new POVButton(operator, 0);
-  private final POVButton dPadLeft = new POVButton(operator, 90);
-  private final POVButton dPadDown = new POVButton(operator, 180);
-  private final POVButton dPadRight = new POVButton(operator, 270);
-
-  /* Path follower */
-  private Command runAuto = drivetrain.getAutoPath("Tests");
-
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
-  /* Subsystems */
-  private final Shooter m_Shooter = new Shooter();
+  private Command runAuto = drivetrain.getAutoPath("TestAuto");
+
+  private final CommandXboxController operator = new CommandXboxController(Constants.InputConstants.kOperatorControllerPort);
 
   private void configureDriverBindings() {
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX(-driver.getLeftY() * MaxSpeed) // Drive forward with
-                                                                                         // negative Y (forward)
-            .withVelocityY(-driver.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate(-driver.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-        ).ignoringDisable(true));
+        drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with
+                                                                                           // negative Y (forward)
+            .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+            .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+        ));
 
-    driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    driver.b().whileTrue(drivetrain
-        .applyRequest(() -> point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))));
+    joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    joystick.b().whileTrue(drivetrain
+        .applyRequest(() -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
 
     // reset the field-centric heading on left bumper press
-    driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
-    // if (Utils.isSimulation()) {
-    // drivetrain.seedFieldRelative(new Pose2d(new Translation2d(),
-    // Rotation2d.fromDegrees(90)));
-    // }
+    if (Utils.isSimulation()) {
+      drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
+    }
     drivetrain.registerTelemetry(logger::telemeterize);
-
-    driver.pov(0).whileTrue(drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
-    driver.pov(180).whileTrue(drivetrain.applyRequest(() -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
   }
 
-  private void configureOperatorBindings() {
-    rightBumper.whileTrue(new ShooterCommand(m_Shooter));
+  private void configureOperatorBinging() {
+    // operator.a().whileTrue(<ADD COMMAND>);
+    // operator.b().whileTrue(<ADD COMMAND>);
+    // operator.x().whileTrue(<ADD COMMAND>);
+    // operator.y().whileTrue(<ADD COMMAND>);
+    // operator.leftBumper().whileTrue(<ADD COMMAND>);
+    // operator.rightBumper().whileTrue(<ADD COMMAND>);
+    // operator.back().whileTrue(<ADD COMMAND>);
+    // operator.start().whileTrue(<ADD COMMAND>);
+
+    // Left Trigger as Button
+    // operator.axisGreaterThan(Constants.InputConstants.leftTriggerID, Constants.InputConstants.triggerTolerance).whileTrue(<ADD COMMAND>);
+
+    //Right Trigger as Button
+    // operator.axisGreaterThan(Constants.InputConstants.rightTriggerID, Constants.InputConstants.triggerTolerance).whileTrue(<ADD COMMAND>);
+
+    // D-PAD Up
+    // operator.pov(0).whileTrue(<ADD COMMAND>);
+
+    // D-PAD Right
+    // operator.pov(90).whileTrue(<ADD COMMAND>);
+
+    // D-PAD Down
+    // operator.pov(180).whileTrue(<ADD COMMAND>);
+
+    // D-PAD Left
+    // operator.pov(270).whileTrue(<ADD COMMAND>);
   }
 
   public RobotContainer() {
     configureDriverBindings();
-    configureOperatorBindings();
+    configureOperatorBinging();
   }
 
   public Command getAutonomousCommand() {
-    /* First put the drivetrain into auto run mode, then run the auto */
     return runAuto;
   }
 }

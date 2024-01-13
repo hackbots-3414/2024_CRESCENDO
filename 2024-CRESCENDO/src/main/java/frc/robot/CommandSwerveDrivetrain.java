@@ -1,6 +1,9 @@
 package frc.robot;
 
+import java.util.Optional;
 import java.util.function.Supplier;
+
+import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -16,6 +19,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.PhotonVision;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements subsystem
@@ -25,23 +29,25 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     // private static final double kSimLoopPeriod = 0.005; // 5 ms
     // private Notifier m_simNotifier = null;
     // private double m_lastSimTime;
-
     private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
-    // public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
-    //     super(driveTrainConstants, OdometryUpdateFrequency, modules);
-    //     configurePathPlanner();
-    //     if (Utils.isSimulation()) {
-    //         startSimThread();
-    //     }
-    // }
+    private PhotonVision photonVision;
 
+    public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
+        super(driveTrainConstants, OdometryUpdateFrequency, modules);
+        configurePathPlanner();
+        // if (Utils.isSimulation()) {
+        //     startSimThread();
+        // }
+        photonVision = new PhotonVision();
+    }
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
         configurePathPlanner();
         // if (Utils.isSimulation()) {
         //     startSimThread();
         // }
+        photonVision = new PhotonVision();
     }
 
     private void configurePathPlanner() {
@@ -71,8 +77,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public Command getAutoPath(String pathName) {
         return new PathPlannerAuto(pathName);
     }
-
-    public ChassisSpeeds getCurrentRobotChassisSpeeds() {
+    
+     public ChassisSpeeds getCurrentRobotChassisSpeeds() {
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
     }
 
@@ -90,4 +96,23 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     //     });
     //     m_simNotifier.startPeriodic(kSimLoopPeriod);
     // }
+
+    private void updateOdometry() {
+        Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
+        Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
+
+        if (leftPoseMaybe.isPresent()) {
+            EstimatedRobotPose leftPose = leftPoseMaybe.get();
+            addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
+        }
+        if (rightPoseMaybe.isPresent()) {
+            EstimatedRobotPose leftPose = leftPoseMaybe.get();
+            addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
+        }
+    }
+
+    @Override
+    public void periodic() {
+        updateOdometry();
+    }
 }
