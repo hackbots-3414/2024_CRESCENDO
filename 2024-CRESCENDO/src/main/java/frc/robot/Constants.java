@@ -32,4 +32,27 @@ public class Constants {
 
         public static final double triggerTolerance = 0.5;
     }
+
+    public static final class PivotConstants {
+        public static final int pivotMotorID = 0;
+        public static final int EncoderID = 0;
+        
+        public static final double kP = 0; // FIX ME
+
+        // These are fake gains; in actuality these must be determined individually for each robot
+        public static final double kSVolts = 0;
+        public static final double kGVolts = 0;
+        public static final double kVVoltSecondPerRad = 0;
+        public static final double kAVoltSecondSquaredPerRad = 0;
+    
+        public static final double kMaxVelocityRadPerSecond = 0;
+        public static final double kMaxAccelerationRadPerSecSquared = 0;
+    
+        public static final int kEncoderPPR = 0; // FIX ME
+        public static final double kEncoderDistancePerPulse = 2.0 * Math.PI / kEncoderPPR;
+    
+        // The offset of the arm from the horizontal in its neutral position,
+        // measured from the horizontal
+        public static final double kArmOffsetRads = 0; // FIX ME
+    }
 }
