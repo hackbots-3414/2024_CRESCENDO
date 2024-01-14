@@ -1,32 +1,22 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.CustomParamsConfigs;
-import com.ctre.phoenix6.configs.FeedbackConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.Slot1Configs;
-import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import java.util.List;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.fasterxml.jackson.databind.cfg.CoercionConfigs;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.units.Time;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.IntakeConstants;
 
 public class Elevator extends ProfiledPIDSubsystem {
 
@@ -34,7 +24,7 @@ public class Elevator extends ProfiledPIDSubsystem {
   private TalonFX elevatorFollower = new TalonFX(ElevatorConstants.elevatorFollowerMotorID);
   private CANcoder elevatorCanCoder = new CANcoder(ElevatorConstants.elevatorCANCoderMotorID);
 
-  private ElevatorFeedforward feedforward = new ElevatorFeedforward(Constants.ElevatorConstants.elevatorkS, Constants.ElevatorConstants.elevatorkG, Constants.ElevatorConstants.elevatorkV, Constants.ElevatorConstants.elevatorkA);
+  private ElevatorFeedforward feedforward = new ElevatorFeedforward(ElevatorConstants.elevatorkS, ElevatorConstants.elevatorkG, ElevatorConstants.elevatorkV, ElevatorConstants.elevatorkA);
 
   private final static TrapezoidProfile.Constraints m_constraints = new TrapezoidProfile.Constraints(0, 0);
   private final static ProfiledPIDController controller = new ProfiledPIDController(0, 0, 0, m_constraints);
@@ -60,20 +50,47 @@ public class Elevator extends ProfiledPIDSubsystem {
   }
 
   private void configElevatorMotors() {
-    TalonFXConfigurator elevatorConfigs = elevator.getConfigurator();
+    TalonFXConfiguration configuration = new TalonFXConfiguration();
+    configuration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    configuration.MotorOutput.DutyCycleNeutralDeadband = 0.0;
+    configuration.MotorOutput.PeakForwardDutyCycle = 1.0;
+    configuration.MotorOutput.PeakReverseDutyCycle = -1.0;
 
-    MotorOutputConfigs motorConfigs = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake).withInverted(InvertedValue.Clockwise_Positive);
-    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs().withSupplyCurrentLimit(Constants.ElevatorConstants.currentLimit);
-    SoftwareLimitSwitchConfigs softLimitsConfigs = new SoftwareLimitSwitchConfigs().withForwardSoftLimitThreshold(Constants.ElevatorConstants.elevatorUpperLimit).withReverseSoftLimitThreshold(Constants.ElevatorConstants.elevatorLowerLimit).withForwardSoftLimitEnable(false).withReverseSoftLimitEnable(false);
-    TalonFXConfiguration configs = new TalonFXConfiguration().withMotorOutput(motorConfigs).withCurrentLimits(currentLimitsConfigs).withSoftwareLimitSwitch(softLimitsConfigs);
+    configuration.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.0;
+    configuration.OpenLoopRamps.VoltageOpenLoopRampPeriod = 0.0;
 
-    elevatorConfigs.apply(configs);
+    configuration.Voltage.PeakForwardVoltage = 16.0;
+    configuration.Voltage.PeakReverseVoltage = -16.0;
 
-    elevatorFollower.setControl(new Follower(Constants.ElevatorConstants.elevatorMotorID, true));
+    configuration.SoftwareLimitSwitch.withForwardSoftLimitThreshold(outputUnitsToEncoderUnits(ElevatorConstants.maxOutputUnits)).withForwardSoftLimitEnable(true);
+    configuration.SoftwareLimitSwitch.withReverseSoftLimitThreshold(outputUnitsToEncoderUnits(ElevatorConstants.minOutputUnits)).withReverseSoftLimitEnable(true);
+
+    configuration.MotionMagic.MotionMagicCruiseVelocity = (ElevatorConstants.maxEncoderVelocity) * 10.0 / 4096; // CANCODER TICKS - 4096, TALONFX - 2048
+    configuration.MotionMagic.MotionMagicAcceleration = (ElevatorConstants.maxEncoderVelocity) * 10.0 / 4096; // CANCODER TICKS - 4096, TALONFX - 2048
+
+    configuration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    configuration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+    configuration.Slot0.kP = ElevatorConstants.kP;
+    configuration.Slot0.kI = ElevatorConstants.kI;
+    configuration.Slot0.kD = ElevatorConstants.kD;
+    configuration.Slot0.kV = ElevatorConstants.kF;
+
+    configuration.CurrentLimits.SupplyCurrentLimit = ElevatorConstants.supplyCurrentLimit;
+    configuration.CurrentLimits.SupplyCurrentThreshold = ElevatorConstants.supplyCurrentLimit;
+    configuration.CurrentLimits.SupplyTimeThreshold = 0.25;
+    configuration.CurrentLimits.SupplyCurrentLimitEnable = true;
+
+    elevator.getConfigurator().apply(configuration, 200);
+    elevatorFollower.setControl(new Follower(ElevatorConstants.elevatorMotorID, false));
   }
 
   private void configElevatorEncoder() {
   }
+
+  private double encoderUnitsToOutputUnits(double encoderUnits) {return encoderUnits / ElevatorConstants.encoderUnitsPerOutputUnit;}
+
+  private double outputUnitsToEncoderUnits(double outputUnits) {return outputUnits * ElevatorConstants.encoderUnitsPerOutputUnit;}
 
   @Override
   public void useOutput(double output, TrapezoidProfile.State setpoint) {
@@ -103,16 +120,16 @@ public class Elevator extends ProfiledPIDSubsystem {
     return elevatorCanCoderPosition;
   }
 
+  public boolean isAtPosition() {
+    return Math.abs(elevatorPosition - getPosition()) <= ElevatorConstants.outputUnitTolerance;
+  }
+
   public double getCanCoderVelo() {
     return Math.toRadians(elevatorCanCoderVelocity);
   }
 
-  public void setBrakeMode() {
-    elevator.setNeutralMode(NeutralModeValue.Brake);
-  }
-
-  public void setCoastMode() {
-    elevator.setNeutralMode(NeutralModeValue.Coast);
+  public void setNeutralMode(NeutralModeValue value) {
+    elevator.setNeutralMode(value);
   }
 
   @Override
