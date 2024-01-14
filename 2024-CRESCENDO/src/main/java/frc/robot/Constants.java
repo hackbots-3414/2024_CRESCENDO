@@ -35,5 +35,21 @@ public class Constants {
 
     public static final class ElevatorConstants {
         public static final int elevatorMotorID = 50;
+        public static final int elevatorFollowerMotorID = 51;
+        public static final int elevatorCANCoderMotorID = 52;
+
+        public static final double elevatorkS = 0;
+        public static final double elevatorkG = 0;
+        public static final double elevatorkV = 0;
+        public static final double elevatorkA = 0;
+
+        public static final double elevatorLowerLimit = 0;
+        public static final double elevatorUpperLimit = 1;
+
+        public static final double ampPreset = 1;
+        public static final double trapPreset = 2;
+        public static final double climbPreset = 3;
+        public static final double stowPreset = 0;
+        public static final double currentLimit = 0;
     }
 }
