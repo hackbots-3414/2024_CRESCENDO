@@ -12,10 +12,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.HoodCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterCommand;
+import frc.robot.commands.flyWheelIdleStop;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
@@ -40,6 +44,7 @@ public class RobotContainer {
   private final CommandXboxController operator = new CommandXboxController(Constants.InputConstants.kOperatorControllerPort);
 
   Shooter m_Shooter = new Shooter();
+  Hood m_Hood = new Hood();
   Intake m_Intake = new Intake();
 
   private void configureDriverBindings() {
@@ -67,11 +72,11 @@ public class RobotContainer {
     // operator.a().whileTrue(<ADD COMMAND>);
     operator.b().whileTrue(new ShooterCommand(m_Shooter, Constants.ShooterConstants.shootSpeed));
     operator.x().whileTrue(new IntakeCommand(m_Intake, Constants.IntakeConstants.ejectSpeed));
-    // operator.y().whileTrue(<ADD COMMAND>);
+    operator.y().whileTrue(new HoodCommand(m_Hood));
     // operator.leftBumper().whileTrue(<ADD COMMAND>);
     operator.rightBumper().whileTrue(new IntakeCommand(m_Intake, Constants.IntakeConstants.intakeSpeed));
     // operator.back().whileTrue(<ADD COMMAND>);
-    // operator.start().whileTrue(<ADD COMMAND>);
+    operator.start().whileTrue(new flyWheelIdleStop(m_Hood));
 
     // Left Trigger as Button
     // operator.axisGreaterThan(Constants.InputConstants.leftTriggerID, Constants.InputConstants.triggerTolerance).whileTrue(<ADD COMMAND>);
@@ -99,5 +104,9 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return runAuto;
+  }
+
+  public Command getFlywheelToggleCommand() {
+    return new flyWheelIdleStop(m_Hood);
   }
 }
