@@ -13,8 +13,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ShooterCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 
 public class RobotContainer {
   private double MaxSpeed = 6; // 6 meters per second desired top speed
@@ -35,6 +38,9 @@ public class RobotContainer {
   private Command runAuto = drivetrain.getAutoPath("TestAuto");
 
   private final CommandXboxController operator = new CommandXboxController(Constants.InputConstants.kOperatorControllerPort);
+
+  Shooter m_Shooter = new Shooter();
+  Intake m_Intake = new Intake();
 
   private void configureDriverBindings() {
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
@@ -59,11 +65,11 @@ public class RobotContainer {
 
   private void configureOperatorBinging() {
     // operator.a().whileTrue(<ADD COMMAND>);
-    // operator.b().whileTrue(<ADD COMMAND>);
-    // operator.x().whileTrue(<ADD COMMAND>);
+    operator.b().whileTrue(new ShooterCommand(m_Shooter, Constants.ShooterConstants.shootSpeed));
+    operator.x().whileTrue(new IntakeCommand(m_Intake, Constants.IntakeConstants.ejectSpeed));
     // operator.y().whileTrue(<ADD COMMAND>);
     // operator.leftBumper().whileTrue(<ADD COMMAND>);
-    // operator.rightBumper().whileTrue(<ADD COMMAND>);
+    operator.rightBumper().whileTrue(new IntakeCommand(m_Intake, Constants.IntakeConstants.intakeSpeed));
     // operator.back().whileTrue(<ADD COMMAND>);
     // operator.start().whileTrue(<ADD COMMAND>);
 
