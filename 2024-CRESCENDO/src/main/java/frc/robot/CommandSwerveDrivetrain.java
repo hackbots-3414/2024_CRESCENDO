@@ -16,6 +16,8 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.generated.TunerConstants;
@@ -33,13 +35,17 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     private PhotonVision photonVision;
 
+    private void initPhotonVision() {
+        photonVision = new PhotonVision();
+    }
+
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
         configurePathPlanner();
         // if (Utils.isSimulation()) {
         //     startSimThread();
         // }
-        photonVision = new PhotonVision();
+        initPhotonVision();
     }
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
@@ -47,7 +53,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         // if (Utils.isSimulation()) {
         //     startSimThread();
         // }
-        photonVision = new PhotonVision();
+        initPhotonVision();
     }
 
     private void configurePathPlanner() {
@@ -103,11 +109,13 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
         if (leftPoseMaybe.isPresent()) {
             EstimatedRobotPose leftPose = leftPoseMaybe.get();
+            System.out.println("Left: " + leftPose.estimatedPose.getX());
             addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
         }
         if (rightPoseMaybe.isPresent()) {
-            EstimatedRobotPose leftPose = leftPoseMaybe.get();
-            addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
+            EstimatedRobotPose rightPose = rightPoseMaybe.get();
+            System.out.println("Right: " + rightPose.estimatedPose.getX());
+            addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
         }
     }
 
