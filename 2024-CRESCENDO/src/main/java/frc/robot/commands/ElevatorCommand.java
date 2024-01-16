@@ -6,25 +6,15 @@ import frc.robot.subsystems.Elevator;
 
 public class ElevatorCommand extends Command {
 
-    public enum ElevatorPresets {
-        AMP,
-        TRAP,
-        CLIMB,
-        STOW;
-    }
+    public enum ElevatorPresets {AMP,TRAP;}
 
-    Elevator elevator = new Elevator();
+    Elevator elevator;
     ElevatorPresets selector;
 
     public ElevatorCommand(Elevator elevator, ElevatorPresets selector) {
         addRequirements(elevator);
         this.elevator = elevator;
         this.selector = selector;
-    }
-
-    @Override
-    public void initialize() {
-        elevator.disable();
     }
 
     @Override
@@ -36,18 +26,8 @@ public class ElevatorCommand extends Command {
             case TRAP:
                 elevator.setGoal(Constants.ElevatorConstants.trapPreset);
                 break;
-            case CLIMB:
-                elevator.setGoal(Constants.ElevatorConstants.climbPreset);
-                break;
-            case STOW:
-                elevator.setGoal(Constants.ElevatorConstants.stowPreset);
-                break;
         }
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        elevator.stop();
+        elevator.enable();
     }
 
     @Override

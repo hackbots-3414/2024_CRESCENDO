@@ -50,17 +50,17 @@ public class Constants {
         public static final double trapPreset = 2;
         public static final double climbPreset = 3;
         public static final double stowPreset = 0;
-        public static final double currentLimit = 0;
-        public static final double outputUnitTolerance = 0.05;
+
         public static final double kP = 0;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kF = 0;
-        public static final double supplyCurrentLimit = 0;
-        public static final double maxEncoderVelocity = 9999;
-        public static final double maxOutputUnits = 1;
-        public static final double minOutputUnits = 0;
-        public static final double encoderUnitsPerOutputUnit = 0;
+        
+        public static double maxVelocity;
+        public static double maxAcceleration;
+        public static double elevatorCurrentLimit;
+        public static double circumference;
+        public static double gearRatio;
 
     }
 }
