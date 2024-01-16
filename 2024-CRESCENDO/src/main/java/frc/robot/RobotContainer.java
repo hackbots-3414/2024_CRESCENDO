@@ -105,4 +105,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return runAuto;
   }
+
+  public Command getFlywheelToggleCommand() {
+    return new flyWheelIdleStop(m_Hood);
+  }
 }
