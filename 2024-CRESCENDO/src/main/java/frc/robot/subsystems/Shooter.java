@@ -22,7 +22,7 @@ public class Shooter extends SubsystemBase {
     leftMotor.clearStickyFaults();
     rightMotor.clearStickyFaults();
 
-    rightMotor.setInverted(false);
+    rightMotor.setInverted(Constants.ShooterConstants.shooterMotorInvert);
     
     leftMotor.setControl(new Follower(rightMotor.getDeviceID(), true));
   }

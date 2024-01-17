@@ -14,7 +14,7 @@ public class Intake extends SubsystemBase {
     intakeMotor = new TalonFX(Constants.IntakeConstants.intakeMotorID);
     intakeMotor.clearStickyFaults();
     intakeMotor.getConfigurator().apply(new TalonFXConfiguration());
-    intakeMotor.setInverted(false);
+    intakeMotor.setInverted(Constants.IntakeConstants.intakeMotorInvert);
   }
 
   @Override
