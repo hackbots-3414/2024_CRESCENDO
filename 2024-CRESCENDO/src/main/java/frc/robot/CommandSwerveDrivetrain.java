@@ -1,25 +1,26 @@
 package frc.robot;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.Supplier;
-
-import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.PhotonVision;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements subsystem
@@ -42,6 +43,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             this.value = value;
         }
     }
+
+    private HashMap<String, Command> eventMarkers = new HashMap<>();
 
     // private PhotonVision photonVision;
 
@@ -67,6 +70,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         for (var moduleLocation : m_moduleLocations) {
             driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
         }
+
+        eventMarkers.put("Shoot", new InstantCommand());
+        eventMarkers.put("Intake", new InstantCommand());
+        NamedCommands.registerCommands(eventMarkers);
 
         AutoBuilder.configureHolonomic(
             ()->this.getState().Pose, // Supplier of current robot pose
