@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.flyWheelIdleStop;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -50,12 +49,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    Command flyWheelIdleToggle = m_robotContainer.getFlywheelToggleCommand();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
-    }
-    if (flyWheelIdleToggle != null) {
-      flyWheelIdleToggle.initialize();
     }
   }
 

@@ -15,12 +15,14 @@ public class Constants {
         public static final int leftMotorID = 40;
         public static final int rightMotorID = 41;
         public static final double shootSpeed = 0.1;
+        public static final boolean shooterMotorInvert = false;
     }
 
     public static final class IntakeConstants {
         public static final int intakeMotorID = 30;
         public static final double intakeSpeed = 0.5;
         public static final double ejectSpeed = -0.5;
+        public static final boolean intakeMotorInvert = false;
     }
 
     public static final class InputConstants {
@@ -31,11 +33,5 @@ public class Constants {
         public static final int rightTriggerID = 3;
 
         public static final double triggerTolerance = 0.5;
-    }
-
-    public static final class HoodConstants {
-        public static final int hoodMotorID = 4;
-        public static final double hoodMotorSpeed = 0.3;
-        public static final double idleSpeed = 0.1;
     }
 }
