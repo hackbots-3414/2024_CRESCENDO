@@ -1,5 +1,8 @@
 package frc.robot;
 
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 
@@ -68,6 +71,14 @@ public class Constants {
     public static final class PivotConstants {
         public static final int pivotMotorID = 0;
         public static final int EncoderID = 0;
+
+        public static final InvertedValue motorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final SensorDirectionValue cancoderInvert = SensorDirectionValue.CounterClockwise_Positive;
+
+        public static final double forwardSoftLimitThreshold = 0.25;
+        public static final double reverseSoftLimitThreshold = -0.25;
+
+        public static final double motorCurrentLimit = 0;
         
         public static final double kP = 0; // FIX ME
 
@@ -80,11 +91,9 @@ public class Constants {
         public static final double kMaxVelocityRadPerSecond = 0;
         public static final double kMaxAccelerationRadPerSecSquared = 0;
     
-        public static final int kEncoderPPR = 0; // FIX ME
-        public static final double kEncoderDistancePerPulse = 2.0 * Math.PI / kEncoderPPR;
-    
         // The offset of the arm from the horizontal in its neutral position,
-        // measured from the horizontal
-        public static final double kArmOffsetRads = 0; // FIX ME
+        // measured from the horizontal in amount of total rotation.
+        // Ex 0.5 is half a rotation
+        public static final double kArmOffset = 0; // FIX ME
     }
 }
