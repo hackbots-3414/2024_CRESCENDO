@@ -15,6 +15,8 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,10 +35,13 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     // private double m_lastSimTime;
     private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
+    private Field2d field;
     private PhotonVision photonVision;
 
     private void initPhotonVision() {
         photonVision = new PhotonVision();
+        field = new Field2d();
+        SmartDashboard.putData("Field", field);
     }
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
@@ -117,10 +122,16 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             SmartDashboard.putString("Right", rightPose.estimatedPose.toString());
             addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
         }
+        Pose2d estimated_pose = m_odometry.update(super.getRotation3d().toRotation2d(), m_modulePositions);
+        
+        SmartDashboard.putString("ROBOTPOSE", estimated_pose.toString());
+
+        field.setRobotPose(estimated_pose);
     }
 
     @Override
     public void periodic() {
         updateOdometry();
+        
     }
 }
