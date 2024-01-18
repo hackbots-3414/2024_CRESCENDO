@@ -1,24 +1,19 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
-import frc.lib.math.Conversions;
 import frc.robot.Constants;
-import frc.robot.Constants.ElevatorConstants;
 
 public class ShooterPivot extends ProfiledPIDSubsystem {
 
@@ -111,6 +106,5 @@ public class ShooterPivot extends ProfiledPIDSubsystem {
     configuration.CurrentLimits.SupplyCurrentLimit = Constants.PivotConstants.motorCurrentLimit;
     configuration.CurrentLimits.SupplyCurrentThreshold = 0;
     configuration.CurrentLimits.SupplyTimeThreshold = 0;
-
   }
 }

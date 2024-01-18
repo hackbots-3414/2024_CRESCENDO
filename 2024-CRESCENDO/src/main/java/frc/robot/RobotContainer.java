@@ -13,11 +13,15 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterCommand;
+import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterPivot;
 
 public class RobotContainer {
   private double MaxSpeed = 6; // 6 meters per second desired top speed
@@ -41,6 +45,8 @@ public class RobotContainer {
 
   Shooter m_Shooter = new Shooter();
   Intake m_Intake = new Intake();
+  Elevator m_Elevator = new Elevator();
+  ShooterPivot m_ShooterPivot = new ShooterPivot();
 
   private void configureDriverBindings() {
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
@@ -80,13 +86,13 @@ public class RobotContainer {
     // operator.axisGreaterThan(Constants.InputConstants.rightTriggerID, Constants.InputConstants.triggerTolerance).whileTrue(<ADD COMMAND>);
 
     // D-PAD Up
-    // operator.pov(0).whileTrue(<ADD COMMAND>);
+    operator.pov(0).whileTrue(new ElevatorCommand(m_Elevator, m_ShooterPivot, ElevatorPresets.STOW));
 
     // D-PAD Right
-    // operator.pov(90).whileTrue(<ADD COMMAND>);
+    operator.pov(90).whileTrue(new ElevatorCommand(m_Elevator, m_ShooterPivot, ElevatorPresets.AMP));
 
     // D-PAD Down
-    // operator.pov(180).whileTrue(<ADD COMMAND>);
+    operator.pov(180).whileTrue(new ElevatorCommand(m_Elevator, m_ShooterPivot, ElevatorPresets.TRAP));
 
     // D-PAD Left
     // operator.pov(270).whileTrue(<ADD COMMAND>);
