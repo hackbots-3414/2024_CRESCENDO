@@ -17,6 +17,8 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -47,6 +49,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private HashMap<String, Command> eventMarkers = new HashMap<>();
 
     // private PhotonVision photonVision;
+    private PhotonVision photonVision;
+
+    private void initPhotonVision() {
+        photonVision = new PhotonVision();
+    }
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
@@ -54,7 +61,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         // if (Utils.isSimulation()) {
         //     startSimThread();
         // }
-        // photonVision = new PhotonVision();
+        initPhotonVision();
     }
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
@@ -62,7 +69,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         // if (Utils.isSimulation()) {
         //     startSimThread();
         // }
-        // photonVision = new PhotonVision();
+        initPhotonVision();
     }
 
     private void configurePathPlanner() {
@@ -120,22 +127,24 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     //     m_simNotifier.startPeriodic(kSimLoopPeriod);
     // }
 
-    // private void updateOdometry() {
-    //     Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
-    //     Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
+    private void updateOdometry() {
+        Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
+        Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
 
-    //     if (leftPoseMaybe.isPresent()) {
-    //         EstimatedRobotPose leftPose = leftPoseMaybe.get();
-    //         addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
-    //     }
-    //     if (rightPoseMaybe.isPresent()) {
-    //         EstimatedRobotPose leftPose = leftPoseMaybe.get();
-    //         addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
-    //     }
-    // }
+        if (leftPoseMaybe.isPresent()) {
+            EstimatedRobotPose leftPose = leftPoseMaybe.get();
+            SmartDashboard.putString("Left", leftPose.estimatedPose.toString());
+            addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
+        }
+        if (rightPoseMaybe.isPresent()) {
+            EstimatedRobotPose rightPose = rightPoseMaybe.get();
+            SmartDashboard.putString("Right", rightPose.estimatedPose.toString());
+            addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
+        }
+    }
 
-    // @Override
-    // public void periodic() {
-    //     updateOdometry();
-    // }
+    @Override
+    public void periodic() {
+        updateOdometry();
+    }
 }
