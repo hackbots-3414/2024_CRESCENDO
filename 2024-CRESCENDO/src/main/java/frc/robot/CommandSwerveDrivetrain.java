@@ -109,12 +109,12 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
         if (leftPoseMaybe.isPresent()) {
             EstimatedRobotPose leftPose = leftPoseMaybe.get();
-            System.out.println("Left: " + leftPose.estimatedPose.getX());
+            SmartDashboard.putString("Left", leftPose.estimatedPose.toString());
             addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
         }
         if (rightPoseMaybe.isPresent()) {
             EstimatedRobotPose rightPose = rightPoseMaybe.get();
-            System.out.println("Right: " + rightPose.estimatedPose.getX());
+            SmartDashboard.putString("Right", rightPose.estimatedPose.toString());
             addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
         }
     }
