@@ -95,12 +95,13 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auton Mode", pathChooser);
 
-    pathChooser.setDefaultOption("Test Path 1", drivetrain.getAutoPath(AutonChoice.Test1));
-    pathChooser.addOption("Test Path 2", drivetrain.getAutoPath(AutonChoice.Test2));
-    pathChooser.addOption("Test Path 3", drivetrain.getAutoPath(AutonChoice.Test3));
+    pathChooser.setDefaultOption("Test Hallway", drivetrain.getAutoPath(AutonChoice.Test1));
+    // pathChooser.addOption("Test Path 2", drivetrain.getAutoPath(AutonChoice.Test2));
+    // pathChooser.addOption("Test Path 3", drivetrain.getAutoPath(AutonChoice.Test3));
   }
 
   public Command getAutonomousCommand() {
-    return pathChooser.getSelected();
+    // return pathChooser.getSelected();
+    return drivetrain.getAutoPath("TestHallway");
   }
 }

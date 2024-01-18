@@ -33,9 +33,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
     public enum AutonChoice {
-        Test1("TestAuto"),
-        Test2("TestAuto1"),
-        Test3("TestAuto2");
+        Test1("TestHallway");
+        // Test2("TestAuto1"),
+        // Test3("TestAuto2");
 
         public final String value;
 
@@ -95,6 +95,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public Command getAutoPath(AutonChoice pathName) {
         return new PathPlannerAuto(pathName.value);
+    }
+
+    public Command getAutoPath(String pathName) {
+        return new PathPlannerAuto(pathName);
     }
     
     public ChassisSpeeds getCurrentRobotChassisSpeeds() {
