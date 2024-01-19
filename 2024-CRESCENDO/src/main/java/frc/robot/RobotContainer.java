@@ -47,12 +47,13 @@ public class RobotContainer {
   Intake m_Intake = new Intake();
 
   private void configureDriverBindings() {
+    double xSpeed;
+    double ySpeed;
+    double rotationSpeed;
+    
+
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with
-                                                                                           // negative Y (forward)
-            .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-        ));
+        drivetrain.applyRequest(() -> recalculateRequest()));
 
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     joystick.b().whileTrue(drivetrain
@@ -65,6 +66,14 @@ public class RobotContainer {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
     }
     drivetrain.registerTelemetry(logger::telemeterize);
+  }
+
+  private SwerveRequest recalculateRequest() {
+    if (joystick.x().getAsBoolean()) {
+      return drivetrain.recalculateRequest();
+    } else {
+      return drive.withVelocityX(-joystick.getLeftY() * MaxSpeed).withVelocityY(-joystick.getLeftX() * MaxSpeed).withRotationalRate(-joystick.getRightX() * MaxAngularRate);
+    }
   }
 
   private void configureOperatorBinging() {

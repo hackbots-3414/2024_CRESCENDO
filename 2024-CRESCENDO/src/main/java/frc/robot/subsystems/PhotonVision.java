@@ -42,7 +42,6 @@ public class PhotonVision extends SubsystemBase {
 
     leftEstimator = new PhotonPoseEstimator(field, strategy, cameraLeft, Constants.VisionConstants.leftTransform);
     rightEstimator = new PhotonPoseEstimator(field, strategy, cameraRight, Constants.VisionConstants.rightTransform);
-
   }
 
   public Optional<EstimatedRobotPose> getGlobalPoseFromLeft() {

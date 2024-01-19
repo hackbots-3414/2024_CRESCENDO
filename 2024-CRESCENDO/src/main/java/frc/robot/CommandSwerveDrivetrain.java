@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonUtils;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -18,10 +19,12 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.PhotonVision;
 
@@ -142,6 +145,25 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             SmartDashboard.putString("Right", rightPose.estimatedPose.toString());
             addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
         }
+    }
+
+    public SwerveRequest recalculateRequest() {
+        // EstimatedRobotPose result = photonVision.getGlobalPoseFromLeft().get();
+        // double range = PhotonUtils.calculateDistanceToTargetMeters(
+        //                 VisionConstants.cameraHeight,
+        //                 VisionConstants.targetHeight,
+        //                 VisionConstants.cameraPitchRadians,
+        //                 Units.degreesToRadians(result.estimatedPose.getRotation().getQuaternion().get));
+
+        // // Use this range as the measurement we give to the PID controller.
+        // // -1.0 required to ensure positive PID controller effort _increases_ range
+        // forwardSpeed = -forwardController.calculate(range, GOAL_RANGE_METERS);
+
+        // // Also calculate angular power
+        // // -1.0 required to ensure positive PID controller effort _increases_ yaw
+        // rotationSpeed = -turnController.calculate(result.getBestTarget().getYaw(), 0);
+
+        return null;
     }
 
     @Override
