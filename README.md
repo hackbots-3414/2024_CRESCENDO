@@ -5,31 +5,36 @@ Hackbots code for the 2024 FRC Crescendo game.
 |Device|ID|
 |----|----|
 |Front Left Module|----|
-|Drive Motor|8|
-|Steer Motor|9|
-|Encoder|7|
+|Drive Motor|11|
+|Steer Motor|12|
+|Encoder|13|
 |----|----|
 |Front Right Module|----|
-|Drive Motor|1|
-|Steer Motor|0|
-|Encoder|2|
+|Drive Motor|21|
+|Steer Motor|22|
+|Encoder|23|
 |----|----|
 |Back Left Module|----|
-|Drive Motor|11|
-|Steer Motor|10|
-|Encoder|12|
+|Drive Motor|31|
+|Steer Motor|32|
+|Encoder|33|
 |----|----|
 |Back Right Module|----|
-|Drive Motor|30|
-|Steer Motor|31|
-|Encoder|32|
+|Drive Motor|41|
+|Steer Motor|42|
+|Encoder|43|
 
 ## System CAN IDs
 |Motor|ID|
 |----|----|
-|Shooter Motor Left|40|
-|Shooter Motor Right|41|
-|Intake|30|
+|Pigeon 2|50|
+|Transport|56|
+|Shooter Left|57|
+|Shooter Right|58|
+|Shooter Pivot|59|
+|Intake|60|
+|Elevator Left|61|
+|Elevator Right|62|
 
 ## Driver Controls
 |Fuction|Control|
