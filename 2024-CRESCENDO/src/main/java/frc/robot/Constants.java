@@ -21,6 +21,7 @@ public class Constants {
         public static final int rightMotorID = 41;
         public static final double shootSpeed = 0.1;
         public static final boolean shooterMotorInvert = false;
+        public static final int irSensorChannel = 0;
     }
 
     public static final class IntakeConstants {
