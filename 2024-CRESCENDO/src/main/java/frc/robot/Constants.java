@@ -2,8 +2,17 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.util.Units;
 
 public class Constants {
+
+    public static final class SwerveConstants {
+        public static final double kP = 2;
+        public static final double kI = 0;
+        public static final double kD = 0;
+
+        public static final double shootingRange = Units.feetToMeters(9.5);
+    }
 
     public static final class VisionConstants {
         /* A note about these transforms: They appear to follow the normal cordinate system (x is right when pos. and so on). */

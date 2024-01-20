@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -11,6 +12,9 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -18,12 +22,17 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.PhotonVision;
@@ -91,8 +100,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             this::seedFieldRelative,  // Consumer for seeding pose against auto
             this::getCurrentRobotChassisSpeeds,
             (speeds)->this.setControl(autoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the robot
-            new HolonomicPathFollowerConfig(new PIDConstants(2, 0, 0),
-                                            new PIDConstants(2, 0, 0),
+            new HolonomicPathFollowerConfig(new PIDConstants(SwerveConstants.kP, SwerveConstants.kI, SwerveConstants.kD),
+                                            new PIDConstants(SwerveConstants.kP, SwerveConstants.kI, SwerveConstants.kD),
                                             TunerConstants.kSpeedAt12VoltsMps,
                                             driveBaseRadius,
                                             new ReplanningConfig(true, true)),
@@ -148,22 +157,30 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     public SwerveRequest recalculateRequest() {
-        // EstimatedRobotPose result = photonVision.getGlobalPoseFromLeft().get();
-        // double range = PhotonUtils.calculateDistanceToTargetMeters(
-        //                 VisionConstants.cameraHeight,
-        //                 VisionConstants.targetHeight,
-        //                 VisionConstants.cameraPitchRadians,
-        //                 Units.degreesToRadians(result.estimatedPose.getRotation().getQuaternion().get));
+        Pose2d targetPose = new Pose2d();
+        Pose2d relativePose = targetPose.relativeTo(m_odometry.getEstimatedPosition());
 
-        // // Use this range as the measurement we give to the PID controller.
-        // // -1.0 required to ensure positive PID controller effort _increases_ range
-        // forwardSpeed = -forwardController.calculate(range, GOAL_RANGE_METERS);
+        PIDController driveController = new PIDController(SwerveConstants.kP, SwerveConstants.kP, SwerveConstants.kP);
 
-        // // Also calculate angular power
-        // // -1.0 required to ensure positive PID controller effort _increases_ yaw
-        // rotationSpeed = -turnController.calculate(result.getBestTarget().getYaw(), 0);
+        double xDistance = relativePose.getX();
+        double yDistance = relativePose.getY();
+        double distance = Math.hypot(xDistance, yDistance);
 
-        return null;
+        boolean isInRange = distance <= SwerveConstants.shootingRange;
+
+        if (isInRange) {
+            // LED GREEN
+            // SHOOT?
+            return null;
+        } else {
+            FieldCentricFacingAngle request = new FieldCentricFacingAngle();
+            request.DriveRequestType = DriveRequestType.Velocity;
+            request.SteerRequestType = SteerRequestType.MotionMagicExpo;
+            request.TargetDirection = relativePose.getRotation();
+            request.VelocityX = driveController.calculate(xDistance, SwerveConstants.shootingRange * relativePose.getRotation().getCos());
+            request.VelocityY = driveController.calculate(yDistance, SwerveConstants.shootingRange * relativePose.getRotation().getSin());
+            return request;
+        }        
     }
 
     @Override
