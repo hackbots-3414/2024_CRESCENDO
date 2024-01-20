@@ -5,7 +5,7 @@ import frc.robot.subsystems.Intake;
 
 public class IntakeCommand extends Command {
 
-  Intake m_Intake = new Intake();
+  Intake m_Intake;
   double speed;
 
   public IntakeCommand(Intake m_Intake, double speed) {

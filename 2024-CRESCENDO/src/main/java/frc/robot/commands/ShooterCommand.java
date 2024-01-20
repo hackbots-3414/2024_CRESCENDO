@@ -5,7 +5,7 @@ import frc.robot.subsystems.Shooter;
 
 public class ShooterCommand extends Command {
 
-  Shooter m_Shooter = new Shooter();
+  Shooter m_Shooter;
   double speed;
 
   public ShooterCommand(Shooter m_Shooter, double speed) {
