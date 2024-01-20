@@ -38,6 +38,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
     private Field2d field;
+    private Pose2d estimatedPose;   
     
 		public enum AutonChoice {
         Test1("TestHallway");
@@ -64,6 +65,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
         configurePathPlanner();
+
         // if (Utils.isSimulation()) {
         //     startSimThread();
         // }
@@ -150,7 +152,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             SmartDashboard.putString("Right", rightPose.estimatedPose.toString());
             addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
         }
-        Pose2d estimatedPose = m_odometry.update(getRotation3d().toRotation2d(), m_modulePositions);
+        estimatedPose = m_odometry.getEstimatedPosition();
         SmartDashboard.putString("ROBOTPOSE", estimatedPose.toString());
         SmartDashboard.putNumber("ROBOTX", estimatedPose.getX());
         SmartDashboard.putNumber("ROBOTY", estimatedPose.getY());
@@ -159,6 +161,5 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     @Override
     public void periodic() {
         updateOdometry();
-        
     }
 }
