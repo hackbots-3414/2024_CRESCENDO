@@ -21,14 +21,20 @@ public class Constants {
         public static final int rightMotorID = 58;
         public static final double shootSpeed = 0.1;
         public static final boolean shooterMotorInvert = false;
-        public static final int irSensorChannel = 0;
     }
 
     public static final class IntakeConstants {
         public static final int intakeMotorID = 60;
-        public static final double intakeSpeed = 0.5;
-        public static final double ejectSpeed = -0.5;
+        public static final double intakeSpeed = 0.1;
+        public static final double ejectSpeed = -0.1;
         public static final boolean intakeMotorInvert = false;
+    }
+
+    public static final class TransportConstants {
+        public static final int transportMotorID = 56;
+        public static final boolean transportMotorInvert = false;
+        public static final double transportSpeed = 0.5;
+        public static final int irSensorChannel = 0;
     }
 
     public static final class InputConstants {

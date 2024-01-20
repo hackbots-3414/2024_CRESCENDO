@@ -25,6 +25,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
+import frc.robot.subsystems.Transport;
 
 public class RobotContainer {
   private double MaxSpeed = 6; // 6 meters per second desired top speed
@@ -50,6 +51,7 @@ public class RobotContainer {
   Intake m_Intake = new Intake();
   Elevator m_Elevator = new Elevator();
   ShooterPivot m_ShooterPivot = new ShooterPivot();
+  Transport m_Transport = new Transport();
 
   private void configureDriverBindings() {
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
@@ -75,10 +77,10 @@ public class RobotContainer {
   private void configureOperatorBinding() {
     // operator.a().whileTrue(<ADD COMMAND>);
     operator.b().whileTrue(new ShooterCommand(m_Shooter, Constants.ShooterConstants.shootSpeed));
-    operator.x().whileTrue(new IntakeCommand(m_Intake, Constants.IntakeConstants.ejectSpeed));
+    operator.x().whileTrue(new IntakeCommand(m_Transport, m_Intake, Constants.IntakeConstants.ejectSpeed));
     // operator.y().whileTrue(<ADD COMMAND>);
     // operator.leftBumper().whileTrue(<ADD COMMAND>);
-    operator.rightBumper().whileTrue(new IntakeCommand(m_Intake, Constants.IntakeConstants.intakeSpeed));
+    operator.rightBumper().whileTrue(new IntakeCommand(m_Transport, m_Intake, Constants.IntakeConstants.intakeSpeed));
     // operator.back().whileTrue(<ADD COMMAND>);
     // operator.start().whileTrue(<ADD COMMAND>);
 
