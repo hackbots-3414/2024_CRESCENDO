@@ -17,7 +17,9 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -35,7 +37,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     // private double m_lastSimTime;
     private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
-    public enum AutonChoice {
+    private Field2d field;
+    private Pose2d estimatedPose;   
+    
+		public enum AutonChoice {
         Test1("TestHallway");
         // Test2("TestAuto1"),
         // Test3("TestAuto2");
@@ -49,16 +54,18 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     private HashMap<String, Command> eventMarkers = new HashMap<>();
 
-    // private PhotonVision photonVision;
     private PhotonVision photonVision;
 
     private void initPhotonVision() {
         photonVision = new PhotonVision();
+        field = new Field2d();
+        SmartDashboard.putData("Field", field);
     }
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
         configurePathPlanner();
+
         // if (Utils.isSimulation()) {
         //     startSimThread();
         // }
@@ -132,6 +139,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
         Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
 
+        SmartDashboard.putBoolean("SeesRight", rightPoseMaybe.isPresent());
+        SmartDashboard.putBoolean("SeesLeft", leftPoseMaybe.isPresent());
+
         if (leftPoseMaybe.isPresent()) {
             EstimatedRobotPose leftPose = leftPoseMaybe.get();
             SmartDashboard.putString("Left", leftPose.estimatedPose.toString());
@@ -142,6 +152,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             SmartDashboard.putString("Right", rightPose.estimatedPose.toString());
             addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
         }
+        estimatedPose = m_odometry.getEstimatedPosition();
+        SmartDashboard.putString("ROBOTPOSE", estimatedPose.toString());
+        SmartDashboard.putNumber("ROBOTX", estimatedPose.getX());
+        SmartDashboard.putNumber("ROBOTY", estimatedPose.getY());
     }
 
     @Override
