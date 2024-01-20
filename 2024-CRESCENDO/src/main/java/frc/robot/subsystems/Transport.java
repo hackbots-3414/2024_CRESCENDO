@@ -20,12 +20,8 @@ public class Transport extends SubsystemBase {
     transportMotor.setInverted(Constants.TransportConstants.transportMotorInvert);
   }
 
-  public void startMotorforward() {
-    transportMotor.set(Constants.TransportConstants.transportSpeed);
-  }
-
-  public void startMotorReverse() {
-    transportMotor.set(-Constants.TransportConstants.transportSpeed);
+  public void setMotor(double speed) {
+    transportMotor.set(speed);
   }
 
   public void stopMotor() {

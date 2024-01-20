@@ -77,10 +77,10 @@ public class RobotContainer {
   private void configureOperatorBinding() {
     // operator.a().whileTrue(<ADD COMMAND>);
     operator.b().whileTrue(new ShooterCommand(m_Shooter, Constants.ShooterConstants.shootSpeed));
-    operator.x().whileTrue(new IntakeCommand(m_Transport, m_Intake, Constants.IntakeConstants.ejectSpeed));
+    operator.x().whileTrue(new IntakeCommand(m_Transport, m_Intake, Constants.IntakeConstants.ejectSpeed, -Constants.TransportConstants.transportSpeed));
     // operator.y().whileTrue(<ADD COMMAND>);
     // operator.leftBumper().whileTrue(<ADD COMMAND>);
-    operator.rightBumper().whileTrue(new IntakeCommand(m_Transport, m_Intake, Constants.IntakeConstants.intakeSpeed));
+    operator.rightBumper().whileTrue(new IntakeCommand(m_Transport, m_Intake, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed));
     // operator.back().whileTrue(<ADD COMMAND>);
     // operator.start().whileTrue(<ADD COMMAND>);
 

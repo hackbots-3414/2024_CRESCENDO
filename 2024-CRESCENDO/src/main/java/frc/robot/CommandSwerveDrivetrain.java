@@ -56,11 +56,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     private PhotonVision photonVision;
 
-    private void initPhotonVision() {
-        photonVision = new PhotonVision();
-        field = new Field2d();
-        SmartDashboard.putData("Field", field);
-    }
+    // private void initPhotonVision() {
+    //     photonVision = new PhotonVision();
+    //     field = new Field2d();
+    //     SmartDashboard.putData("Field", field);
+    // }
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
@@ -69,7 +69,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         // if (Utils.isSimulation()) {
         //     startSimThread();
         // }
-        initPhotonVision();
+        // initPhotonVision();
     }
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
@@ -77,7 +77,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         // if (Utils.isSimulation()) {
         //     startSimThread();
         // }
-        initPhotonVision();
+        // initPhotonVision();
     }
 
     private void configurePathPlanner() {
@@ -135,31 +135,31 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     //     m_simNotifier.startPeriodic(kSimLoopPeriod);
     // }
 
-    private void updateOdometry() {
-        Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
-        Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
+    // private void updateOdometry() {
+    //     // Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
+    //     // Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
 
-        SmartDashboard.putBoolean("SeesRight", rightPoseMaybe.isPresent());
-        SmartDashboard.putBoolean("SeesLeft", leftPoseMaybe.isPresent());
+    //     SmartDashboard.putBoolean("SeesRight", rightPoseMaybe.isPresent());
+    //     SmartDashboard.putBoolean("SeesLeft", leftPoseMaybe.isPresent());
 
-        if (leftPoseMaybe.isPresent()) {
-            EstimatedRobotPose leftPose = leftPoseMaybe.get();
-            SmartDashboard.putString("Left", leftPose.estimatedPose.toString());
-            addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
-        }
-        if (rightPoseMaybe.isPresent()) {
-            EstimatedRobotPose rightPose = rightPoseMaybe.get();
-            SmartDashboard.putString("Right", rightPose.estimatedPose.toString());
-            addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
-        }
-        estimatedPose = m_odometry.getEstimatedPosition();
-        SmartDashboard.putString("ROBOTPOSE", estimatedPose.toString());
-        SmartDashboard.putNumber("ROBOTX", estimatedPose.getX());
-        SmartDashboard.putNumber("ROBOTY", estimatedPose.getY());
-    }
+    //     if (leftPoseMaybe.isPresent()) {
+    //         EstimatedRobotPose leftPose = leftPoseMaybe.get();
+    //         SmartDashboard.putString("Left", leftPose.estimatedPose.toString());
+    //         addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
+    //     }
+    //     if (rightPoseMaybe.isPresent()) {
+    //         EstimatedRobotPose rightPose = rightPoseMaybe.get();
+    //         SmartDashboard.putString("Right", rightPose.estimatedPose.toString());
+    //         addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
+    //     }
+    //     estimatedPose = m_odometry.getEstimatedPosition();
+    //     SmartDashboard.putString("ROBOTPOSE", estimatedPose.toString());
+    //     SmartDashboard.putNumber("ROBOTX", estimatedPose.getX());
+    //     SmartDashboard.putNumber("ROBOTY", estimatedPose.getY());
+    // }
 
     @Override
     public void periodic() {
-        updateOdometry();
+        // updateOdometry();
     }
 }
