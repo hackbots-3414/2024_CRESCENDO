@@ -1,10 +1,13 @@
 package frc.robot;
 
+import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonUtils;
+import org.photonvision.proto.Photon;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -22,7 +25,10 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -46,7 +52,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private Pose2d estimatedPose;   
     
 		public enum AutonChoice {
-        Test1("TestHallway");
+        Test1("3PieceWingClear");
         // Test2("TestAuto1"),
         // Test3("TestAuto2");
 
@@ -164,8 +170,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     public SwerveRequest recalculateRequest() {
-        Pose2d targetPose = new Pose2d();
-        Pose2d relativePose = targetPose.relativeTo(m_odometry.getEstimatedPosition());
+        Pose2d targetPose = /* new Pose2d(new Translation2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42)), Rotation2d.fromDegrees(0)); */ new Pose2d();
+        Pose2d relativePose = targetPose.relativeTo(estimatedPose);
 
         PIDController driveController = new PIDController(SwerveConstants.kP, SwerveConstants.kP, SwerveConstants.kP);
 
@@ -174,18 +180,28 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         double distance = Math.hypot(xDistance, yDistance);
 
         boolean isInRange = distance <= SwerveConstants.shootingRange;
+        boolean isAtTurn = Math.abs(estimatedPose.getRotation().getDegrees() - relativePose.getRotation().getDegrees()) <= 10;
 
-        if (isInRange) {
+        if (isInRange && isAtTurn) {
             // LED GREEN
-            // SHOOT?
-            return null;
+            // SHOOT
+            return new FieldCentricFacingAngle();   
         } else {
             FieldCentricFacingAngle request = new FieldCentricFacingAngle();
             request.DriveRequestType = DriveRequestType.Velocity;
             request.SteerRequestType = SteerRequestType.MotionMagicExpo;
             request.TargetDirection = relativePose.getRotation();
-            request.VelocityX = driveController.calculate(xDistance, SwerveConstants.shootingRange * relativePose.getRotation().getCos());
-            request.VelocityY = driveController.calculate(yDistance, SwerveConstants.shootingRange * relativePose.getRotation().getSin());
+            double xGoal = SwerveConstants.shootingRange * relativePose.getRotation().getCos();
+            double yGoal = SwerveConstants.shootingRange * relativePose.getRotation().getSin();
+            double velocityY = -driveController.calculate(yDistance, yGoal);
+            double velocityX = -driveController.calculate(xDistance, xGoal);
+            // SmartDashboard.putNumber("XDIST", xDistance);
+            // SmartDashboard.putNumber("YDIST", yDistance);
+            // SmartDashboard.putNumber("VELOX", velocityX);
+            // SmartDashboard.putNumber("VELOY", velocityY);
+
+            request.VelocityX = velocityX;
+            request.VelocityY = velocityY;
             return request;
         }        
     }
