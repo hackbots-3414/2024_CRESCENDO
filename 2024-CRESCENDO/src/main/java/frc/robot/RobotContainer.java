@@ -11,12 +11,15 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.CommandSwerveDrivetrain.AutonChoice;
+import frc.robot.Constants.AprilTags;
+import frc.robot.Constants.AutonConstants;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.generated.TunerConstants;
@@ -43,11 +46,13 @@ public class RobotContainer {
 
   SendableChooser<Command> pathChooser = new SendableChooser<>();
 
+  private Alliance alliance;
+
   Shooter m_Shooter = new Shooter();
   Intake m_Intake = new Intake();
 
   private void configureDriverBindings() {
-    drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> recalculateRequest()));
+    drivetrain.setDefaultCommand(getDefaultCommand());
 
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     joystick.b().whileTrue(drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
@@ -61,11 +66,11 @@ public class RobotContainer {
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
-  private SwerveRequest recalculateRequest() {
+  private Command getDefaultCommand() {
     if (joystick.x().getAsBoolean()) {
-      return drivetrain.recalculateRequest();
+      return alliance == Alliance.Red ? drivetrain.repathTo(AprilTags.RedSpeakerCenter, AutonConstants.speakerTolerance) : drivetrain.repathTo(AprilTags.BlueSpeakerCenter, AutonConstants.speakerTolerance);
     } else {
-      return drive.withVelocityX(-joystick.getLeftY() * MaxSpeed).withVelocityY(-joystick.getLeftX() * MaxSpeed).withRotationalRate(-joystick.getRightX() * MaxAngularRate);
+      return drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed).withVelocityY(-joystick.getLeftX() * MaxSpeed).withRotationalRate(-joystick.getRightX() * MaxAngularRate));
     }
   }
 
@@ -99,6 +104,9 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
+    var alliance = DriverStation.getAlliance();
+    this.alliance = alliance.isPresent() ? alliance.get() : null;
+
     configureDriverBindings();
     configureOperatorBinging();
 

@@ -1,39 +1,33 @@
 package frc.robot;
 
-import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonUtils;
-import org.photonvision.proto.Photon;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants.AprilTags;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.PhotonVision;
@@ -49,9 +43,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
     private Field2d field;
-    private Pose2d estimatedPose;   
+    private Pose2d estimatedPose;
     
-		public enum AutonChoice {
+	public enum AutonChoice {
         Test1("3PieceWingClear");
         // Test2("TestAuto1"),
         // Test3("TestAuto2");
@@ -92,7 +86,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     private void configurePathPlanner() {
-        double driveBaseRadius = 0; // *******************************************************************
+        double driveBaseRadius = 0;
         for (var moduleLocation : m_moduleLocations) {
             driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
         }
@@ -111,7 +105,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                                             TunerConstants.kSpeedAt12VoltsMps,
                                             driveBaseRadius,
                                             new ReplanningConfig(true, true)),
-            ()->true, // Change this if the path needs to be flipped on red vs blue
+            ()->{var alliance = DriverStation.getAlliance();return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;},
             this); // Subsystem for requirements
     }
 
@@ -169,41 +163,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         SmartDashboard.putNumber("ROBOTY", estimatedPose.getY());
     }
 
-    public SwerveRequest recalculateRequest() {
-        Pose2d targetPose = /* new Pose2d(new Translation2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42)), Rotation2d.fromDegrees(0)); */ new Pose2d();
-        Pose2d relativePose = targetPose.relativeTo(estimatedPose);
-
-        PIDController driveController = new PIDController(SwerveConstants.kP, SwerveConstants.kP, SwerveConstants.kP);
-
-        double xDistance = relativePose.getX();
-        double yDistance = relativePose.getY();
-        double distance = Math.hypot(xDistance, yDistance);
-
-        boolean isInRange = distance <= SwerveConstants.shootingRange;
-        boolean isAtTurn = Math.abs(estimatedPose.getRotation().getDegrees() - relativePose.getRotation().getDegrees()) <= 10;
-
-        if (isInRange && isAtTurn) {
-            // LED GREEN
-            // SHOOT
-            return new FieldCentricFacingAngle();   
-        } else {
-            FieldCentricFacingAngle request = new FieldCentricFacingAngle();
-            request.DriveRequestType = DriveRequestType.Velocity;
-            request.SteerRequestType = SteerRequestType.MotionMagicExpo;
-            request.TargetDirection = relativePose.getRotation();
-            double xGoal = SwerveConstants.shootingRange * relativePose.getRotation().getCos();
-            double yGoal = SwerveConstants.shootingRange * relativePose.getRotation().getSin();
-            double velocityY = -driveController.calculate(yDistance, yGoal);
-            double velocityX = -driveController.calculate(xDistance, xGoal);
-            // SmartDashboard.putNumber("XDIST", xDistance);
-            // SmartDashboard.putNumber("YDIST", yDistance);
-            // SmartDashboard.putNumber("VELOX", velocityX);
-            // SmartDashboard.putNumber("VELOY", velocityY);
-
-            request.VelocityX = velocityX;
-            request.VelocityY = velocityY;
-            return request;
-        }        
+    public Command repathTo(AprilTags aprilTag, double tolerance) {
+        return Math.abs(m_odometry.getEstimatedPosition().getTranslation().getNorm() - aprilTag.value.getPose2d().getTranslation().getNorm()) >= tolerance ? AutoBuilder.pathfindToPose(aprilTag.value.getPose2d(), new PathConstraints(1, 1, Units.degreesToRadians(540), Units.degreesToRadians(720)),0, 0) : new InstantCommand();
     }
 
     @Override
