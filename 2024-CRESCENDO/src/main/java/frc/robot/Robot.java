@@ -69,7 +69,7 @@ public class Robot extends TimedRobot {
         m_specificOverrideCommand = null; // reset repeat command identifier
       } else { // if override is not null
         // check if the override isnt equal to previous override
-        if (newCommandIdentifier != m_specificOverrideCommand) { // overrides aren't equal
+        if (newCommandIdentifier.equals(m_specificOverrideCommand)) { // overrides aren't equal
           m_overrideCommand.end(true); // end old command
           m_overrideCommand = newMethodCall; // save new command
           m_overrideCommand.schedule(); // run new command
