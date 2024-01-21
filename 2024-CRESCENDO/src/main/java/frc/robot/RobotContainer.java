@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -48,11 +49,13 @@ public class RobotContainer {
 
   private Alliance alliance;
 
+  public String currentOverride;
+
   Shooter m_Shooter = new Shooter();
   Intake m_Intake = new Intake();
 
   private void configureDriverBindings() {
-    drivetrain.setDefaultCommand(getDefaultCommand());
+    drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed).withVelocityY(-joystick.getLeftX() * MaxSpeed).withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
 
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     joystick.b().whileTrue(drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
@@ -66,12 +69,13 @@ public class RobotContainer {
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
-  private Command getDefaultCommand() {
+  public Command checkForOverrides() {
     if (joystick.x().getAsBoolean()) {
+      currentOverride = "SHOOTER";
       return alliance == Alliance.Red ? drivetrain.repathTo(AprilTags.RedSpeakerCenter, AutonConstants.speakerTolerance) : drivetrain.repathTo(AprilTags.BlueSpeakerCenter, AutonConstants.speakerTolerance);
-    } else {
-      return drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed).withVelocityY(-joystick.getLeftX() * MaxSpeed).withRotationalRate(-joystick.getRightX() * MaxAngularRate));
-    }
+    } 
+    currentOverride = null;
+    return null;
   }
 
   private void configureOperatorBinging() {
@@ -112,13 +116,11 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auton Mode", pathChooser);
 
-    pathChooser.setDefaultOption("Test Hallway", drivetrain.getAutoPath(AutonChoice.Test1));
-    // pathChooser.addOption("Test Path 2", drivetrain.getAutoPath(AutonChoice.Test2));
-    // pathChooser.addOption("Test Path 3", drivetrain.getAutoPath(AutonChoice.Test3));
+    pathChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", pathChooser);
   }
 
   public Command getAutonomousCommand() {
-    // return pathChooser.getSelected();
-    return drivetrain.getAutoPath("TestHallway");
+    return pathChooser.getSelected();
   }
 }
