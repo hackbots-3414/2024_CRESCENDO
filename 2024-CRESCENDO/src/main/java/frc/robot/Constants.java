@@ -33,9 +33,12 @@ public class Constants {
     }
 
     public static final class SwerveConstants {
-        public static final double kP = 2;
-        public static final double kI = 0;
-        public static final double kD = 0;
+        public static final double kPDrive = 2;
+        public static final double kIDrive = 0;
+        public static final double kDDrive = 0;
+        public static final double kPSteer = 3.8;
+        public static final double kISteer = 0;
+        public static final double kDSteer = 0;
 
         public static final double shootingRange = Units.feetToMeters(9.5);
     }
