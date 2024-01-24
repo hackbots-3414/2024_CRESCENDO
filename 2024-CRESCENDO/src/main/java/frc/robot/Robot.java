@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  private Command m_overrideCommand;
+  private String m_specificOverrideCommand;
 
   private RobotContainer m_robotContainer;
 
@@ -55,7 +57,36 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    Command newMethodCall = m_robotContainer.checkForOverrides();
+    String newCommandIdentifier = m_robotContainer.currentOverride;
+
+    // STEP 1: Check if already scheduled
+    if (m_overrideCommand != null) {
+      if (m_overrideCommand.isScheduled()) { // is already scheduled
+        // check if you dont wanna override anymore
+        if (m_robotContainer.checkForOverrides() == null) { // if overrides are null
+          m_overrideCommand.end(true); // cancel command
+          m_specificOverrideCommand = null; // reset repeat command identifier
+        } else { // if override is not null
+          // check if the override isnt equal to previous override
+          if (newCommandIdentifier.equals(m_specificOverrideCommand)) { // overrides aren't equal
+            m_overrideCommand.end(true); // end old command
+            m_overrideCommand = newMethodCall; // save new command
+            m_overrideCommand.schedule(); // run new command
+            m_specificOverrideCommand = newCommandIdentifier; // save command identifier
+          } else {} // current button pressed is the same as the previous so do nothing :)
+        }
+      } else { // not yet scheduled
+        // check if you wanna schedule
+        if (m_overrideCommand != null) { // want to schedule new command
+          m_overrideCommand = m_robotContainer.checkForOverrides();
+          m_overrideCommand.schedule();
+          m_specificOverrideCommand = newCommandIdentifier;
+        } else {} // aren't scheduled yet, and dont wanna be scheduled
+      }
+    }
+  }
 
   @Override
   public void teleopExit() {}

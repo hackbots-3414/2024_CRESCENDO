@@ -7,16 +7,19 @@ package frc.robot;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.CommandSwerveDrivetrain.AutonChoice;
+import frc.robot.Constants.AprilTags;
+import frc.robot.Constants.AutonConstants;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.generated.TunerConstants;
@@ -43,20 +46,18 @@ public class RobotContainer {
 
   SendableChooser<Command> pathChooser = new SendableChooser<>();
 
+  private Alliance alliance;
+
+  public String currentOverride;
+
   Shooter m_Shooter = new Shooter();
   Intake m_Intake = new Intake();
 
   private void configureDriverBindings() {
-    drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with
-                                                                                           // negative Y (forward)
-            .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-        ));
+    drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed).withVelocityY(-joystick.getLeftX() * MaxSpeed).withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
 
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    joystick.b().whileTrue(drivetrain
-        .applyRequest(() -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
+    joystick.b().whileTrue(drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
 
     // reset the field-centric heading on left bumper press
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
@@ -65,6 +66,16 @@ public class RobotContainer {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
     }
     drivetrain.registerTelemetry(logger::telemeterize);
+  }
+
+  public Command checkForOverrides() {
+    if (joystick.x().getAsBoolean()) {
+      currentOverride = "SHOOTER";
+      return null; // COMMENT THIS OUT WHEN YOU WANT TO REBIND AND UNCOMMENT BELOW
+      // return alliance == Alliance.Red ? drivetrain.repathTo(AprilTags.RedSpeakerCenter, AutonConstants.speakerTolerance) : drivetrain.repathTo(AprilTags.BlueSpeakerCenter, AutonConstants.speakerTolerance);
+    } 
+    currentOverride = null;
+    return null;
   }
 
   private void configureOperatorBinging() {
@@ -97,18 +108,19 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
+    var alliance = DriverStation.getAlliance();
+    this.alliance = alliance.isPresent() ? alliance.get() : null;
+
     configureDriverBindings();
     configureOperatorBinging();
 
     SmartDashboard.putData("Auton Mode", pathChooser);
 
-    pathChooser.setDefaultOption("Test Hallway", drivetrain.getAutoPath(AutonChoice.Test1));
-    // pathChooser.addOption("Test Path 2", drivetrain.getAutoPath(AutonChoice.Test2));
-    // pathChooser.addOption("Test Path 3", drivetrain.getAutoPath(AutonChoice.Test3));
+    pathChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", pathChooser);
   }
 
   public Command getAutonomousCommand() {
-    // return pathChooser.getSelected();
-    return drivetrain.getAutoPath("TestHallway");
+    return pathChooser.getSelected();
   }
 }
