@@ -6,14 +6,12 @@ import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase implements AutoCloseable {
 
-  private TalonFX intakeMotor;
+  TalonFX intakeMotor;
 
   public Intake() {
     intakeMotor = new TalonFX(Constants.IntakeConstants.intakeMotorID);
