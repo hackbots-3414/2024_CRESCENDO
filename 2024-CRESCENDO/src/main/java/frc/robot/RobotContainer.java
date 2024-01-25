@@ -18,13 +18,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.CommandSwerveDrivetrain.AutonChoice;
+import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.Constants.AprilTags;
 import frc.robot.Constants.AutonConstants;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterPivot;
+import frc.robot.subsystems.Transport;
 
 public class RobotContainer {
   private double MaxSpeed = 6; // 6 meters per second desired top speed
@@ -52,6 +58,9 @@ public class RobotContainer {
 
   Shooter m_Shooter = new Shooter();
   Intake m_Intake = new Intake();
+  Elevator m_Elevator = new Elevator();
+  ShooterPivot m_ShooterPivot = new ShooterPivot();
+  Transport m_Transport = new Transport();
 
   private void configureDriverBindings() {
     drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed).withVelocityY(-joystick.getLeftX() * MaxSpeed).withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
@@ -67,8 +76,8 @@ public class RobotContainer {
     }
     drivetrain.registerTelemetry(logger::telemeterize);
   }
-
-  public Command checkForOverrides() {
+  
+   public Command checkForOverrides() {
     if (joystick.x().getAsBoolean()) {
       currentOverride = "SHOOTER";
       // return null; // COMMENT THIS OUT WHEN YOU WANT TO REBIND AND UNCOMMENT BELOW
@@ -78,13 +87,13 @@ public class RobotContainer {
     return null;
   }
 
-  private void configureOperatorBinging() {
+  private void configureOperatorBinding() {
     // operator.a().whileTrue(<ADD COMMAND>);
     operator.b().whileTrue(new ShooterCommand(m_Shooter, Constants.ShooterConstants.shootSpeed));
-    operator.x().whileTrue(new IntakeCommand(m_Intake, Constants.IntakeConstants.ejectSpeed));
+    operator.x().whileTrue(new IntakeCommand(m_Transport, m_Intake, Constants.IntakeConstants.ejectSpeed, -Constants.TransportConstants.transportSpeed));
     // operator.y().whileTrue(<ADD COMMAND>);
     // operator.leftBumper().whileTrue(<ADD COMMAND>);
-    operator.rightBumper().whileTrue(new IntakeCommand(m_Intake, Constants.IntakeConstants.intakeSpeed));
+    operator.rightBumper().whileTrue(new IntakeCommand(m_Transport, m_Intake, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed));
     // operator.back().whileTrue(<ADD COMMAND>);
     // operator.start().whileTrue(<ADD COMMAND>);
 
@@ -95,13 +104,13 @@ public class RobotContainer {
     // operator.axisGreaterThan(Constants.InputConstants.rightTriggerID, Constants.InputConstants.triggerTolerance).whileTrue(<ADD COMMAND>);
 
     // D-PAD Up
-    // operator.pov(0).whileTrue(<ADD COMMAND>);
+    operator.pov(0).whileTrue(new ElevatorCommand(m_Elevator, m_ShooterPivot, ElevatorPresets.STOW));
 
     // D-PAD Right
-    // operator.pov(90).whileTrue(<ADD COMMAND>);
+    operator.pov(90).whileTrue(new ElevatorCommand(m_Elevator, m_ShooterPivot, ElevatorPresets.AMP));
 
     // D-PAD Down
-    // operator.pov(180).whileTrue(<ADD COMMAND>);
+    operator.pov(180).whileTrue(new ElevatorCommand(m_Elevator, m_ShooterPivot, ElevatorPresets.TRAP));
 
     // D-PAD Left
     // operator.pov(270).whileTrue(<ADD COMMAND>);
@@ -112,7 +121,7 @@ public class RobotContainer {
     this.alliance = alliance.isPresent() ? alliance.get() : null;
 
     configureDriverBindings();
-    configureOperatorBinging();
+    configureOperatorBinding();
 
     SmartDashboard.putData("Auton Mode", pathChooser);
 
