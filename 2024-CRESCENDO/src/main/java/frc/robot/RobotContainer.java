@@ -71,8 +71,8 @@ public class RobotContainer {
   public Command checkForOverrides() {
     if (joystick.x().getAsBoolean()) {
       currentOverride = "SHOOTER";
-      return null; // COMMENT THIS OUT WHEN YOU WANT TO REBIND AND UNCOMMENT BELOW
-      // return alliance == Alliance.Red ? drivetrain.repathTo(AprilTags.RedSpeakerCenter, AutonConstants.speakerTolerance) : drivetrain.repathTo(AprilTags.BlueSpeakerCenter, AutonConstants.speakerTolerance);
+      // return null; // COMMENT THIS OUT WHEN YOU WANT TO REBIND AND UNCOMMENT BELOW
+      return alliance == Alliance.Red ? drivetrain.repathTo(AprilTags.RedSpeakerCenter, AutonConstants.speakerTolerance) : drivetrain.repathTo(AprilTags.BlueSpeakerCenter, AutonConstants.speakerTolerance);
     } 
     currentOverride = null;
     return null;
