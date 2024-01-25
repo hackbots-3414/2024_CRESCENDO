@@ -17,7 +17,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class PhotonVision extends SubsystemBase {
+public class PhotonVision extends SubsystemBase implements AutoCloseable {
   private PhotonCamera cameraLeft;
   private PhotonCamera cameraRight;
   private AprilTagFieldLayout field;
@@ -42,7 +42,6 @@ public class PhotonVision extends SubsystemBase {
 
     leftEstimator = new PhotonPoseEstimator(field, strategy, cameraLeft, Constants.VisionConstants.leftTransform);
     rightEstimator = new PhotonPoseEstimator(field, strategy, cameraRight, Constants.VisionConstants.rightTransform);
-
   }
 
   public Optional<EstimatedRobotPose> getGlobalPoseFromLeft() {
@@ -51,5 +50,11 @@ public class PhotonVision extends SubsystemBase {
 
   public Optional<EstimatedRobotPose> getGlobalPoseFromRight() {
     return rightEstimator.update();
+  }
+
+  @Override
+  public void close() throws Exception {
+    cameraLeft.close();
+    cameraRight.close();
   }
 }
