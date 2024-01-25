@@ -7,7 +7,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Shooter extends SubsystemBase {
+public class Shooter extends SubsystemBase implements AutoCloseable {
 
   private TalonFX leftMotor;
   private TalonFX rightMotor;
@@ -37,5 +37,11 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
+  }
+
+  @Override
+  public void close() throws Exception {
+    leftMotor.close();
+    rightMotor.close();
   }
 }

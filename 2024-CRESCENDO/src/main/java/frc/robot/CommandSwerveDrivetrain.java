@@ -6,25 +6,25 @@ import java.util.function.Supplier;
 
 import org.photonvision.EstimatedRobotPose;
 
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.ApplyChassisSpeeds;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,9 +40,9 @@ import frc.robot.subsystems.PhotonVision;
  * so it can be used in command-based projects easily.
  */
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
-    // private static final double kSimLoopPeriod = 0.005; // 5 ms
-    // private Notifier m_simNotifier = null;
-    // private double m_lastSimTime;
+    private static final double kSimLoopPeriod = 0.005; // 5 ms
+    private Notifier m_simNotifier = null;
+    private double m_lastSimTime;
     private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
     private Field2d field;
@@ -62,17 +62,17 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
         configurePathPlanner();
 
-        // if (Utils.isSimulation()) {
-        //     startSimThread();
-        // }
+        if (Utils.isSimulation()) {
+            startSimThread();
+        }
         initPhotonVision();
     }
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
         configurePathPlanner();
-        // if (Utils.isSimulation()) {
-        //     startSimThread();
-        // }
+        if (Utils.isSimulation()) {
+            startSimThread();
+        }
         initPhotonVision();
     }
 
@@ -108,20 +108,20 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
     }
 
-    // private void startSimThread() {
-    //     m_lastSimTime = Utils.getCurrentTimeSeconds();
+    private void startSimThread() {
+        m_lastSimTime = Utils.getCurrentTimeSeconds();
 
-    //     /* Run simulation at a faster rate so PID gains behave more reasonably */
-    //     m_simNotifier = new Notifier(() -> {
-    //         final double currentTime = Utils.getCurrentTimeSeconds();
-    //         double deltaTime = currentTime - m_lastSimTime;
-    //         m_lastSimTime = currentTime;
+        /* Run simulation at a faster rate so PID gains behave more reasonably */
+        m_simNotifier = new Notifier(() -> {
+            final double currentTime = Utils.getCurrentTimeSeconds();
+            double deltaTime = currentTime - m_lastSimTime;
+            m_lastSimTime = currentTime;
 
-    //         /* use the measured time delta, get battery voltage from WPILib */
-    //         updateSimState(deltaTime, RobotController.getBatteryVoltage());
-    //     });
-    //     m_simNotifier.startPeriodic(kSimLoopPeriod);
-    // }
+            /* use the measured time delta, get battery voltage from WPILib */
+            updateSimState(deltaTime, RobotController.getBatteryVoltage());
+        });
+        m_simNotifier.startPeriodic(kSimLoopPeriod);
+    }
 
     private void updateOdometry() {
         Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
@@ -153,5 +153,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     @Override
     public void periodic() {
         updateOdometry();
+        field.setRobotPose(estimatedPose);
     }
 }
