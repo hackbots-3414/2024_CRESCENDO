@@ -2,41 +2,33 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Transport;
 
 public class IntakeCommand extends Command {
 
-  Intake m_Intake;
-  Transport m_Transport;
-  double intakeSpeed;
-  double transportSpeed;
+  Intake m_Intake = new Intake();
+  double speed;
 
-  public IntakeCommand(Transport m_Transport, Intake m_Intake, double intakeSpeed, double transportSpeed) {
-    addRequirements(m_Transport, m_Intake);
-    this.m_Transport = m_Transport;
+  public IntakeCommand(Intake m_Intake, double speed) {
+    addRequirements(m_Intake);
     this.m_Intake = m_Intake;
-    this.intakeSpeed = intakeSpeed;
-    this.transportSpeed = transportSpeed;
+    this.speed = speed;
   }
 
   @Override
   public void initialize() {
-    m_Intake.setMotor(intakeSpeed);
-    m_Transport.setMotor(transportSpeed);
+    m_Intake.setMotor(speed);
   }
 
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   @Override
   public void end(boolean interrupted) {
     m_Intake.stopMotor();
-    m_Transport.stopMotor();
   }
 
   @Override
   public boolean isFinished() {
-    return m_Transport.getIR() && intakeSpeed > 0;
+    return false;
   }
 }
