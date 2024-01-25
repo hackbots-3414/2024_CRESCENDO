@@ -10,9 +10,12 @@ import edu.wpi.first.units.Velocity;
 import static edu.wpi.first.units.MutableMeasure.mutable;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,9 +30,9 @@ public class Shooter extends SubsystemBase {
  // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
  private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
  // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
- private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
+ private final MutableMeasure<Angle> m_distance = mutable(Radians.of(0));
  // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
- private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+ private final MutableMeasure<Velocity<Angle>> m_velocity = mutable(RadiansPerSecond.of(0));
 
   private final SysIdRoutine m_sysIdRoutine =
       new SysIdRoutine(
@@ -50,9 +53,8 @@ public class Shooter extends SubsystemBase {
                     .voltage(
                         m_appliedVoltage.mut_replace(
                             getMotorSpeed() * RobotController.getBatteryVoltage(), Volts))
-                    .linearPosition(m_distance.mut_replace(getMotorPosRad(), Meters))
-                    .linearVelocity(
-                        m_velocity.mut_replace(getMotorVeloRad(), MetersPerSecond));
+                    .angularPosition(m_distance.mut_replace(getMotorPosRad(), Radians))
+                    .angularVelocity(m_velocity.mut_replace(getMotorVeloRad(), RadiansPerSecond));
               },
               // Tell SysId to make generated commands require this subsystem, suffix test state in
               // WPILog with this subsystem's name ("drive")
