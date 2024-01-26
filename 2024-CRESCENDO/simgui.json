@@ -71,10 +71,18 @@
     }
   },
   "NetworkTables": {
-    "transitory": {
-      "Drive": {
+    "Retained Values": {
+      "open": false
+    },
+    "retained": {
+      "SmartDashboard": {
+        "Auto Chooser": {
+          "open": true
+        },
         "open": true
-      },
+      }
+    },
+    "transitory": {
       "PathPlanner": {
         "open": true
       },
@@ -82,6 +90,9 @@
         "open": true
       },
       "Shuffleboard": {
+        "open": true
+      },
+      "SmartDashboard": {
         "open": true
       }
     }

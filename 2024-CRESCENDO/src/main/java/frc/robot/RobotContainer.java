@@ -82,6 +82,7 @@ public class RobotContainer {
       // return null; // COMMENT THIS OUT WHEN YOU WANT TO REBIND AND UNCOMMENT BELOW
       return alliance == Alliance.Red ? drivetrain.repathTo(AprilTags.RedSpeakerCenter, AutonConstants.speakerTolerance) : drivetrain.repathTo(AprilTags.BlueSpeakerCenter, AutonConstants.speakerTolerance);
     } 
+    SmartDashboard.putBoolean("FLAGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG", false);
     currentOverride = null;
     return null;
   }
