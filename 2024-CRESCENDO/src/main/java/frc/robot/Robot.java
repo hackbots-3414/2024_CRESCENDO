@@ -7,17 +7,27 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.RobotContainer.RepathChoices;
 
 public class Robot extends TimedRobot {
+  private boolean runSysID = false;
+
   private Command m_autonomousCommand;
-  private Command m_overrideCommand;
-  private String m_specificOverrideCommand;
+  private Command previouslyStoredCommand = new InstantCommand(() -> System.out.println("non null command, never will actually do this pls hopefully"));
+  private RepathChoices previousCommandIdentifier = RepathChoices.NULL;
 
   private RobotContainer m_robotContainer;
+  private SysIdRoutineBot m_SysIdRoutineBot;
 
   @Override
   public void robotInit() {
-    m_robotContainer = new RobotContainer();
+    if (runSysID) {
+      m_SysIdRoutineBot = new SysIdRoutineBot();
+        m_SysIdRoutineBot.configureBindings();
+    } else {
+      m_robotContainer = new RobotContainer();
+    }
   }
 
   @Override
@@ -36,7 +46,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = !runSysID ? m_robotContainer.getAutonomousCommand() : m_SysIdRoutineBot.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -58,32 +68,22 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    Command newMethodCall = m_robotContainer.checkForOverrides();
-    String newCommandIdentifier = m_robotContainer.currentOverride;
-
-    // STEP 1: Check if already scheduled
-    if (m_overrideCommand != null) {
-      if (m_overrideCommand.isScheduled()) { // is already scheduled
-        // check if you dont wanna override anymore
-        if (m_robotContainer.checkForOverrides() == null) { // if overrides are null
-          m_overrideCommand.end(true); // cancel command
-          m_specificOverrideCommand = null; // reset repeat command identifier
-        } else { // if override is not null
-          // check if the override isnt equal to previous override
-          if (newCommandIdentifier.equals(m_specificOverrideCommand)) { // overrides aren't equal
-            m_overrideCommand.end(true); // end old command
-            m_overrideCommand = newMethodCall; // save new command
-            m_overrideCommand.schedule(); // run new command
-            m_specificOverrideCommand = newCommandIdentifier; // save command identifier
-          } else {} // current button pressed is the same as the previous so do nothing :)
+    if (!runSysID) {
+      RepathChoices newCommandIdentifier = m_robotContainer.checkForOverrides();
+      if (newCommandIdentifier != null) {
+        if (!previousCommandIdentifier.equals(newCommandIdentifier)) {
+          previouslyStoredCommand.cancel();
+          previouslyStoredCommand = m_robotContainer.getRepathingCommand(newCommandIdentifier);
+          previouslyStoredCommand.schedule();
+          previousCommandIdentifier = newCommandIdentifier;
+        } else {
+          if (m_robotContainer.isAtSetpoint(previousCommandIdentifier)) {
+            previouslyStoredCommand.cancel();
+          }
         }
-      } else { // not yet scheduled
-        // check if you wanna schedule
-        if (m_overrideCommand != null) { // want to schedule new command
-          m_overrideCommand = m_robotContainer.checkForOverrides();
-          m_overrideCommand.schedule();
-          m_specificOverrideCommand = newCommandIdentifier;
-        } else {} // aren't scheduled yet, and dont wanna be scheduled
+      } else {
+        if (previouslyStoredCommand.isScheduled()) {previouslyStoredCommand.cancel();}
+        previousCommandIdentifier = RepathChoices.NULL;
       }
     }
   }
@@ -103,34 +103,5 @@ public class Robot extends TimedRobot {
   public void testExit() {}
 
   @Override
-  public void simulationPeriodic() {
-    Command newMethodCall = m_robotContainer.checkForOverrides();
-    String newCommandIdentifier = m_robotContainer.currentOverride;
-
-    // STEP 1: Check if already scheduled
-    if (m_overrideCommand != null) {
-      if (m_overrideCommand.isScheduled()) { // is already scheduled
-        // check if you dont wanna override anymore
-        if (m_robotContainer.checkForOverrides() == null) { // if overrides are null
-          m_overrideCommand.end(true); // cancel command
-          m_specificOverrideCommand = null; // reset repeat command identifier
-        } else { // if override is not null
-          // check if the override isnt equal to previous override
-          if (newCommandIdentifier.equals(m_specificOverrideCommand)) { // overrides aren't equal
-            m_overrideCommand.end(true); // end old command
-            m_overrideCommand = newMethodCall; // save new command
-            m_overrideCommand.schedule(); // run new command
-            m_specificOverrideCommand = newCommandIdentifier; // save command identifier
-          } else {} // current button pressed is the same as the previous so do nothing :)
-        }
-      } else { // not yet scheduled
-        // check if you wanna schedule
-        if (m_overrideCommand != null) { // want to schedule new command
-          m_overrideCommand = m_robotContainer.checkForOverrides();
-          m_overrideCommand.schedule();
-          m_specificOverrideCommand = newCommandIdentifier;
-        } else {} // aren't scheduled yet, and dont wanna be scheduled
-      }
-    }
-  }
+  public void simulationPeriodic() {}
 }

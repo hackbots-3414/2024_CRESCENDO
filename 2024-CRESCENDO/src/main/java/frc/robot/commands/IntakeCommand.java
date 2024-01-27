@@ -22,7 +22,7 @@ public class IntakeCommand extends Command {
   @Override
   public void initialize() {
     m_Intake.setMotor(intakeSpeed);
-    m_Transport.setMotor(transportSpeed);
+    // m_Transport.setMotor(transportSpeed);
   }
 
   @Override
@@ -32,11 +32,12 @@ public class IntakeCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     m_Intake.stopMotor();
-    m_Transport.stopMotor();
+    // m_Transport.stopMotor();
   }
 
   @Override
   public boolean isFinished() {
-    return m_Transport.getIR() && intakeSpeed > 0;
+    // return m_Transport.getIR() && intakeSpeed > 0;
+    return m_Intake.getForwardLimit();
   }
 }
