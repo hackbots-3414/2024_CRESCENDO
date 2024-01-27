@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 
-public class Shooter extends SubsystemBase {
+public class Shooter extends SubsystemBase implements AutoCloseable {
 
   private TalonFX leftMotor;
   private TalonFX rightMotor;
@@ -114,5 +114,11 @@ public class Shooter extends SubsystemBase {
 
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutine.dynamic(direction);
+  }
+  
+  @Override
+  public void close() throws Exception {
+    leftMotor.close();
+    rightMotor.close();
   }
 }
