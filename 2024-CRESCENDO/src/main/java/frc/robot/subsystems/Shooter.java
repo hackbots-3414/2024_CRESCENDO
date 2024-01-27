@@ -1,8 +1,11 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
@@ -120,5 +123,21 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
   public void close() throws Exception {
     leftMotor.close();
     rightMotor.close();
+  }
+
+  public TalonFXSimState getSimStateLeft() {
+    return leftMotor.getSimState();
+  }
+
+  public TalonFXSimState getSimStateRight() {
+    return rightMotor.getSimState();
+  }
+
+  public StatusSignal<Double> getMotorDutyCycle() {
+    return rightMotor.getDutyCycle();
+  }
+
+  public void setControl(DutyCycleOut dutyCycleOut) {
+    rightMotor.setControl(dutyCycleOut);
   }
 }

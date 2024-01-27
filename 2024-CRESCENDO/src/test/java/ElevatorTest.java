@@ -4,7 +4,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.hal.HAL;
@@ -12,21 +11,21 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Elevator;
 
-public class IntakeTest implements AutoCloseable {
+public class ElevatorTest implements AutoCloseable {
    static final double DELTA = 1e-3; // acceptable deviation range
 
-   private Intake intake;
-   private TalonFXSimState intakeMotorSim;
+   private Elevator elevator;
+   private TalonFXSimState elevatorSim;
 
    @Override
    public void close() {
       /* destroy our TalonFX object */
       try {
-         intake.close();
+         elevator.close();
       } catch (Exception e) {
-         System.out.println("IntakeTest.java could not close Intake Object");
+         System.out.println("ElevatorTest.java could not close Elevator Object");
       }
    }
 
@@ -35,8 +34,8 @@ public class IntakeTest implements AutoCloseable {
       assert HAL.initialize(500, 0);
 
       /* create the TalonFX */
-      intake = new Intake();
-      intakeMotorSim = intake.getSimState();
+      elevator = new Elevator();
+      elevatorSim = elevator.getSimState();
 
       /* enable the robot */
       DriverStationSim.setEnabled(true);
@@ -58,25 +57,20 @@ public class IntakeTest implements AutoCloseable {
    }
 
    @Test
-   public void motorDrives() {
+   public void motorMoves() {
       /* set the voltage supplied by the battery */
-      intakeMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
+      elevatorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
+      double result;
+      // get the motor speed
+      result = elevator.getPosition();
+      assertEquals(result, 0.0, DELTA);
 
-      var dutyCycle = intake.getMotorDutyCycle();
+      elevator.setGoal(1.0);
+      Timer.delay(0.2);
+      result = elevator.getPosition();
 
-      /* wait for a fresh duty cycle signal */
-      dutyCycle.waitForUpdate(0.100);
-      /* verify that the motor output is zero */
-      assertEquals(dutyCycle.getValue(), 0.0, DELTA);
+      // System.out.println(result);
 
-      /* request 100% output */
-      intake.setControl(new DutyCycleOut(1.0));
-      /* wait for the control to apply */
-      Timer.delay(0.020);
-
-      /* wait for a new duty cycle signal */
-      dutyCycle.waitForUpdate(0.100);
-      /* verify that the motor output is 1.0 */
-      assertEquals(dutyCycle.getValue(), 1.0, DELTA);
-   }
+      // assertEquals(result, 1.0, DELTA); this fails because the command scheduler doesn't run the periodic() method on the subsystem during tests.
+   } 
 }

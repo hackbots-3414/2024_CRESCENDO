@@ -1,14 +1,17 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Transport extends SubsystemBase {
+public class Transport extends SubsystemBase implements AutoCloseable {
 
   private TalonFX transportMotor;
   private DigitalInput irSensor = new DigitalInput(Constants.TransportConstants.irSensorChannel);
@@ -35,5 +38,23 @@ public class Transport extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("IR Sensor", getIR());
+  }
+
+  @Override
+  public void close() {
+    transportMotor.close();
+    irSensor.close();
+  }
+
+  public TalonFXSimState getSimState() {
+    return transportMotor.getSimState();
+  }
+
+  public StatusSignal<Double> getMotorDutyCycle() {
+    return transportMotor.getDutyCycle();
+  }
+
+  public void setControl(DutyCycleOut out) {
+    transportMotor.setControl(out);
   }
 }
