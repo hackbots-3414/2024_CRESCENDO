@@ -19,11 +19,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.AprilTags;
-import frc.robot.Constants.AutonConstants;
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterCommand;
-import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -32,6 +31,13 @@ import frc.robot.subsystems.ShooterPivot;
 import frc.robot.subsystems.Transport;
 
 public class RobotContainer {
+  public enum RepathChoices {
+    SHOOTER,
+    AMP,
+    SOURCE,
+    NULL;
+  }
+
   private double MaxSpeed = 6; // 6 meters per second desired top speed
   private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
@@ -51,15 +57,13 @@ public class RobotContainer {
 
   SendableChooser<Command> pathChooser = new SendableChooser<>();
 
-  private Alliance alliance;
+  public Alliance alliance;
 
-  public String currentOverride;
-
-  Shooter m_Shooter = new Shooter();
-  Intake m_Intake = new Intake();
-  Elevator m_Elevator = new Elevator();
-  ShooterPivot m_ShooterPivot = new ShooterPivot();
-  Transport m_Transport = new Transport();
+  private Shooter m_Shooter = new Shooter();
+  private Intake m_Intake = new Intake();
+  private Elevator m_Elevator = new Elevator();
+  private ShooterPivot m_ShooterPivot = new ShooterPivot();
+  private Transport m_Transport = new Transport();
 
   private void configureDriverBindings() {
     drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed).withVelocityY(-joystick.getLeftX() * MaxSpeed).withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
@@ -76,13 +80,27 @@ public class RobotContainer {
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
-  public Command checkForOverrides() {
+  public RepathChoices checkForOverrides() {
     if (joystick.x().getAsBoolean()) {
-      currentOverride = "SHOOTER";
-      // return null; // COMMENT THIS OUT WHEN YOU WANT TO REBIND AND UNCOMMENT BELOW
-      return alliance == Alliance.Red ? drivetrain.repathTo(AprilTags.RedSpeakerCenter, AutonConstants.speakerTolerance) : drivetrain.repathTo(AprilTags.BlueSpeakerCenter, AutonConstants.speakerTolerance);
-    } 
-    currentOverride = null;
+      return RepathChoices.SHOOTER;
+    }
+    return null;
+  }
+
+  public boolean isAtSetpoint(RepathChoices commandName) {
+    switch(commandName) {
+      case SHOOTER:
+        Pose2d target = DriverStation.getAlliance().get() == Alliance.Red ? AprilTags.RedSpeakerCenter.value.getPose2d() : AprilTags.BlueSpeakerCenter.value.getPose2d();
+        return drivetrain.getPose().getTranslation().getDistance(target.getTranslation()) >= Constants.AutonConstants.speakerTolerance ? false : true;
+      default:
+        return false;
+    }    
+  }
+
+  public Command getRepathingCommand(RepathChoices identifier) {
+    if (identifier.equals(RepathChoices.SHOOTER)) {
+      return alliance == Alliance.Red ? drivetrain.repathTo(AprilTags.RedSpeakerCenter) : drivetrain.repathTo(AprilTags.BlueSpeakerCenter);
+    }
     return null;
   }
 

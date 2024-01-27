@@ -42,12 +42,10 @@ public class Constants {
         public static final double kPSteer = 3.8;
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
-
-        public static final double shootingRange = Units.feetToMeters(9.5);
     }
 
     public static final class AutonConstants {
-        public static final double speakerTolerance = 9.5; // METERS YOU CAN SHOOT FROM
+        public static final double speakerTolerance = Units.feetToMeters(9.5); // METERS YOU CAN SHOOT FROM
     }
 
     public static final class VisionConstants {
@@ -172,7 +170,7 @@ public class Constants {
 
         public AprilTagObject(int id, double x, double y, double degrees) {
             this.ID = id;
-            this.position = new Pose2d(x, y, Rotation2d.fromDegrees(degrees));
+            this.position = new Pose2d(Units.inchesToMeters(x), Units.inchesToMeters(y), Rotation2d.fromDegrees(degrees));
         }
     }
 }
