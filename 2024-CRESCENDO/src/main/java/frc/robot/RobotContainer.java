@@ -53,7 +53,7 @@ public class RobotContainer {
 
   private Alliance alliance;
 
-  public String currentOverride;
+  public String currentOverride = "temp";
 
   Shooter m_Shooter = new Shooter();
   Intake m_Intake = new Intake();
@@ -79,11 +79,9 @@ public class RobotContainer {
   public Command checkForOverrides() {
     if (joystick.x().getAsBoolean()) {
       currentOverride = "SHOOTER";
-      // return null; // COMMENT THIS OUT WHEN YOU WANT TO REBIND AND UNCOMMENT BELOW
       return alliance == Alliance.Red ? drivetrain.repathTo(AprilTags.RedSpeakerCenter, AutonConstants.speakerTolerance) : drivetrain.repathTo(AprilTags.BlueSpeakerCenter, AutonConstants.speakerTolerance);
-    } 
-    SmartDashboard.putBoolean("FLAGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG", false);
-    currentOverride = null;
+    }
+    currentOverride = "temp";
     return null;
   }
 

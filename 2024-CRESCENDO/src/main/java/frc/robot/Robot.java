@@ -5,14 +5,14 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  private Command previouslyStoredCommand;
-  private String previousCommandIdentifier;
+  private Command previouslyStoredCommand = new InstantCommand(() -> System.out.println("non null command, never will actually do this pls hopefully"));
+  private String previousCommandIdentifier = "nothing";
 
   private RobotContainer m_robotContainer;
 
@@ -61,26 +61,18 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     Command newMethodCall = m_robotContainer.checkForOverrides();
     String newCommandIdentifier = m_robotContainer.currentOverride;
-
-    // STEP 1: Check if already scheduled
     if (newMethodCall != null) {
-      if (previouslyStoredCommand.isScheduled()) {
-        if (newCommandIdentifier.equals(previousCommandIdentifier)) {
-          previouslyStoredCommand.end(true);
-          previouslyStoredCommand = newMethodCall;
-          previouslyStoredCommand.schedule();
-          previousCommandIdentifier = newCommandIdentifier; 
-        }
-      } else {
+      if (!previousCommandIdentifier.equals(newCommandIdentifier)) {
+        previouslyStoredCommand.cancel();
         previouslyStoredCommand = newMethodCall;
         previouslyStoredCommand.schedule();
         previousCommandIdentifier = newCommandIdentifier;
       }
     } else {
-      if (previouslyStoredCommand.isScheduled()) { // might through null pointer
-        previouslyStoredCommand.end(true);
-        previousCommandIdentifier = null;
+      if (previouslyStoredCommand.isScheduled()) {
+        previouslyStoredCommand.cancel();
       }
+      previousCommandIdentifier = "nothing";
     }
   }
 
@@ -99,19 +91,5 @@ public class Robot extends TimedRobot {
   public void testExit() {}
 
   @Override
-  public void simulationPeriodic() {
-    Command latestCommand = m_robotContainer.checkForOverrides();
-    String newCommandIdentifier = m_robotContainer.currentOverride;
-
-    if (latestCommand != null) {
-      if (previouslyStoredCommand.isScheduled()) {
-          if (previouslyStoredCommand == null) previouslyStoredCommand.end(true);
-          if (!previousCommandIdentifier.equals(newCommandIdentifier)) {
-            latestCommand.schedule();
-            previouslyStoredCommand = latestCommand;
-            previousCommandIdentifier = newCommandIdentifier;
-          }
-      }
-    }
-  }
+  public void simulationPeriodic() {}
 }

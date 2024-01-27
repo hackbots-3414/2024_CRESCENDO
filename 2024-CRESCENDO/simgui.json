@@ -1,10 +1,8 @@
 {
   "HALProvider": {
     "Other Devices": {
-      "Talon FX (v6)[11]/Rotor Sensor": {
-        "header": {
-          "open": true
-        }
+      "window": {
+        "visible": false
       }
     }
   },
@@ -71,9 +69,6 @@
     }
   },
   "NetworkTables": {
-    "Retained Values": {
-      "open": false
-    },
     "retained": {
       "SmartDashboard": {
         "Auto Chooser": {
@@ -83,15 +78,6 @@
       }
     },
     "transitory": {
-      "PathPlanner": {
-        "open": true
-      },
-      "Pose": {
-        "open": true
-      },
-      "Shuffleboard": {
-        "open": true
-      },
       "SmartDashboard": {
         "open": true
       }
