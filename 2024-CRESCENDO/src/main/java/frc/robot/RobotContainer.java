@@ -9,7 +9,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
-import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -20,7 +19,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.AprilTags;
-import frc.robot.Constants.AutonConstants;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.IntakeCommand;
@@ -33,6 +31,13 @@ import frc.robot.subsystems.ShooterPivot;
 import frc.robot.subsystems.Transport;
 
 public class RobotContainer {
+  public enum RepathChoices {
+    SHOOTER,
+    AMP,
+    SOURCE,
+    NULL;
+  }
+
   private double MaxSpeed = 6; // 6 meters per second desired top speed
   private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
@@ -53,8 +58,6 @@ public class RobotContainer {
   SendableChooser<Command> pathChooser = new SendableChooser<>();
 
   public Alliance alliance;
-
-  public String currentOverride = "temp";
 
   private Shooter m_Shooter = new Shooter();
   private Intake m_Intake = new Intake();
@@ -77,17 +80,16 @@ public class RobotContainer {
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
-  public String checkForOverrides() {
+  public RepathChoices checkForOverrides() {
     if (joystick.x().getAsBoolean()) {
-      return "SHOOTER";
-      
+      return RepathChoices.SHOOTER;
     }
     return null;
   }
 
-  public boolean isAtSetpoint(String commandName) {
+  public boolean isAtSetpoint(RepathChoices commandName) {
     switch(commandName) {
-      case "SHOOTER":
+      case SHOOTER:
         Pose2d target = DriverStation.getAlliance().get() == Alliance.Red ? AprilTags.RedSpeakerCenter.value.getPose2d() : AprilTags.BlueSpeakerCenter.value.getPose2d();
         return drivetrain.getPose().getTranslation().getDistance(target.getTranslation()) >= Constants.AutonConstants.speakerTolerance ? false : true;
       default:
@@ -95,8 +97,8 @@ public class RobotContainer {
     }    
   }
 
-  public Command getRepathingCommand(String aprilTagIdentifier) {
-    if (aprilTagIdentifier.equals("SHOOTER")) {
+  public Command getRepathingCommand(RepathChoices identifier) {
+    if (identifier.equals(RepathChoices.SHOOTER)) {
       return alliance == Alliance.Red ? drivetrain.repathTo(AprilTags.RedSpeakerCenter) : drivetrain.repathTo(AprilTags.BlueSpeakerCenter);
     }
     return null;

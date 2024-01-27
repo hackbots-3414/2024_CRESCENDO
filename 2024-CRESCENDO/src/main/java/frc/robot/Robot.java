@@ -4,16 +4,16 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.RobotContainer.RepathChoices;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private Command previouslyStoredCommand = new InstantCommand(() -> System.out.println("non null command, never will actually do this pls hopefully"));
-  private String previousCommandIdentifier = "nothing";
+  private RepathChoices previousCommandIdentifier = RepathChoices.NULL;
 
   private RobotContainer m_robotContainer;
 
@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    String newCommandIdentifier = m_robotContainer.checkForOverrides();
+    RepathChoices newCommandIdentifier = m_robotContainer.checkForOverrides();
     if (newCommandIdentifier != null) {
       if (!previousCommandIdentifier.equals(newCommandIdentifier)) {
         previouslyStoredCommand.cancel();
@@ -74,7 +74,7 @@ public class Robot extends TimedRobot {
       }
     } else {
       if (previouslyStoredCommand.isScheduled()) {previouslyStoredCommand.cancel();}
-      previousCommandIdentifier = "nothing";
+      previousCommandIdentifier = RepathChoices.NULL;
     }
   }
 
