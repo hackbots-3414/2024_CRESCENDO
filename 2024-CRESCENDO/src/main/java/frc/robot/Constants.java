@@ -86,7 +86,7 @@ public class Constants {
         public static final int transportMotorID = 56;
         public static final boolean transportMotorInvert = false;
         public static final double transportSpeed = 0.5;
-        public static final int irSensorChannel = 0;
+        public static final int irSensorChannel = 1;
     }
 
     public static final class PositionConstants {
