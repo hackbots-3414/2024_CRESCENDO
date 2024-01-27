@@ -13,6 +13,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -146,7 +147,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     public Command repathTo(AprilTags aprilTag, double tolerance) {
-        return Math.abs(m_odometry.getEstimatedPosition().getTranslation().getNorm() - aprilTag.value.getPose2d().getTranslation().getNorm()) >= tolerance ? AutoBuilder.pathfindToPose(aprilTag.value.getPose2d(), new PathConstraints(1, 1, Units.degreesToRadians(540), Units.degreesToRadians(720)),0, 0) : new InstantCommand();
+        return new PathPlannerAuto("PathToSpeaker").onlyIf(() -> Math.abs(m_odometry.getEstimatedPosition().getTranslation().getNorm() - aprilTag.value.getPose2d().getTranslation().getNorm()) >= tolerance); // THIS WORKS
+        // return Math.abs(m_odometry.getEstimatedPosition().getTranslation().getNorm() - aprilTag.value.getPose2d().getTranslation().getNorm()) >= tolerance ? AutoBuilder.pathfindToPose(aprilTag.value.getPose2d(), new PathConstraints(1, 1, Units.degreesToRadians(540), Units.degreesToRadians(720)),0, 0) : new InstantCommand();
     }
 
     @Override
