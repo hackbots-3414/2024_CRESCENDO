@@ -60,12 +60,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    Command newMethodCall = m_robotContainer.checkForOverrides();
-    String newCommandIdentifier = m_robotContainer.currentOverride;
-    if (newMethodCall != null) {
+    String newCommandIdentifier = m_robotContainer.checkForOverrides();
+    if (newCommandIdentifier != null) {
       if (!previousCommandIdentifier.equals(newCommandIdentifier)) {
         previouslyStoredCommand.cancel();
-        previouslyStoredCommand = newMethodCall;
+        previouslyStoredCommand = m_robotContainer.getRepathingCommand(newCommandIdentifier);
         previouslyStoredCommand.schedule();
         previousCommandIdentifier = newCommandIdentifier;
       } else {
