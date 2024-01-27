@@ -77,27 +77,29 @@ public class RobotContainer {
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
-  public Command checkForOverrides() {
+  public String checkForOverrides() {
     if (joystick.x().getAsBoolean()) {
-      currentOverride = "SHOOTER";
-      return alliance == Alliance.Red ? drivetrain.repathTo(AprilTags.RedSpeakerCenter) : drivetrain.repathTo(AprilTags.BlueSpeakerCenter);
+      return "SHOOTER";
+      
     }
-    currentOverride = "temp";
     return null;
   }
 
   public boolean isAtSetpoint(String commandName) {
     switch(commandName) {
       case "SHOOTER":
-        Pose2d target = alliance == Alliance.Red ? AprilTags.RedSpeakerCenter.value.getPose2d() : AprilTags.BlueSpeakerCenter.value.getPose2d();
+        Pose2d target = DriverStation.getAlliance().get() == Alliance.Red ? AprilTags.RedSpeakerCenter.value.getPose2d() : AprilTags.BlueSpeakerCenter.value.getPose2d();
         return drivetrain.getPose().getTranslation().getDistance(target.getTranslation()) >= Constants.AutonConstants.speakerTolerance ? false : true;
       default:
         return false;
     }    
   }
 
-  public Command getRepathingCommand(AprilTags aprilTag) {
-    return drivetrain.repathTo(aprilTag);
+  public Command getRepathingCommand(String aprilTagIdentifier) {
+    if (aprilTagIdentifier.equals("SHOOTER")) {
+      return alliance == Alliance.Red ? drivetrain.repathTo(AprilTags.RedSpeakerCenter) : drivetrain.repathTo(AprilTags.BlueSpeakerCenter);
+    }
+    return null;
   }
 
   private void configureOperatorBinging() {
