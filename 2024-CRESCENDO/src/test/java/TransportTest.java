@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
@@ -12,21 +13,22 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Transport;
 
-public class IntakeTest implements AutoCloseable {
+public class TransportTest implements AutoCloseable {
    static final double DELTA = 1e-3; // acceptable deviation range
 
-   private Intake intake;
-   private TalonFXSimState intakeMotorSim;
+   private Transport transport;
+   
+   private TalonFXSimState transportSim;
 
    @Override
    public void close() {
       /* destroy our TalonFX object */
       try {
-         intake.close();
+         transport.close();
       } catch (Exception e) {
-         System.out.println("IntakeTest.java could not close Intake Object");
+         System.out.println("transportTest.java could not close transport Object");
       }
    }
 
@@ -35,8 +37,8 @@ public class IntakeTest implements AutoCloseable {
       assert HAL.initialize(500, 0);
 
       /* create the TalonFX */
-      intake = new Intake();
-      intakeMotorSim = intake.getSimState();
+      transport = new Transport();
+      transportSim = transport.getSimState();
 
       /* enable the robot */
       DriverStationSim.setEnabled(true);
@@ -58,25 +60,23 @@ public class IntakeTest implements AutoCloseable {
    }
 
    @Test
-   public void motorDrives() {
+   public void motorMoves() {
       /* set the voltage supplied by the battery */
-      intakeMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
+      transportSim.setSupplyVoltage(RobotController.getBatteryVoltage());
 
-      var dutyCycle = intake.getMotorDutyCycle();
+      transport.stopMotor();
 
-      /* wait for a fresh duty cycle signal */
-      dutyCycle.waitForUpdate(0.100);
-      /* verify that the motor output is zero */
+      StatusSignal<Double> dutyCycle = transport.getMotorDutyCycle();
+
+      transport.setControl(new DutyCycleOut(0.0));
+      Timer.delay(0.01);
+      dutyCycle.waitForUpdate(0.1);
+
       assertEquals(dutyCycle.getValue(), 0.0, DELTA);
 
-      /* request 100% output */
-      intake.setControl(new DutyCycleOut(1.0));
-      /* wait for the control to apply */
-      Timer.delay(0.020);
-
-      /* wait for a new duty cycle signal */
-      dutyCycle.waitForUpdate(0.100);
-      /* verify that the motor output is 1.0 */
+      transport.setControl(new DutyCycleOut(1.0));
+      Timer.delay(0.02);
+      dutyCycle.waitForUpdate(0.2);
       assertEquals(dutyCycle.getValue(), 1.0, DELTA);
    }
 }

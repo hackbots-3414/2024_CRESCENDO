@@ -51,5 +51,5 @@ public class Intake extends SubsystemBase implements AutoCloseable {
   @Override
   public void close() throws Exception {
     intakeMotor.close();
-  }  
+  }
 }
