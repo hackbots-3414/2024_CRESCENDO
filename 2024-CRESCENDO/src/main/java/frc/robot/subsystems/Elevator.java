@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -105,6 +106,13 @@ public class Elevator extends ProfiledPIDSubsystem {
   public double getCanCoderVelo() {return Math.toRadians(elevatorCanCoderVelocity);}
 
   public void setNeutralMode(NeutralModeValue value) {elevator.setNeutralMode(value);}
+
+  public void setCurrentLimit(double limit) {
+    CurrentLimitsConfigs configs = new CurrentLimitsConfigs().withSupplyCurrentLimitEnable(true).withSupplyCurrentLimit(limit);
+    elevator.getConfigurator().apply(configs, 0.01);
+    elevatorFollower.getConfigurator().apply(configs, 0.01);
+  }
+
 
   @Override
   public void periodic() {

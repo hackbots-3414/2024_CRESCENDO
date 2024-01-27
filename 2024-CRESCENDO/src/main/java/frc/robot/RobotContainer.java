@@ -24,10 +24,12 @@ import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
+import frc.robot.subsystems.SubsystemManager;
 import frc.robot.subsystems.Transport;
 
 public class RobotContainer {
@@ -59,11 +61,14 @@ public class RobotContainer {
 
   public Alliance alliance;
 
-  private Shooter m_Shooter = new Shooter();
-  private Intake m_Intake = new Intake();
-  private Elevator m_Elevator = new Elevator();
-  private ShooterPivot m_ShooterPivot = new ShooterPivot();
-  private Transport m_Transport = new Transport();
+  public SubsystemManager subsystemManager = new SubsystemManager();
+
+  private Shooter shooter = subsystemManager.getShooter();
+  private ShooterPivot shooterPivot = subsystemManager.getShooterPivot();
+  private Intake intake = subsystemManager.getIntake();
+  private Elevator elevator = subsystemManager.getElevator();
+  private Transport transport = subsystemManager.getTransport();
+
 
   private void configureDriverBindings() {
     drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed).withVelocityY(-joystick.getLeftX() * MaxSpeed).withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
@@ -106,11 +111,11 @@ public class RobotContainer {
 
   private void configureOperatorBinging() {
     // operator.a().whileTrue(<ADD COMMAND>);
-    operator.b().whileTrue(new ShooterCommand(m_Shooter, Constants.ShooterConstants.shootSpeed));
-    operator.x().whileTrue(new IntakeCommand(m_Transport, m_Intake, Constants.IntakeConstants.ejectSpeed, -Constants.TransportConstants.transportSpeed));
+    operator.b().whileTrue(new ShooterCommand(shooter, Constants.ShooterConstants.shootSpeed));
+    operator.x().whileTrue(new IntakeCommand(transport, intake, Constants.IntakeConstants.ejectSpeed, -Constants.TransportConstants.transportSpeed));
     // operator.y().whileTrue(<ADD COMMAND>);
     // operator.leftBumper().whileTrue(<ADD COMMAND>);
-    operator.rightBumper().whileTrue(new IntakeCommand(m_Transport, m_Intake, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed));
+    operator.rightBumper().whileTrue(new IntakeCommand(transport, intake, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed));
     // operator.back().whileTrue(<ADD COMMAND>);
     // operator.start().whileTrue(<ADD COMMAND>);
 
@@ -121,13 +126,13 @@ public class RobotContainer {
     // operator.axisGreaterThan(Constants.InputConstants.rightTriggerID, Constants.InputConstants.triggerTolerance).whileTrue(<ADD COMMAND>);
 
     // D-PAD Up
-    operator.pov(0).whileTrue(new ElevatorCommand(m_Elevator, m_ShooterPivot, ElevatorPresets.STOW));
+    operator.pov(0).whileTrue(new ElevatorCommand(elevator, shooterPivot, ElevatorPresets.STOW));
 
     // D-PAD Right
-    operator.pov(90).whileTrue(new ElevatorCommand(m_Elevator, m_ShooterPivot, ElevatorPresets.STOW));
+    operator.pov(90).whileTrue(new ElevatorCommand(elevator, shooterPivot, ElevatorPresets.STOW));
 
     // D-PAD Down
-    operator.pov(180).whileTrue(new ElevatorCommand(m_Elevator, m_ShooterPivot, ElevatorPresets.STOW));
+    operator.pov(180).whileTrue(new ElevatorCommand(elevator, shooterPivot, ElevatorPresets.STOW));
 
     // D-PAD Left
     // operator.pov(270).whileTrue(<ADD COMMAND>);

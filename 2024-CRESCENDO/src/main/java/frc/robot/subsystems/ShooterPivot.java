@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -107,4 +108,10 @@ public class ShooterPivot extends ProfiledPIDSubsystem {
     configuration.CurrentLimits.SupplyCurrentThreshold = 0;
     configuration.CurrentLimits.SupplyTimeThreshold = 0;
   }
+
+    public void setCurrentLimit(double limit) {
+    CurrentLimitsConfigs configs = new CurrentLimitsConfigs().withSupplyCurrentLimitEnable(true).withSupplyCurrentLimit(limit);
+    pivotMotor.getConfigurator().apply(configs, 0.01);
+  }
+
 }

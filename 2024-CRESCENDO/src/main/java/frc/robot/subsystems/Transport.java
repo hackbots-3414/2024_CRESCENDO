@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -30,6 +31,11 @@ public class Transport extends SubsystemBase {
   
   public boolean getIR() {
     return irSensor.get();
+  }
+
+  public void setCurrentLimit(double limit) {
+    CurrentLimitsConfigs configs = new CurrentLimitsConfigs().withSupplyCurrentLimitEnable(true).withSupplyCurrentLimit(limit);
+    transportMotor.getConfigurator().apply(configs, 0.01);
   }
 
   @Override

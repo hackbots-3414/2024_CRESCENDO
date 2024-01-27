@@ -1,15 +1,14 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
-import com.fasterxml.jackson.databind.introspect.WithMember;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -59,6 +58,12 @@ public class Intake extends SubsystemBase implements AutoCloseable {
   public void setControl(ControlRequest request) {
     intakeMotor.setControl(request);
   }
+
+  public void setCurrentLimit(double limit) {
+    CurrentLimitsConfigs configs = new CurrentLimitsConfigs().withSupplyCurrentLimitEnable(true).withSupplyCurrentLimit(limit);
+    intakeMotor.getConfigurator().apply(configs, 0.01);
+  }
+
 
   @Override
   public void close() throws Exception {
