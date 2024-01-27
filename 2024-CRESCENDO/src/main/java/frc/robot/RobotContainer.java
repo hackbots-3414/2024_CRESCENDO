@@ -9,6 +9,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -21,9 +22,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.AprilTags;
 import frc.robot.Constants.AutonConstants;
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterCommand;
-import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -51,15 +52,15 @@ public class RobotContainer {
 
   SendableChooser<Command> pathChooser = new SendableChooser<>();
 
-  private Alliance alliance;
+  public Alliance alliance;
 
   public String currentOverride = "temp";
 
-  Shooter m_Shooter = new Shooter();
-  Intake m_Intake = new Intake();
-  Elevator m_Elevator = new Elevator();
-  ShooterPivot m_ShooterPivot = new ShooterPivot();
-  Transport m_Transport = new Transport();
+  private Shooter m_Shooter = new Shooter();
+  private Intake m_Intake = new Intake();
+  private Elevator m_Elevator = new Elevator();
+  private ShooterPivot m_ShooterPivot = new ShooterPivot();
+  private Transport m_Transport = new Transport();
 
   private void configureDriverBindings() {
     drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed).withVelocityY(-joystick.getLeftX() * MaxSpeed).withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
@@ -79,10 +80,24 @@ public class RobotContainer {
   public Command checkForOverrides() {
     if (joystick.x().getAsBoolean()) {
       currentOverride = "SHOOTER";
-      return alliance == Alliance.Red ? drivetrain.repathTo(AprilTags.RedSpeakerCenter, AutonConstants.speakerTolerance) : drivetrain.repathTo(AprilTags.BlueSpeakerCenter, AutonConstants.speakerTolerance);
+      return alliance == Alliance.Red ? drivetrain.repathTo(AprilTags.RedSpeakerCenter) : drivetrain.repathTo(AprilTags.BlueSpeakerCenter);
     }
     currentOverride = "temp";
     return null;
+  }
+
+  public boolean isAtSetpoint(String commandName) {
+    switch(commandName) {
+      case "SHOOTER":
+        Pose2d target = alliance == Alliance.Red ? AprilTags.RedSpeakerCenter.value.getPose2d() : AprilTags.BlueSpeakerCenter.value.getPose2d();
+        return drivetrain.getPose().getTranslation().getDistance(target.getTranslation()) >= Constants.AutonConstants.speakerTolerance ? false : true;
+      default:
+        return false;
+    }    
+  }
+
+  public Command getRepathingCommand(AprilTags aprilTag) {
+    return drivetrain.repathTo(aprilTag);
   }
 
   private void configureOperatorBinging() {

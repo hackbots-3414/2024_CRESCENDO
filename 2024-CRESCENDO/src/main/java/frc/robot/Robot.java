@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -67,11 +68,13 @@ public class Robot extends TimedRobot {
         previouslyStoredCommand = newMethodCall;
         previouslyStoredCommand.schedule();
         previousCommandIdentifier = newCommandIdentifier;
+      } else {
+        if (m_robotContainer.isAtSetpoint(previousCommandIdentifier)) {
+          previouslyStoredCommand.cancel();
+        }
       }
     } else {
-      if (previouslyStoredCommand.isScheduled()) {
-        previouslyStoredCommand.cancel();
-      }
+      if (previouslyStoredCommand.isScheduled()) {previouslyStoredCommand.cancel();}
       previousCommandIdentifier = "nothing";
     }
   }
