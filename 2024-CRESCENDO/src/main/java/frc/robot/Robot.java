@@ -11,15 +11,23 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.RobotContainer.RepathChoices;
 
 public class Robot extends TimedRobot {
+  private boolean runSysID = false;
+
   private Command m_autonomousCommand;
   private Command previouslyStoredCommand = new InstantCommand(() -> System.out.println("non null command, never will actually do this pls hopefully"));
   private RepathChoices previousCommandIdentifier = RepathChoices.NULL;
 
   private RobotContainer m_robotContainer;
+  private SysIdRoutineBot m_SysIdRoutineBot;
 
   @Override
   public void robotInit() {
-    m_robotContainer = new RobotContainer();
+    if (runSysID) {
+      m_SysIdRoutineBot = new SysIdRoutineBot();
+        m_SysIdRoutineBot.configureBindings();
+    } else {
+      m_robotContainer = new RobotContainer();
+    }
   }
 
   @Override
@@ -38,7 +46,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = !runSysID ? m_robotContainer.getAutonomousCommand() : m_SysIdRoutineBot.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -60,21 +68,23 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    RepathChoices newCommandIdentifier = m_robotContainer.checkForOverrides();
-    if (newCommandIdentifier != null) {
-      if (!previousCommandIdentifier.equals(newCommandIdentifier)) {
-        previouslyStoredCommand.cancel();
-        previouslyStoredCommand = m_robotContainer.getRepathingCommand(newCommandIdentifier);
-        previouslyStoredCommand.schedule();
-        previousCommandIdentifier = newCommandIdentifier;
-      } else {
-        if (m_robotContainer.isAtSetpoint(previousCommandIdentifier)) {
+    if (!runSysID) {
+      RepathChoices newCommandIdentifier = m_robotContainer.checkForOverrides();
+      if (newCommandIdentifier != null) {
+        if (!previousCommandIdentifier.equals(newCommandIdentifier)) {
           previouslyStoredCommand.cancel();
+          previouslyStoredCommand = m_robotContainer.getRepathingCommand(newCommandIdentifier);
+          previouslyStoredCommand.schedule();
+          previousCommandIdentifier = newCommandIdentifier;
+        } else {
+          if (m_robotContainer.isAtSetpoint(previousCommandIdentifier)) {
+            previouslyStoredCommand.cancel();
+          }
         }
+      } else {
+        if (previouslyStoredCommand.isScheduled()) {previouslyStoredCommand.cancel();}
+        previousCommandIdentifier = RepathChoices.NULL;
       }
-    } else {
-      if (previouslyStoredCommand.isScheduled()) {previouslyStoredCommand.cancel();}
-      previousCommandIdentifier = RepathChoices.NULL;
     }
   }
 
