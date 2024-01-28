@@ -18,6 +18,8 @@ public class Intake extends SubsystemBase implements AutoCloseable {
 
   DigitalInput m_forwardLimit = new DigitalInput(0);
   DutyCycleOut m_DutyCycleOut = new DutyCycleOut(0.0);
+  
+  private boolean isRunning = false;
 
   public Intake() {
     intakeMotor = new TalonFX(Constants.IntakeConstants.intakeMotorID);
@@ -64,9 +66,9 @@ public class Intake extends SubsystemBase implements AutoCloseable {
     intakeMotor.getConfigurator().apply(configs, 0.01);
   }
 
+  public void setRunning(boolean isRunning) {this.isRunning = isRunning;}
+  public boolean getRunning() {return this.isRunning;}
 
   @Override
-  public void close() throws Exception {
-    intakeMotor.close();
-  }  
+  public void close() throws Exception {intakeMotor.close();}  
 }

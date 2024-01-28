@@ -25,6 +25,8 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
 
   private TalonFX leftMotor;
   private TalonFX rightMotor;
+  
+  private boolean isRunning = false;
 
  // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
  private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
@@ -74,45 +76,20 @@ private final SysIdRoutine m_sysIdRoutine =
     leftMotor.setControl(new Follower(rightMotor.getDeviceID(), true));
   }
 
-  public void setMotor(double speed) {
-    rightMotor.set(speed);
-  }
-
-  public void stopMotor() {
-    rightMotor.set(0);
-  }
+  public void setMotor(double speed) {rightMotor.set(speed);}
+  public void stopMotor() {rightMotor.set(0);}
 
   @Override
-  public void periodic() {
-  }
+  public void periodic() {}
 
-  public double getMotorPos() {
-    return (leftMotor.getPosition().getValueAsDouble() + rightMotor.getPosition().getValueAsDouble()) / 2.0;
-  }
+  public double getMotorPos() {return (leftMotor.getPosition().getValueAsDouble() + rightMotor.getPosition().getValueAsDouble()) / 2.0;}
+  public double getMotorPosRad() {return getMotorPos() * 2.0 * Math.PI;}
+  public double getMotorVelo() {return (leftMotor.getVelocity().getValueAsDouble() + rightMotor.getVelocity().getValueAsDouble()) / 2.0;}
+  public double getMotorSpeed() {return (leftMotor.get() + rightMotor.get()) / 2.0;}
+  public double getMotorVeloRad() {return getMotorVelo() * 2.0 * Math.PI;}
 
-  public double getMotorPosRad() {
-    return getMotorPos() * 2.0 * Math.PI;
-  }
-
-  public double getMotorVelo() {
-    return (leftMotor.getVelocity().getValueAsDouble() + rightMotor.getVelocity().getValueAsDouble()) / 2.0;
-  }
-
-  public double getMotorSpeed() {
-    return (leftMotor.get() + rightMotor.get()) / 2.0;
-  }
-
-  public double getMotorVeloRad() {
-    return getMotorVelo() * 2.0 * Math.PI;
-  }
-
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.quasistatic(direction);
-  }
-
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.dynamic(direction);
-  }
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {return m_sysIdRoutine.quasistatic(direction);}
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {return m_sysIdRoutine.dynamic(direction);}
 
   public void setCurrentLimit(double limit) {
     CurrentLimitsConfigs configs = new CurrentLimitsConfigs().withSupplyCurrentLimitEnable(true).withSupplyCurrentLimit(limit);
@@ -120,6 +97,8 @@ private final SysIdRoutine m_sysIdRoutine =
     rightMotor.getConfigurator().apply(configs, 0.01);
   }
 
+  public void setRunning(boolean isRunning) {this.isRunning = isRunning;}
+  public boolean getRunning() {return this.isRunning;}
   
   @Override
   public void close() throws Exception {

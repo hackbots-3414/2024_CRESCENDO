@@ -16,13 +16,15 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.robot.Constants;
 
-public class ShooterPivot extends ProfiledPIDSubsystem {
+public class ShooterPivot extends ProfiledPIDSubsystem implements AutoCloseable{
 
   private final TalonFX pivotMotor = new TalonFX(Constants.PivotConstants.pivotMotorID);
   private final CANcoder cancoder = new CANcoder(Constants.PivotConstants.EncoderID);
 
   private double cancoderPosition;
   private double cancoderVelocity;
+  
+  private boolean isRunning = false;
 
   private final ArmFeedforward m_Feedforward = new ArmFeedforward(
       Constants.PivotConstants.kSVolts,
@@ -50,7 +52,6 @@ public class ShooterPivot extends ProfiledPIDSubsystem {
   }
 
   public double getCancoderVelo() {return cancoderVelocity;}
-
   public double getCancoderPos() {return cancoderPosition;}
 
   @Override
@@ -74,7 +75,6 @@ public class ShooterPivot extends ProfiledPIDSubsystem {
 
     cancoderPosition = cancoder.getAbsolutePosition().getValueAsDouble();
     cancoderVelocity = cancoder.getVelocity().getValueAsDouble(); // Rotations/s
-
   }
 
   public void configEncoder() {
@@ -112,6 +112,15 @@ public class ShooterPivot extends ProfiledPIDSubsystem {
     public void setCurrentLimit(double limit) {
     CurrentLimitsConfigs configs = new CurrentLimitsConfigs().withSupplyCurrentLimitEnable(true).withSupplyCurrentLimit(limit);
     pivotMotor.getConfigurator().apply(configs, 0.01);
+  }
+
+  public void setRunning(boolean isRunning) {this.isRunning = isRunning;}
+  public boolean getRunning() {return this.isRunning;}
+
+  @Override
+  public void close() throws Exception {
+    pivotMotor.close();
+    cancoder.close();
   }
 
 }

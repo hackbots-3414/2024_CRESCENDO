@@ -102,13 +102,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             this); // Subsystem for requirements
     }
 
-    public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
-        return run(() -> this.setControl(requestSupplier.get()));
-    }
+    public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {return run(() -> this.setControl(requestSupplier.get()));}
     
-    public ChassisSpeeds getCurrentRobotChassisSpeeds() {
-        return m_kinematics.toChassisSpeeds(getState().ModuleStates);
-    }
+    public ChassisSpeeds getCurrentRobotChassisSpeeds() {return m_kinematics.toChassisSpeeds(getState().ModuleStates);}
 
     private void startSimThread() {
         m_lastSimTime = Utils.getCurrentTimeSeconds();
@@ -154,9 +150,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return AutoBuilder.followPath(new PathPlannerPath(PathPlannerPath.bezierFromPoses(estimatedPose, aprilTag.value.getPose2d()), new PathConstraints(3.92, 3, 540, 720), goal));
     }
 
-    public Pose2d getPose() {
-        return estimatedPose;
-    }
+    public Pose2d getPose() {return estimatedPose;}
     
     public void setCurrentLimit(double limit) {
         CurrentLimitsConfigs configs = new CurrentLimitsConfigs().withSupplyCurrentLimitEnable(true).withSupplyCurrentLimit(limit);

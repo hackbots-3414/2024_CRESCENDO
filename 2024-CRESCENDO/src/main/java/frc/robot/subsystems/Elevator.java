@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.lib.math.Conversions;
 import frc.robot.Constants.ElevatorConstants;
 
-public class Elevator extends ProfiledPIDSubsystem {
+public class Elevator extends ProfiledPIDSubsystem implements AutoCloseable {
 
   private TalonFX elevator = new TalonFX(ElevatorConstants.elevatorMotorID);
   private TalonFX elevatorFollower = new TalonFX(ElevatorConstants.elevatorFollowerMotorID);
@@ -33,6 +33,8 @@ public class Elevator extends ProfiledPIDSubsystem {
   private double elevatorPosition;
   private double elevatorCanCoderVelocity;
   private double elevatorCanCoderPosition;
+
+  private boolean isRunning = false;
 
   public Elevator() {
     super(controller, 0);
@@ -96,13 +98,10 @@ public class Elevator extends ProfiledPIDSubsystem {
   public double getMeasurement() {return Math.toRadians(getCanCoder());}
 
   public void set(double speed) {elevator.set(speed);} // -1 to 1
-
   public void stop() {elevator.set(0.0);}
 
   public double getPosition() {return elevatorPosition;}
-
   public double getCanCoder() {return elevatorCanCoderPosition;}
-
   public double getCanCoderVelo() {return Math.toRadians(elevatorCanCoderVelocity);}
 
   public void setNeutralMode(NeutralModeValue value) {elevator.setNeutralMode(value);}
@@ -113,6 +112,8 @@ public class Elevator extends ProfiledPIDSubsystem {
     elevatorFollower.getConfigurator().apply(configs, 0.01);
   }
 
+  public void setRunning(boolean isRunning) {this.isRunning = isRunning;}
+  public boolean getRunning() {return this.isRunning;}
 
   @Override
   public void periodic() {
@@ -122,5 +123,12 @@ public class Elevator extends ProfiledPIDSubsystem {
     elevatorPosition = elevator.getPosition().getValueAsDouble();
     elevatorCanCoderVelocity = elevatorCanCoder.getVelocity().getValueAsDouble();
     elevatorCanCoderPosition = elevatorCanCoder.getAbsolutePosition().getValueAsDouble();
+  }
+
+  @Override
+  public void close() throws Exception {
+    elevator.close();
+    elevatorFollower.close();
+    elevatorCanCoder.close();
   }
 }

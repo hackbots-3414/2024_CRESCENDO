@@ -36,12 +36,17 @@ public class Constants {
     }
 
     public static final class SwerveConstants {
-        public static final double kPDrive = 2;
+        public static final double kPDrive = 0;
         public static final double kIDrive = 0;
         public static final double kDDrive = 0;
-        public static final double kPSteer = 3.8;
+        public static final double kPSteer = 0;
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
+
+        public static final double maxDriveVelocity = 3.92;
+        public static final double maxDriveAcceleration = 3;
+        public static final double maxAngleVelocity = 1.5*Math.PI;
+        public static final double maxAngleAcceleration = 2*Math.PI;
     }
 
     public static final class AutonConstants {
@@ -84,6 +89,7 @@ public class Constants {
         public static final int transportMotorID = 56;
         public static final boolean transportMotorInvert = false;
         public static final double transportSpeed = 0.5;
+        public static final double transportEjectSpeed = -0.5;
         public static final int irSensorChannel = 1;
     }
 

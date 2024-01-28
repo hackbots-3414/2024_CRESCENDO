@@ -44,13 +44,8 @@ public class PhotonVision extends SubsystemBase implements AutoCloseable {
     rightEstimator = new PhotonPoseEstimator(field, strategy, cameraRight, Constants.VisionConstants.rightTransform);
   }
 
-  public Optional<EstimatedRobotPose> getGlobalPoseFromLeft() {
-    return leftEstimator.update();
-  }
-
-  public Optional<EstimatedRobotPose> getGlobalPoseFromRight() {
-    return rightEstimator.update();
-  }
+  public Optional<EstimatedRobotPose> getGlobalPoseFromLeft() {return leftEstimator.update();}
+  public Optional<EstimatedRobotPose> getGlobalPoseFromRight() {return rightEstimator.update();}
 
   @Override
   public void close() throws Exception {
