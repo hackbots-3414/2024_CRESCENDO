@@ -28,20 +28,22 @@ public class SubsystemManager extends SubsystemBase {
   ShooterPivot shooterPivot = new ShooterPivot();
   Transport transport = new Transport();
 
+  CommandSwerveDrivetrain drivetrain;
+
   double elevatorCurrent = 0;
   double intakeCurrent = 0;
   double shooterCurrent = 0;
   double shooterPivotCurrent = 0;
   double transportCurrent = 0;
 
-  double totalCurrent = 0;
-
   double inputCurrent = 18; // 18 AMP HOURS
   double runTimeHours = 0.05; // 3 MINUTES
 
-  double coprocessorAmpRating = 3 * runTimeHours; // 3 AMP HOURS for runTimeHours
+  double coprocessorsAmpRating = 3*2 * runTimeHours; // 3 AMP HOURS for runTimeHours per coprocessor
 
-  public SubsystemManager() {}
+  double availableCurrent = inputCurrent - coprocessorsAmpRating;
+
+  public SubsystemManager(CommandSwerveDrivetrain drivetrain) {this.drivetrain = drivetrain;}
 
   public Intake getIntake() {return intake;}
   public Shooter getShooter() {return shooter;}
@@ -57,19 +59,20 @@ public class SubsystemManager extends SubsystemBase {
     transport.periodic();
     elevator.periodic();
 
-    totalCurrent = pdp.getTotalCurrent();
-
     elevatorCurrent = pdp.getCurrent(2) + pdp.getCurrent(3);
     intakeCurrent = pdp.getCurrent(15);
     shooterPivotCurrent = pdp.getCurrent(14);
     shooterCurrent = pdp.getCurrent(4) + pdp.getCurrent(5);
     transportCurrent = pdp.getCurrent(16);
 
-    SmartDashboard.putBoolean("Elevator Running", elevator.getRunning());
-    SmartDashboard.putBoolean("Shooter Running", shooter.getRunning());
-    SmartDashboard.putBoolean("Transport Running", transport.getRunning());
-    SmartDashboard.putBoolean("Intake Running", intake.getRunning());
-    SmartDashboard.putBoolean("Shooter Pivot Running", shooterPivot.getRunning());
+    dampenDrivetrain();
+  }
+
+  private void dampenDrivetrain() {
+    double supplyLimitDrivetrain = ((availableCurrent - ((elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent + transportCurrent) * runTimeHours)) / runTimeHours)/4; // (Ah Available - Ah Being Used) / Ah to Amps conversion / 4 motors to distribute over
+    supplyLimitDrivetrain = supplyLimitDrivetrain > 40 ? 39.5 : supplyLimitDrivetrain;
+    SmartDashboard.putNumber("CURRENT LIMIT FOR DRIVETRAIN", supplyLimitDrivetrain);
+    drivetrain.setCurrentLimit(supplyLimitDrivetrain);
   }
 
   public SwerveRequest makeDriveCommand(double x, double y, double turn) {
@@ -77,19 +80,8 @@ public class SubsystemManager extends SubsystemBase {
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage).withVelocityX(-x * Constants.SwerveConstants.maxDriveVelocity).withVelocityY(-y * Constants.SwerveConstants.maxDriveVelocity).withRotationalRate(-turn * Constants.SwerveConstants.maxAngleVelocity);
   }
 
-  public Command makeElevatorCommand(ElevatorPresets preset) {
-    return new ElevatorCommand(elevator, shooterPivot, preset);
-  }
-
-  public Command makeShootCommand(double speed) {
-    return new ShooterCommand(shooter, Constants.ShooterConstants.shootSpeed);
-  }
-
-  public Command makeIntakeCommand() {
-    return new IntakeCommand(transport, intake, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed);
-  }
-
-  public Command makeEjectCommand() {
-    return new IntakeCommand(transport, intake, Constants.IntakeConstants.ejectSpeed, Constants.TransportConstants.transportEjectSpeed);
-  }
+  public Command makeElevatorCommand(ElevatorPresets preset) {return new ElevatorCommand(elevator, shooterPivot, preset);}
+  public Command makeShootCommand(double speed) {return new ShooterCommand(shooter, Constants.ShooterConstants.shootSpeed);}
+  public Command makeIntakeCommand() {return new IntakeCommand(transport, intake, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed);}
+  public Command makeEjectCommand() {return new IntakeCommand(transport, intake, Constants.IntakeConstants.ejectSpeed, Constants.TransportConstants.transportEjectSpeed);}
 }

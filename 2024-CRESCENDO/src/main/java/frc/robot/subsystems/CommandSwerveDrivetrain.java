@@ -159,7 +159,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         }
     }
 
-
     @Override
     public void periodic() {
         updateOdometry();

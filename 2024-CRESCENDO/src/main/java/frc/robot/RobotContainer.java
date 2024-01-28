@@ -38,7 +38,7 @@ public class RobotContainer {
 
   public Alliance alliance;
 
-  public SubsystemManager subsystemManager = new SubsystemManager();
+  public SubsystemManager subsystemManager = new SubsystemManager(drivetrain);
   
   private void configureDriverBindings() {
     drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> subsystemManager.makeDriveCommand(joystick.getLeftY(), joystick.getLeftX(), joystick.getRightX())));
