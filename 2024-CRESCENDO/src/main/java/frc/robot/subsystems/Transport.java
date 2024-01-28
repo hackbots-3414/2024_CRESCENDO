@@ -1,8 +1,11 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -42,8 +45,12 @@ public class Transport extends SubsystemBase implements AutoCloseable{
   }
 
   @Override
-  public void close() throws Exception {
+  public void close() {
     transportMotor.close();
     irSensor.close();
   }
+
+  public TalonFXSimState getSimState() {return transportMotor.getSimState();}
+  public StatusSignal<Double> getMotorDutyCycle() {return transportMotor.getDutyCycle();}
+  public void setControl(DutyCycleOut out) {transportMotor.setControl(out);}
 }

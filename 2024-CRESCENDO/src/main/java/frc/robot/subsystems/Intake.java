@@ -70,5 +70,8 @@ public class Intake extends SubsystemBase implements AutoCloseable {
   public boolean getRunning() {return this.isRunning;}
 
   @Override
-  public void close() throws Exception {intakeMotor.close();}  
+  public void close() {
+    intakeMotor.close();
+    m_forwardLimit.close();
+  }
 }

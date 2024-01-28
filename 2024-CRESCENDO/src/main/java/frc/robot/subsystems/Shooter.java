@@ -6,9 +6,12 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
@@ -101,8 +104,13 @@ private final SysIdRoutine m_sysIdRoutine =
   public boolean getRunning() {return this.isRunning;}
   
   @Override
-  public void close() throws Exception {
+  public void close() {
     leftMotor.close();
     rightMotor.close();
   }
+
+  public TalonFXSimState getSimStateLeft() {return leftMotor.getSimState();}
+  public TalonFXSimState getSimStateRight() {return rightMotor.getSimState();}
+  public StatusSignal<Double> getMotorDutyCycle() {return rightMotor.getDutyCycle();}
+  public void setControl(DutyCycleOut dutyCycleOut) {rightMotor.setControl(dutyCycleOut);}
 }

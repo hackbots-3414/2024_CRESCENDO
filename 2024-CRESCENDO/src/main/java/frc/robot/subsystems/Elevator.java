@@ -10,6 +10,7 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -21,7 +22,7 @@ import frc.robot.Constants.ElevatorConstants;
 
 public class Elevator extends ProfiledPIDSubsystem implements AutoCloseable {
 
-  private TalonFX elevator = new TalonFX(ElevatorConstants.elevatorMotorID);
+  private TalonFX elevatorMotor = new TalonFX(ElevatorConstants.elevatorMotorID);
   private TalonFX elevatorFollower = new TalonFX(ElevatorConstants.elevatorFollowerMotorID);
   private CANcoder elevatorCanCoder = new CANcoder(ElevatorConstants.elevatorCANCoderMotorID);
 
@@ -50,7 +51,7 @@ public class Elevator extends ProfiledPIDSubsystem implements AutoCloseable {
   }
 
   private void configElevatorMotors() {
-    elevator.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
+    elevatorMotor.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
     elevatorFollower.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
 
     TalonFXConfiguration configuration = new TalonFXConfiguration();
@@ -68,10 +69,10 @@ public class Elevator extends ProfiledPIDSubsystem implements AutoCloseable {
     configuration.CurrentLimits.SupplyCurrentThreshold = 0;
     configuration.CurrentLimits.SupplyTimeThreshold = 0;
 
-    elevator.setSafetyEnabled(true);
-    elevator.setPosition(Conversions.metersToFalcon(getCanCoder(), ElevatorConstants.circumference, ElevatorConstants.gearRatio), 100);  
+    elevatorMotor.setSafetyEnabled(true);
+    elevatorMotor.setPosition(Conversions.metersToFalcon(getCanCoder(), ElevatorConstants.circumference, ElevatorConstants.gearRatio), 100);  
 
-    elevator.getConfigurator().apply(configuration, .200);
+    elevatorMotor.getConfigurator().apply(configuration, 0.2);
     elevatorFollower.setControl(new Follower(ElevatorConstants.elevatorMotorID, false));
   }
 
@@ -91,24 +92,24 @@ public class Elevator extends ProfiledPIDSubsystem implements AutoCloseable {
   public void useOutput(double output, TrapezoidProfile.State setpoint) {
     //calculate feedforward from setpoint
     double feedforwardoutput = feedforward.calculate(setpoint.velocity);
-    elevator.setVoltage(output + feedforwardoutput);
+    elevatorMotor.setVoltage(output + feedforwardoutput);
   }
 
   @Override
   public double getMeasurement() {return Math.toRadians(getCanCoder());}
 
-  public void set(double speed) {elevator.set(speed);} // -1 to 1
-  public void stop() {elevator.set(0.0);}
+  public void set(double speed) {elevatorMotor.set(speed);} // -1 to 1
+  public void stop() {elevatorMotor.set(0.0);}
 
   public double getPosition() {return elevatorPosition;}
   public double getCanCoder() {return elevatorCanCoderPosition;}
   public double getCanCoderVelo() {return Math.toRadians(elevatorCanCoderVelocity);}
 
-  public void setNeutralMode(NeutralModeValue value) {elevator.setNeutralMode(value);}
+  public void setNeutralMode(NeutralModeValue value) {elevatorMotor.setNeutralMode(value);}
 
   public void setCurrentLimit(double limit) {
     CurrentLimitsConfigs configs = new CurrentLimitsConfigs().withSupplyCurrentLimitEnable(true).withSupplyCurrentLimit(limit);
-    elevator.getConfigurator().apply(configs, 0.01);
+    elevatorMotor.getConfigurator().apply(configs, 0.01);
     elevatorFollower.getConfigurator().apply(configs, 0.01);
   }
 
@@ -118,17 +119,20 @@ public class Elevator extends ProfiledPIDSubsystem implements AutoCloseable {
   @Override
   public void periodic() {
     super.periodic();
-    elevator.feed();
+    elevatorMotor.feed();
 
-    elevatorPosition = elevator.getPosition().getValueAsDouble();
+    elevatorPosition = elevatorMotor.getPosition().getValueAsDouble();
     elevatorCanCoderVelocity = elevatorCanCoder.getVelocity().getValueAsDouble();
     elevatorCanCoderPosition = elevatorCanCoder.getAbsolutePosition().getValueAsDouble();
+    System.out.println(elevatorPosition);
   }
 
   @Override
-  public void close() throws Exception {
-    elevator.close();
+  public void close() throws Exception{
+    elevatorMotor.close();
     elevatorFollower.close();
     elevatorCanCoder.close();
   }
+
+  public TalonFXSimState getSimState() {return elevatorMotor.getSimState();}
 }
