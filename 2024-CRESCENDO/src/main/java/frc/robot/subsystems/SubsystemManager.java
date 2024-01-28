@@ -2,20 +2,29 @@ package frc.robot.subsystems;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.PointWheelsAt;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.SwerveDriveBrake;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Telemetry;
+import frc.robot.Constants.AprilTags;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterCommand;
+import frc.robot.generated.TunerConstants;
 
 public class SubsystemManager extends SubsystemBase {
     
@@ -28,7 +37,11 @@ public class SubsystemManager extends SubsystemBase {
   ShooterPivot shooterPivot = new ShooterPivot();
   Transport transport = new Transport();
 
-  CommandSwerveDrivetrain drivetrain;
+  CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
+  FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.1).withRotationalDeadband(Constants.SwerveConstants.maxAngleVelocity * 0.1).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+  SwerveDriveBrake brakeRequest = new SwerveDriveBrake();
+  PointWheelsAt pointRequest = new PointWheelsAt();
+  Telemetry logger = new Telemetry();
 
   double elevatorCurrent = 0;
   double intakeCurrent = 0;
@@ -38,12 +51,10 @@ public class SubsystemManager extends SubsystemBase {
 
   double inputCurrent = 18; // 18 AMP HOURS
   double runTimeHours = 0.05; // 3 MINUTES
-
   double coprocessorsAmpRating = 3*2 * runTimeHours; // 3 AMP HOURS for runTimeHours per coprocessor
-
   double availableCurrent = inputCurrent - coprocessorsAmpRating;
 
-  public SubsystemManager(CommandSwerveDrivetrain drivetrain) {this.drivetrain = drivetrain;}
+  public SubsystemManager() {}
 
   public Intake getIntake() {return intake;}
   public Shooter getShooter() {return shooter;}
@@ -75,13 +86,22 @@ public class SubsystemManager extends SubsystemBase {
     drivetrain.setCurrentLimit(supplyLimitDrivetrain);
   }
 
-  public SwerveRequest makeDriveCommand(double x, double y, double turn) {
-    return new SwerveRequest.FieldCentric().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.05).withRotationalDeadband(Constants.SwerveConstants.maxAngleVelocity * 0.05)
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage).withVelocityX(-x * Constants.SwerveConstants.maxDriveVelocity).withVelocityY(-y * Constants.SwerveConstants.maxDriveVelocity).withRotationalRate(-turn * Constants.SwerveConstants.maxAngleVelocity);
+  public void configureDriveDefaults(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
+    drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> driveRequest.withVelocityX(-x.get() * Constants.SwerveConstants.maxDriveVelocity).withVelocityY(-y.get() * Constants.SwerveConstants.maxDriveVelocity).withRotationalRate(-turn.get() * Constants.SwerveConstants.maxAngleVelocity)));
   }
+
+  public Command makeBrakeCommand() {return drivetrain.applyRequest(() -> brakeRequest);}
+  public Command makePointCommand(double x, double y) {return drivetrain.applyRequest(() -> pointRequest.withModuleDirection(new Rotation2d(-x, -y)));}
+  public Command makeResetCommand() {return drivetrain.runOnce(() -> drivetrain.seedFieldRelative());}
+  public void resetAtPose2d(Pose2d pose) {drivetrain.seedFieldRelative(pose);}
+
+  public void telemeterize() {drivetrain.registerTelemetry(logger::telemeterize);}
+
+  public boolean setpointCalculate(Pose2d target, double tolerance) {return drivetrain.getPose().getTranslation().getDistance(target.getTranslation()) < tolerance;}
 
   public Command makeElevatorCommand(ElevatorPresets preset) {return new ElevatorCommand(elevator, shooterPivot, preset);}
   public Command makeShootCommand(double speed) {return new ShooterCommand(shooter, Constants.ShooterConstants.shootSpeed);}
   public Command makeIntakeCommand() {return new IntakeCommand(transport, intake, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed);}
   public Command makeEjectCommand() {return new IntakeCommand(transport, intake, Constants.IntakeConstants.ejectSpeed, Constants.TransportConstants.transportEjectSpeed);}
+  public Command makeRepathCommand(AprilTags apriltag) {return drivetrain.repathTo(apriltag);}
 }
