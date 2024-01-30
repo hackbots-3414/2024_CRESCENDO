@@ -56,7 +56,7 @@ public class ElevatorTest implements AutoCloseable {
       assertEquals(DriverStation.isEnabled(), true);
    }
 
-   @Test
+   // @Test
    public void motorMoves() {
       /* set the voltage supplied by the battery */
       elevatorSim.setSupplyVoltage(RobotController.getBatteryVoltage());

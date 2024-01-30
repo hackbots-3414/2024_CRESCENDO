@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
 
 /**
@@ -13,7 +14,8 @@ import frc.robot.subsystems.Shooter;
  */
 public class SysIdRoutineBot {
   // The robot's subsystems
- private Shooter m_Shooter = new Shooter();
+//  private Shooter m_SysIDSubsystem = new Shooter();
+ private Elevator m_SysIDSubsystem = new Elevator();
 
   // The driver's controller
   CommandXboxController m_operatorController =
@@ -31,10 +33,10 @@ public class SysIdRoutineBot {
 
     // Bind full set of SysId routine tests to buttons; a complete routine should run each of these
     // once.
-    m_operatorController.a().whileTrue(m_Shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    m_operatorController.b().whileTrue(m_Shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    m_operatorController.x().whileTrue(m_Shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    m_operatorController.y().whileTrue(m_Shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    m_operatorController.a().whileTrue(m_SysIDSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    m_operatorController.b().whileTrue(m_SysIDSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    m_operatorController.x().whileTrue(m_SysIDSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    m_operatorController.y().whileTrue(m_SysIDSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 
   /**
@@ -44,6 +46,6 @@ public class SysIdRoutineBot {
    */
   public Command getAutonomousCommand() {
     // Do nothing
-    return m_Shooter.run(() -> {});
+    return m_SysIDSubsystem.run(() -> {});
   }
 }

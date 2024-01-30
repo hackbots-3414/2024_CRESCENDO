@@ -16,8 +16,24 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
+import static edu.wpi.first.units.MutableMeasure.mutable;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.math.Conversions;
 import frc.robot.Constants.ElevatorConstants;
 
@@ -35,6 +51,44 @@ public class Elevator extends ProfiledPIDSubsystem implements AutoCloseable{
   private double elevatorPosition;
   private double elevatorCanCoderVelocity;
   private double elevatorCanCoderPosition;
+
+  
+  // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+  private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
+  // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
+  private final MutableMeasure<Angle> m_distance = mutable(Radians.of(0));
+  // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+  private final MutableMeasure<Velocity<Angle>> m_velocity = mutable(RadiansPerSecond.of(0));
+
+  private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
+      // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+      new SysIdRoutine.Config(),
+      new SysIdRoutine.Mechanism(
+          // Tell SysId how to plumb the driving voltage to the motors.
+          (Measure<Voltage> volts) -> {
+            elevatorMotor.setVoltage(volts.in(Volts));
+            elevatorFollower.setVoltage(volts.in(Volts));
+          },
+          // Tell SysId how to record a frame of data for each motor on the mechanism
+          // being
+          // characterized.
+          log -> {
+            // Record a frame for the left motors. Since these share an encoder, we consider
+            // the entire group to be one motor.
+            log.motor("Elevator Motors")
+                .voltage(
+                    m_appliedVoltage.mut_replace(
+                        getMotorSpeed() * RobotController.getBatteryVoltage(), Volts))
+                // .angularPosition(m_distance.mut_replace(getMeasurement(), Radians))
+                // .angularVelocity(m_velocity.mut_replace(getCanCoderVelo(), RadiansPerSecond));
+                .angularPosition(m_distance.mut_replace(getMotorPosRad(), Radians))
+                .angularVelocity(m_velocity.mut_replace(getMotorVeloRad(), RadiansPerSecond));
+          },
+
+          // Tell SysId to make generated commands require this subsystem, suffix test
+          // state in
+          // WPILog with this subsystem's name ("Shooter")
+          this));
 
   public Elevator() {
     super(controller, 0);
@@ -108,6 +162,24 @@ public class Elevator extends ProfiledPIDSubsystem implements AutoCloseable{
   public double getCanCoderVelo() {return Math.toRadians(elevatorCanCoderVelocity);}
 
   public void setNeutralMode(NeutralModeValue value) {elevatorMotor.setNeutralMode(value);}
+
+  public double getMotorSpeed() {return (elevatorMotor.get() + elevatorFollower.get()) / 2.0;}
+
+  public double getMotorPos() {return ((elevatorMotor.getPosition().getValueAsDouble() + elevatorFollower.getPosition().getValueAsDouble()) / 2.0);}
+  
+  public double getMotorVelo() {return ((elevatorMotor.getVelocity().getValueAsDouble() + elevatorFollower.getVelocity().getValueAsDouble()) / 2.0);}
+
+  public double getMotorPosRad() {return Units.rotationsToRadians(getMotorPos());}
+
+  public double getMotorVeloRad() {return Units.rotationsPerMinuteToRadiansPerSecond(getMotorVelo() * 60);}
+
+   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.dynamic(direction);
+  }
 
   @Override
   public void periodic() {
