@@ -26,6 +26,7 @@ import frc.robot.commands.ShooterCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.NoteFinder;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
 import frc.robot.subsystems.Transport;
@@ -64,6 +65,7 @@ public class RobotContainer {
   private Elevator m_Elevator = new Elevator();
   private ShooterPivot m_ShooterPivot = new ShooterPivot();
   private Transport m_Transport = new Transport();
+  private NoteFinder m_NoteFinder = new NoteFinder();
 
   private void configureDriverBindings() {
     drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed).withVelocityY(-joystick.getLeftX() * MaxSpeed).withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
@@ -148,5 +150,9 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return pathChooser.getSelected();
+  }
+
+  public NoteFinder getNoteFinder() {
+    return m_NoteFinder;
   }
 }

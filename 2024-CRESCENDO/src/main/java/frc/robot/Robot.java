@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.Constants.NoteFinderConstants;
 import frc.robot.RobotContainer.RepathChoices;
 
 public class Robot extends TimedRobot {
@@ -27,12 +28,14 @@ public class Robot extends TimedRobot {
         m_SysIdRoutineBot.configureBindings();
     } else {
       m_robotContainer = new RobotContainer();
+      addPeriodic(m_robotContainer.getNoteFinder()::dataReceiver, NoteFinderConstants.CYCLE_TIME, 0);
     }
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run(); 
+    
   }
 
   @Override

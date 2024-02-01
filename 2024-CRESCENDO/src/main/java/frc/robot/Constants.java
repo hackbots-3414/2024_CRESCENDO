@@ -49,9 +49,20 @@ public class Constants {
     }
 
     public static final class VisionConstants {
-        /* A note about these transforms: They appear to follow the normal cordinate system (x is right when pos. and so on). */
-        public static final Transform3d leftTransform  = new Transform3d(-0.5, 0, 0, new Rotation3d(0, -Math.PI / 4.0, 0)); // FIXME Give me values that are accurate please
-        public static final Transform3d rightTransform = new Transform3d(0, 0, 0, new Rotation3d(0, Math.PI / 4.0, 0)); // FIXME Give me accurate values as well please.
+        /*
+         * A note about these transforms: They appear to follow the normal cordinate
+         * system (x is right when pos. and so on).
+         */
+        public static final Transform3d leftTransform = new Transform3d(-0.5, 0, 0,
+                new Rotation3d(0, -Math.PI / 4.0, 0)); // FIXME Give me values that are accurate please
+        public static final Transform3d rightTransform = new Transform3d(0, 0, 0, new Rotation3d(0, Math.PI / 4.0, 0)); // FIXME
+                                                                                                                        // Give
+                                                                                                                        // me
+                                                                                                                        // accurate
+                                                                                                                        // values
+                                                                                                                        // as
+                                                                                                                        // well
+                                                                                                                        // please.
         public static final String leftCameraName = "Cam2";
         public static final String rightCameraName = "Cam1";
     }
@@ -163,14 +174,27 @@ public class Constants {
 
     public static class AprilTagObject {
         private int ID;
-        public int getID() {return ID;}
+
+        public int getID() {
+            return ID;
+        }
 
         private Pose2d position;
-        public Pose2d getPose2d() {return position;}
+
+        public Pose2d getPose2d() {
+            return position;
+        }
 
         public AprilTagObject(int id, double x, double y, double degrees) {
             this.ID = id;
-            this.position = new Pose2d(Units.inchesToMeters(x), Units.inchesToMeters(y), Rotation2d.fromDegrees(degrees));
+            this.position = new Pose2d(Units.inchesToMeters(x), Units.inchesToMeters(y),
+                    Rotation2d.fromDegrees(degrees));
         }
+    }
+
+    public class NoteFinderConstants {
+        public static final int DATAGRAM_PORT = 5800;
+        public static final int BUFFER_SIZE = 512;
+        public static final double CYCLE_TIME = 0.015;
     }
 }
