@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Shooter;
 
 public class ShooterCommand extends Command {
@@ -16,7 +17,7 @@ public class ShooterCommand extends Command {
 
   @Override
   public void initialize() {
-    m_Shooter.setMotor(speed);
+    m_Shooter.setFlywheelVelo(Constants.ShooterConstants.shootVelo);
   }
 
   @Override
