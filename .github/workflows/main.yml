@@ -31,10 +31,10 @@ jobs:
 
     # Grant execute permission for gradlew
     - name: Grant execute permission for gradlew
-      working-directory: ./2023-Energize
+      working-directory: ./2024-CRESCENDO
       run: chmod +x gradlew
 
     # Runs a single command using the runners shell
     - name: Compile and run tests on robot code
-      working-directory: ./2023-Energize
+      working-directory: ./2024-CRESCENDO
       run: ./gradlew build
