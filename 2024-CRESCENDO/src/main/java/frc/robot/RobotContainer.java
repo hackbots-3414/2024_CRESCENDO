@@ -22,6 +22,7 @@ import frc.robot.Constants.AprilTags;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.LedCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Elevator;
@@ -30,6 +31,7 @@ import frc.robot.subsystems.NoteFinder;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
 import frc.robot.subsystems.Transport;
+import frc.robot.subsystems.LedSubsystem;
 
 public class RobotContainer {
   public enum RepathChoices {
@@ -66,6 +68,7 @@ public class RobotContainer {
   private ShooterPivot m_ShooterPivot = new ShooterPivot();
   private Transport m_Transport = new Transport();
   private NoteFinder m_NoteFinder = new NoteFinder();
+  private LedSubsystem m_LedSubsystem;
 
   private void configureDriverBindings() {
     drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed).withVelocityY(-joystick.getLeftX() * MaxSpeed).withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
@@ -115,6 +118,7 @@ public class RobotContainer {
     operator.rightBumper().whileTrue(new IntakeCommand(m_Transport, m_Intake, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed));
     // operator.back().whileTrue(<ADD COMMAND>);
     // operator.start().whileTrue(<ADD COMMAND>);
+    operator.a().whileTrue(new LedCommand(m_LedSubsystem,-0.96));
 
     // Left Trigger as Button
     // operator.axisGreaterThan(Constants.InputConstants.leftTriggerID, Constants.InputConstants.triggerTolerance).whileTrue(<ADD COMMAND>);
