@@ -14,10 +14,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AprilTags;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorCommand.ElevatorPresets;
@@ -43,7 +46,6 @@ public class RobotContainer {
   private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
   /* Setting up bindings for necessary control of the swerve drive platform */
-  private final CommandXboxController joystick = new CommandXboxController(Constants.InputConstants.kDriverControllerPort); // My joystick
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -53,6 +55,10 @@ public class RobotContainer {
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final Telemetry logger = new Telemetry(MaxSpeed);
+
+  private final Joystick driver = new Joystick(Constants.InputConstants.kDriverControllerPort);
+  private final JoystickButton resetGyro = new JoystickButton(driver, Constants.DriverConstants.resetGyroButton);
+  private final JoystickButton repathButton = new JoystickButton(driver, Constants.DriverConstants.repathButton);
 
   private final CommandXboxController operator = new CommandXboxController(Constants.InputConstants.kOperatorControllerPort);
 
@@ -68,13 +74,21 @@ public class RobotContainer {
   private NoteFinder m_NoteFinder = new NoteFinder();
 
   private void configureDriverBindings() {
-    drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed).withVelocityY(-joystick.getLeftX() * MaxSpeed).withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
+    resetGyro.onTrue(new InstantCommand(() -> {drivetrain.seedFieldRelative();}));
+    drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> 
+      drive
+      .withVelocityX(driver.getRawAxis(Constants.DriverConstants.leftY) * MaxSpeed)
+      .withVelocityY(-driver.getRawAxis(Constants.DriverConstants.leftX) * MaxSpeed)
+      .withRotationalRate(-driver.getRawAxis(Constants.IntakeConstants.rightX) * MaxAngularRate)
+    ));
 
-    joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    joystick.b().whileTrue(drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
+    // drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed).withVelocityY(-joystick.getLeftX() * MaxSpeed).withRotationalRate(-joystick.getRightX() * MaxAngularRate)));
 
-    // reset the field-centric heading on left bumper press
-    joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    // joystick.b().whileTrue(drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
+
+    // // reset the field-centric heading on left bumper press
+    // joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
@@ -83,7 +97,7 @@ public class RobotContainer {
   }
 
   public RepathChoices checkForOverrides() {
-    if (joystick.x().getAsBoolean()) {
+    if (repathButton.getAsBoolean()) {
       return RepathChoices.SHOOTER;
     }
     return null;
