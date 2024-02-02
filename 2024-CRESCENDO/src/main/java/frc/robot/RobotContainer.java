@@ -118,7 +118,7 @@ public class RobotContainer {
     operator.rightBumper().whileTrue(new IntakeCommand(m_Transport, m_Intake, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed));
     // operator.back().whileTrue(<ADD COMMAND>);
     // operator.start().whileTrue(<ADD COMMAND>);
-    operator.a().whileTrue(new LedCommand(m_LedSubsystem,-0.96));
+    operator.a().whileTrue(new LedCommand(m_LedSubsystem,-0.98));
 
     // Left Trigger as Button
     // operator.axisGreaterThan(Constants.InputConstants.leftTriggerID, Constants.InputConstants.triggerTolerance).whileTrue(<ADD COMMAND>);
