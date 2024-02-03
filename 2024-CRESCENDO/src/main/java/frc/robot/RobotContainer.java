@@ -85,5 +85,4 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {return pathChooser.getSelected();}
-  public NoteFinder getNoteFinder() {return m_NoteFinder;}
 }
