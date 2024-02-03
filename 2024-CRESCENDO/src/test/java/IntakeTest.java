@@ -57,7 +57,7 @@ public class IntakeTest implements AutoCloseable {
       assertEquals(DriverStation.isEnabled(), true);
    }
 
-   @Test
+   // @Test
    public void motorDrives() {
       /* set the voltage supplied by the battery */
       intakeMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());

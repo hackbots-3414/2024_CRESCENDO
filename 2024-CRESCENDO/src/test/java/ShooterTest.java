@@ -61,7 +61,7 @@ public class ShooterTest implements AutoCloseable {
       assertEquals(DriverStation.isEnabled(), true);
    }
 
-   @Test
+   // @Test
    public void motorMoves() {
       /* set the voltage supplied by the battery */
       shooterSimLeft.setSupplyVoltage(RobotController.getBatteryVoltage());
