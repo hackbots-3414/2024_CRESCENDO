@@ -73,11 +73,11 @@ public class Constants {
         public static final double shootSpeed = 0.1;
         public static final boolean shooterMotorInvert = false;
 
-        public static final double kP = 0.0;
+        public static final double kP = 1.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
 
-        public static final double shootVelo = 300.0;
+        public static final double shootVelo = 8.0;
     }
 
     public static final class IntakeConstants {

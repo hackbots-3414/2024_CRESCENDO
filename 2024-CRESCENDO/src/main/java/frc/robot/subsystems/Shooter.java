@@ -6,9 +6,11 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.compound.Diff_DutyCycleOut_Velocity;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
+import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
@@ -74,37 +76,42 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
           // WPILog with this subsystem's name ("Shooter")
           this));
 
-  private final Slot0Configs PIDConfig = new Slot0Configs()
-    .withKP(ShooterConstants.kP)
-    .withKI(ShooterConstants.kI)
-    .withKD(ShooterConstants.kD);
+  private Slot0Configs pidConfig = new Slot0Configs()
+    .withKP(Constants.ShooterConstants.kP)
+    .withKI(Constants.ShooterConstants.kI)
+    .withKD(Constants.ShooterConstants.kD);
+
+  private final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
 
   public Shooter() {
     leftMotor = new TalonFX(Constants.ShooterConstants.leftMotorID);
     rightMotor = new TalonFX(Constants.ShooterConstants.rightMotorID);
 
-    leftMotor.getConfigurator().apply(new TalonFXConfiguration().withSlot0(PIDConfig));
-    rightMotor.getConfigurator().apply(new TalonFXConfiguration().withSlot0(PIDConfig));
+    leftMotor.getConfigurator().apply(new TalonFXConfiguration());
+    rightMotor.getConfigurator().apply(new TalonFXConfiguration());
+
+    rightMotor.getConfigurator().apply(pidConfig);
 
     leftMotor.clearStickyFaults();
     rightMotor.clearStickyFaults();
 
     rightMotor.setInverted(Constants.ShooterConstants.shooterMotorInvert);
 
-    leftMotor.setControl(new Follower(rightMotor.getDeviceID(), true));
+    // leftMotor.setControl(new Follower(rightMotor.getDeviceID(), true));
   }
 
   public void stopMotor() {
-    rightMotor.setControl(new VelocityDutyCycle(0.0));
+    rightMotor.setControl(m_request.withVelocity(0));
   }
 
   public void setFlywheelVelo(double velocity) {
-    rightMotor.setControl(new VelocityDutyCycle(velocity));
+    rightMotor.setControl(m_request.withVelocity(velocity));
   }
 
   @Override
   public void periodic() {
-    motorVelocity = (leftMotor.getVelocity().getValueAsDouble() + rightMotor.getVelocity().getValueAsDouble()) / 2.0;
+    // motorVelocity = (leftMotor.getVelocity().getValueAsDouble() + rightMotor.getVelocity().getValueAsDouble()) / 2.0;
+    motorVelocity = rightMotor.getVelocity().getValueAsDouble();
   
     SmartDashboard.putNumber("Flywheel Velocity", motorVelocity);
   }

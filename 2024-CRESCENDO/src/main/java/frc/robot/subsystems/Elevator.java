@@ -117,7 +117,7 @@ public class Elevator extends ProfiledPIDSubsystem implements AutoCloseable{
     elevatorPosition = elevatorMotor.getPosition().getValueAsDouble();
     elevatorCanCoderVelocity = elevatorCanCoder.getVelocity().getValueAsDouble();
     elevatorCanCoderPosition = elevatorCanCoder.getAbsolutePosition().getValueAsDouble();
-    System.out.println(elevatorPosition);
+    // System.out.println(elevatorPosition);
   }
 
   @Override
