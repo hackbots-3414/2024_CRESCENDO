@@ -181,6 +181,8 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
   @Override
   public void close() throws Exception{
     elevatorMotor.close();
+    m_forwardLimit.close();
+    m_reverseLimit.close();
   }
 
   public TalonFXSimState getSimState() {return elevatorMotor.getSimState();}
