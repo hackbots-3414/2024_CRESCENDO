@@ -1,9 +1,8 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -21,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import frc.lib.math.Conversions;
 import frc.robot.Constants.ElevatorConstants;
 
-public class Elevator extends ProfiledPIDSubsystem implements AutoCloseable{
+public class Elevator extends ProfiledPIDSubsystem implements AutoCloseable {
 
   private TalonFX elevatorMotor = new TalonFX(ElevatorConstants.elevatorMotorID);
   private TalonFX elevatorFollower = new TalonFX(ElevatorConstants.elevatorFollowerMotorID);
@@ -35,6 +34,8 @@ public class Elevator extends ProfiledPIDSubsystem implements AutoCloseable{
   private double elevatorPosition;
   private double elevatorCanCoderVelocity;
   private double elevatorCanCoderPosition;
+
+  private boolean isRunning = false;
 
   public Elevator() {
     super(controller, 0);
@@ -98,16 +99,22 @@ public class Elevator extends ProfiledPIDSubsystem implements AutoCloseable{
   public double getMeasurement() {return Math.toRadians(getCanCoder());}
 
   public void set(double speed) {elevatorMotor.set(speed);} // -1 to 1
-
   public void stop() {elevatorMotor.set(0.0);}
 
   public double getPosition() {return elevatorPosition;}
-
   public double getCanCoder() {return elevatorCanCoderPosition;}
-
   public double getCanCoderVelo() {return Math.toRadians(elevatorCanCoderVelocity);}
 
   public void setNeutralMode(NeutralModeValue value) {elevatorMotor.setNeutralMode(value);}
+
+  public void setCurrentLimit(double limit) {
+    CurrentLimitsConfigs configs = new CurrentLimitsConfigs().withSupplyCurrentLimitEnable(true).withSupplyCurrentLimit(limit);
+    elevatorMotor.getConfigurator().apply(configs, 0.01);
+    elevatorFollower.getConfigurator().apply(configs, 0.01);
+  }
+
+  public void setRunning(boolean isRunning) {this.isRunning = isRunning;}
+  public boolean getRunning() {return this.isRunning;}
 
   @Override
   public void periodic() {
@@ -126,7 +133,5 @@ public class Elevator extends ProfiledPIDSubsystem implements AutoCloseable{
     elevatorCanCoder.close();
   }
 
-  public TalonFXSimState getSimState() {
-    return elevatorMotor.getSimState();
-  }
+  public TalonFXSimState getSimState() {return elevatorMotor.getSimState();}
 }
