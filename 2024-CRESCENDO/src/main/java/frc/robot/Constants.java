@@ -36,12 +36,17 @@ public class Constants {
     }
 
     public static final class SwerveConstants {
-        public static final double kPDrive = 2;
+        public static final double kPDrive = 0;
         public static final double kIDrive = 0;
         public static final double kDDrive = 0;
-        public static final double kPSteer = 3.8;
+        public static final double kPSteer = 0;
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
+
+        public static final double maxDriveVelocity = 3.92;
+        public static final double maxDriveAcceleration = 3;
+        public static final double maxAngleVelocity = 1.5*Math.PI;
+        public static final double maxAngleAcceleration = 2*Math.PI;
     }
 
     public static final class AutonConstants {
@@ -70,6 +75,8 @@ public class Constants {
     public static final class ShooterConstants {
         public static final int leftMotorID = 57;
         public static final int rightMotorID = 58;
+        public static final int leftMotorPDPID = 4;
+        public static final int rightMotorPDPID = 5;
         public static final double shootSpeed = 0.1;
         public static final boolean shooterMotorInvert = false;
 
@@ -81,9 +88,10 @@ public class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int intakeMotorID = 60;
-        public static final double intakeSpeed = 0.1;
-        public static final double ejectSpeed = -0.1;
+        public static final int intakeMotorID = 46;
+        public static final int intakeMotorPDPID = 15;
+        public static final double intakeSpeed = 1;
+        public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = false;
         public static final int rightX = 3;
     }
@@ -107,8 +115,10 @@ public class Constants {
 
     public static final class TransportConstants {
         public static final int transportMotorID = 56;
+        public static final int transportMotorPDPID = 16;
         public static final boolean transportMotorInvert = false;
         public static final double transportSpeed = 0.5;
+        public static final double transportEjectSpeed = -0.5;
         public static final int irSensorChannel = 1;
     }
 
@@ -136,6 +146,9 @@ public class Constants {
         public static final int elevatorFollowerMotorID = 51;
         public static final int elevatorCANCoderMotorID = 52;
 
+        public static final int elevatorMotorPDPID = 2;
+        public static final int elevatorFollowerMotorPDPID = 3;
+
         public static final double elevatorkS = 0;
         public static final double elevatorkG = 0;
         public static final double elevatorkV = 0;
@@ -159,6 +172,8 @@ public class Constants {
     public static final class PivotConstants {
         public static final int pivotMotorID = 0;
         public static final int EncoderID = 0;
+
+        public static final int pivotMotorPDPID = 14;
 
         public static final InvertedValue motorInvert = InvertedValue.CounterClockwise_Positive;
         public static final SensorDirectionValue cancoderInvert = SensorDirectionValue.CounterClockwise_Positive;

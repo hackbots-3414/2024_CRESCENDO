@@ -21,6 +21,12 @@ public class ElevatorCommand extends Command {
     }
 
     @Override
+    public void initialize() {
+        elevator.setRunning(true);
+        shooterPivot.setRunning(true);
+    }
+
+    @Override
     public void execute() {
         switch (selector) {
             case STOW:
@@ -37,6 +43,12 @@ public class ElevatorCommand extends Command {
                 break;
         }
         elevator.enable();
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        elevator.setRunning(false);
+        shooterPivot.setRunning(false);
     }
 
     @Override

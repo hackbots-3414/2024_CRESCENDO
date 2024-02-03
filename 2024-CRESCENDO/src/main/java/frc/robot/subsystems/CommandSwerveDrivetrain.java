@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.subsystems;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
@@ -35,7 +36,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.AprilTags;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.PhotonVision;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements subsystem
@@ -102,13 +102,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             this); // Subsystem for requirements
     }
 
-    public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
-        return run(() -> this.setControl(requestSupplier.get()));
-    }
+    public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {return run(() -> this.setControl(requestSupplier.get()));}
     
-    public ChassisSpeeds getCurrentRobotChassisSpeeds() {
-        return m_kinematics.toChassisSpeeds(getState().ModuleStates);
-    }
+    public ChassisSpeeds getCurrentRobotChassisSpeeds() {return m_kinematics.toChassisSpeeds(getState().ModuleStates);}
 
     private void startSimThread() {
         m_lastSimTime = Utils.getCurrentTimeSeconds();
@@ -154,8 +150,13 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return AutoBuilder.followPath(new PathPlannerPath(PathPlannerPath.bezierFromPoses(estimatedPose, aprilTag.value.getPose2d()), new PathConstraints(3.92, 3, 540, 720), goal));
     }
 
-    public Pose2d getPose() {
-        return estimatedPose;
+    public Pose2d getPose() {return estimatedPose;}
+    
+    public void setCurrentLimit(double limit) {
+        CurrentLimitsConfigs configs = new CurrentLimitsConfigs().withSupplyCurrentLimitEnable(true).withSupplyCurrentLimit(limit);
+        
+        for (int i = 0; i < 3; i++) getModule(i).getDriveMotor().getConfigurator().apply(configs);
+        getModule(3).getDriveMotor().getConfigurator().apply(configs, 0.015);
     }
 
     @Override
