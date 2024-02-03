@@ -36,12 +36,17 @@ public class Constants {
     }
 
     public static final class SwerveConstants {
-        public static final double kPDrive = 2;
+        public static final double kPDrive = 0;
         public static final double kIDrive = 0;
         public static final double kDDrive = 0;
-        public static final double kPSteer = 3.8;
+        public static final double kPSteer = 0;
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
+
+        public static final double maxDriveVelocity = 3.92;
+        public static final double maxDriveAcceleration = 3;
+        public static final double maxAngleVelocity = 1.5*Math.PI;
+        public static final double maxAngleAcceleration = 2*Math.PI;
     }
 
     public static final class AutonConstants {
@@ -49,9 +54,20 @@ public class Constants {
     }
 
     public static final class VisionConstants {
-        /* A note about these transforms: They appear to follow the normal cordinate system (x is right when pos. and so on). */
-        public static final Transform3d leftTransform  = new Transform3d(-0.5, 0, 0, new Rotation3d(0, -Math.PI / 4.0, 0)); // FIXME Give me values that are accurate please
-        public static final Transform3d rightTransform = new Transform3d(0, 0, 0, new Rotation3d(0, Math.PI / 4.0, 0)); // FIXME Give me accurate values as well please.
+        /*
+         * A note about these transforms: They appear to follow the normal cordinate
+         * system (x is right when pos. and so on).
+         */
+        public static final Transform3d leftTransform = new Transform3d(-0.5, 0, 0,
+                new Rotation3d(0, -Math.PI / 4.0, 0)); // FIXME Give me values that are accurate please
+        public static final Transform3d rightTransform = new Transform3d(0, 0, 0, new Rotation3d(0, Math.PI / 4.0, 0)); // FIXME
+                                                                                                                        // Give
+                                                                                                                        // me
+                                                                                                                        // accurate
+                                                                                                                        // values
+                                                                                                                        // as
+                                                                                                                        // well
+                                                                                                                        // please.
         public static final String leftCameraName = "Cam2";
         public static final String rightCameraName = "Cam1";
     }
@@ -59,15 +75,25 @@ public class Constants {
     public static final class ShooterConstants {
         public static final int leftMotorID = 57;
         public static final int rightMotorID = 58;
+        public static final int leftMotorPDPID = 4;
+        public static final int rightMotorPDPID = 5;
         public static final double shootSpeed = 0.1;
         public static final boolean shooterMotorInvert = false;
+
+        public static final double kP = 1.0;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+
+        public static final double shootVelo = 8.0;
     }
 
     public static final class IntakeConstants {
-        public static final int intakeMotorID = 60;
-        public static final double intakeSpeed = 0.1;
-        public static final double ejectSpeed = -0.1;
+        public static final int intakeMotorID = 46;
+        public static final int intakeMotorPDPID = 15;
+        public static final double intakeSpeed = 1;
+        public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = false;
+        public static final int rightX = 3;
     }
 
     public static final class InputConstants {
@@ -80,10 +106,19 @@ public class Constants {
         public static final double triggerTolerance = 0.5;
     }
 
+    public static final class DriverConstants {
+        public static final int resetGyroButton = 13;
+        public static final int repathButton = 12;
+        public static final int leftX = 0;
+        public static final int leftY = 1;
+    }
+
     public static final class TransportConstants {
         public static final int transportMotorID = 56;
+        public static final int transportMotorPDPID = 16;
         public static final boolean transportMotorInvert = false;
         public static final double transportSpeed = 0.5;
+        public static final double transportEjectSpeed = -0.5;
         public static final int irSensorChannel = 1;
     }
 
@@ -111,6 +146,9 @@ public class Constants {
         public static final int elevatorFollowerMotorID = 51;
         public static final int elevatorCANCoderMotorID = 52;
 
+        public static final int elevatorMotorPDPID = 2;
+        public static final int elevatorFollowerMotorPDPID = 3;
+
         public static final double elevatorkS = 0;
         public static final double elevatorkG = 0;
         public static final double elevatorkV = 0;
@@ -134,6 +172,8 @@ public class Constants {
     public static final class PivotConstants {
         public static final int pivotMotorID = 0;
         public static final int EncoderID = 0;
+
+        public static final int pivotMotorPDPID = 14;
 
         public static final InvertedValue motorInvert = InvertedValue.CounterClockwise_Positive;
         public static final SensorDirectionValue cancoderInvert = SensorDirectionValue.CounterClockwise_Positive;
@@ -163,14 +203,27 @@ public class Constants {
 
     public static class AprilTagObject {
         private int ID;
-        public int getID() {return ID;}
+
+        public int getID() {
+            return ID;
+        }
 
         private Pose2d position;
-        public Pose2d getPose2d() {return position;}
+
+        public Pose2d getPose2d() {
+            return position;
+        }
 
         public AprilTagObject(int id, double x, double y, double degrees) {
             this.ID = id;
-            this.position = new Pose2d(Units.inchesToMeters(x), Units.inchesToMeters(y), Rotation2d.fromDegrees(degrees));
+            this.position = new Pose2d(Units.inchesToMeters(x), Units.inchesToMeters(y),
+                    Rotation2d.fromDegrees(degrees));
         }
+    }
+
+    public class NoteFinderConstants {
+        public static final int DATAGRAM_PORT = 5800;
+        public static final int BUFFER_SIZE = 512;
+        public static final double CYCLE_TIME = 0.015;
     }
 }
