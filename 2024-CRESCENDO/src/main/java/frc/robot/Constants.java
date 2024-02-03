@@ -85,6 +85,7 @@ public class Constants {
         public static final double intakeSpeed = 0.1;
         public static final double ejectSpeed = -0.1;
         public static final boolean intakeMotorInvert = false;
+        public static final int rightX = 3;
     }
 
     public static final class InputConstants {
@@ -95,6 +96,13 @@ public class Constants {
         public static final int rightTriggerID = 3;
 
         public static final double triggerTolerance = 0.5;
+    }
+
+    public static final class DriverConstants {
+        public static final int resetGyroButton = 13;
+        public static final int repathButton = 12;
+        public static final int leftX = 0;
+        public static final int leftY = 1;
     }
 
     public static final class TransportConstants {
