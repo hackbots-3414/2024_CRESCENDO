@@ -28,7 +28,7 @@ public class Robot extends TimedRobot {
         m_SysIdRoutineBot.configureBindings();
     } else {
       m_robotContainer = new RobotContainer();
-      addPeriodic(m_robotContainer.getNoteFinder()::dataReceiver, NoteFinderConstants.CYCLE_TIME, 0);
+      // addPeriodic(m_robotContainer.getNoteFinder()::dataReceiver, NoteFinderConstants.CYCLE_TIME, 0);
     }
   }
 
