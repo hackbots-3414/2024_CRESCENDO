@@ -41,6 +41,7 @@ public class SubsystemManager extends SubsystemBase {
   Shooter shooter = new Shooter();
   ShooterPivot shooterPivot = new ShooterPivot();
   Transport transport = new Transport();
+  NoteFinder noteFinder = new NoteFinder();
 
   CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
   FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.1).withRotationalDeadband(Constants.SwerveConstants.maxAngleVelocity * 0.1).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -66,6 +67,7 @@ public class SubsystemManager extends SubsystemBase {
   public ShooterPivot getShooterPivot() {return shooterPivot;}
   public Transport getTransport() {return transport;}
   public Elevator getElevator() {return elevator;}
+  public NoteFinder getNoteFinder() {return noteFinder;}
 
   @Override
   public void periodic() {
