@@ -75,7 +75,7 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
                         getMotorSpeed() * RobotController.getBatteryVoltage(), Volts))
                 // .angularPosition(m_distance.mut_replace(getMeasurement(), Radians))
                 // .angularVelocity(m_velocity.mut_replace(getCanCoderVelo(), RadiansPerSecond));
-                .angularPosition(m_distance.mut_replace(elevatorPosition, Radians))
+                .angularPosition(m_distance.mut_replace(Units.rotationsToRadians(elevatorPosition), Radians))
                 .angularVelocity(m_velocity.mut_replace(Units.rotationsPerMinuteToRadiansPerSecond(getMotorVelo()), RadiansPerSecond));
           },
 
