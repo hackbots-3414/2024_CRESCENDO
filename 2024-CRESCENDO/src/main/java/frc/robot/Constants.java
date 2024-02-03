@@ -157,20 +157,28 @@ public class Constants {
         public static final double elevatorLowerLimit = 0;
         public static final double elevatorUpperLimit = 1;
 
-        public static final double kP = 0;
-        public static final double kI = 0;
-        public static final double kD = 0;
-        public static final double kF = 0;
+        public static final class ElevatorSlot0ConfigConstants {
+            public static final double kP = 0.0; //output per unit of error in position (output/rotation)
+            public static final double kI = 0.0; //output per unit of integrated error in position (output/(rotation*s))
+            public static final double kD = 0.0; //output per unit of error in velocity (output/rps)
+            public static final double kS = 0.0; //output to overcome static friction (output)
+            public static final double kV = 0.0; //output per unit of target velocity (output/rps)
+            public static final double kA = 0.0; //output per unit of target acceleration (output/(rps/s))
+        }
 
-        public static double maxVelocity;
-        public static double maxAcceleration;
+        public static final class ElevatorMotionMagicConstants {
+            public static final double cruiseVelocity = 0.0; // Target cruise velocity
+            public static final double acceleration = 0.0; // Target acceleration
+            public static final double jerk = 0.0; // Target Jerk
+        }
+
         public static double elevatorCurrentLimit;
         public static double circumference;
         public static double gearRatio;
     }
 
     public static final class PivotConstants {
-        public static final int pivotMotorID = 0;
+        public static final int pivotMotorID = 59;
         public static final int EncoderID = 0;
 
         public static final int pivotMotorPDPID = 14;
@@ -183,22 +191,25 @@ public class Constants {
 
         public static final double motorCurrentLimit = 0;
 
-        public static final double kP = 0; // FIX ME
-
-        // These are fake gains; in actuality these must be determined individually for
-        // each robot
-        public static final double kSVolts = 0;
-        public static final double kGVolts = 0;
-        public static final double kVVoltSecondPerRad = 0;
-        public static final double kAVoltSecondSquaredPerRad = 0;
-
-        public static final double kMaxVelocityRadPerSecond = 0;
-        public static final double kMaxAccelerationRadPerSecSquared = 0;
-
         // The offset of the arm from the horizontal in its neutral position,
         // measured from the horizontal in amount of total rotation.
         // Ex 0.5 is half a rotation
         public static final double kArmOffset = 0; // FIX ME
+
+        public static final class PivotSlot0ConfigConstants {
+            public static final double kP = 0.0; //output per unit of error in position (output/rotation)
+            public static final double kI = 0.0; //output per unit of integrated error in position (output/(rotation*s))
+            public static final double kD = 0.0; //output per unit of error in velocity (output/rps)
+            public static final double kS = 0.0; //output to overcome static friction (output)
+            public static final double kV = 0.0; //output per unit of target velocity (output/rps)
+            public static final double kA = 0.0; //output per unit of target acceleration (output/(rps/s))
+        }
+
+        public static final class PivotMotionMagicConstants {
+            public static final double cruiseVelocity = 0.0; // Target cruise velocity
+            public static final double acceleration = 0.0; // Target acceleration
+            public static final double jerk = 0.0; // Target Jerk
+        }
     }
 
     public static class AprilTagObject {

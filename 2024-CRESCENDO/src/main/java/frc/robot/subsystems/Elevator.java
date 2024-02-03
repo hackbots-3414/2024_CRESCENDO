@@ -7,8 +7,11 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
@@ -18,8 +21,6 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
@@ -29,21 +30,18 @@ import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.math.Conversions;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.ElevatorConstants.ElevatorMotionMagicConstants;
+import frc.robot.Constants.ElevatorConstants.ElevatorSlot0ConfigConstants;
 
-public class Elevator extends ProfiledPIDSubsystem implements AutoCloseable {
+public class Elevator extends SubsystemBase implements AutoCloseable {
 
   private TalonFX elevatorMotor = new TalonFX(ElevatorConstants.elevatorMotorID);
   private TalonFX elevatorFollower = new TalonFX(ElevatorConstants.elevatorFollowerMotorID);
   private CANcoder elevatorCanCoder = new CANcoder(ElevatorConstants.elevatorCANCoderMotorID);
-
-  private ElevatorFeedforward feedforward = new ElevatorFeedforward(ElevatorConstants.elevatorkS, ElevatorConstants.elevatorkG, ElevatorConstants.elevatorkV, ElevatorConstants.elevatorkA);
-
-  private final static TrapezoidProfile.Constraints m_constraints = new TrapezoidProfile.Constraints(ElevatorConstants.maxVelocity, ElevatorConstants.maxAcceleration);
-  private final static ProfiledPIDController controller = new ProfiledPIDController(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD, m_constraints);
 
   private double elevatorPosition;
   private double elevatorCanCoderVelocity;
@@ -85,27 +83,37 @@ public class Elevator extends ProfiledPIDSubsystem implements AutoCloseable {
           // state in
           // WPILog with this subsystem's name ("Shooter")
           this));
+  
+  private Slot0Configs slot0Config = new Slot0Configs()
+    .withKP(ElevatorSlot0ConfigConstants.kP)
+    .withKI(ElevatorSlot0ConfigConstants.kI)
+    .withKD(ElevatorSlot0ConfigConstants.kD)
+    .withKS(ElevatorSlot0ConfigConstants.kS)
+    .withKV(ElevatorSlot0ConfigConstants.kV)
+    .withKA(ElevatorSlot0ConfigConstants.kA);
+
+  private MotionMagicConfigs motionMagicConfig = new MotionMagicConfigs()
+    .withMotionMagicCruiseVelocity(ElevatorMotionMagicConstants.cruiseVelocity)
+    .withMotionMagicAcceleration(ElevatorMotionMagicConstants.acceleration)
+    .withMotionMagicJerk(ElevatorMotionMagicConstants.jerk);
+
+  private MotionMagicVoltage m_request = new MotionMagicVoltage(0); // FIXME inital pos might be current pos insted of 0
 
   private boolean isRunning = false;
 
   public Elevator() {
-    super(controller, 0);
-
     configElevatorEncoder();
     Timer.delay(0.1);
     configElevatorMotors();
-
-    m_controller.reset(getMeasurement(), getCanCoderVelo());
-    m_controller.enableContinuousInput(ElevatorConstants.elevatorLowerLimit, ElevatorConstants.elevatorUpperLimit);
-
-    setGoal(getMeasurement());
   }
 
   private void configElevatorMotors() {
     elevatorMotor.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
     elevatorFollower.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
 
-    TalonFXConfiguration configuration = new TalonFXConfiguration();
+    TalonFXConfiguration configuration = new TalonFXConfiguration()
+    .withSlot0(slot0Config)
+    .withMotionMagic(motionMagicConfig);
 
     configuration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     configuration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -139,15 +147,9 @@ public class Elevator extends ProfiledPIDSubsystem implements AutoCloseable {
     elevatorCanCoder.getConfigurator().apply(configuration);
   }
 
-  @Override
-  public void useOutput(double output, TrapezoidProfile.State setpoint) {
-    //calculate feedforward from setpoint
-    double feedforwardoutput = feedforward.calculate(setpoint.velocity);
-    elevatorMotor.setVoltage(output + feedforwardoutput);
+  public void setElevatorPosition(double position) { // position is in number of rotations as per documentation.
+    elevatorMotor.setControl(m_request.withPosition(position));
   }
-
-  @Override
-  public double getMeasurement() {return Math.toRadians(getCanCoder());}
 
   public void set(double speed) {elevatorMotor.set(speed);} // -1 to 1
   public void stop() {elevatorMotor.set(0.0);}
@@ -186,13 +188,9 @@ public class Elevator extends ProfiledPIDSubsystem implements AutoCloseable {
 
   @Override
   public void periodic() {
-    super.periodic();
-    elevatorMotor.feed();
-
     elevatorPosition = elevatorMotor.getPosition().getValueAsDouble();
     elevatorCanCoderVelocity = elevatorCanCoder.getVelocity().getValueAsDouble();
     elevatorCanCoderPosition = elevatorCanCoder.getAbsolutePosition().getValueAsDouble();
-    // System.out.println(elevatorPosition);
   }
 
   @Override
