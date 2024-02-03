@@ -65,7 +65,7 @@ public class ElevatorTest implements AutoCloseable {
       result = elevator.getPosition();
       assertEquals(result, 0.0, DELTA);
 
-      elevator.setGoal(1.0);
+      elevator.setElevatorPosition(1.0);
       Timer.delay(0.2);
       result = elevator.getPosition();
 
