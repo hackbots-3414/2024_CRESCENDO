@@ -143,8 +143,9 @@ public class Constants {
 
     public static final class ElevatorConstants {
         public static final int elevatorMotorID = 50;
-        public static final int elevatorFollowerMotorID = 51;
-        public static final int elevatorCANCoderMotorID = 52;
+        
+        public static final int forwardLimitChannelID = 0;
+        public static final int reverseLimitChannelID = 0;
 
         public static final int elevatorMotorPDPID = 2;
         public static final int elevatorFollowerMotorPDPID = 3;
