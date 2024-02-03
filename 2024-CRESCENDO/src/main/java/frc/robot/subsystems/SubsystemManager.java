@@ -18,8 +18,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Telemetry;
 import frc.robot.Constants.AprilTags;
+import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.PivotConstants;
+import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.TransportConstants;
+import frc.robot.Telemetry;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.IntakeCommand;
@@ -70,17 +75,17 @@ public class SubsystemManager extends SubsystemBase {
     transport.periodic();
     elevator.periodic();
 
-    elevatorCurrent = pdp.getCurrent(2) + pdp.getCurrent(3);
-    intakeCurrent = pdp.getCurrent(15);
-    shooterPivotCurrent = pdp.getCurrent(14);
-    shooterCurrent = pdp.getCurrent(4) + pdp.getCurrent(5);
-    transportCurrent = pdp.getCurrent(16);
+    elevatorCurrent = pdp.getCurrent(ElevatorConstants.elevatorMotorPDPID) + pdp.getCurrent(ElevatorConstants.elevatorFollowerMotorPDPID);
+    intakeCurrent = pdp.getCurrent(IntakeConstants.intakeMotorPDPID);
+    shooterPivotCurrent = pdp.getCurrent(PivotConstants.pivotMotorPDPID);
+    shooterCurrent = pdp.getCurrent(ShooterConstants.leftMotorID) + pdp.getCurrent(ShooterConstants.rightMotorID);
+    transportCurrent = pdp.getCurrent(TransportConstants.transportMotorPDPID);
 
     dampenDrivetrain();
   }
 
   private void dampenDrivetrain() {
-    double supplyLimitDrivetrain = ((availableCurrent - ((elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent + transportCurrent) * runTimeHours)) / runTimeHours)/4; // (Ah Available - Ah Being Used) / Ah to Amps conversion / 4 motors to distribute over
+    double supplyLimitDrivetrain = ((availableCurrent / runTimeHours - (elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent + transportCurrent)))/4.0; // (Ah Available - Ah Being Used) / Ah to Amps conversion / 4 motors to distribute over
     supplyLimitDrivetrain = supplyLimitDrivetrain > 40 ? 39.5 : supplyLimitDrivetrain;
     SmartDashboard.putNumber("CURRENT LIMIT FOR DRIVETRAIN", supplyLimitDrivetrain);
     drivetrain.setCurrentLimit(supplyLimitDrivetrain);

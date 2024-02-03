@@ -29,8 +29,7 @@ public class Intake extends SubsystemBase implements AutoCloseable {
   }
 
   @Override
-  public void periodic() {
-  }
+  public void periodic() {}
 
   public void setMotor(double speed) {
     // intakeMotor.set(speed);

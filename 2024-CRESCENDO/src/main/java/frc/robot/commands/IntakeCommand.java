@@ -42,6 +42,7 @@ public class IntakeCommand extends Command {
   @Override
   public boolean isFinished() {
     // return m_Transport.getIR() && intakeSpeed > 0;
-    return intake.getForwardLimit();
+    // return intake.getForwardLimit();
+    return false;
   }
 }
