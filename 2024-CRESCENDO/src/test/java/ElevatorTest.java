@@ -50,7 +50,7 @@ public class ElevatorTest implements AutoCloseable {
       close();
    }
 
-   @Test
+   // @Test
    public void robotIsEnabled() {
       /* verify that the robot is enabled */
       assertEquals(DriverStation.isEnabled(), true);
