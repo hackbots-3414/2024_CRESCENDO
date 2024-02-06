@@ -15,6 +15,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -90,7 +91,9 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
     .withKD(ElevatorSlot0ConfigConstants.kD)
     .withKS(ElevatorSlot0ConfigConstants.kS)
     .withKV(ElevatorSlot0ConfigConstants.kV)
-    .withKA(ElevatorSlot0ConfigConstants.kA);
+    .withKA(ElevatorSlot0ConfigConstants.kA)
+    .withKG(ElevatorSlot0ConfigConstants.kG)
+    .withGravityType(GravityTypeValue.Elevator_Static);
 
   private MotionMagicConfigs motionMagicConfig = new MotionMagicConfigs()
     .withMotionMagicCruiseVelocity(ElevatorMotionMagicConstants.cruiseVelocity)
