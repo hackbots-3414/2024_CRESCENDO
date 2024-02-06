@@ -119,7 +119,7 @@ public class Constants {
         public static final boolean transportMotorInvert = false;
         public static final double transportSpeed = 0.5;
         public static final double transportEjectSpeed = -0.5;
-        public static final int irSensorChannel = 1;
+        public static final int irSensorChannel = 2;
     }
 
     public static final class PositionConstants {
@@ -145,7 +145,7 @@ public class Constants {
         public static final int elevatorMotorID = 50;
         
         public static final int forwardLimitChannelID = 0;
-        public static final int reverseLimitChannelID = 0;
+        public static final int reverseLimitChannelID = 1;
 
         public static final int elevatorMotorPDPID = 2;
         public static final int elevatorFollowerMotorPDPID = 3;
