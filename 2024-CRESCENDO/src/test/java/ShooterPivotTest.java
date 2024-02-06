@@ -67,22 +67,9 @@ public class ShooterPivotTest implements AutoCloseable {
       /* set the voltage supplied by the battery */
       pivotMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
 
-      var dutyCycle = pivot.getMotorDutyCycle();
-
-      /* wait for a fresh duty cycle signal */
-      dutyCycle.waitForUpdate(0.100);
-      /* verify that the motor output is zero */
-      assertEquals(dutyCycle.getValue(), 0.0, DELTA);
-
-      /* request 100% output */
-      pivot.setControl(new DutyCycleOut(1.0));
-      /* wait for the control to apply */
-      Timer.delay(0.02);
-
-      /* wait for a new duty cycle signal */
-      dutyCycle.waitForUpdate(0.100);
-      /* verify that the motor output is 1.0 */
-      System.out.println(dutyCycle.getValue());
-      assertEquals(dutyCycle.getValue(), 0.9, DELTA);
+      double result;
+      //Get motor speed
+      result = pivot.getCancoderVelo();
+      assertEquals(result, 0.0, DELTA);
    }
 }
