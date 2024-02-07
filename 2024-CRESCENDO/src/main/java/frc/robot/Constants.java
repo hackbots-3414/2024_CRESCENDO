@@ -119,7 +119,7 @@ public class Constants {
         public static final boolean transportMotorInvert = false;
         public static final double transportSpeed = 0.5;
         public static final double transportEjectSpeed = -0.5;
-        public static final int irSensorChannel = 1;
+        public static final int irSensorChannel = 2;
     }
 
     public static final class PositionConstants {
@@ -143,8 +143,9 @@ public class Constants {
 
     public static final class ElevatorConstants {
         public static final int elevatorMotorID = 50;
-        public static final int elevatorFollowerMotorID = 51;
-        public static final int elevatorCANCoderMotorID = 52;
+        
+        public static final int forwardLimitChannelID = 0;
+        public static final int reverseLimitChannelID = 1;
 
         public static final int elevatorMotorPDPID = 2;
         public static final int elevatorFollowerMotorPDPID = 3;
@@ -164,6 +165,7 @@ public class Constants {
             public static final double kS = 0.0; //output to overcome static friction (output)
             public static final double kV = 0.0; //output per unit of target velocity (output/rps)
             public static final double kA = 0.0; //output per unit of target acceleration (output/(rps/s))
+            public static final double kG = 0.0; //Feedforward Constant
         }
 
         public static final class ElevatorMotionMagicConstants {
@@ -180,6 +182,10 @@ public class Constants {
     public static final class PivotConstants {
         public static final int pivotMotorID = 59;
         public static final int EncoderID = 0;
+        public static final double encoderOffset = 0; // FIX ME
+
+        public static final double rotorToSensorRatio = 0.0; // FIX ME
+        public static final double sensorToMechanismRatio = 0.0; // FIX ME
 
         public static final int pivotMotorPDPID = 14;
 
@@ -191,11 +197,6 @@ public class Constants {
 
         public static final double motorCurrentLimit = 0;
 
-        // The offset of the arm from the horizontal in its neutral position,
-        // measured from the horizontal in amount of total rotation.
-        // Ex 0.5 is half a rotation
-        public static final double kArmOffset = 0; // FIX ME
-
         public static final class PivotSlot0ConfigConstants {
             public static final double kP = 0.0; //output per unit of error in position (output/rotation)
             public static final double kI = 0.0; //output per unit of integrated error in position (output/(rotation*s))
@@ -203,6 +204,7 @@ public class Constants {
             public static final double kS = 0.0; //output to overcome static friction (output)
             public static final double kV = 0.0; //output per unit of target velocity (output/rps)
             public static final double kA = 0.0; //output per unit of target acceleration (output/(rps/s))
+            public static final double kG = 0.0; //feedforward Constant
         }
 
         public static final class PivotMotionMagicConstants {

@@ -1,26 +1,25 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.ProfiledPIDSubsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.ElevatorConstants.ElevatorMotionMagicConstants;
-import frc.robot.Constants.ElevatorConstants.ElevatorSlot0ConfigConstants;
 import frc.robot.Constants.PivotConstants.PivotMotionMagicConstants;
 import frc.robot.Constants.PivotConstants.PivotSlot0ConfigConstants;
 
@@ -40,7 +39,9 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable{
     .withKD(PivotSlot0ConfigConstants.kD)
     .withKS(PivotSlot0ConfigConstants.kS)
     .withKV(PivotSlot0ConfigConstants.kV)
-    .withKA(PivotSlot0ConfigConstants.kA);
+    .withKA(PivotSlot0ConfigConstants.kA)
+    .withKG(PivotSlot0ConfigConstants.kG)
+    .withGravityType(GravityTypeValue.Arm_Cosine);
 
   private MotionMagicConfigs motionMagicConfig = new MotionMagicConfigs()
     .withMotionMagicCruiseVelocity(PivotMotionMagicConstants.cruiseVelocity)
@@ -48,6 +49,13 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable{
     .withMotionMagicJerk(PivotMotionMagicConstants.jerk);
   
   private MotionMagicVoltage m_request = new MotionMagicVoltage(0.0); // FIXME inital pos might be current pos insted of 0
+
+  FeedbackConfigs feedbackConfig = new FeedbackConfigs()
+    .withFeedbackRemoteSensorID(Constants.PivotConstants.EncoderID)
+    .withFeedbackRotorOffset(Constants.PivotConstants.encoderOffset)
+    .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder)
+    .withRotorToSensorRatio(Constants.PivotConstants.rotorToSensorRatio)
+    .withSensorToMechanismRatio(Constants.PivotConstants.sensorToMechanismRatio);
 
   public ShooterPivot() {
     configMotor();
@@ -57,6 +65,10 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable{
 
   public void setPivotPosition(double position) { // position is in number of rotations as per documentation.
     pivotMotor.setControl(m_request.withPosition(position));
+  }
+
+  public double getPivotPosition() {
+    return cancoderPosition;
   }
 
   public double getCancoderVelo() {return cancoderVelocity;}
@@ -75,18 +87,19 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable{
     CANcoderConfiguration canCoderConfiguration = new CANcoderConfiguration();
 
     canCoderConfiguration.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
-    canCoderConfiguration.MagnetSensor.MagnetOffset = Constants.PivotConstants.kArmOffset;
     canCoderConfiguration.MagnetSensor.SensorDirection = Constants.PivotConstants.cancoderInvert;
 
     cancoder.getConfigurator().apply(canCoderConfiguration);
   }
 
   public void configMotor() {
+
     pivotMotor.getConfigurator().apply(new TalonFXConfiguration());
 
     TalonFXConfiguration configuration = new TalonFXConfiguration()
     .withSlot0(slot0Config)
-    .withMotionMagic(motionMagicConfig);
+    .withMotionMagic(motionMagicConfig)
+    .withFeedback(feedbackConfig);
 
     configuration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     configuration.MotorOutput.Inverted = Constants.PivotConstants.motorInvert;
@@ -117,5 +130,11 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable{
     pivotMotor.close();
     cancoder.close();
   }
+
+  public void setControl(DutyCycleOut dutyCycle) {pivotMotor.setControl(dutyCycle);}
+
+  public StatusSignal<Double> getMotorDutyCycle() {return pivotMotor.getDutyCycle();}
+
+  public TalonFXSimState getSimState() {return pivotMotor.getSimState();}
 
 }

@@ -48,7 +48,12 @@ public class IntakeTest implements AutoCloseable {
 
    @AfterEach
    void shutdown() {
-      close();
+      /* destroy our TalonFX object */
+      try {
+         intake.close();
+      } catch (Exception e) {
+         System.out.println("ElevatorTest.java could not close Elevator Object");
+      }
    }
 
    @Test
