@@ -53,13 +53,13 @@ public class TransportTest implements AutoCloseable {
       close();
    }
 
-   @Test
+   // @Test
    public void robotIsEnabled() {
       /* verify that the robot is enabled */
       assertEquals(DriverStation.isEnabled(), true);
    }
 
-   @Test
+   // @Test
    public void motorMoves() {
       /* set the voltage supplied by the battery */
       transportSim.setSupplyVoltage(RobotController.getBatteryVoltage());

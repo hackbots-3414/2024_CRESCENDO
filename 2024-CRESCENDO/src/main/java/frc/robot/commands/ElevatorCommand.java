@@ -21,22 +21,33 @@ public class ElevatorCommand extends Command {
     }
 
     @Override
+    public void initialize() {
+        elevator.setRunning(true);
+        shooterPivot.setRunning(true);
+    }
+
+    @Override
     public void execute() {
         switch (selector) {
             case STOW:
-                elevator.setGoal(PositionConstants.stowPresets.elevator);
-                shooterPivot.setGoal(PositionConstants.stowPresets.shooter);
+                elevator.setElevatorPosition(PositionConstants.stowPresets.elevator);
+                shooterPivot.setPivotPosition(PositionConstants.stowPresets.shooter);
                 break;
             case AMP:
-                elevator.setGoal(PositionConstants.ampPresets.elevator);
-                shooterPivot.setGoal(PositionConstants.ampPresets.shooter);
+                elevator.setElevatorPosition(PositionConstants.ampPresets.elevator);
+                shooterPivot.setPivotPosition(PositionConstants.ampPresets.shooter);
                 break;
             case TRAP:
-                elevator.setGoal(PositionConstants.trapPresets.elevator);
-                shooterPivot.setGoal(PositionConstants.trapPresets.shooter);
+                elevator.setElevatorPosition(PositionConstants.trapPresets.elevator);
+                shooterPivot.setPivotPosition(PositionConstants.trapPresets.shooter);
                 break;
         }
-        elevator.enable();
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        elevator.setRunning(false);
+        shooterPivot.setRunning(false);
     }
 
     @Override

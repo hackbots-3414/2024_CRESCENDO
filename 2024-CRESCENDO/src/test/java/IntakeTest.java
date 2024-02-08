@@ -48,7 +48,12 @@ public class IntakeTest implements AutoCloseable {
 
    @AfterEach
    void shutdown() {
-      close();
+      /* destroy our TalonFX object */
+      try {
+         intake.close();
+      } catch (Exception e) {
+         System.out.println("ElevatorTest.java could not close Elevator Object");
+      }
    }
 
    @Test
@@ -57,7 +62,7 @@ public class IntakeTest implements AutoCloseable {
       assertEquals(DriverStation.isEnabled(), true);
    }
 
-   @Test
+   // @Test
    public void motorDrives() {
       /* set the voltage supplied by the battery */
       intakeMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());

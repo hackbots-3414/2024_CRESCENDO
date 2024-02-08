@@ -36,12 +36,17 @@ public class Constants {
     }
 
     public static final class SwerveConstants {
-        public static final double kPDrive = 2;
+        public static final double kPDrive = 0;
         public static final double kIDrive = 0;
         public static final double kDDrive = 0;
-        public static final double kPSteer = 3.8;
+        public static final double kPSteer = 0;
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
+
+        public static final double maxDriveVelocity = 3.92;
+        public static final double maxDriveAcceleration = 3;
+        public static final double maxAngleVelocity = 1.5*Math.PI;
+        public static final double maxAngleAcceleration = 2*Math.PI;
     }
 
     public static final class AutonConstants {
@@ -70,15 +75,25 @@ public class Constants {
     public static final class ShooterConstants {
         public static final int leftMotorID = 57;
         public static final int rightMotorID = 58;
+        public static final int leftMotorPDPID = 4;
+        public static final int rightMotorPDPID = 5;
         public static final double shootSpeed = 0.1;
         public static final boolean shooterMotorInvert = false;
+
+        public static final double kP = 1.0;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+
+        public static final double shootVelo = 8.0;
     }
 
     public static final class IntakeConstants {
-        public static final int intakeMotorID = 60;
-        public static final double intakeSpeed = 0.1;
-        public static final double ejectSpeed = -0.1;
+        public static final int intakeMotorID = 46;
+        public static final int intakeMotorPDPID = 15;
+        public static final double intakeSpeed = 1;
+        public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = false;
+        public static final int rightX = 3;
     }
 
     public static final class InputConstants {
@@ -91,11 +106,20 @@ public class Constants {
         public static final double triggerTolerance = 0.5;
     }
 
+    public static final class DriverConstants {
+        public static final int resetGyroButton = 13;
+        public static final int repathButton = 12;
+        public static final int leftX = 0;
+        public static final int leftY = 1;
+    }
+
     public static final class TransportConstants {
         public static final int transportMotorID = 56;
+        public static final int transportMotorPDPID = 16;
         public static final boolean transportMotorInvert = false;
         public static final double transportSpeed = 0.5;
-        public static final int irSensorChannel = 1;
+        public static final double transportEjectSpeed = -0.5;
+        public static final int irSensorChannel = 2;
     }
 
     public static final class PositionConstants {
@@ -119,8 +143,12 @@ public class Constants {
 
     public static final class ElevatorConstants {
         public static final int elevatorMotorID = 50;
-        public static final int elevatorFollowerMotorID = 51;
-        public static final int elevatorCANCoderMotorID = 52;
+        
+        public static final int forwardLimitChannelID = 0;
+        public static final int reverseLimitChannelID = 1;
+
+        public static final int elevatorMotorPDPID = 2;
+        public static final int elevatorFollowerMotorPDPID = 3;
 
         public static final double elevatorkS = 0;
         public static final double elevatorkG = 0;
@@ -130,21 +158,36 @@ public class Constants {
         public static final double elevatorLowerLimit = 0;
         public static final double elevatorUpperLimit = 1;
 
-        public static final double kP = 0;
-        public static final double kI = 0;
-        public static final double kD = 0;
-        public static final double kF = 0;
+        public static final class ElevatorSlot0ConfigConstants {
+            public static final double kP = 0.0; //output per unit of error in position (output/rotation)
+            public static final double kI = 0.0; //output per unit of integrated error in position (output/(rotation*s))
+            public static final double kD = 0.0; //output per unit of error in velocity (output/rps)
+            public static final double kS = 0.0; //output to overcome static friction (output)
+            public static final double kV = 0.0; //output per unit of target velocity (output/rps)
+            public static final double kA = 0.0; //output per unit of target acceleration (output/(rps/s))
+            public static final double kG = 0.0; //Feedforward Constant
+        }
 
-        public static double maxVelocity;
-        public static double maxAcceleration;
+        public static final class ElevatorMotionMagicConstants {
+            public static final double cruiseVelocity = 0.0; // Target cruise velocity
+            public static final double acceleration = 0.0; // Target acceleration
+            public static final double jerk = 0.0; // Target Jerk
+        }
+
         public static double elevatorCurrentLimit;
         public static double circumference;
         public static double gearRatio;
     }
 
     public static final class PivotConstants {
-        public static final int pivotMotorID = 0;
+        public static final int pivotMotorID = 59;
         public static final int EncoderID = 0;
+        public static final double encoderOffset = 0; // FIX ME
+
+        public static final double rotorToSensorRatio = 0.0; // FIX ME
+        public static final double sensorToMechanismRatio = 0.0; // FIX ME
+
+        public static final int pivotMotorPDPID = 14;
 
         public static final InvertedValue motorInvert = InvertedValue.CounterClockwise_Positive;
         public static final SensorDirectionValue cancoderInvert = SensorDirectionValue.CounterClockwise_Positive;
@@ -154,22 +197,21 @@ public class Constants {
 
         public static final double motorCurrentLimit = 0;
 
-        public static final double kP = 0; // FIX ME
+        public static final class PivotSlot0ConfigConstants {
+            public static final double kP = 0.0; //output per unit of error in position (output/rotation)
+            public static final double kI = 0.0; //output per unit of integrated error in position (output/(rotation*s))
+            public static final double kD = 0.0; //output per unit of error in velocity (output/rps)
+            public static final double kS = 0.0; //output to overcome static friction (output)
+            public static final double kV = 0.0; //output per unit of target velocity (output/rps)
+            public static final double kA = 0.0; //output per unit of target acceleration (output/(rps/s))
+            public static final double kG = 0.0; //feedforward Constant
+        }
 
-        // These are fake gains; in actuality these must be determined individually for
-        // each robot
-        public static final double kSVolts = 0;
-        public static final double kGVolts = 0;
-        public static final double kVVoltSecondPerRad = 0;
-        public static final double kAVoltSecondSquaredPerRad = 0;
-
-        public static final double kMaxVelocityRadPerSecond = 0;
-        public static final double kMaxAccelerationRadPerSecSquared = 0;
-
-        // The offset of the arm from the horizontal in its neutral position,
-        // measured from the horizontal in amount of total rotation.
-        // Ex 0.5 is half a rotation
-        public static final double kArmOffset = 0; // FIX ME
+        public static final class PivotMotionMagicConstants {
+            public static final double cruiseVelocity = 0.0; // Target cruise velocity
+            public static final double acceleration = 0.0; // Target acceleration
+            public static final double jerk = 0.0; // Target Jerk
+        }
     }
 
     public static class AprilTagObject {
