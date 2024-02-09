@@ -16,7 +16,6 @@ public class Intake extends SubsystemBase implements AutoCloseable {
 
   TalonFX intakeMotor;
 
-  DigitalInput m_forwardLimit = new DigitalInput(0);
   DutyCycleOut m_DutyCycleOut = new DutyCycleOut(0.0);
   
   private boolean isRunning = false;
@@ -32,16 +31,11 @@ public class Intake extends SubsystemBase implements AutoCloseable {
   public void periodic() {}
 
   public void setMotor(double speed) {
-    // intakeMotor.set(speed);
-    intakeMotor.setControl(m_DutyCycleOut.withOutput(speed).withLimitForwardMotion(!m_forwardLimit.get()));
+    intakeMotor.set(speed);
   }
 
   public void stopMotor() {
     intakeMotor.setControl(m_DutyCycleOut.withOutput(0.0));
-  }
-
-  public boolean getForwardLimit() {
-    return !m_forwardLimit.get();
   }
 
   public double getSpeed() {
@@ -71,6 +65,5 @@ public class Intake extends SubsystemBase implements AutoCloseable {
   @Override
   public void close() {
     intakeMotor.close();
-    m_forwardLimit.close();
   }
 }

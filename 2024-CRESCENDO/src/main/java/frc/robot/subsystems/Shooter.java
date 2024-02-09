@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;
+import frc.robot.commands.ShooterCommand;
 
 public class Shooter extends SubsystemBase implements AutoCloseable {
 
@@ -34,6 +36,7 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
   private boolean isRunning = false;
 
   double motorVelocity = 0.0;
+  double motorSpeed = 0.0;
 
   // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
   private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
@@ -97,9 +100,8 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
 
   @Override
   public void periodic() {
-    // motorVelocity = (leftMotor.getVelocity().getValueAsDouble() + rightMotor.getVelocity().getValueAsDouble()) / 2.0;
-    motorVelocity = rightMotor.getVelocity().getValueAsDouble();
-  
+    motorVelocity = (leftMotor.getVelocity().getValueAsDouble() + rightMotor.getVelocity().getValueAsDouble()) / 2.0;
+    motorSpeed = (leftMotor.get() + rightMotor.get()) / 2.0;
     SmartDashboard.putNumber("Flywheel Velocity", motorVelocity);
   }
 
@@ -112,8 +114,8 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
 
   public double getMotorPos() {return (leftMotor.getPosition().getValueAsDouble() + rightMotor.getPosition().getValueAsDouble()) / 2.0;}
   public double getMotorPosRad() {return getMotorPos() * 2.0 * Math.PI;}
-  public double getMotorVelo() {return (leftMotor.getVelocity().getValueAsDouble() + rightMotor.getVelocity().getValueAsDouble()) / 2.0;}
-  public double getMotorSpeed() {return (leftMotor.get() + rightMotor.get()) / 2.0;}
+  public double getMotorVelo() {return motorVelocity;}
+  public double getMotorSpeed() {return motorSpeed;}
   public double getMotorVeloRad() {return getMotorVelo() * 2.0 * Math.PI;}
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {return m_sysIdRoutine.quasistatic(direction);}
@@ -134,6 +136,7 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
     rightMotor.close();
   }
 
+  public boolean shooterAtSpeed() {return Math.abs(motorVelocity - Constants.ShooterConstants.shootVelo) < Constants.ShooterConstants.shooterTolerance;}
   public TalonFXSimState getSimStateLeft() {return leftMotor.getSimState();}
   public TalonFXSimState getSimStateRight() {return rightMotor.getSimState();}
   public StatusSignal<Double> getMotorDutyCycle() {return rightMotor.getDutyCycle();}

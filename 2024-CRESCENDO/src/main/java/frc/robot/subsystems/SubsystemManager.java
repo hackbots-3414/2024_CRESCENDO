@@ -29,6 +29,7 @@ import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterCommand;
+import frc.robot.commands.TransportCommand;
 import frc.robot.generated.TunerConstants;
 
 public class SubsystemManager extends SubsystemBase {
@@ -111,4 +112,5 @@ public class SubsystemManager extends SubsystemBase {
   public Command makeIntakeCommand() {return new IntakeCommand(transport, intake, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed);}
   public Command makeEjectCommand() {return new IntakeCommand(transport, intake, Constants.IntakeConstants.ejectSpeed, Constants.TransportConstants.transportEjectSpeed);}
   public Command makeRepathCommand(AprilTags apriltag) {return drivetrain.repathTo(apriltag);}
+  public Command makeTransportCommand(boolean forward) {return new TransportCommand(transport, forward);}
 }

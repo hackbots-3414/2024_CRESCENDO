@@ -23,7 +23,7 @@ public class IntakeCommand extends Command {
   public void initialize() {
     intake.setMotor(intakeSpeed);
     intake.setRunning(true);
-    // m_Transport.setMotor(transportSpeed);
+    transport.setMotor(transportSpeed);
     transport.setRunning(true);
   }
 
@@ -35,14 +35,12 @@ public class IntakeCommand extends Command {
   public void end(boolean interrupted) {
     intake.stopMotor();
     intake.setRunning(false);
-    // transport.stopMotor();
+    transport.stopMotor();
     transport.setRunning(false);
   }
 
   @Override
   public boolean isFinished() {
-    // return m_Transport.getIR() && intakeSpeed > 0;
-    // return intake.getForwardLimit();
-    return false;
+    return transport.getIR();
   }
 }
