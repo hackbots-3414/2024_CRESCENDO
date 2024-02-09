@@ -84,7 +84,9 @@ public class Constants {
         public static final double kI = 0.0;
         public static final double kD = 0.0;
 
-        public static final double shootVelo = 8.0;
+        public static final double shootVelo = 800.0;
+
+        public static final double shooterTolerance = 50.0;
     }
 
     public static final class IntakeConstants {
