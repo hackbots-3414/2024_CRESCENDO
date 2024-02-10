@@ -11,11 +11,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AprilTags;
 import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.IntakeCommand;
@@ -35,7 +38,10 @@ import frc.robot.subsystems.SubsystemManager;
 public class RobotContainer {
   public enum RepathChoices {SHOOTER,AMP,SOURCE,NULL;}
   
-  private final CommandXboxController joystick = new CommandXboxController(Constants.InputConstants.kDriverControllerPort);
+  private final Joystick driver = new Joystick(Constants.InputConstants.kDriverControllerPort);
+  private final JoystickButton resetGyroButton = new JoystickButton(driver, Constants.DriverConstants.resetGyroButton);
+  private final JoystickButton repathButton = new JoystickButton(driver, Constants.DriverConstants.repathButton);
+  
   private final CommandXboxController operator = new CommandXboxController(Constants.InputConstants.kOperatorControllerPort);
 
   SendableChooser<Command> pathChooser = new SendableChooser<>();
@@ -52,18 +58,19 @@ public class RobotContainer {
   public SubsystemManager subsystemManager = new SubsystemManager();
   
   private void configureDriverBindings() {
-    subsystemManager.configureDriveDefaults(() -> joystick.getLeftY(), () -> joystick.getLeftX(), () -> joystick.getRightX());
+    resetGyroButton.onTrue(subsystemManager.makeResetCommand());
+    subsystemManager.configureDriveDefaults(() -> -driver.getRawAxis(Constants.DriverConstants.leftY), () -> driver.getRawAxis(Constants.DriverConstants.leftX), () -> driver.getRawAxis(Constants.DriverConstants.rightX));
 
-    joystick.a().whileTrue(subsystemManager.makeBrakeCommand());
-    joystick.b().whileTrue(subsystemManager.makePointCommand(joystick.getLeftX(), joystick.getLeftY()));
-    joystick.leftBumper().onTrue(subsystemManager.makeResetCommand());
+    // joystick.a().whileTrue(subsystemManager.makeBrakeCommand());
+    // joystick.b().whileTrue(subsystemManager.makePointCommand(joystick.getLeftX(), joystick.getLeftY()));
+    // joystick.leftBumper().onTrue(subsystemManager.makeResetCommand());
 
     if (Utils.isSimulation()) {subsystemManager.resetAtPose2d(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));}
     subsystemManager.telemeterize();
   }
 
   public RepathChoices checkForOverrides() {
-    if (joystick.x().getAsBoolean()) return RepathChoices.SHOOTER;
+    if (repathButton.getAsBoolean()) return RepathChoices.SHOOTER;
     return null;
   }
   public boolean isAtSetpoint(RepathChoices commandName) {
