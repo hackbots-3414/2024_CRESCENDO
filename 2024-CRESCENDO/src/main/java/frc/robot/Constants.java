@@ -95,7 +95,6 @@ public class Constants {
         public static final double intakeSpeed = 1;
         public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = false;
-        public static final int rightX = 3;
     }
 
     public static final class InputConstants {
@@ -113,6 +112,7 @@ public class Constants {
         public static final int repathButton = 12;
         public static final int leftX = 0;
         public static final int leftY = 1;
+        public static final int rightX = 3;
     }
 
     public static final class TransportConstants {
