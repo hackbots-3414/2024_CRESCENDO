@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.AprilTags;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PivotConstants;
@@ -105,12 +104,9 @@ public class SubsystemManager extends SubsystemBase {
 
   public void telemeterize() {drivetrain.registerTelemetry(logger::telemeterize);}
 
-  public boolean setpointCalculate(Pose2d target, double tolerance) {return drivetrain.getPose().getTranslation().getDistance(target.getTranslation()) < tolerance;}
-
   public Command makeElevatorCommand(ElevatorPresets preset) {return new ElevatorCommand(elevator, shooterPivot, preset);}
   public Command makeShootCommand(double speed) {return new ShooterCommand(shooter, Constants.ShooterConstants.shootSpeed);}
   public Command makeIntakeCommand() {return new IntakeCommand(transport, intake, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed);}
   public Command makeEjectCommand() {return new IntakeCommand(transport, intake, Constants.IntakeConstants.ejectSpeed, Constants.TransportConstants.transportEjectSpeed);}
-  public Command makeRepathCommand(AprilTags apriltag) {return drivetrain.repathTo(apriltag);}
   public Command makeTransportCommand(boolean forward) {return new TransportCommand(transport, forward);}
 }

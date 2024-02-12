@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Gamepiece;
 import frc.robot.Constants.NoteFinderConstants;
 
 /**
@@ -152,4 +151,28 @@ public class NoteFinder extends SubsystemBase {
     }
     return returnArray;
   }
+
+  public class Gamepiece {
+    private double angle = 0;
+    private double confidence = 0;
+    
+    public double getAngle() {
+        return angle;
+    }
+    public void setAngle(double angle) {
+        this.angle = angle;
+    }
+    public double getConfidence() {
+        return confidence;
+    }
+    public void setConfidence(double confidence) {
+        this.confidence = confidence;
+    }
+
+    public String toString() {
+        StringBuilder out = new StringBuilder("Gamepiece angle: ").append(angle);
+        out.append(", confidence: ").append(confidence);
+        return out.toString();
+    }
+}
 }

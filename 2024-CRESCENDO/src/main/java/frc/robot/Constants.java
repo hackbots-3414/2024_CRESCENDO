@@ -60,14 +60,7 @@ public class Constants {
          */
         public static final Transform3d leftTransform = new Transform3d(-0.5, 0, 0,
                 new Rotation3d(0, -Math.PI / 4.0, 0)); // FIXME Give me values that are accurate please
-        public static final Transform3d rightTransform = new Transform3d(0, 0, 0, new Rotation3d(0, Math.PI / 4.0, 0)); // FIXME
-                                                                                                                        // Give
-                                                                                                                        // me
-                                                                                                                        // accurate
-                                                                                                                        // values
-                                                                                                                        // as
-                                                                                                                        // well
-                                                                                                                        // please.
+        public static final Transform3d rightTransform = new Transform3d(0, 0, 0, new Rotation3d(0, Math.PI / 4.0, 0)); // FIXME Give me accurate values as well please.
         public static final String leftCameraName = "Cam2";
         public static final String rightCameraName = "Cam1";
     }

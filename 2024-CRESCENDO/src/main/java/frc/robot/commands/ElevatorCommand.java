@@ -6,8 +6,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ShooterPivot;
 
 public class ElevatorCommand extends Command {
-
-    public enum ElevatorPresets {STOW,AMP,TRAP;}
+    public enum ElevatorPresets {STOW, AMP, TRAP;}
 
     Elevator elevator;
     ShooterPivot shooterPivot;
@@ -18,12 +17,6 @@ public class ElevatorCommand extends Command {
         this.elevator = elevator;
         this.shooterPivot = shooterPivot;
         this.selector = selector;
-    }
-
-    @Override
-    public void initialize() {
-        elevator.setRunning(true);
-        shooterPivot.setRunning(true);
     }
 
     @Override
@@ -42,16 +35,5 @@ public class ElevatorCommand extends Command {
                 shooterPivot.setPivotPosition(PositionConstants.trapPresets.shooter);
                 break;
         }
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        elevator.setRunning(false);
-        shooterPivot.setRunning(false);
-    }
-
-    @Override
-    public boolean isFinished() {
-        return false;
     }
 }

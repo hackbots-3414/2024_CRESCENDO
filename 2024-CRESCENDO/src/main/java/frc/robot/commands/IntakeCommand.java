@@ -5,7 +5,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Transport;
 
 public class IntakeCommand extends Command {
-
   Intake intake;
   Transport transport;
   double intakeSpeed;
@@ -22,21 +21,13 @@ public class IntakeCommand extends Command {
   @Override
   public void initialize() {
     intake.setMotor(intakeSpeed);
-    intake.setRunning(true);
     transport.setMotor(transportSpeed);
-    transport.setRunning(true);
-  }
-
-  @Override
-  public void execute() {
   }
 
   @Override
   public void end(boolean interrupted) {
     intake.stopMotor();
-    intake.setRunning(false);
     transport.stopMotor();
-    transport.setRunning(false);
   }
 
   @Override
