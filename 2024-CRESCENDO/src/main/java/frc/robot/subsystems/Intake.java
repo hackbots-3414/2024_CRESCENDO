@@ -8,17 +8,13 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase implements AutoCloseable {
 
   TalonFX intakeMotor;
-
   DutyCycleOut m_DutyCycleOut = new DutyCycleOut(0.0);
-  
-  private boolean isRunning = false;
 
   public Intake() {
     intakeMotor = new TalonFX(Constants.IntakeConstants.intakeMotorID);
@@ -38,10 +34,6 @@ public class Intake extends SubsystemBase implements AutoCloseable {
     intakeMotor.setControl(m_DutyCycleOut.withOutput(0.0));
   }
 
-  public double getSpeed() {
-    return intakeMotor.getVelocity().getValueAsDouble();
-  }
-
   public TalonFXSimState getSimState() {
     return intakeMotor.getSimState();
   }
@@ -55,12 +47,10 @@ public class Intake extends SubsystemBase implements AutoCloseable {
   }
 
   public void setCurrentLimit(double limit) {
-    CurrentLimitsConfigs configs = new CurrentLimitsConfigs().withSupplyCurrentLimitEnable(true).withSupplyCurrentLimit(limit);
+    CurrentLimitsConfigs configs = new CurrentLimitsConfigs().withSupplyCurrentLimitEnable(true)
+        .withSupplyCurrentLimit(limit);
     intakeMotor.getConfigurator().apply(configs, 0.01);
   }
-
-  public void setRunning(boolean isRunning) {this.isRunning = isRunning;}
-  public boolean getRunning() {return this.isRunning;}
 
   @Override
   public void close() {

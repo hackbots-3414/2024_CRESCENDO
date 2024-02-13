@@ -5,7 +5,6 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Transport;
 
 public class TransportCommand extends Command {
-
   private Transport transport;
   private boolean forward;
 
@@ -16,22 +15,11 @@ public class TransportCommand extends Command {
 
   @Override
   public void initialize() {
-    double speed = forward ? Constants.TransportConstants.transportSpeed : Constants.TransportConstants.transportEjectSpeed;
-    transport.setMotor(speed);
-    transport.setRunning(true);
+    transport.setMotor(forward ? Constants.TransportConstants.transportSpeed : Constants.TransportConstants.transportEjectSpeed);
   }
-
-  @Override
-  public void execute() {}
 
   @Override
   public void end(boolean interrupted) {
     transport.setMotor(0.0);
-    transport.setRunning(false);
-  }
-
-  @Override
-  public boolean isFinished() {
-    return false;
   }
 }

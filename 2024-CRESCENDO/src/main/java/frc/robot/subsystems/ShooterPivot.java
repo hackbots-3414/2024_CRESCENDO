@@ -23,39 +23,38 @@ import frc.robot.Constants;
 import frc.robot.Constants.PivotConstants.PivotMotionMagicConstants;
 import frc.robot.Constants.PivotConstants.PivotSlot0ConfigConstants;
 
-public class ShooterPivot extends SubsystemBase implements AutoCloseable{
+public class ShooterPivot extends SubsystemBase implements AutoCloseable {
 
   private final TalonFX pivotMotor = new TalonFX(Constants.PivotConstants.pivotMotorID);
   private final CANcoder cancoder = new CANcoder(Constants.PivotConstants.EncoderID);
 
   private double cancoderPosition;
   private double cancoderVelocity;
-  
-  private boolean isRunning = false;
 
-    private Slot0Configs slot0Config = new Slot0Configs()
-    .withKP(PivotSlot0ConfigConstants.kP)
-    .withKI(PivotSlot0ConfigConstants.kI)
-    .withKD(PivotSlot0ConfigConstants.kD)
-    .withKS(PivotSlot0ConfigConstants.kS)
-    .withKV(PivotSlot0ConfigConstants.kV)
-    .withKA(PivotSlot0ConfigConstants.kA)
-    .withKG(PivotSlot0ConfigConstants.kG)
-    .withGravityType(GravityTypeValue.Arm_Cosine);
+  private Slot0Configs slot0Config = new Slot0Configs()
+      .withKP(PivotSlot0ConfigConstants.kP)
+      .withKI(PivotSlot0ConfigConstants.kI)
+      .withKD(PivotSlot0ConfigConstants.kD)
+      .withKS(PivotSlot0ConfigConstants.kS)
+      .withKV(PivotSlot0ConfigConstants.kV)
+      .withKA(PivotSlot0ConfigConstants.kA)
+      .withKG(PivotSlot0ConfigConstants.kG)
+      .withGravityType(GravityTypeValue.Arm_Cosine);
 
   private MotionMagicConfigs motionMagicConfig = new MotionMagicConfigs()
-    .withMotionMagicCruiseVelocity(PivotMotionMagicConstants.cruiseVelocity)
-    .withMotionMagicAcceleration(PivotMotionMagicConstants.acceleration)
-    .withMotionMagicJerk(PivotMotionMagicConstants.jerk);
-  
-  private MotionMagicVoltage m_request = new MotionMagicVoltage(0.0); // FIXME inital pos might be current pos insted of 0
+      .withMotionMagicCruiseVelocity(PivotMotionMagicConstants.cruiseVelocity)
+      .withMotionMagicAcceleration(PivotMotionMagicConstants.acceleration)
+      .withMotionMagicJerk(PivotMotionMagicConstants.jerk);
+
+  private MotionMagicVoltage m_request = new MotionMagicVoltage(0.0); // FIXME inital pos might be current pos insted of
+                                                                      // 0
 
   FeedbackConfigs feedbackConfig = new FeedbackConfigs()
-    .withFeedbackRemoteSensorID(Constants.PivotConstants.EncoderID)
-    .withFeedbackRotorOffset(Constants.PivotConstants.encoderOffset)
-    .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder)
-    .withRotorToSensorRatio(Constants.PivotConstants.rotorToSensorRatio)
-    .withSensorToMechanismRatio(Constants.PivotConstants.sensorToMechanismRatio);
+      .withFeedbackRemoteSensorID(Constants.PivotConstants.EncoderID)
+      .withFeedbackRotorOffset(Constants.PivotConstants.encoderOffset)
+      .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder)
+      .withRotorToSensorRatio(Constants.PivotConstants.rotorToSensorRatio)
+      .withSensorToMechanismRatio(Constants.PivotConstants.sensorToMechanismRatio);
 
   public ShooterPivot() {
     configMotor();
@@ -67,12 +66,13 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable{
     pivotMotor.setControl(m_request.withPosition(position));
   }
 
-  public double getPivotPosition() {
-    return cancoderPosition;
+  public double getCancoderVelo() {
+    return cancoderVelocity;
   }
 
-  public double getCancoderVelo() {return cancoderVelocity;}
-  public double getCancoderPos() {return cancoderPosition;}
+  public double getCancoderPos() {
+    return cancoderPosition;
+  }
 
   @Override
   public void periodic() {
@@ -97,9 +97,9 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable{
     pivotMotor.getConfigurator().apply(new TalonFXConfiguration());
 
     TalonFXConfiguration configuration = new TalonFXConfiguration()
-    .withSlot0(slot0Config)
-    .withMotionMagic(motionMagicConfig)
-    .withFeedback(feedbackConfig);
+        .withSlot0(slot0Config)
+        .withMotionMagic(motionMagicConfig)
+        .withFeedback(feedbackConfig);
 
     configuration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     configuration.MotorOutput.Inverted = Constants.PivotConstants.motorInvert;
@@ -117,13 +117,11 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable{
     pivotMotor.getConfigurator().apply(configuration);
   }
 
-    public void setCurrentLimit(double limit) {
-    CurrentLimitsConfigs configs = new CurrentLimitsConfigs().withSupplyCurrentLimitEnable(true).withSupplyCurrentLimit(limit);
+  public void setCurrentLimit(double limit) {
+    CurrentLimitsConfigs configs = new CurrentLimitsConfigs().withSupplyCurrentLimitEnable(true)
+        .withSupplyCurrentLimit(limit);
     pivotMotor.getConfigurator().apply(configs, 0.01);
   }
-
-  public void setRunning(boolean isRunning) {this.isRunning = isRunning;}
-  public boolean getRunning() {return this.isRunning;}
 
   @Override
   public void close() throws Exception {
@@ -131,10 +129,16 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable{
     cancoder.close();
   }
 
-  public void setControl(DutyCycleOut dutyCycle) {pivotMotor.setControl(dutyCycle);}
+  public void setControl(DutyCycleOut dutyCycle) {
+    pivotMotor.setControl(dutyCycle);
+  }
 
-  public StatusSignal<Double> getMotorDutyCycle() {return pivotMotor.getDutyCycle();}
+  public StatusSignal<Double> getMotorDutyCycle() {
+    return pivotMotor.getDutyCycle();
+  }
 
-  public TalonFXSimState getSimState() {return pivotMotor.getSimState();}
+  public TalonFXSimState getSimState() {
+    return pivotMotor.getSimState();
+  }
 
 }

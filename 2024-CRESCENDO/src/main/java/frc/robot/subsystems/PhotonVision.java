@@ -25,13 +25,14 @@ public class PhotonVision extends SubsystemBase implements AutoCloseable {
   private PhotonPoseEstimator leftEstimator;
   private PhotonPoseEstimator rightEstimator;
 
-  /** Creates a new PhotonVision. 
+  /**
+   * Creates a new PhotonVision.
    * 
    **/
   public PhotonVision() {
     cameraLeft = new PhotonCamera(Constants.VisionConstants.leftCameraName);
     cameraRight = new PhotonCamera(Constants.VisionConstants.rightCameraName);
-    
+
     try {
       field = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
     } catch (IOException e) {
@@ -44,8 +45,13 @@ public class PhotonVision extends SubsystemBase implements AutoCloseable {
     rightEstimator = new PhotonPoseEstimator(field, strategy, cameraRight, Constants.VisionConstants.rightTransform);
   }
 
-  public Optional<EstimatedRobotPose> getGlobalPoseFromLeft() {return leftEstimator.update();}
-  public Optional<EstimatedRobotPose> getGlobalPoseFromRight() {return rightEstimator.update();}
+  public Optional<EstimatedRobotPose> getGlobalPoseFromLeft() {
+    return leftEstimator.update();
+  }
+
+  public Optional<EstimatedRobotPose> getGlobalPoseFromRight() {
+    return rightEstimator.update();
+  }
 
   @Override
   public void close() throws Exception {
