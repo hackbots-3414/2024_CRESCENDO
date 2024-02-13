@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.Map;
+
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
@@ -8,6 +10,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
+
+import static java.util.Map.entry;
 
 public class Constants {
     public enum AprilTags {
@@ -80,6 +84,17 @@ public class Constants {
         public static final double shootVelo = 800.0;
 
         public static final double shooterTolerance = 50.0;
+
+        public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
+            entry(0.0, 0.0),
+            entry(1.0, 1.0),
+            entry(2.0, 2.0),
+            entry(3.0, 3.0),
+            entry(4.0, 4.0),
+            entry(5.0, 5.0),
+            entry(6.0, 6.0),
+            entry(7.0, 7.0)
+        );
     }
 
     public static final class IntakeConstants {
