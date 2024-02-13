@@ -31,8 +31,6 @@ public class RobotContainer {
   SendableChooser<Command> pathChooser = new SendableChooser<>();
 
   public SubsystemManager subsystemManager = new SubsystemManager();
-
-  public NoteFinder m_NoteFinder = new NoteFinder();
   
   private void configureDriverBindings() {
     resetGyroButton.onTrue(subsystemManager.makeResetCommand());
