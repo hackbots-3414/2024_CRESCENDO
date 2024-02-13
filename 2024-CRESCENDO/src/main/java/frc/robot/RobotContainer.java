@@ -17,17 +17,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ElevatorCommand.ElevatorPresets;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.LedCommand;
-import frc.robot.commands.ShooterCommand;
-import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.NoteFinder;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.ShooterPivot;
-import frc.robot.subsystems.Transport;
-import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.NoteFinder;
 import frc.robot.subsystems.SubsystemManager;
 
