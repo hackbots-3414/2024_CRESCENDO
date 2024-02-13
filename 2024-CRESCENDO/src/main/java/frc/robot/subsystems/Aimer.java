@@ -5,20 +5,20 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants;
 
 public class Aimer {
 
-    public static Rotation3d calculateAim(Pose3d robotPose, Pose3d goalPose) {
+    /**
+     * Returns a double that is the ideal pivot angle for however far away we are from the target.
+     * @return A double (in degrees) that is best for our current position. This is from the HashMap in Constants.java.ShooterConstants.rotationLookupTable
+     */
+    public static double calculateAim(Pose3d robotPose, Pose3d goalPose) {
         // calculate the top-down rotation angle
-        Pose3d relativePose = goalPose.relativeTo(robotPose);
-        double robotRotation = relativePose.getRotation().getZ(); // this does not work... please make it work
+        double robotDistance = robotPose.toPose2d().getTranslation().getDistance(goalPose.toPose2d().getTranslation());
 
-        double robotDistance = relativePose.toPose2d().getTranslation().getDistance(new Translation2d());
-
-        double shooterRotation = -1.0;
+        double shooterRotation = 0.0;
         double bestError = Double.POSITIVE_INFINITY;
 
         for (double currentDistance : Constants.ShooterConstants.rotationLookupTable.keySet()) {
@@ -30,9 +30,6 @@ public class Aimer {
             }
         }
 
-        // because the values in our map are in degrees for better readability, we now need to convert the angles to radians.
-        shooterRotation *= (Math.PI / 180.0);
-
-        return new Rotation3d(0, shooterRotation, robotRotation);
+        return shooterRotation;
     }
 }
