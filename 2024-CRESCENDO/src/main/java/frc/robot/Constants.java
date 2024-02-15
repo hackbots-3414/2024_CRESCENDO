@@ -167,6 +167,11 @@ public class Constants {
 
         public static final double elevatorLowerLimit = 0;
         public static final double elevatorUpperLimit = 1;
+        
+        public static final double minimumDistanceToNotBreakRobot = 1; // meters from speaker
+        public static final double clearanceHeight = 0.2; // meters up;
+        public static final double elevatorTilt = Math.toRadians(30);
+        public static final double minimumHeight = 0.1; // ONLY Y DIRECTION
 
         public static final class ElevatorSlot0ConfigConstants {
             public static final double kP = 0.0; //output per unit of error in position (output/rotation)
@@ -248,5 +253,11 @@ public class Constants {
         public static final int DATAGRAM_PORT = 5800;
         public static final int BUFFER_SIZE = 512;
         public static final double CYCLE_TIME = 0.015;
+    }
+
+    public class FieldConstants {
+        public static final double speakerHeight = 5; // meters
+        public static final double speakerX = 0.1; // meters
+        public static final double speakerY = 5.6; // meters
     }
 }

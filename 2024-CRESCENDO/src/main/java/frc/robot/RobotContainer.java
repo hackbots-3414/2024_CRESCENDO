@@ -36,6 +36,7 @@ public class RobotContainer {
     resetGyroButton.onTrue(subsystemManager.makeResetCommand());
     subsystemManager.configureDriveDefaults(() -> -driver.getRawAxis(Constants.DriverConstants.leftY), () -> driver.getRawAxis(Constants.DriverConstants.leftX), () -> driver.getRawAxis(Constants.DriverConstants.rightX));
 
+
     // joystick.a().whileTrue(subsystemManager.makeBrakeCommand());
     // joystick.b().whileTrue(subsystemManager.makePointCommand(joystick.getLeftX(), joystick.getLeftY()));
     // joystick.leftBumper().onTrue(subsystemManager.makeResetCommand());
@@ -48,6 +49,7 @@ public class RobotContainer {
     // operator.a().whileTrue(<ADD COMMAND>);
     operator.b().whileTrue(subsystemManager.makeShootCommand(Constants.ShooterConstants.shootSpeed));
     operator.x().whileTrue(subsystemManager.makeIntakeCommand());
+    operator.a().whileTrue(subsystemManager.makeAutoAimCommand(() -> operator.getLeftX(), () -> operator.getLeftY(), () -> operator.getRightX()));
     // operator.y().whileTrue(<ADD COMMAND>);
     // operator.leftBumper().whileTrue(<ADD COMMAND>);
     operator.rightBumper().whileTrue(subsystemManager.makeEjectCommand());

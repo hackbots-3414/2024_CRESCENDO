@@ -24,6 +24,7 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TransportConstants;
 import frc.robot.Telemetry;
+import frc.robot.commands.AimRobotCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.IntakeCommand;
@@ -109,4 +110,5 @@ public class SubsystemManager extends SubsystemBase {
   public Command makeIntakeCommand() {return new IntakeCommand(transport, intake, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed);}
   public Command makeEjectCommand() {return new IntakeCommand(transport, intake, Constants.IntakeConstants.ejectSpeed, Constants.TransportConstants.transportEjectSpeed);}
   public Command makeTransportCommand(boolean forward) {return new TransportCommand(transport, forward);}
+  public Command makeAutoAimCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {return new AimRobotCommand(elevator, shooterPivot, drivetrain, x, y, turn);}
 }
