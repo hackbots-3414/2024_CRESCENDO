@@ -256,8 +256,8 @@ public class Constants {
     }
 
     public class FieldConstants {
-        public static final double speakerHeight = 5; // meters
-        public static final double speakerX = 0.1; // meters
+        public static final double speakerHeight = 2; // meters
+        public static final double speakerX = Units.inchesToMeters(-1.5); // meters
         public static final double speakerY = 5.6; // meters
     }
 }

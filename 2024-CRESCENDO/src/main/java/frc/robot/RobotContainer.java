@@ -34,7 +34,7 @@ public class RobotContainer {
   
   private void configureDriverBindings() {
     resetGyroButton.onTrue(subsystemManager.makeResetCommand());
-    subsystemManager.configureDriveDefaults(() -> -driver.getRawAxis(Constants.DriverConstants.leftY), () -> driver.getRawAxis(Constants.DriverConstants.leftX), () -> driver.getRawAxis(Constants.DriverConstants.rightX));
+    subsystemManager.configureDriveDefaults(() -> driver.getRawAxis(Constants.DriverConstants.leftY), () -> driver.getRawAxis(Constants.DriverConstants.leftX), () -> driver.getRawAxis(Constants.DriverConstants.rightX));
 
 
     // joystick.a().whileTrue(subsystemManager.makeBrakeCommand());

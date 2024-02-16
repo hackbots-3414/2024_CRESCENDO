@@ -8,11 +8,16 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentricFacingAngle;
 
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Constants.AprilTags;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -32,16 +37,22 @@ public class AimRobotCommand extends Command {
     Supplier<Double> xSupplier;
     Supplier<Double> ySupplier;
     Supplier<Double> rSupplier;
+    Supplier<Alliance> aSupplier;
+    boolean blueSide = false;
 
     Command currentDriveCommand;
 
     FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.1).withRotationalDeadband(Constants.SwerveConstants.maxAngleVelocity * 0.1).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     FieldCentricFacingAngle autoRequest = new SwerveRequest.FieldCentricFacingAngle().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.1).withRotationalDeadband(Constants.SwerveConstants.maxAngleVelocity * 0.1).withSteerRequestType(SteerRequestType.MotionMagic);
 
-    double velocityParallelGain = 0.01;
-    double velocityPerpendicularGain = 0.01;
+    double velocityParallelGain = 0.1;
+    double velocityPerpendicularGain = 0;
 
-    public AimRobotCommand(Elevator elevator, ShooterPivot shooterPivot, CommandSwerveDrivetrain drivetrain, Supplier<Double> xSupplier, Supplier<Double> ySupplier, Supplier<Double> rSupplier) {
+    PIDController pidTurn = new PIDController(0.05, 0, 0);
+    Pose2d robotPosition2d;
+
+
+    public AimRobotCommand(Elevator elevator, ShooterPivot shooterPivot, CommandSwerveDrivetrain drivetrain, Supplier<Double> xSupplier, Supplier<Double> ySupplier, Supplier<Double> rSupplier, Supplier<Alliance> aSupplier) {
         addRequirements(elevator);
         this.elevator = elevator;
         this.shooterPivot = shooterPivot;
@@ -49,6 +60,7 @@ public class AimRobotCommand extends Command {
         this.xSupplier = xSupplier;
         this.ySupplier = ySupplier;
         this.rSupplier = rSupplier;
+        this.aSupplier = aSupplier;
     }
 
     private void recalculate() {
@@ -58,11 +70,11 @@ public class AimRobotCommand extends Command {
         double yawAdd = velocityParallel * velocityParallelGain;
         double pitchAdd = velocityPerpendicular * velocityPerpendicularGain;
 
-        drivetrainRotation = new Rotation2d(FieldConstants.speakerX, FieldConstants.speakerY).plus(Rotation2d.fromRadians(yawAdd));
-
-        Pose2d robotPosition2d = drivetrain.getPose();
-        Pose2d speakerPosition = new Pose2d(FieldConstants.speakerX, FieldConstants.speakerY, drivetrainRotation);
+        robotPosition2d = drivetrain.getPose();
+        Pose2d speakerPosition =  blueSide ? AprilTags.BlueSpeakerCenter.value.getPose2d() : AprilTags.RedSpeakerCenter.value.getPose2d();
         Pose2d speakerRelative = speakerPosition.relativeTo(robotPosition2d);
+
+        drivetrainRotation = speakerPosition.getTranslation().minus(robotPosition2d.getTranslation()).getAngle()/*.plus(Rotation2d.fromDegrees(yawAdd))*/;
 
         double v = ShooterConstants.shootSpeed;
         double g = 9.81;
@@ -86,16 +98,27 @@ public class AimRobotCommand extends Command {
 
     @Override
     public void execute() {
+        blueSide = aSupplier.get() == Alliance.Blue;
         recalculate();
         elevator.setElevatorPosition(elevatorHeight);
         shooterPivot.setPivotPosition(shooterAngle);
+        double compensate = blueSide ? -360 : 0;
+        double measurement = robotPosition2d.getRotation().getDegrees() > 0 ? robotPosition2d.getRotation().getDegrees() + compensate : robotPosition2d.getRotation().getDegrees();
+        double setpoint = drivetrainRotation.getDegrees() > 0 ? drivetrainRotation.getDegrees() + compensate : drivetrainRotation.getDegrees();
 
-        if (rSupplier.get() > 0.3) {
-            currentDriveCommand = drivetrain.applyRequest(() -> driveRequest.withVelocityX(-xSupplier.get() * SwerveConstants.maxDriveVelocity).withVelocityY(-ySupplier.get() * SwerveConstants.maxDriveVelocity).withRotationalRate(-rSupplier.get() * SwerveConstants.maxAngleVelocity));
-        } else {
-            currentDriveCommand = drivetrain.applyRequest(() -> autoRequest.withVelocityX(-xSupplier.get() * SwerveConstants.maxDriveVelocity).withVelocityY(-ySupplier.get() * SwerveConstants.maxDriveVelocity).withTargetDirection(drivetrainRotation));
-        }
+        SmartDashboard.putNumber("elevator height", elevatorHeight);
+        SmartDashboard.putNumber("pivot position", shooterAngle);
+
+        currentDriveCommand = drivetrain.applyRequest(() -> driveRequest.withVelocityX(xSupplier.get() * SwerveConstants.maxDriveVelocity)
+                                .withVelocityY(-ySupplier.get() * SwerveConstants.maxDriveVelocity)
+                                .withRotationalRate((rSupplier.get() > 0.3 || rSupplier.get() < -0.3) ? (-rSupplier.get() * SwerveConstants.maxAngleVelocity) 
+                                : (pidTurn.calculate(measurement, setpoint) * Constants.SwerveConstants.maxAngleVelocity)));
+
+        currentDriveCommand.schedule();
     }
+
+    @Override
+    public void end(boolean interrupted) {currentDriveCommand.cancel();}
 
     private boolean runTests(double velocity, double launchAngle, double gravity, double checkX, double checkY) {
         double initialVelocityX = velocity * Math.cos(launchAngle);
