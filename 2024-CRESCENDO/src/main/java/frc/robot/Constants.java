@@ -75,15 +75,15 @@ public class Constants {
         public static final int leftMotorPDPID = 4;
         public static final int rightMotorPDPID = 5;
         public static final double shootSpeed = 0.1;
-        public static final boolean shooterMotorInvert = false;
+        public static final boolean shooterMotorInvert = true;
 
-        public static final double kP = 1.0;
+        public static final double kP = 5.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
 
-        public static final double shootVelo = 800.0;
+        public static final double shootVelo = 92.0; // Rotations per second
 
-        public static final double shooterTolerance = 50.0;
+        public static final double shooterTolerance = 8.0;
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
             entry(0.0, 0.0),
@@ -102,7 +102,7 @@ public class Constants {
         public static final int intakeMotorPDPID = 15;
         public static final double intakeSpeed = 1;
         public static final double ejectSpeed = -1;
-        public static final boolean intakeMotorInvert = false;
+        public static final boolean intakeMotorInvert = true;
     }
 
     public static final class InputConstants {
@@ -126,7 +126,7 @@ public class Constants {
     public static final class TransportConstants {
         public static final int transportMotorID = 56;
         public static final int transportMotorPDPID = 16;
-        public static final boolean transportMotorInvert = false;
+        public static final boolean transportMotorInvert = true;
         public static final double transportSpeed = 0.5;
         public static final double transportEjectSpeed = -0.5;
         public static final int irSensorChannel = 2;
@@ -184,14 +184,14 @@ public class Constants {
             public static final double jerk = 0.0; // Target Jerk
         }
 
-        public static double elevatorCurrentLimit;
+        public static double elevatorCurrentLimit = 20;
         public static double circumference;
         public static double gearRatio;
     }
 
     public static final class PivotConstants {
         public static final int pivotMotorID = 59;
-        public static final int EncoderID = 0;
+        public static final int EncoderID = 51;
         public static final double encoderOffset = 0; // FIX ME
 
         public static final double rotorToSensorRatio = 0.0; // FIX ME

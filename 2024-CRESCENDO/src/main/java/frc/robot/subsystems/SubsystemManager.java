@@ -77,13 +77,13 @@ public class SubsystemManager extends SubsystemBase {
     transport.periodic();
     elevator.periodic();
 
-    elevatorCurrent = pdp.getCurrent(ElevatorConstants.elevatorMotorPDPID) + pdp.getCurrent(ElevatorConstants.elevatorFollowerMotorPDPID);
-    intakeCurrent = pdp.getCurrent(IntakeConstants.intakeMotorPDPID);
-    shooterPivotCurrent = pdp.getCurrent(PivotConstants.pivotMotorPDPID);
-    shooterCurrent = pdp.getCurrent(ShooterConstants.leftMotorID) + pdp.getCurrent(ShooterConstants.rightMotorID);
-    transportCurrent = pdp.getCurrent(TransportConstants.transportMotorPDPID);
+    // elevatorCurrent = pdp.getCurrent(ElevatorConstants.elevatorMotorPDPID) + pdp.getCurrent(ElevatorConstants.elevatorFollowerMotorPDPID);
+    // intakeCurrent = pdp.getCurrent(IntakeConstants.intakeMotorPDPID);
+    // shooterPivotCurrent = pdp.getCurrent(PivotConstants.pivotMotorPDPID);
+    // shooterCurrent = pdp.getCurrent(ShooterConstants.leftMotorID) + pdp.getCurrent(ShooterConstants.rightMotorID);
+    // transportCurrent = pdp.getCurrent(TransportConstants.transportMotorPDPID);
 
-    dampenDrivetrain();
+    // dampenDrivetrain();
   }
 
   private void dampenDrivetrain() {
