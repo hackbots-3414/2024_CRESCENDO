@@ -12,6 +12,8 @@
       "/Pose": "Field2d",
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Auton Mode": "String Chooser",
+      "/SmartDashboard/Brake Elevator": "Command",
+      "/SmartDashboard/Coast Elevator": "Command",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Module 0": "Mechanism2d",
       "/SmartDashboard/Module 1": "Mechanism2d",
@@ -41,7 +43,10 @@
         "left": 150,
         "right": 2961,
         "top": 79,
-        "width": 16.541748046875
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
       },
       "/SmartDashboard/Module 0": {
         "window": {

@@ -8,7 +8,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentricFacingAngle;
 
-import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -45,7 +44,7 @@ public class AimRobotCommand extends Command {
     FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.1).withRotationalDeadband(Constants.SwerveConstants.maxAngleVelocity * 0.1).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     FieldCentricFacingAngle autoRequest = new SwerveRequest.FieldCentricFacingAngle().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.1).withRotationalDeadband(Constants.SwerveConstants.maxAngleVelocity * 0.1).withSteerRequestType(SteerRequestType.MotionMagic);
 
-    double velocityParallelGain = 0.1;
+    double velocityParallelGain = 0.0;
     double velocityPerpendicularGain = 0;
 
     PIDController pidTurn = new PIDController(0.05, 0, 0);
@@ -74,7 +73,7 @@ public class AimRobotCommand extends Command {
         Pose2d speakerPosition =  blueSide ? AprilTags.BlueSpeakerCenter.value.getPose2d() : AprilTags.RedSpeakerCenter.value.getPose2d();
         Pose2d speakerRelative = speakerPosition.relativeTo(robotPosition2d);
 
-        drivetrainRotation = speakerPosition.getTranslation().minus(robotPosition2d.getTranslation()).getAngle()/*.plus(Rotation2d.fromDegrees(yawAdd))*/;
+        drivetrainRotation = speakerPosition.getTranslation().minus(robotPosition2d.getTranslation()).getAngle().plus(Rotation2d.fromDegrees(yawAdd));
 
         double v = ShooterConstants.shootSpeed;
         double g = 9.81;
@@ -89,11 +88,10 @@ public class AimRobotCommand extends Command {
             x += elevatorHeight * Math.cos(ElevatorConstants.elevatorTilt);
         }
 
-        double theta1 = Math.atan((v * v + Math.sqrt(v * v * v * v - g * (g * x * x + 2 * y * v * v))) / (g * x));
-        double theta2 = Math.atan((v * v - Math.sqrt(v * v * v * v - g * (g * x * x + 2 * y * v * v))) / (g * x));
-        double launchAngle = x > 0 ? theta1 : theta2; // radians
-        if (!runTests(v, launchAngle, g, x, y)) launchAngle = launchAngle == theta1 ? theta2 : theta1;
-        shooterAngle = launchAngle + pitchAdd;        
+        double theta = Math.atan((Math.pow(v, 2) - Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(x, 2) + 2 * y * Math.pow(v, 2)))) / (g * x));
+        SmartDashboard.putNumber("THETA 1", theta);
+        // if (!runTests(v, launchAngle, g, x, y)) launchAngle = launchAngle == theta1 ? theta2 : theta1;
+        shooterAngle = theta + pitchAdd;        
     }
 
     @Override

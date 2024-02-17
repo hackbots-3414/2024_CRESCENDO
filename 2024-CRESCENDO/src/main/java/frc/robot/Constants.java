@@ -71,7 +71,7 @@ public class Constants {
         public static final int rightMotorID = 58;
         public static final int leftMotorPDPID = 4;
         public static final int rightMotorPDPID = 5;
-        public static final double shootSpeed = 0.1;
+        public static final double shootSpeed = 20;
         public static final boolean shooterMotorInvert = true;
 
         public static final double kP = 0.8;
