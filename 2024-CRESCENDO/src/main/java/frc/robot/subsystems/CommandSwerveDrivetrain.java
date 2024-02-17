@@ -23,6 +23,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -39,6 +40,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private Pose2d estimatedPose;
 
     private HashMap<String, Command> eventMarkers = new HashMap<>();
+
+    private boolean inRange = false;
 
     private PhotonVision photonVision;
 
@@ -137,6 +140,12 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         SmartDashboard.putString("ROBOTPOSE", estimatedPose.toString());
         SmartDashboard.putNumber("ROBOTX", estimatedPose.getX());
         SmartDashboard.putNumber("ROBOTY", estimatedPose.getY());
+        // check inRange
+        if (DriverStation.getAlliance().get() == Alliance.Blue) {
+            inRange = false;
+        } else {
+            inRange = false;
+        }
     }
 
     public Pose2d getPose() {
@@ -148,12 +157,17 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 .withSupplyCurrentLimitEnable(true)
                 .withSupplyCurrentLimit(limit);
 
-        for (int i = 0; i < 3; i++) getModule(i).getDriveMotor().getConfigurator().apply(configs);
+        for (int i = 0; i < 3; i++)
+            getModule(i).getDriveMotor().getConfigurator().apply(configs);
         getModule(3).getDriveMotor().getConfigurator().apply(configs, 0.015);
     }
 
     @Override
     public void periodic() {
         updateOdometry();
+    }
+    
+    public boolean isInRange() {
+        return inRange;
     }
 }
