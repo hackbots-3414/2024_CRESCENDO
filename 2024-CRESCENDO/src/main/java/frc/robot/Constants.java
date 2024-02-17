@@ -143,11 +143,12 @@ public class Constants {
 
         public static final class trapPresets {
             public static final double elevator = 2.32;
-            public static final double shooter = 0;
+            public static final double shooter = 0.088379;
         }
 
         public static final class testPresets {
             public static final double elevator = 6 / (Math.PI * 1.751);
+            public static final double shooter = 0.02;
         }
 
     }
@@ -189,7 +190,7 @@ public class Constants {
     public static final class PivotConstants {
         public static final int pivotMotorID = 59;
         public static final int EncoderID = 51;
-        public static final double encoderOffset = 0; // FIX ME
+        public static final double encoderOffset = -0.085693;
 
         public static final double rotorToSensorRatio = 125;
         public static final double sensorToMechanismRatio = 1.0;
@@ -197,30 +198,30 @@ public class Constants {
         public static final int pivotMotorPDPID = 14;
 
         public static final InvertedValue motorInvert = InvertedValue.CounterClockwise_Positive;
-        public static final SensorDirectionValue cancoderInvert = SensorDirectionValue.CounterClockwise_Positive;
+        public static final SensorDirectionValue cancoderInvert = SensorDirectionValue.Clockwise_Positive;
 
-        public static final double forwardSoftLimitThreshold = 0.5;
+        public static final double forwardSoftLimitThreshold = 0.088379;
         public static final double reverseSoftLimitThreshold = 0;
 
-        public static final double pivotManualUpSpeed = 0.1;
-        public static final double pivotManualDownSpeed = -0.1;
+        public static final double pivotManualUpSpeed = 0.05;
+        public static final double pivotManualDownSpeed = -0.05;
 
         public static final double motorCurrentLimit = 0;
 
         public static final class PivotSlot0ConfigConstants {
-            public static final double kP = 0.0; //output per unit of error in position (output/rotation)
+            public static final double kP = 50.0; //output per unit of error in position (output/rotation)
             public static final double kI = 0.0; //output per unit of integrated error in position (output/(rotation*s))
             public static final double kD = 0.0; //output per unit of error in velocity (output/rps)
             public static final double kS = 0.0; //output to overcome static friction (output)
-            public static final double kV = 0.0; //output per unit of target velocity (output/rps)
+            public static final double kV = 15.0; //output per unit of target velocity (output/rps)
             public static final double kA = 0.0; //output per unit of target acceleration (output/(rps/s))
             public static final double kG = 0.0; //feedforward Constant
         }
 
         public static final class PivotMotionMagicConstants {
-            public static final double cruiseVelocity = 0.0; // Target cruise velocity
-            public static final double acceleration = 0.0; // Target acceleration
-            public static final double jerk = 0.0; // Target Jerk
+            public static final double cruiseVelocity = 0.088379; // Target cruise velocity
+            public static final double acceleration = cruiseVelocity * 2; // Target acceleration
+            public static final double jerk = acceleration * 10; // Target Jerk
         }
     }
 

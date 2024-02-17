@@ -24,7 +24,7 @@ public class ElevatorCommand extends Command {
         switch (selector) {
             case STOW:
                 elevator.setElevatorPosition(PositionConstants.stowPresets.elevator);
-                // shooterPivot.setPivotPosition(PositionConstants.stowPresets.shooter);
+                shooterPivot.setPivotPosition(PositionConstants.stowPresets.shooter);
                 break;
             case AMP:
                 elevator.setElevatorPosition(PositionConstants.ampPresets.elevator);
@@ -32,10 +32,11 @@ public class ElevatorCommand extends Command {
                 break;
             case TRAP:
                 elevator.setElevatorPosition(PositionConstants.trapPresets.elevator);
-                // shooterPivot.setPivotPosition(PositionConstants.trapPresets.shooter);
+                shooterPivot.setPivotPosition(PositionConstants.trapPresets.shooter);
                 break;
             case TEST:
                 elevator.setElevatorPosition(PositionConstants.testPresets.elevator);
+                shooterPivot.setPivotPosition(PositionConstants.testPresets.shooter);
         }
     }
 }
