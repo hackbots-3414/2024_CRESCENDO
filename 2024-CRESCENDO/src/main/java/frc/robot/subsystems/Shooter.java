@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
@@ -37,7 +38,8 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
   private Slot0Configs pidConfig = new Slot0Configs()
       .withKP(Constants.ShooterConstants.kP)
       .withKI(Constants.ShooterConstants.kI)
-      .withKD(Constants.ShooterConstants.kD);
+      .withKD(Constants.ShooterConstants.kD)
+      .withKS(Constants.ShooterConstants.kS);
 
   private final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
 
@@ -55,14 +57,14 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
 
     rightMotor.setInverted(Constants.ShooterConstants.shooterMotorInvert);
 
-    // leftMotor.setControl(new Follower(rightMotor.getDeviceID(), true));
+    leftMotor.setControl(new Follower(rightMotor.getDeviceID(), true));
   }
 
   @Override
   public void periodic() {
-    motorVelocity = (leftMotor.getVelocity().getValueAsDouble() + rightMotor.getVelocity().getValueAsDouble()) / 2.0;
-    motorSpeed = (leftMotor.get() + rightMotor.get()) / 2.0;
-    motorPosition = (leftMotor.getPosition().getValueAsDouble() + rightMotor.getPosition().getValueAsDouble()) / 2.0;
+    motorVelocity = rightMotor.getVelocity().getValueAsDouble();
+    motorSpeed = rightMotor.get();
+    motorPosition = rightMotor.getPosition().getValueAsDouble();
   }
 
   public void setFlywheelVelo(double velocity) {

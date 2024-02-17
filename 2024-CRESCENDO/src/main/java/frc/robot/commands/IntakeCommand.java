@@ -32,6 +32,7 @@ public class IntakeCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return transport.getIR();
+    // return transport.getIR();
+    return false;
   }
 }

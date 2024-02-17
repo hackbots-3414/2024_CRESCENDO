@@ -9,6 +9,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.PointWheelsAt;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.SwerveDriveBrake;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,19 +17,20 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PivotConstants;
-import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.TransportConstants;
 import frc.robot.Telemetry;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ManualElevatorCommand;
+import frc.robot.commands.ManualPivotCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.TransportCommand;
+import frc.robot.commands.WinchCommand;
 import frc.robot.generated.TunerConstants;
 
 public class SubsystemManager extends SubsystemBase {
@@ -42,6 +44,7 @@ public class SubsystemManager extends SubsystemBase {
   ShooterPivot shooterPivot = new ShooterPivot();
   Transport transport = new Transport();
   NoteFinder noteFinder = new NoteFinder();
+  Winch winch = new Winch();
 
   CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
   FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.1).withRotationalDeadband(Constants.SwerveConstants.maxAngleVelocity * 0.1).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -54,6 +57,7 @@ public class SubsystemManager extends SubsystemBase {
   double shooterCurrent = 0;
   double shooterPivotCurrent = 0;
   double transportCurrent = 0;
+  double winchCurrent = 0;
 
   double inputCurrent = 18; // 18 AMP HOURS
   double runTimeHours = 0.05; // 3 MINUTES
@@ -68,20 +72,16 @@ public class SubsystemManager extends SubsystemBase {
   public Transport getTransport() {return transport;}
   public Elevator getElevator() {return elevator;}
   public NoteFinder getNoteFinder() {return noteFinder;}
+  public Winch getWinch() {return winch;}
 
   @Override
   public void periodic() {
-    intake.periodic();
-    shooter.periodic();
-    shooterPivot.periodic();
-    transport.periodic();
-    elevator.periodic();
-
-    elevatorCurrent = pdp.getCurrent(ElevatorConstants.elevatorMotorPDPID) + pdp.getCurrent(ElevatorConstants.elevatorFollowerMotorPDPID);
-    intakeCurrent = pdp.getCurrent(IntakeConstants.intakeMotorPDPID);
-    shooterPivotCurrent = pdp.getCurrent(PivotConstants.pivotMotorPDPID);
-    shooterCurrent = pdp.getCurrent(ShooterConstants.leftMotorID) + pdp.getCurrent(ShooterConstants.rightMotorID);
-    transportCurrent = pdp.getCurrent(TransportConstants.transportMotorPDPID);
+    // elevatorCurrent = pdp.getCurrent(ElevatorConstants.elevatorMotorPDPID) + pdp.getCurrent(ElevatorConstants.elevatorFollowerMotorPDPID);
+    // intakeCurrent = pdp.getCurrent(IntakeConstants.intakeMotorPDPID);
+    // shooterPivotCurrent = pdp.getCurrent(PivotConstants.pivotMotorPDPID);
+    // shooterCurrent = pdp.getCurrent(ShooterConstants.leftMotorPDPID) + pdp.getCurrent(ShooterConstants.rightMotorPDPID);
+    // transportCurrent = pdp.getCurrent(TransportConstants.transportMotorPDPID);
+    // winchCurrent = pdp.getCurrent(WinchConstants.leftMotorPDPID) + pdp.getCurrent(rightMotor.PDPID)
 
     dampenDrivetrain();
   }
@@ -105,8 +105,13 @@ public class SubsystemManager extends SubsystemBase {
   public void telemeterize() {drivetrain.registerTelemetry(logger::telemeterize);}
 
   public Command makeElevatorCommand(ElevatorPresets preset) {return new ElevatorCommand(elevator, shooterPivot, preset);}
-  public Command makeShootCommand(double speed) {return new ShooterCommand(shooter, Constants.ShooterConstants.shootSpeed);}
+  public Command makeManualElevatorCommand(boolean isUp) {return new ManualElevatorCommand(elevator, isUp ? ElevatorConstants.elevatorManualUpSpeed : ElevatorConstants.elevatorManualDownSpeed);}
+  public Command makeManualPivotCommand(boolean isUp) {return new ManualPivotCommand(shooterPivot, isUp ? PivotConstants.pivotManualUpSpeed : PivotConstants.pivotManualDownSpeed);}
+  public Command makeShootCommand() {return new ShooterCommand(shooter, Constants.ShooterConstants.shootSpeed);}
   public Command makeIntakeCommand() {return new IntakeCommand(transport, intake, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed);}
   public Command makeEjectCommand() {return new IntakeCommand(transport, intake, Constants.IntakeConstants.ejectSpeed, Constants.TransportConstants.transportEjectSpeed);}
   public Command makeTransportCommand(boolean forward) {return new TransportCommand(transport, forward);}
+  public Command makeWinchCommand(boolean up) {return new WinchCommand(winch, Constants.WinchConstants.climbHeight);}
+
+  public Command elevatorNeutralMode(NeutralModeValue neutralMode) {return new InstantCommand(() -> elevator.setNeutralMode(neutralMode));}
 }
