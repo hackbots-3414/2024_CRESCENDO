@@ -63,11 +63,16 @@ Hackbots code for the 2024 FRC Crescendo game.
 |</TBD\>| Right Trigger |
 |</TBD\>| Left Trigger |
 
-## LED patterns
-|Event|Color pattern|
-|----|----|
-|Idle/Default| </TBD\> |
-|30 seconds remaining | </TBD\> |
-|20 seconds remaining | </TBD\> |
-|15 seconds remaining | </TBD\> |
-|10 seconds remaining | </TBD\> |
+## LED codes:
+|Event|Color Pattern|Spark Value|
+|-----|-------------|-----------|
+|Speaker In Range For Shooting| Sky Blue | 0.83 | 
+|Note in robot| Green | 0.77 |
+|End Game (0s) | Confetti | -0.87 | 
+|End Game (15s)| Strobe, Red| -0.11 |
+|End Game (30s)| Heartbeat, White | -0.21|
+|Note in view| Orange | 0.65 |
+|Climber Activated| Rainbow, Ocean Palette | -0.95 |
+|Default| Violet | 0.91 |
+
+
