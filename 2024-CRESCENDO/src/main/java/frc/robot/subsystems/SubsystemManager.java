@@ -21,15 +21,13 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PivotConstants;
-import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.TransportConstants;
 import frc.robot.Telemetry;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ManualElevatorCommand;
+import frc.robot.commands.ManualPivotCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.TransportCommand;
 import frc.robot.generated.TunerConstants;
@@ -80,7 +78,7 @@ public class SubsystemManager extends SubsystemBase {
     // shooterCurrent = pdp.getCurrent(ShooterConstants.leftMotorID) + pdp.getCurrent(ShooterConstants.rightMotorID);
     // transportCurrent = pdp.getCurrent(TransportConstants.transportMotorPDPID);
 
-    // dampenDrivetrain();
+    dampenDrivetrain();
   }
 
   private void dampenDrivetrain() {
@@ -103,6 +101,7 @@ public class SubsystemManager extends SubsystemBase {
 
   public Command makeElevatorCommand(ElevatorPresets preset) {return new ElevatorCommand(elevator, shooterPivot, preset);}
   public Command makeManualElevatorCommand(boolean isUp) {return new ManualElevatorCommand(elevator, isUp ? ElevatorConstants.elevatorManualUpSpeed : ElevatorConstants.elevatorManualDownSpeed);}
+  public Command makeManualPivotCommand(boolean isUp) {return new ManualPivotCommand(shooterPivot, isUp ? PivotConstants.pivotManualUpSpeed : PivotConstants.pivotManualDownSpeed);}
   public Command makeShootCommand() {return new ShooterCommand(shooter, Constants.ShooterConstants.shootSpeed);}
   public Command makeIntakeCommand() {return new IntakeCommand(transport, intake, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed);}
   public Command makeEjectCommand() {return new IntakeCommand(transport, intake, Constants.IntakeConstants.ejectSpeed, Constants.TransportConstants.transportEjectSpeed);}

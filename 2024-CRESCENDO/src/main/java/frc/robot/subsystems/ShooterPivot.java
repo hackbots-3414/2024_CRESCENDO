@@ -66,6 +66,10 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
     pivotMotor.setControl(m_request.withPosition(position));
   }
 
+  public void set(double speed) {
+    pivotMotor.setControl(new DutyCycleOut(speed));
+  }
+
   public double getCancoderVelo() {
     return cancoderVelocity;
   }

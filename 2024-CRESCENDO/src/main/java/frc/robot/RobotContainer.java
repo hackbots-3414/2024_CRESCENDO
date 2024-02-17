@@ -15,8 +15,10 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.subsystems.NoteFinder;
 import frc.robot.subsystems.SubsystemManager;
 
@@ -48,8 +50,10 @@ public class RobotContainer {
     // operator.a().whileTrue(<ADD COMMAND>);
     operator.b().whileTrue(subsystemManager.makeShootCommand());
     operator.x().whileTrue(subsystemManager.makeIntakeCommand());
+    operator.a().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.TEST));
+    operator.y().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));
     // operator.y().whileTrue(<ADD COMMAND>);
-    // operator.leftBumper().whileTrue(<ADD COMMAND>);
+    operator.leftBumper().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.TRAP));
     operator.rightBumper().whileTrue(subsystemManager.makeEjectCommand());
     operator.back().whileTrue(subsystemManager.makeTransportCommand(true));
     operator.start().whileTrue(subsystemManager.makeTransportCommand(false));
@@ -62,6 +66,8 @@ public class RobotContainer {
     // operator.pov(180).whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.TRAP));// D-PAD Down
     operator.pov(0).whileTrue(subsystemManager.makeManualElevatorCommand(true));// D-PAD Up
     operator.pov(180).whileTrue(subsystemManager.makeManualElevatorCommand(false));// D-PAD Down
+    operator.pov(90).whileTrue(subsystemManager.makeManualPivotCommand(true));// D-PAD Up
+    operator.pov(270).whileTrue(subsystemManager.makeManualPivotCommand(false));// D-PAD Down
     // operator.pov(270).whileTrue(<ADD COMMAND>); // D-PAD Left
     SmartDashboard.putData("Coast Elevator", subsystemManager.elevatorNeutralMode(NeutralModeValue.Coast));
     SmartDashboard.putData("Brake Elevator", subsystemManager.elevatorNeutralMode(NeutralModeValue.Brake));

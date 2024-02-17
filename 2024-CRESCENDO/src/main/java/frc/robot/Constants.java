@@ -142,8 +142,12 @@ public class Constants {
         }
 
         public static final class trapPresets {
-            public static final double elevator = 0;
+            public static final double elevator = 2.32;
             public static final double shooter = 0;
+        }
+
+        public static final class testPresets {
+            public static final double elevator = 6 / (Math.PI * 1.751);
         }
 
     }
@@ -157,11 +161,6 @@ public class Constants {
         public static final int elevatorMotorPDPID = 2;
         public static final int elevatorFollowerMotorPDPID = 3;
 
-        public static final double elevatorkS = 0;
-        public static final double elevatorkG = 0;
-        public static final double elevatorkV = 0;
-        public static final double elevatorkA = 0;
-
         public static final double elevatorLowerLimit = 0;
         public static final double elevatorUpperLimit = 1;
 
@@ -169,24 +168,22 @@ public class Constants {
         public static final double elevatorManualDownSpeed = -0.1;
 
         public static final class ElevatorSlot0ConfigConstants {
-            public static final double kP = 0.0; //output per unit of error in position (output/rotation)
+            public static final double kP = 15.0; //output per unit of error in position (output/rotation)
             public static final double kI = 0.0; //output per unit of integrated error in position (output/(rotation*s))
             public static final double kD = 0.0; //output per unit of error in velocity (output/rps)
             public static final double kS = 0.0; //output to overcome static friction (output)
-            public static final double kV = 0.0; //output per unit of target velocity (output/rps)
+            public static final double kV = 2.8; //output per unit of target velocity (output/rps)
             public static final double kA = 0.0; //output per unit of target acceleration (output/(rps/s))
             public static final double kG = 0.0; //Feedforward Constant
         }
 
         public static final class ElevatorMotionMagicConstants {
-            public static final double cruiseVelocity = 0.0; // Target cruise velocity
-            public static final double acceleration = 0.0; // Target acceleration
-            public static final double jerk = 0.0; // Target Jerk
+            public static final double cruiseVelocity = 4; // Target cruise velocity - 1.16
+            public static final double acceleration = 8; // Target acceleration - 2.32
+            public static final double jerk = 80; // Target Jerk - 23.2
         }
 
-        public static double elevatorCurrentLimit = 40;
-        public static double circumference;
-        public static double gearRatio;
+        public static double elevatorCurrentLimit = 20;
     }
 
     public static final class PivotConstants {
@@ -194,16 +191,19 @@ public class Constants {
         public static final int EncoderID = 51;
         public static final double encoderOffset = 0; // FIX ME
 
-        public static final double rotorToSensorRatio = 0.0; // FIX ME
-        public static final double sensorToMechanismRatio = 0.0; // FIX ME
+        public static final double rotorToSensorRatio = 125;
+        public static final double sensorToMechanismRatio = 1.0;
 
         public static final int pivotMotorPDPID = 14;
 
         public static final InvertedValue motorInvert = InvertedValue.CounterClockwise_Positive;
         public static final SensorDirectionValue cancoderInvert = SensorDirectionValue.CounterClockwise_Positive;
 
-        public static final double forwardSoftLimitThreshold = 0.25;
-        public static final double reverseSoftLimitThreshold = -0.25;
+        public static final double forwardSoftLimitThreshold = 0.5;
+        public static final double reverseSoftLimitThreshold = 0;
+
+        public static final double pivotManualUpSpeed = 0.1;
+        public static final double pivotManualDownSpeed = -0.1;
 
         public static final double motorCurrentLimit = 0;
 
