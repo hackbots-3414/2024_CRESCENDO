@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.generated.TunerConstantsLoveLace;
+import frc.robot.generated.TunerConstants;
 
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.005; // 5 ms
@@ -83,7 +83,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 new HolonomicPathFollowerConfig(
                         new PIDConstants(SwerveConstants.kPDrive, SwerveConstants.kIDrive, SwerveConstants.kDDrive),
                         new PIDConstants(SwerveConstants.kPSteer, SwerveConstants.kISteer, SwerveConstants.kDSteer),
-                        TunerConstantsLoveLace.kSpeedAt12VoltsMps,
+                        TunerConstants.kSpeedAt12VoltsMps,
                         driveBaseRadius,
                         new ReplanningConfig(true, true)),
                 () -> {
