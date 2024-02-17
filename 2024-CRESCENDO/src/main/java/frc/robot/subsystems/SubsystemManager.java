@@ -30,6 +30,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.TransportCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.generated.TunerConstantsLoveLace;
 
 public class SubsystemManager extends SubsystemBase {
     
@@ -43,7 +44,7 @@ public class SubsystemManager extends SubsystemBase {
   Transport transport = new Transport();
   NoteFinder noteFinder = new NoteFinder();
 
-  CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
+  CommandSwerveDrivetrain drivetrain = TunerConstantsLoveLace.DriveTrain;
   FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.1).withRotationalDeadband(Constants.SwerveConstants.maxAngleVelocity * 0.1).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   SwerveDriveBrake brakeRequest = new SwerveDriveBrake();
   PointWheelsAt pointRequest = new PointWheelsAt();

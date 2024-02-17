@@ -7,6 +7,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,7 +17,7 @@ public class Transport extends SubsystemBase implements AutoCloseable {
 
   private TalonFX transportMotor;
   private DigitalInput irSensor = new DigitalInput(Constants.TransportConstants.irSensorChannel);
-
+  // private AnalogInput irSensor = new AnalogInput(Constants.TransportConstants.irSensorChannel);
   public Transport() {
     transportMotor = new TalonFX(Constants.TransportConstants.transportMotorID);
     transportMotor.clearStickyFaults();
@@ -33,7 +34,8 @@ public class Transport extends SubsystemBase implements AutoCloseable {
   }
 
   public boolean getIR() {
-    return irSensor.get();
+   // return irSensor.getValue() == 1;
+   return irSensor.get();
   }
 
   public void setCurrentLimit(double limit) {

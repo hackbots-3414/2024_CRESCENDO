@@ -47,7 +47,7 @@ public class Constants {
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
 
-        public static final double maxDriveVelocity = 3.92;
+        public static final double maxDriveVelocity = 5.21; //3.92
         public static final double maxDriveAcceleration = 3;
         public static final double maxAngleVelocity = 1.5*Math.PI;
         public static final double maxAngleAcceleration = 2*Math.PI;
