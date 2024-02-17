@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.generated.TunerConstants;
 
 import static java.util.Map.entry;
 
@@ -47,14 +48,10 @@ public class Constants {
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
 
-        public static final double maxDriveVelocity = 3.92;
-        public static final double maxDriveAcceleration = 3;
+        public static final double maxDriveVelocity = TunerConstants.kSpeedAt12VoltsMps;
+        public static final double maxDriveAcceleration = 4;
         public static final double maxAngleVelocity = 1.5*Math.PI;
         public static final double maxAngleAcceleration = 2*Math.PI;
-    }
-
-    public static final class AutonConstants {
-        public static final double speakerTolerance = Units.feetToMeters(9.5); // METERS YOU CAN SHOOT FROM
     }
 
     public static final class VisionConstants {
@@ -62,9 +59,8 @@ public class Constants {
          * A note about these transforms: They appear to follow the normal cordinate
          * system (x is right when pos. and so on).
          */
-        public static final Transform3d leftTransform = new Transform3d(-0.5, 0, 0,
-                new Rotation3d(0, -Math.PI / 4.0, 0)); // FIXME Give me values that are accurate please
-        public static final Transform3d rightTransform = new Transform3d(0, 0, 0, new Rotation3d(0, Math.PI / 4.0, 0)); // FIXME Give me accurate values as well please.
+        public static final Transform3d leftTransform = new Transform3d(Units.inchesToMeters(-11.813), Units.inchesToMeters(-22.373), Units.inchesToMeters(26.25), new Rotation3d(0, Math.PI * 40/180, 0));
+        public static final Transform3d rightTransform = new Transform3d(Units.inchesToMeters(11.813), Units.inchesToMeters(-22.373), Units.inchesToMeters(26.25), new Rotation3d(0, Math.PI * 40/180, 0));
         public static final String leftCameraName = "Cam2";
         public static final String rightCameraName = "Cam1";
     }
@@ -77,9 +73,10 @@ public class Constants {
         public static final double shootSpeed = 0.1;
         public static final boolean shooterMotorInvert = true;
 
-        public static final double kP = 5.0;
+        public static final double kP = 0.8;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
+        public static final double kS = 8;
 
         public static final double shootVelo = 92.0; // Rotations per second
 
@@ -98,10 +95,10 @@ public class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int intakeMotorID = 46;
+        public static final int intakeMotorID = 60;
         public static final int intakeMotorPDPID = 15;
         public static final double intakeSpeed = 1;
-        public static final double ejectSpeed = -1;
+        public static final double ejectSpeed = 0;
         public static final boolean intakeMotorInvert = true;
     }
 
@@ -168,6 +165,9 @@ public class Constants {
         public static final double elevatorLowerLimit = 0;
         public static final double elevatorUpperLimit = 1;
 
+        public static final double elevatorManualUpSpeed = 0.1;
+        public static final double elevatorManualDownSpeed = -0.1;
+
         public static final class ElevatorSlot0ConfigConstants {
             public static final double kP = 0.0; //output per unit of error in position (output/rotation)
             public static final double kI = 0.0; //output per unit of integrated error in position (output/(rotation*s))
@@ -184,7 +184,7 @@ public class Constants {
             public static final double jerk = 0.0; // Target Jerk
         }
 
-        public static double elevatorCurrentLimit = 20;
+        public static double elevatorCurrentLimit = 40;
         public static double circumference;
         public static double gearRatio;
     }

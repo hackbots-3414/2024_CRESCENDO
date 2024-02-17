@@ -9,6 +9,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.PointWheelsAt;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.SwerveDriveBrake;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,6 +17,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
@@ -27,6 +29,7 @@ import frc.robot.Telemetry;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ManualElevatorCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.TransportCommand;
 import frc.robot.generated.TunerConstants;
@@ -71,12 +74,6 @@ public class SubsystemManager extends SubsystemBase {
 
   @Override
   public void periodic() {
-    intake.periodic();
-    shooter.periodic();
-    shooterPivot.periodic();
-    transport.periodic();
-    elevator.periodic();
-
     // elevatorCurrent = pdp.getCurrent(ElevatorConstants.elevatorMotorPDPID) + pdp.getCurrent(ElevatorConstants.elevatorFollowerMotorPDPID);
     // intakeCurrent = pdp.getCurrent(IntakeConstants.intakeMotorPDPID);
     // shooterPivotCurrent = pdp.getCurrent(PivotConstants.pivotMotorPDPID);
@@ -105,8 +102,11 @@ public class SubsystemManager extends SubsystemBase {
   public void telemeterize() {drivetrain.registerTelemetry(logger::telemeterize);}
 
   public Command makeElevatorCommand(ElevatorPresets preset) {return new ElevatorCommand(elevator, shooterPivot, preset);}
-  public Command makeShootCommand(double speed) {return new ShooterCommand(shooter, Constants.ShooterConstants.shootSpeed);}
+  public Command makeManualElevatorCommand(boolean isUp) {return new ManualElevatorCommand(elevator, isUp ? ElevatorConstants.elevatorManualUpSpeed : ElevatorConstants.elevatorManualDownSpeed);}
+  public Command makeShootCommand() {return new ShooterCommand(shooter, Constants.ShooterConstants.shootSpeed);}
   public Command makeIntakeCommand() {return new IntakeCommand(transport, intake, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed);}
   public Command makeEjectCommand() {return new IntakeCommand(transport, intake, Constants.IntakeConstants.ejectSpeed, Constants.TransportConstants.transportEjectSpeed);}
   public Command makeTransportCommand(boolean forward) {return new TransportCommand(transport, forward);}
+
+  public Command elevatorNeutralMode(NeutralModeValue neutralMode) {return new InstantCommand(() -> elevator.setNeutralMode(neutralMode));}
 }

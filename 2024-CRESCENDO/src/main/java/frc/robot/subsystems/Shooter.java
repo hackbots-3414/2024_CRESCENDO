@@ -39,7 +39,8 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
   private Slot0Configs pidConfig = new Slot0Configs()
       .withKP(Constants.ShooterConstants.kP)
       .withKI(Constants.ShooterConstants.kI)
-      .withKD(Constants.ShooterConstants.kD);
+      .withKD(Constants.ShooterConstants.kD)
+      .withKS(Constants.ShooterConstants.kS);
 
   private final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
 
