@@ -225,6 +225,10 @@ public class Constants {
         }
     }
 
+    public static final class WinchConstants {
+        public static double climbHeight = 10;
+    }
+
     public static class AprilTagObject {
         private int ID;
 

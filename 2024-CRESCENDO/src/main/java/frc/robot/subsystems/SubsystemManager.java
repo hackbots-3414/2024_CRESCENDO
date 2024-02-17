@@ -30,6 +30,7 @@ import frc.robot.commands.ManualElevatorCommand;
 import frc.robot.commands.ManualPivotCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.TransportCommand;
+import frc.robot.commands.WinchCommand;
 import frc.robot.generated.TunerConstants;
 
 public class SubsystemManager extends SubsystemBase {
@@ -43,6 +44,7 @@ public class SubsystemManager extends SubsystemBase {
   ShooterPivot shooterPivot = new ShooterPivot();
   Transport transport = new Transport();
   NoteFinder noteFinder = new NoteFinder();
+  Winch winch = new Winch();
 
   CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
   FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.1).withRotationalDeadband(Constants.SwerveConstants.maxAngleVelocity * 0.1).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -55,6 +57,7 @@ public class SubsystemManager extends SubsystemBase {
   double shooterCurrent = 0;
   double shooterPivotCurrent = 0;
   double transportCurrent = 0;
+  double winchCurrent = 0;
 
   double inputCurrent = 18; // 18 AMP HOURS
   double runTimeHours = 0.05; // 3 MINUTES
@@ -69,14 +72,16 @@ public class SubsystemManager extends SubsystemBase {
   public Transport getTransport() {return transport;}
   public Elevator getElevator() {return elevator;}
   public NoteFinder getNoteFinder() {return noteFinder;}
+  public Winch getWinch() {return winch;}
 
   @Override
   public void periodic() {
     // elevatorCurrent = pdp.getCurrent(ElevatorConstants.elevatorMotorPDPID) + pdp.getCurrent(ElevatorConstants.elevatorFollowerMotorPDPID);
     // intakeCurrent = pdp.getCurrent(IntakeConstants.intakeMotorPDPID);
     // shooterPivotCurrent = pdp.getCurrent(PivotConstants.pivotMotorPDPID);
-    // shooterCurrent = pdp.getCurrent(ShooterConstants.leftMotorID) + pdp.getCurrent(ShooterConstants.rightMotorID);
+    // shooterCurrent = pdp.getCurrent(ShooterConstants.leftMotorPDPID) + pdp.getCurrent(ShooterConstants.rightMotorPDPID);
     // transportCurrent = pdp.getCurrent(TransportConstants.transportMotorPDPID);
+    // winchCurrent = pdp.getCurrent(WinchConstants.leftMotorPDPID) + pdp.getCurrent(rightMotor.PDPID)
 
     dampenDrivetrain();
   }
@@ -106,6 +111,7 @@ public class SubsystemManager extends SubsystemBase {
   public Command makeIntakeCommand() {return new IntakeCommand(transport, intake, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed);}
   public Command makeEjectCommand() {return new IntakeCommand(transport, intake, Constants.IntakeConstants.ejectSpeed, Constants.TransportConstants.transportEjectSpeed);}
   public Command makeTransportCommand(boolean forward) {return new TransportCommand(transport, forward);}
+  public Command makeWinchCommand(boolean up) {return new WinchCommand(winch, Constants.WinchConstants.climbHeight);}
 
   public Command elevatorNeutralMode(NeutralModeValue neutralMode) {return new InstantCommand(() -> elevator.setNeutralMode(neutralMode));}
 }

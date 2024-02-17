@@ -154,7 +154,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     @Override
     public void periodic() {
-        // updateOdometry();
+        updateOdometry();
         for (int i = 0; i < Modules.length; i++) {
             SmartDashboard.putNumber("CANCODER ANGLES: " + i, Modules[i].getCANcoder().getAbsolutePosition().getValueAsDouble());
         }
