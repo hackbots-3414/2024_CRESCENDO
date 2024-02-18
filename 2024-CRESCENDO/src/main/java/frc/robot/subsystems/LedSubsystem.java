@@ -4,15 +4,15 @@
 
 package frc.robot.subsystems;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
+
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class LedSubsystem extends SubsystemBase {
-  final static Logger logger = LoggerFactory.getLogger(LedSubsystem.class);
+  // final static Logger logger = LoggerFactory.getLogger(LedSubsystem.class);
   private static final double DEFAULT = 0.91;
   private static final double IN_RANGE = 0.83;
   private static final double END_GAME_0 = -0.87;

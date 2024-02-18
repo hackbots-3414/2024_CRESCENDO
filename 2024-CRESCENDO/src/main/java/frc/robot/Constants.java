@@ -1,5 +1,7 @@
 package frc.robot;
 
+import static java.util.Map.entry;
+
 import java.util.Map;
 
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -11,8 +13,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.generated.TunerConstants;
-
-import static java.util.Map.entry;
 
 public class Constants {
     public enum AprilTags {
@@ -71,7 +71,6 @@ public class Constants {
         public static final int rightMotorID = 58;
         public static final int leftMotorPDPID = 4;
         public static final int rightMotorPDPID = 5;
-        public static final double shootSpeed = 0.1;
         public static final boolean shooterMotorInvert = true;
 
         public static final double kP = 0.8;
@@ -80,7 +79,6 @@ public class Constants {
         public static final double kS = 8;
 
         public static final double shootVelo = 92.0; // Rotations per second
-
         public static final double shooterTolerance = 8.0;
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
@@ -99,7 +97,7 @@ public class Constants {
         public static final int intakeMotorID = 60;
         public static final int intakeMotorPDPID = 15;
         public static final double intakeSpeed = 1;
-        public static final double ejectSpeed = 0;
+        public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
     }
 
@@ -127,31 +125,31 @@ public class Constants {
         public static final boolean transportMotorInvert = true;
         public static final double transportSpeed = 0.5;
         public static final double transportEjectSpeed = -0.5;
-        public static final int irSensorChannel = 2;
+        public static final int irSensorChannel = 4;
+
+        public static final double transportEjectDelay = 0.5; // seconds until note leaves shooter
     }
 
     public static final class PositionConstants {
-
-        public static final class stowPresets {
+        public static final class StowPresets {
             public static final double elevator = 0;
             public static final double shooter = 0;
         }
 
-        public static final class ampPresets {
-            public static final double elevator = 0;
+        public static final class AmpPresets {
+            public static final double elevator = 2.32;
             public static final double shooter = 0;
         }
 
-        public static final class trapPresets {
+        public static final class TrapPresets {
             public static final double elevator = 2.32;
             public static final double shooter = 0.088379;
         }
 
-        public static final class testPresets {
+        public static final class TestPresets {
             public static final double elevator = 6 / (Math.PI * 1.751);
             public static final double shooter = 0.02;
         }
-
     }
 
     public static final class ElevatorConstants {
@@ -204,6 +202,9 @@ public class Constants {
         public static final double forwardSoftLimitThreshold = 0.088379;
         public static final double reverseSoftLimitThreshold = 0;
 
+        public static final double angleAtZero = Math.toRadians(20);
+        public static final double angleAtMax = Math.toRadians(60);
+
         public static final double pivotManualUpSpeed = 0.05;
         public static final double pivotManualDownSpeed = -0.05;
 
@@ -226,8 +227,19 @@ public class Constants {
         }
     }
 
+    public static final class AimConstants {
+        public static final double minimumDistanceToNotBreakRobot = 2; // meters from speaker
+        public static final double clearanceHeight = 0.05; // meters up;
+        public static final double elevatorTilt = Math.toRadians(60);
+        public static final double minimumHeight = 0.19; // ONLY Y DIRECTION
+
+        public static final double rangeTolerance = 0.01;
+        public static final double shootSpeed = ShooterConstants.shootVelo * Units.inchesToMeters(1.5) * Math.PI;
+    }
+
     public static final class WinchConstants {
-        public static double climbHeight = 10;
+        public static double climbHeight = 21;
+        public static double restHeight = 4;
     }
 
     public static class AprilTagObject {
@@ -254,5 +266,9 @@ public class Constants {
         public static final int DATAGRAM_PORT = 5800;
         public static final int BUFFER_SIZE = 512;
         public static final double CYCLE_TIME = 0.015;
+    }
+
+    public class FieldConstants {
+        public static final double speakerHeight = 2.0515; // meters
     }
 }

@@ -30,7 +30,6 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
   private final CANcoder cancoder = new CANcoder(Constants.PivotConstants.EncoderID);
 
   private double cancoderPosition;
-  private double cancoderVelocity;
 
   private Slot0Configs slot0Config = new Slot0Configs()
       .withKP(PivotSlot0ConfigConstants.kP)
@@ -64,12 +63,16 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
     pivotMotor.setControl(new MotionMagicVoltage(position));
   }
 
+  public void setPivotPositionFromRad(double radians) {
+    setPivotPosition(((radians - PivotConstants.angleAtZero) / (PivotConstants.angleAtMax - PivotConstants.angleAtZero)) * (PivotConstants.forwardSoftLimitThreshold - PivotConstants.reverseSoftLimitThreshold));
+  }
+
   public void set(double speed) {
     pivotMotor.setControl(new DutyCycleOut(speed));
   }
 
-  public double getCancoderVelo() {
-    return cancoderVelocity;
+  public void stop() {
+    set(0.0);
   }
 
   public double getCancoderPos() {
@@ -79,7 +82,6 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
   @Override
   public void periodic() {
     cancoderPosition = cancoder.getAbsolutePosition().getValueAsDouble();
-    cancoderVelocity = cancoder.getVelocity().getValueAsDouble(); // Rotations/s
   }
 
   public void configEncoder() {
@@ -96,7 +98,6 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
   }
 
   public void configMotor() {
-
     pivotMotor.getConfigurator().apply(new TalonFXConfiguration());
 
     TalonFXConfiguration configuration = new TalonFXConfiguration()
