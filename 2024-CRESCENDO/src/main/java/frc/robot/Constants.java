@@ -235,6 +235,8 @@ public class Constants {
 
         public static final double rangeTolerance = 0.01;
         public static final double shootSpeed = ShooterConstants.shootVelo * Units.inchesToMeters(1.5) * Math.PI;
+
+        public static final double range = 5.5; // MAX RANGE - 5.5 meters from target
     }
 
     public static final class WinchConstants {

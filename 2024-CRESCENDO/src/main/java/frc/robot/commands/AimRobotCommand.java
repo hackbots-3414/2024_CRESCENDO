@@ -32,6 +32,7 @@ public class AimRobotCommand extends Command {
     double elevatorHeight;
     double shooterAngle;
     Rotation2d drivetrainRotation;
+  
     Supplier<Double> xSupplier;
     Supplier<Double> ySupplier;
     Supplier<Double> rSupplier;
@@ -91,7 +92,8 @@ public class AimRobotCommand extends Command {
         }
 
         double theta = Math.atan((Math.pow(v, 2) - Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(x, 2) + 2 * y * Math.pow(v, 2)))) / (g * x));
-        if (runTests(v, theta, g, x, y)) shooterAngle = theta + pitchAdd;
+        drivetrain.setInRange(x < Constants.AimConstants.range);
+        shooterAngle = runTests(v, theta, g, x, y) && drivetrain.isInRange() ? (theta + pitchAdd) : shooterAngle;
     }
 
     @Override

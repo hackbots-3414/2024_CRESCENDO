@@ -166,4 +166,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public boolean isInRange() {
         return isInRange;
     }
+
+    public void setInRange(boolean isInRange) {
+        this.isInRange = isInRange;
+    }
 }
