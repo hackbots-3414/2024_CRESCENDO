@@ -11,6 +11,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.PointWheelsAt;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.SwerveDriveBrake;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -122,13 +123,11 @@ public class SubsystemManager extends SubsystemBase {
             .withRotationalRate(-turn.get() * Constants.SwerveConstants.maxAngleVelocity)));
   }
 
-  public Command makeBrakeCommand() {
-    return drivetrain.applyRequest(() -> brakeRequest);
-  }
-
-  public Command makePointCommand(double x, double y) {
-    return drivetrain.applyRequest(() -> pointRequest.withModuleDirection(new Rotation2d(-x, -y)));
-  }
+  public Command makeBrakeCommand() {return drivetrain.applyRequest(() -> brakeRequest);}
+  public Command makePointCommand(double x, double y) {return drivetrain.applyRequest(() -> pointRequest.withModuleDirection(new Rotation2d(-x, -y)));}
+  public Command makeResetCommand() {return drivetrain.runOnce(() -> drivetrain.seedFieldRelative());}
+  public void resetAtPose2d(Pose2d pose) {drivetrain.seedFieldRelative(pose);}
+  public void telemeterize() {drivetrain.registerTelemetry(logger::telemeterize);}
 
   public Command makeElevatorCommand(ElevatorPresets preset) {return new ElevatorCommand(elevator, shooterPivot, preset);}
   public Command makeManualElevatorCommand(boolean isUp) {return new ManualElevatorCommand(elevator, isUp ? ElevatorConstants.elevatorManualUpSpeed : ElevatorConstants.elevatorManualDownSpeed);}
