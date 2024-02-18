@@ -9,7 +9,9 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -25,10 +27,10 @@ import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.lib.math.Conversions;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorMotionMagicConstants;
@@ -48,8 +50,6 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
       .withMotionMagicCruiseVelocity(ElevatorMotionMagicConstants.cruiseVelocity)
       .withMotionMagicAcceleration(ElevatorMotionMagicConstants.acceleration)
       .withMotionMagicJerk(ElevatorMotionMagicConstants.jerk);
-
-  private MotionMagicVoltage m_request = new MotionMagicVoltage(0); // FIXME inital pos might be current pos insted of 0
 
   public Elevator() {
     configElevatorMotors();
@@ -72,35 +72,45 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
         .withMotionMagic(motionMagicConfig);
 
     configuration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    configuration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    configuration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    configuration.SoftwareLimitSwitch.withForwardSoftLimitThreshold(Conversions.metersToFalcon(
-            ElevatorConstants.elevatorUpperLimit, ElevatorConstants.circumference, ElevatorConstants.gearRatio))
-        .withReverseSoftLimitThreshold(Conversions.metersToFalcon(
-            ElevatorConstants.elevatorUpperLimit, ElevatorConstants.circumference, ElevatorConstants.gearRatio))
-        .withForwardSoftLimitEnable(true).withReverseSoftLimitEnable(true);
+    configuration.Feedback.SensorToMechanismRatio = 25;
 
     configuration.CurrentLimits.withSupplyCurrentLimitEnable(true)
         .withSupplyCurrentLimit(ElevatorConstants.elevatorCurrentLimit).withSupplyCurrentThreshold(0)
         .withSupplyTimeThreshold(0);
 
-    elevatorMotor.setSafetyEnabled(true);
+    configuration.HardwareLimitSwitch.ForwardLimitEnable = true;
+    configuration.HardwareLimitSwitch.ReverseLimitEnable = true;
+
+    configuration.HardwareLimitSwitch.ReverseLimitAutosetPositionValue = 0.0;
+    configuration.HardwareLimitSwitch.ReverseLimitAutosetPositionEnable = true;
+
+    configuration.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 2.32; // output shaft rotations
+    configuration.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+
     elevatorMotor.getConfigurator().apply(configuration, 0.2);
   }
 
   public void setElevatorPosition(double position) { // position is in number of rotations as per documentation.
-    elevatorMotor.setControl(m_request
-        .withPosition(position)
+    MotionMagicVoltage config = new MotionMagicVoltage(position);
+    if (position < this.elevatorPosition) {
+      config.withLimitReverseMotion(getReverseLimit());
+    } else if(position >= this.elevatorPosition){
+      config.withLimitForwardMotion(getForwardLimit());
+    }
+    
+    elevatorMotor.setControl(config);
+  }
+
+  public void set(double speed) {
+    elevatorMotor.setControl(new DutyCycleOut(speed)
         .withLimitForwardMotion(getForwardLimit())
         .withLimitReverseMotion(getReverseLimit()));
   }
 
-  public void set(double speed) {
-    elevatorMotor.set(speed);
-  }
-
   public void stop() {
-    elevatorMotor.set(0.0);
+    set(0.0);
   }
 
   public boolean getForwardLimit() {
@@ -129,12 +139,12 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
   public void periodic() {
     elevatorPosition = elevatorMotor.getPosition().getValueAsDouble();
 
-    reverseLimit = reverseLimiter.get();
-    forwardLimit = forwardLimiter.get();
+    reverseLimit = !reverseLimiter.get();
+    forwardLimit = !forwardLimiter.get();
 
-    if (getReverseLimit()) {
-      elevatorMotor.setPosition(0);
-    }
+    SmartDashboard.putBoolean("Forward Limit switch", forwardLimit);
+    SmartDashboard.putBoolean("Reverse Limit Switch", reverseLimit);
+    SmartDashboard.putNumber("Elevator Position", elevatorPosition);
   }
 
   @Override
@@ -163,7 +173,7 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
       new SysIdRoutine.Mechanism(
           // Tell SysId how to plumb the driving voltage to the motors.
           (Measure<Voltage> volts) -> {
-            elevatorMotor.setVoltage(volts.in(Volts));
+            elevatorMotor.setControl(new VoltageOut(volts.in(Volts)).withLimitForwardMotion(forwardLimit).withLimitReverseMotion(reverseLimit));
           },
           // Tell SysId how to record a frame of data for each motor on the mechanism
           // being characterized.

@@ -7,14 +7,20 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+// import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.TransportConstants;
 
 public class Transport extends SubsystemBase implements AutoCloseable {
 
   private TalonFX transportMotor;
   private DigitalInput irSensor = new DigitalInput(Constants.TransportConstants.irSensorChannel);
+  // private AnalogInput irSensor = new AnalogInput(Constants.TransportConstants.irSensorChannel);
+  private boolean irValue;
 
   public Transport() {
     transportMotor = new TalonFX(Constants.TransportConstants.transportMotorID);
@@ -27,12 +33,18 @@ public class Transport extends SubsystemBase implements AutoCloseable {
     transportMotor.set(speed);
   }
 
+  public void eject() {
+    setMotor(TransportConstants.transportEjectSpeed);
+    Timer.delay(TransportConstants.transportEjectDelay);
+  }
+
   public void stopMotor() {
     transportMotor.set(0);
   }
 
   public boolean getIR() {
-    return irSensor.get();
+   // return irSensor.getValue() == 1;
+   return irValue;
   }
 
   public void setCurrentLimit(double limit) {
@@ -42,7 +54,10 @@ public class Transport extends SubsystemBase implements AutoCloseable {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    irValue = !irSensor.get();
+    SmartDashboard.putBoolean("IR SENSOR", irValue);
+  }
 
   @Override
   public void close() {

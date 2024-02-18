@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
@@ -27,8 +28,8 @@ import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase implements AutoCloseable {
 
-  private TalonFX leftMotor;
-  private TalonFX rightMotor;
+  private TalonFX leftMotor = new TalonFX(Constants.ShooterConstants.leftMotorID);
+  private TalonFX rightMotor = new TalonFX(Constants.ShooterConstants.rightMotorID);
 
   private double motorVelocity;
   private double motorSpeed;
@@ -37,36 +38,40 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
   private Slot0Configs pidConfig = new Slot0Configs()
       .withKP(Constants.ShooterConstants.kP)
       .withKI(Constants.ShooterConstants.kI)
-      .withKD(Constants.ShooterConstants.kD);
-
-  private final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
+      .withKD(Constants.ShooterConstants.kD)
+      .withKS(Constants.ShooterConstants.kS);
 
   public Shooter() {
-    leftMotor = new TalonFX(Constants.ShooterConstants.leftMotorID);
-    rightMotor = new TalonFX(Constants.ShooterConstants.rightMotorID);
+    configMotors();
+  }
 
-    leftMotor.getConfigurator().apply(new TalonFXConfiguration());
-    rightMotor.getConfigurator().apply(new TalonFXConfiguration());
-
-    rightMotor.getConfigurator().apply(pidConfig);
-
+  public void configMotors() {
     leftMotor.clearStickyFaults();
     rightMotor.clearStickyFaults();
 
+    TalonFXConfiguration configuration = new TalonFXConfiguration();
+
+    rightMotor.getConfigurator().apply(configuration);
+    leftMotor.getConfigurator().apply(configuration);
+
+    configuration.Slot0 = pidConfig;
+
+    rightMotor.getConfigurator().apply(configuration);
+
     rightMotor.setInverted(Constants.ShooterConstants.shooterMotorInvert);
 
-    // leftMotor.setControl(new Follower(rightMotor.getDeviceID(), true));
+    leftMotor.setControl(new Follower(rightMotor.getDeviceID(), true));
   }
 
   @Override
   public void periodic() {
-    motorVelocity = (leftMotor.getVelocity().getValueAsDouble() + rightMotor.getVelocity().getValueAsDouble()) / 2.0;
-    motorSpeed = (leftMotor.get() + rightMotor.get()) / 2.0;
-    motorPosition = (leftMotor.getPosition().getValueAsDouble() + rightMotor.getPosition().getValueAsDouble()) / 2.0;
+    motorVelocity = rightMotor.getVelocity().getValueAsDouble();
+    motorSpeed = rightMotor.get();
+    motorPosition = rightMotor.getPosition().getValueAsDouble();
   }
 
-  public void setFlywheelVelo(double velocity) {
-    rightMotor.setControl(m_request.withVelocity(velocity));
+  public void setVelocity(double velocity) {
+    rightMotor.setControl(new VelocityVoltage(velocity).withSlot(0));
   }
 
   public void setMotor(double speed) {
@@ -74,7 +79,7 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
   }
 
   public void stopMotor() {
-    rightMotor.set(0);
+    setVelocity(0.0);;
   }
 
   public double getMotorPos() {
@@ -132,11 +137,9 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
 
   // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
   private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
-  // Mutable holder for unit-safe linear distance values, persisted to avoid
-  // reallocation.
+  // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
   private final MutableMeasure<Angle> m_distance = mutable(Radians.of(0));
-  // Mutable holder for unit-safe linear velocity values, persisted to avoid
-  // reallocation.
+  // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
   private final MutableMeasure<Velocity<Angle>> m_velocity = mutable(RadiansPerSecond.of(0));
 
   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
@@ -148,12 +151,9 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
             leftMotor.setVoltage(volts.in(Volts));
             rightMotor.setVoltage(volts.in(Volts));
           },
-          // Tell SysId how to record a frame of data for each motor on the mechanism
-          // being
-          // characterized.
+          // Tell SysId how to record a frame of data for each motor on the mechanism being characterized.
           log -> {
-            // Record a frame for the left motors. Since these share an encoder, we consider
-            // the entire group to be one motor.
+            // Record a frame for the left motors. Since these share an encoder, we consider the entire group to be one motor.
             log.motor("Shooter Flywheel")
                 .voltage(
                     m_appliedVoltage.mut_replace(
@@ -161,9 +161,7 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
                 .angularPosition(m_distance.mut_replace(getMotorPosRad(), Radians))
                 .angularVelocity(m_velocity.mut_replace(getMotorVeloRad(), RadiansPerSecond));
           },
-          // Tell SysId to make generated commands require this subsystem, suffix test
-          // state in
-          // WPILog with this subsystem's name ("Shooter")
+          // Tell SysId to make generated commands require this subsystem, suffix test state in WPILog with this subsystem's name ("Shooter")
           this));
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

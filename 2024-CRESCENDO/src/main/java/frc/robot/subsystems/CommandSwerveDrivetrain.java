@@ -31,7 +31,7 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.generated.TunerConstants;
 
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
-    private static final double kSimLoopPeriod = 0.005; // 5 ms
+    private static final double kSimLoopPeriod = 0.002; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
     private final SwerveRequest.ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
@@ -41,6 +41,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private HashMap<String, Command> eventMarkers = new HashMap<>();
 
     private PhotonVision photonVision;
+    private boolean isInRange;
 
     private void initPhotonVision() {
         photonVision = new PhotonVision();
@@ -101,6 +102,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
     }
 
+    public Command makeTestAuton() {
+        return AutoBuilder.buildAuto("Test Auton");
+    }
+
     private void startSimThread() {
         m_lastSimTime = Utils.getCurrentTimeSeconds();
 
@@ -148,12 +153,21 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 .withSupplyCurrentLimitEnable(true)
                 .withSupplyCurrentLimit(limit);
 
-        for (int i = 0; i < 3; i++) getModule(i).getDriveMotor().getConfigurator().apply(configs);
+        for (int i = 0; i < 3; i++)
+            getModule(i).getDriveMotor().getConfigurator().apply(configs);
         getModule(3).getDriveMotor().getConfigurator().apply(configs, 0.015);
     }
 
     @Override
     public void periodic() {
         updateOdometry();
+    }
+
+    public boolean isInRange() {
+        return isInRange;
+    }
+
+    public void setInRange(boolean isInRange) {
+        this.isInRange = isInRange;
     }
 }

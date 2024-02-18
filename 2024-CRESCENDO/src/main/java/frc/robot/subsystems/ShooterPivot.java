@@ -20,6 +20,7 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.PivotConstants.PivotMotionMagicConstants;
 import frc.robot.Constants.PivotConstants.PivotSlot0ConfigConstants;
 
@@ -29,7 +30,6 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
   private final CANcoder cancoder = new CANcoder(Constants.PivotConstants.EncoderID);
 
   private double cancoderPosition;
-  private double cancoderVelocity;
 
   private Slot0Configs slot0Config = new Slot0Configs()
       .withKP(PivotSlot0ConfigConstants.kP)
@@ -46,9 +46,6 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
       .withMotionMagicAcceleration(PivotMotionMagicConstants.acceleration)
       .withMotionMagicJerk(PivotMotionMagicConstants.jerk);
 
-  private MotionMagicVoltage m_request = new MotionMagicVoltage(0.0); // FIXME inital pos might be current pos insted of
-                                                                      // 0
-
   FeedbackConfigs feedbackConfig = new FeedbackConfigs()
       .withFeedbackRemoteSensorID(Constants.PivotConstants.EncoderID)
       .withFeedbackRotorOffset(Constants.PivotConstants.encoderOffset)
@@ -63,11 +60,19 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
   }
 
   public void setPivotPosition(double position) { // position is in number of rotations as per documentation.
-    pivotMotor.setControl(m_request.withPosition(position));
+    pivotMotor.setControl(new MotionMagicVoltage(position));
   }
 
-  public double getCancoderVelo() {
-    return cancoderVelocity;
+  public void setPivotPositionFromRad(double radians) {
+    setPivotPosition(((radians - PivotConstants.angleAtZero) / (PivotConstants.angleAtMax - PivotConstants.angleAtZero)) * (PivotConstants.forwardSoftLimitThreshold - PivotConstants.reverseSoftLimitThreshold));
+  }
+
+  public void set(double speed) {
+    pivotMotor.setControl(new DutyCycleOut(speed));
+  }
+
+  public void stop() {
+    set(0.0);
   }
 
   public double getCancoderPos() {
@@ -77,7 +82,6 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
   @Override
   public void periodic() {
     cancoderPosition = cancoder.getAbsolutePosition().getValueAsDouble();
-    cancoderVelocity = cancoder.getVelocity().getValueAsDouble(); // Rotations/s
   }
 
   public void configEncoder() {
@@ -88,12 +92,12 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
 
     canCoderConfiguration.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
     canCoderConfiguration.MagnetSensor.SensorDirection = Constants.PivotConstants.cancoderInvert;
+    canCoderConfiguration.MagnetSensor.MagnetOffset = PivotConstants.encoderOffset;
 
     cancoder.getConfigurator().apply(canCoderConfiguration);
   }
 
   public void configMotor() {
-
     pivotMotor.getConfigurator().apply(new TalonFXConfiguration());
 
     TalonFXConfiguration configuration = new TalonFXConfiguration()

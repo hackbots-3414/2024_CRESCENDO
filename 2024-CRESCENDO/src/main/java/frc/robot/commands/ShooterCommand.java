@@ -6,17 +6,15 @@ import frc.robot.subsystems.Shooter;
 
 public class ShooterCommand extends Command {
   Shooter shooter;
-  double speed;
 
-  public ShooterCommand(Shooter shooter, double speed) {
+  public ShooterCommand(Shooter shooter) {
     addRequirements(shooter);
     this.shooter = shooter;
-    this.speed = speed;
   }
 
   @Override
   public void initialize() {
-    shooter.setFlywheelVelo(Constants.ShooterConstants.shootVelo);
+    shooter.setVelocity(Constants.ShooterConstants.shootVelo);
   }
 
   @Override
