@@ -20,6 +20,6 @@ public class ManualElevatorCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        elevator.set(0);
+        elevator.stop();
     }
 }

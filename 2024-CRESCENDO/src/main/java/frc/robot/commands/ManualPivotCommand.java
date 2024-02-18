@@ -20,6 +20,6 @@ public class ManualPivotCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        pivot.set(0);
+        pivot.stop();
     }
 }

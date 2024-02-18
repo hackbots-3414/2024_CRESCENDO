@@ -110,7 +110,7 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
   }
 
   public void stop() {
-    elevatorMotor.set(0.0);
+    set(0.0);
   }
 
   public boolean getForwardLimit() {
