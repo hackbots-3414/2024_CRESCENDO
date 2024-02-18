@@ -1,5 +1,7 @@
 package frc.robot;
 
+import static java.util.Map.entry;
+
 import java.util.Map;
 
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -11,9 +13,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.Shooter;
-
-import static java.util.Map.entry;
 
 public class Constants {
     public enum AprilTags {

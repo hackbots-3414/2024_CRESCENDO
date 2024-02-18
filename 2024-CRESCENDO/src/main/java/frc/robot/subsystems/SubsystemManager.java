@@ -39,6 +39,7 @@ import frc.robot.commands.WinchCommand;
 import frc.robot.generated.TunerConstants;
 
 public class SubsystemManager extends SubsystemBase {
+  private static SubsystemManager me = null;
 
   PowerDistribution pdp = new PowerDistribution(1, ModuleType.kRev);
   List<SubsystemBase> subsystems = new ArrayList<>();
@@ -72,7 +73,12 @@ public class SubsystemManager extends SubsystemBase {
   double coprocessorsAmpRating = 3 * 2 * runTimeHours; // 3 AMP HOURS for runTimeHours per coprocessor
   double availableCurrent = inputCurrent - coprocessorsAmpRating;
 
-  public SubsystemManager() {}
+  public static synchronized SubsystemManager getInstance() {
+    if (me == null) {
+      me = new SubsystemManager();
+    }
+    return me;
+  }
 
   public Intake getIntake() {return intake;}
   public Shooter getShooter() {return shooter;}
@@ -95,7 +101,8 @@ public class SubsystemManager extends SubsystemBase {
   }
 
   private void dampenDrivetrain() {
-    double supplyLimitDrivetrain = ((availableCurrent / runTimeHours - (elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent + transportCurrent)))/4.0; // (Ah Available - Ah Being Used) / Ah to Amps conversion / 4 motors to distribute over
+    double supplyLimitDrivetrain = ((availableCurrent / runTimeHours
+        - (elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent + transportCurrent))) / 4.0; // (Ah Available - Ah Being Used) / Ah to Amps conversion / 4 motors to distribute over
     supplyLimitDrivetrain = supplyLimitDrivetrain > 40 ? 39.5 : supplyLimitDrivetrain;
     drivetrain.setCurrentLimit(supplyLimitDrivetrain);
   }

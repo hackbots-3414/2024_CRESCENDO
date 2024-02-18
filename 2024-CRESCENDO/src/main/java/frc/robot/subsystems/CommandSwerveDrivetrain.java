@@ -41,6 +41,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private HashMap<String, Command> eventMarkers = new HashMap<>();
 
     private PhotonVision photonVision;
+    private boolean isInRange;
 
     private void initPhotonVision() {
         photonVision = new PhotonVision();
@@ -152,12 +153,17 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 .withSupplyCurrentLimitEnable(true)
                 .withSupplyCurrentLimit(limit);
 
-        for (int i = 0; i < 3; i++) getModule(i).getDriveMotor().getConfigurator().apply(configs);
+        for (int i = 0; i < 3; i++)
+            getModule(i).getDriveMotor().getConfigurator().apply(configs);
         getModule(3).getDriveMotor().getConfigurator().apply(configs, 0.015);
     }
 
     @Override
     public void periodic() {
         updateOdometry();
+    }
+
+    public boolean isInRange() {
+        return isInRange;
     }
 }
