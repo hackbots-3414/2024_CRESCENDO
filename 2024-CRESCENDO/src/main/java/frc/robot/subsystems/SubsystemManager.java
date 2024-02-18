@@ -34,7 +34,8 @@ import frc.robot.commands.WinchCommand;
 import frc.robot.generated.TunerConstants;
 
 public class SubsystemManager extends SubsystemBase {
-    
+  private static SubsystemManager me = null;
+
   PowerDistribution pdp = new PowerDistribution(1, ModuleType.kRev);
   List<SubsystemBase> subsystems = new ArrayList<>();
 
@@ -47,7 +48,10 @@ public class SubsystemManager extends SubsystemBase {
   Winch winch = new Winch();
 
   CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
-  FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.1).withRotationalDeadband(Constants.SwerveConstants.maxAngleVelocity * 0.1).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+  FieldCentric driveRequest = new SwerveRequest.FieldCentric()
+      .withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.1)
+      .withRotationalDeadband(Constants.SwerveConstants.maxAngleVelocity * 0.1)
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   SwerveDriveBrake brakeRequest = new SwerveDriveBrake();
   PointWheelsAt pointRequest = new PointWheelsAt();
   Telemetry logger = new Telemetry();
@@ -61,10 +65,15 @@ public class SubsystemManager extends SubsystemBase {
 
   double inputCurrent = 18; // 18 AMP HOURS
   double runTimeHours = 0.05; // 3 MINUTES
-  double coprocessorsAmpRating = 3*2 * runTimeHours; // 3 AMP HOURS for runTimeHours per coprocessor
+  double coprocessorsAmpRating = 3 * 2 * runTimeHours; // 3 AMP HOURS for runTimeHours per coprocessor
   double availableCurrent = inputCurrent - coprocessorsAmpRating;
 
-  public SubsystemManager() {}
+  public static synchronized SubsystemManager getInstance() {
+    if (me == null) {
+      me = new SubsystemManager();
+    }
+    return me;
+  }
 
   public Intake getIntake() {return intake;}
   public Shooter getShooter() {return shooter;}
@@ -87,21 +96,37 @@ public class SubsystemManager extends SubsystemBase {
   }
 
   private void dampenDrivetrain() {
-    double supplyLimitDrivetrain = ((availableCurrent / runTimeHours - (elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent + transportCurrent)))/4.0; // (Ah Available - Ah Being Used) / Ah to Amps conversion / 4 motors to distribute over
+    double supplyLimitDrivetrain = ((availableCurrent / runTimeHours
+        - (elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent + transportCurrent))) / 4.0; // (Ah
+                                                                                                               // Available
+                                                                                                               // - Ah
+                                                                                                               // Being
+                                                                                                               // Used)
+                                                                                                               // / Ah
+                                                                                                               // to
+                                                                                                               // Amps
+                                                                                                               // conversion
+                                                                                                               // / 4
+                                                                                                               // motors
+                                                                                                               // to
+                                                                                                               // distribute
+                                                                                                               // over
     supplyLimitDrivetrain = supplyLimitDrivetrain > 40 ? 39.5 : supplyLimitDrivetrain;
     SmartDashboard.putNumber("CURRENT LIMIT FOR DRIVETRAIN", supplyLimitDrivetrain);
     drivetrain.setCurrentLimit(supplyLimitDrivetrain);
   }
 
   public void configureDriveDefaults(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
-    drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> driveRequest.withVelocityX(-x.get() * Constants.SwerveConstants.maxDriveVelocity).withVelocityY(-y.get() * Constants.SwerveConstants.maxDriveVelocity).withRotationalRate(-turn.get() * Constants.SwerveConstants.maxAngleVelocity)));
+    drivetrain.setDefaultCommand(
+        drivetrain.applyRequest(() -> driveRequest.withVelocityX(-x.get() * Constants.SwerveConstants.maxDriveVelocity)
+            .withVelocityY(-y.get() * Constants.SwerveConstants.maxDriveVelocity)
+            .withRotationalRate(-turn.get() * Constants.SwerveConstants.maxAngleVelocity)));
   }
 
   public Command makeBrakeCommand() {return drivetrain.applyRequest(() -> brakeRequest);}
   public Command makePointCommand(double x, double y) {return drivetrain.applyRequest(() -> pointRequest.withModuleDirection(new Rotation2d(-x, -y)));}
   public Command makeResetCommand() {return drivetrain.runOnce(() -> drivetrain.seedFieldRelative());}
   public void resetAtPose2d(Pose2d pose) {drivetrain.seedFieldRelative(pose);}
-
   public void telemeterize() {drivetrain.registerTelemetry(logger::telemeterize);}
 
   public Command makeElevatorCommand(ElevatorPresets preset) {return new ElevatorCommand(elevator, shooterPivot, preset);}

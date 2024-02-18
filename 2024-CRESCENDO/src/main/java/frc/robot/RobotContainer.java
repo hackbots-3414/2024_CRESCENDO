@@ -30,8 +30,7 @@ public class RobotContainer {
   private final CommandXboxController operator = new CommandXboxController(Constants.InputConstants.kOperatorControllerPort);
 
   SendableChooser<Command> pathChooser = new SendableChooser<>();
-
-  public SubsystemManager subsystemManager = new SubsystemManager();
+  private SubsystemManager subsystemManager = SubsystemManager.getInstance();
   
   private void configureDriverBindings() {
     resetGyroButton.onTrue(subsystemManager.makeResetCommand());

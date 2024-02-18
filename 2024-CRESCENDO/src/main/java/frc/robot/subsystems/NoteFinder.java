@@ -152,6 +152,10 @@ public class NoteFinder extends SubsystemBase {
     return returnArray;
   }
 
+  public boolean isNoteDetected() {
+    return !gamepieces.isEmpty();
+   }
+
   public class Gamepiece {
     private double angle = 0;
     private double confidence = 0;
