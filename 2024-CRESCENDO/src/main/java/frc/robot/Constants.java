@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Shooter;
 
 import static java.util.Map.entry;
 
@@ -80,9 +81,6 @@ public class Constants {
 
         public static final double shootVelo = 92.0; // Rotations per second
         public static final double shooterTolerance = 8.0;
-
-        public static final double rangeTolerance = 0.01;
-        public static final double shootSpeed = shootVelo * Units.inchesToMeters(1.5) * Math.PI;
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
             entry(0.0, 0.0),
@@ -166,11 +164,6 @@ public class Constants {
 
         public static final double elevatorLowerLimit = 0;
         public static final double elevatorUpperLimit = 1;
-        
-        public static final double minimumDistanceToNotBreakRobot = 2; // meters from speaker
-        public static final double clearanceHeight = 0.05; // meters up;
-        public static final double elevatorTilt = Math.toRadians(60);
-        public static final double minimumHeight = 0.05; // ONLY Y DIRECTION
 
         public static final double elevatorManualUpSpeed = 0.1;
         public static final double elevatorManualDownSpeed = -0.1;
@@ -235,6 +228,16 @@ public class Constants {
         }
     }
 
+    public static final class AimConstants {
+        public static final double minimumDistanceToNotBreakRobot = 2; // meters from speaker
+        public static final double clearanceHeight = 0.05; // meters up;
+        public static final double elevatorTilt = Math.toRadians(60);
+        public static final double minimumHeight = 0.19; // ONLY Y DIRECTION
+
+        public static final double rangeTolerance = 0.01;
+        public static final double shootSpeed = ShooterConstants.shootVelo * Units.inchesToMeters(1.5) * Math.PI;
+    }
+
     public static final class WinchConstants {
         public static double climbHeight = 21;
         public static double restHeight = 4;
@@ -267,8 +270,6 @@ public class Constants {
     }
 
     public class FieldConstants {
-        public static final double speakerHeight = 2; // meters
-        public static final double speakerX = Units.inchesToMeters(-1.5); // meters
-        public static final double speakerY = 5.6; // meters
+        public static final double speakerHeight = 2.0515; // meters
     }
 }

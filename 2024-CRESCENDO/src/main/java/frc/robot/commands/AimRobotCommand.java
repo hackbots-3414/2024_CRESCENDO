@@ -13,12 +13,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Constants.AimConstants;
 import frc.robot.Constants.AprilTags;
-import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.FieldConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
@@ -74,17 +74,20 @@ public class AimRobotCommand extends Command {
 
         drivetrainRotation = speakerPosition.getTranslation().minus(robotPosition2d.getTranslation()).getAngle().plus(Rotation2d.fromDegrees(yawAdd));
 
-        double v = ShooterConstants.shootSpeed;
+        double v = AimConstants.shootSpeed;
         double g = 9.81;
         double x = speakerRelative.getTranslation().getNorm();
-        double y = FieldConstants.speakerHeight - ElevatorConstants.minimumHeight;
+        double y = FieldConstants.speakerHeight - AimConstants.minimumHeight;
+        
+        SmartDashboard.putNumber("GOAL HEIGHT", y);
+        SmartDashboard.putNumber("DISTANCE FROM TARGET", x);
 
-        if (x > ElevatorConstants.minimumDistanceToNotBreakRobot) {
+        if (x > AimConstants.minimumDistanceToNotBreakRobot) {
             elevatorHeight = 0.0;
         } else {
-            elevatorHeight = ElevatorConstants.clearanceHeight;
-            y -= elevatorHeight * Math.sin(ElevatorConstants.elevatorTilt);
-            x += elevatorHeight * Math.cos(ElevatorConstants.elevatorTilt);
+            elevatorHeight = AimConstants.clearanceHeight;
+            y -= elevatorHeight * Math.sin(AimConstants.elevatorTilt);
+            x += elevatorHeight * Math.cos(AimConstants.elevatorTilt);
         }
 
         double theta = Math.atan((Math.pow(v, 2) - Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(x, 2) + 2 * y * Math.pow(v, 2)))) / (g * x));
@@ -107,6 +110,9 @@ public class AimRobotCommand extends Command {
                                 : (pidTurn.calculate(measurement, setpoint) * Constants.SwerveConstants.maxAngleVelocity)));
 
         currentDriveCommand.schedule();
+
+        SmartDashboard.putNumber("SHOOTER ANGLE", shooterAngle);
+        SmartDashboard.putNumber("SHOOTER FORCE", AimConstants.shootSpeed);
     }
 
     @Override
@@ -118,6 +124,6 @@ public class AimRobotCommand extends Command {
         double timeOfFlight = checkX / initialVelocityX;
         double verticalDistanceTraveled =initialVelocityY * timeOfFlight - 0.5 * gravity * timeOfFlight * timeOfFlight;
         
-        return verticalDistanceTraveled - checkY < ShooterConstants.rangeTolerance;
+        return verticalDistanceTraveled - checkY < AimConstants.rangeTolerance;
     }
 }
