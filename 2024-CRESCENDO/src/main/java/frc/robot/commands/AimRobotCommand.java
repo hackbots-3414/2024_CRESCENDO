@@ -13,7 +13,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.AprilTags;
@@ -84,14 +83,12 @@ public class AimRobotCommand extends Command {
             elevatorHeight = 0.0;
         } else {
             elevatorHeight = ElevatorConstants.clearanceHeight;
-            y += elevatorHeight * Math.sin(ElevatorConstants.elevatorTilt);
+            y -= elevatorHeight * Math.sin(ElevatorConstants.elevatorTilt);
             x += elevatorHeight * Math.cos(ElevatorConstants.elevatorTilt);
         }
 
         double theta = Math.atan((Math.pow(v, 2) - Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(x, 2) + 2 * y * Math.pow(v, 2)))) / (g * x));
-        SmartDashboard.putNumber("THETA 1", theta);
-        // if (!runTests(v, launchAngle, g, x, y)) launchAngle = launchAngle == theta1 ? theta2 : theta1;
-        shooterAngle = theta + pitchAdd;        
+        if (runTests(v, theta, g, x, y)) shooterAngle = theta + pitchAdd;
     }
 
     @Override
@@ -99,13 +96,10 @@ public class AimRobotCommand extends Command {
         blueSide = aSupplier.get() == Alliance.Blue;
         recalculate();
         elevator.setElevatorPosition(elevatorHeight);
-        shooterPivot.setPivotPosition(shooterAngle);
+        shooterPivot.setPivotPositionFromRad(shooterAngle);
         double compensate = blueSide ? -360 : 0;
         double measurement = robotPosition2d.getRotation().getDegrees() > 0 ? robotPosition2d.getRotation().getDegrees() + compensate : robotPosition2d.getRotation().getDegrees();
         double setpoint = drivetrainRotation.getDegrees() > 0 ? drivetrainRotation.getDegrees() + compensate : drivetrainRotation.getDegrees();
-
-        SmartDashboard.putNumber("elevator height", elevatorHeight);
-        SmartDashboard.putNumber("pivot position", shooterAngle);
 
         currentDriveCommand = drivetrain.applyRequest(() -> driveRequest.withVelocityX(xSupplier.get() * SwerveConstants.maxDriveVelocity)
                                 .withVelocityY(-ySupplier.get() * SwerveConstants.maxDriveVelocity)
@@ -121,10 +115,9 @@ public class AimRobotCommand extends Command {
     private boolean runTests(double velocity, double launchAngle, double gravity, double checkX, double checkY) {
         double initialVelocityX = velocity * Math.cos(launchAngle);
         double initialVelocityY = velocity * Math.sin(launchAngle);
-        double timeOfFlight = (2 * initialVelocityY) / gravity;
-        double horizontalDistanceTraveled = initialVelocityX * timeOfFlight;
+        double timeOfFlight = checkX / initialVelocityX;
         double verticalDistanceTraveled =initialVelocityY * timeOfFlight - 0.5 * gravity * timeOfFlight * timeOfFlight;
-
-        return horizontalDistanceTraveled == checkX && verticalDistanceTraveled == checkY;
+        
+        return verticalDistanceTraveled - checkY < ShooterConstants.rangeTolerance;
     }
 }

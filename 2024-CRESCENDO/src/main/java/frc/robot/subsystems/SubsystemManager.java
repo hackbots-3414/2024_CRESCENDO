@@ -16,7 +16,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -98,7 +97,6 @@ public class SubsystemManager extends SubsystemBase {
   private void dampenDrivetrain() {
     double supplyLimitDrivetrain = ((availableCurrent / runTimeHours - (elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent + transportCurrent)))/4.0; // (Ah Available - Ah Being Used) / Ah to Amps conversion / 4 motors to distribute over
     supplyLimitDrivetrain = supplyLimitDrivetrain > 40 ? 39.5 : supplyLimitDrivetrain;
-    SmartDashboard.putNumber("CURRENT LIMIT FOR DRIVETRAIN", supplyLimitDrivetrain);
     drivetrain.setCurrentLimit(supplyLimitDrivetrain);
   }
 

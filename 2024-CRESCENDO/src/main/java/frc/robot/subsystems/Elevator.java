@@ -145,7 +145,6 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
     SmartDashboard.putBoolean("Forward Limit switch", forwardLimit);
     SmartDashboard.putBoolean("Reverse Limit Switch", reverseLimit);
     SmartDashboard.putNumber("Elevator Position", elevatorPosition);
-    SmartDashboard.putNumber("CLOSED LOOP REFERENCE", elevatorMotor.getClosedLoopReference().getValueAsDouble());
   }
 
   @Override

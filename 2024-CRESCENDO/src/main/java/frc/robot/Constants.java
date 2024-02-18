@@ -83,6 +83,8 @@ public class Constants {
 
         public static final double shooterTolerance = 8.0;
 
+        public static final double rangeTolerance = 0.01;
+
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
             entry(0.0, 0.0),
             entry(1.0, 1.0),
@@ -166,7 +168,7 @@ public class Constants {
         public static final double elevatorLowerLimit = 0;
         public static final double elevatorUpperLimit = 1;
         
-        public static final double minimumDistanceToNotBreakRobot = 1; // meters from speaker
+        public static final double minimumDistanceToNotBreakRobot = 2; // meters from speaker
         public static final double clearanceHeight = 0.2; // meters up;
         public static final double elevatorTilt = Math.toRadians(30);
         public static final double minimumHeight = 0.1; // ONLY Y DIRECTION
@@ -208,6 +210,9 @@ public class Constants {
 
         public static final double forwardSoftLimitThreshold = 0.088379;
         public static final double reverseSoftLimitThreshold = 0;
+
+        public static final double angleAtZero = Math.toRadians(20);
+        public static final double angleAtMax = Math.toRadians(60);
 
         public static final double pivotManualUpSpeed = 0.05;
         public static final double pivotManualDownSpeed = -0.05;

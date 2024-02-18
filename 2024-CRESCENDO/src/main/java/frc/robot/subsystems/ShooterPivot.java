@@ -63,6 +63,10 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
     pivotMotor.setControl(new MotionMagicVoltage(position));
   }
 
+  public void setPivotPositionFromRad(double radians) {
+    setPivotPosition(((radians - PivotConstants.angleAtZero) / (PivotConstants.angleAtMax - PivotConstants.angleAtZero)) * (PivotConstants.forwardSoftLimitThreshold - PivotConstants.reverseSoftLimitThreshold));
+  }
+
   public void set(double speed) {
     pivotMotor.setControl(new DutyCycleOut(speed));
   }
