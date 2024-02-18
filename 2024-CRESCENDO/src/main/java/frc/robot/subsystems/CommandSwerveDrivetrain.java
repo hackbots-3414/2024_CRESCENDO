@@ -1,10 +1,7 @@
 package frc.robot.subsystems;
 
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.function.Supplier;
-
-import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -21,9 +18,9 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -43,11 +40,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     private boolean inRange = false;
 
-    private PhotonVision photonVision;
+    // private PhotonVision photonVision;
 
-    private void initPhotonVision() {
-        photonVision = new PhotonVision();
-    }
+    // private void initPhotonVision() {
+    //     photonVision = new PhotonVision();
+    // }
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
             SwerveModuleConstants... modules) {
@@ -56,7 +53,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        initPhotonVision();
+        // initPhotonVision();
     }
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
@@ -65,7 +62,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        initPhotonVision();
+        // initPhotonVision();
     }
 
     private void configurePathPlanner() {
@@ -120,22 +117,22 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     private void updateOdometry() {
-        Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
-        Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
+        // Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
+        // Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
 
-        SmartDashboard.putBoolean("SeesRight", rightPoseMaybe.isPresent());
-        SmartDashboard.putBoolean("SeesLeft", leftPoseMaybe.isPresent());
+        // SmartDashboard.putBoolean("SeesRight", rightPoseMaybe.isPresent());
+        // SmartDashboard.putBoolean("SeesLeft", leftPoseMaybe.isPresent());
 
-        if (leftPoseMaybe.isPresent()) {
-            EstimatedRobotPose leftPose = leftPoseMaybe.get();
-            SmartDashboard.putString("Left", leftPose.estimatedPose.toString());
-            addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
-        }
-        if (rightPoseMaybe.isPresent()) {
-            EstimatedRobotPose rightPose = rightPoseMaybe.get();
-            SmartDashboard.putString("Right", rightPose.estimatedPose.toString());
-            addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
-        }
+        // if (leftPoseMaybe.isPresent()) {
+        //     EstimatedRobotPose leftPose = leftPoseMaybe.get();
+        //     SmartDashboard.putString("Left", leftPose.estimatedPose.toString());
+        //     addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
+        // }
+        // if (rightPoseMaybe.isPresent()) {
+        //     EstimatedRobotPose rightPose = rightPoseMaybe.get();
+        //     SmartDashboard.putString("Right", rightPose.estimatedPose.toString());
+        //     addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
+        // }
         estimatedPose = m_odometry.getEstimatedPosition();
         SmartDashboard.putString("ROBOTPOSE", estimatedPose.toString());
         SmartDashboard.putNumber("ROBOTX", estimatedPose.getX());
@@ -165,6 +162,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     @Override
     public void periodic() {
         updateOdometry();
+        for (int i = 0; i < Modules.length; i++) {
+            SmartDashboard.putNumber("CANCODER ANGLES: " + i, Modules[i].getCANcoder().getAbsolutePosition().getValueAsDouble());
+        }
     }
     
     public boolean isInRange() {

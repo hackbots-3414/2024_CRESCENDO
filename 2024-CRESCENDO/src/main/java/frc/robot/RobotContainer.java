@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -45,21 +46,29 @@ public class RobotContainer {
 
   private void configureOperatorBindings() {
     // operator.a().whileTrue(<ADD COMMAND>);
-    operator.b().whileTrue(subsystemManager.makeShootCommand(Constants.ShooterConstants.shootSpeed));
+    operator.b().whileTrue(subsystemManager.makeShootCommand());
     operator.x().whileTrue(subsystemManager.makeIntakeCommand());
+    operator.a().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.TEST));
+    operator.y().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));
     // operator.y().whileTrue(<ADD COMMAND>);
-    // operator.leftBumper().whileTrue(<ADD COMMAND>);
+    operator.leftBumper().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.TRAP));
     operator.rightBumper().whileTrue(subsystemManager.makeEjectCommand());
-    operator.back().whileTrue(subsystemManager.makeTransportCommand(true));
-    operator.start().whileTrue(subsystemManager.makeTransportCommand(false));
+    operator.back().whileTrue(subsystemManager.makeWinchCommand(true));
+    operator.start().whileTrue(subsystemManager.makeWinchCommand(false));
 
     // operator.axisGreaterThan(Constants.InputConstants.leftTriggerID, Constants.InputConstants.triggerTolerance).whileTrue(<ADD COMMAND>); // Left Trigger as Button
     // operator.axisGreaterThan(Constants.InputConstants.rightTriggerID, Constants.InputConstants.triggerTolerance).whileTrue(<ADD COMMAND>); //Right Trigger as Button
 
-    operator.pov(0).whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.AMP));// D-PAD Up
-    operator.pov(90).whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));// D-PAD Right
-    operator.pov(180).whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.TRAP));// D-PAD Down
+    // operator.pov(0).whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.AMP));// D-PAD Up
+    // operator.pov(90).whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));// D-PAD Right
+    // operator.pov(180).whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.TRAP));// D-PAD Down
+    operator.pov(0).whileTrue(subsystemManager.makeManualElevatorCommand(true));// D-PAD Up
+    operator.pov(180).whileTrue(subsystemManager.makeManualElevatorCommand(false));// D-PAD Down
+    operator.pov(90).whileTrue(subsystemManager.makeManualPivotCommand(true));// D-PAD Up
+    operator.pov(270).whileTrue(subsystemManager.makeManualPivotCommand(false));// D-PAD Down
     // operator.pov(270).whileTrue(<ADD COMMAND>); // D-PAD Left
+    SmartDashboard.putData("Coast Elevator", subsystemManager.elevatorNeutralMode(NeutralModeValue.Coast));
+    SmartDashboard.putData("Brake Elevator", subsystemManager.elevatorNeutralMode(NeutralModeValue.Brake));
   }
 
   public RobotContainer() {
