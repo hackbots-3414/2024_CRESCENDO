@@ -99,7 +99,7 @@ public class Constants {
         public static final int intakeMotorID = 60;
         public static final int intakeMotorPDPID = 15;
         public static final double intakeSpeed = 1;
-        public static final double ejectSpeed = 0;
+        public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
     }
 
@@ -127,31 +127,31 @@ public class Constants {
         public static final boolean transportMotorInvert = true;
         public static final double transportSpeed = 0.5;
         public static final double transportEjectSpeed = -0.5;
-        public static final int irSensorChannel = 2;
+        public static final int irSensorChannel = 4;
+
+        public static final double transportEjectDelay = 0.5; // seconds until note leaves shooter
     }
 
     public static final class PositionConstants {
-
-        public static final class stowPresets {
+        public static final class StowPresets {
             public static final double elevator = 0;
             public static final double shooter = 0;
         }
 
-        public static final class ampPresets {
-            public static final double elevator = 0;
+        public static final class AmpPresets {
+            public static final double elevator = 2.32;
             public static final double shooter = 0;
         }
 
-        public static final class trapPresets {
+        public static final class TrapPresets {
             public static final double elevator = 2.32;
             public static final double shooter = 0.088379;
         }
 
-        public static final class testPresets {
+        public static final class TestPresets {
             public static final double elevator = 6 / (Math.PI * 1.751);
             public static final double shooter = 0.02;
         }
-
     }
 
     public static final class ElevatorConstants {
@@ -232,7 +232,8 @@ public class Constants {
     }
 
     public static final class WinchConstants {
-        public static double climbHeight = 10;
+        public static double climbHeight = 21;
+        public static double restHeight = 4;
     }
 
     public static class AprilTagObject {

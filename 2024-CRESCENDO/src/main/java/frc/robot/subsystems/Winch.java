@@ -12,16 +12,17 @@ import frc.robot.Constants;
 
 public class Winch extends SubsystemBase implements AutoCloseable {
 
-  private TalonFX leftWinchMotor;
-  private TalonFX rightWinchMotor;
+  private TalonFX leftWinchMotor = new TalonFX(Constants.ShooterConstants.leftMotorID);
+  private TalonFX rightWinchMotor = new TalonFX(Constants.ShooterConstants.rightMotorID);
   private double motorPosition;
 
   private PIDController pid;
 
   public Winch() {
-    leftWinchMotor = new TalonFX(Constants.ShooterConstants.leftMotorID);
-    rightWinchMotor = new TalonFX(Constants.ShooterConstants.rightMotorID);
+    configMotors();
+  }
 
+  public void configMotors() {
     leftWinchMotor.getConfigurator().apply(new TalonFXConfiguration());
     rightWinchMotor.getConfigurator().apply(new TalonFXConfiguration());
 

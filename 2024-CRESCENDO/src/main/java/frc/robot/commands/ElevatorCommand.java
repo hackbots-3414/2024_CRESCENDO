@@ -13,7 +13,7 @@ public class ElevatorCommand extends Command {
     ElevatorPresets selector;
 
     public ElevatorCommand(Elevator elevator, ShooterPivot shooterPivot, ElevatorPresets selector) {
-        addRequirements(elevator);
+        addRequirements(elevator); // Don't add requirements for shooter pivot -> auto aim needs requirements
         this.elevator = elevator;
         this.shooterPivot = shooterPivot;
         this.selector = selector;
@@ -23,20 +23,20 @@ public class ElevatorCommand extends Command {
     public void execute() {
         switch (selector) {
             case STOW:
-                elevator.setElevatorPosition(PositionConstants.stowPresets.elevator);
-                shooterPivot.setPivotPosition(PositionConstants.stowPresets.shooter);
+                elevator.setElevatorPosition(PositionConstants.StowPresets.elevator);
+                shooterPivot.setPivotPosition(PositionConstants.StowPresets.shooter);
                 break;
             case AMP:
-                elevator.setElevatorPosition(PositionConstants.ampPresets.elevator);
-                // shooterPivot.setPivotPosition(PositionConstants.ampPresets.shooter);
+                elevator.setElevatorPosition(PositionConstants.AmpPresets.elevator);
+                shooterPivot.setPivotPosition(PositionConstants.AmpPresets.shooter);
                 break;
             case TRAP:
-                elevator.setElevatorPosition(PositionConstants.trapPresets.elevator);
-                shooterPivot.setPivotPosition(PositionConstants.trapPresets.shooter);
+                elevator.setElevatorPosition(PositionConstants.TrapPresets.elevator);
+                shooterPivot.setPivotPosition(PositionConstants.TrapPresets.shooter);
                 break;
             case TEST:
-                elevator.setElevatorPosition(PositionConstants.testPresets.elevator);
-                shooterPivot.setPivotPosition(PositionConstants.testPresets.shooter);
+                elevator.setElevatorPosition(PositionConstants.TestPresets.elevator);
+                shooterPivot.setPivotPosition(PositionConstants.TestPresets.shooter);
         }
     }
 }

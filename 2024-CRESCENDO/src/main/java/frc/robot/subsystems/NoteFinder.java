@@ -11,8 +11,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.NoteFinderConstants;
@@ -28,7 +28,7 @@ import frc.robot.Constants.NoteFinderConstants;
  * '|'[]' were deleted from dataset.
  */
 public class NoteFinder extends SubsystemBase {
-  private static final Logger LOG = LoggerFactory.getLogger(NoteFinder.class);
+  // private static final Logger LOG = LoggerFactory.getLogger(NoteFinder.class);
   private DatagramChannel noteChannel = null;
   private ByteBuffer byteReceiver = ByteBuffer.allocate(NoteFinderConstants.BUFFER_SIZE);
   private ArrayList<Gamepiece> gamepieces = new ArrayList<>();
@@ -45,7 +45,7 @@ public class NoteFinder extends SubsystemBase {
       noteChannel.socket().bind(new InetSocketAddress(NoteFinderConstants.DATAGRAM_PORT));
       // Catching and Logging an error
     } catch (IOException ioe) {
-      LOG.error("Failure to open note channel", ioe);
+      // LOG.error("Failure to open note channel", ioe);
     }
   }
 
@@ -78,15 +78,15 @@ public class NoteFinder extends SubsystemBase {
         return;
       }
       // Tracing the recieve data and Sender address, and logging the error
-      LOG.trace("receive data: {} Sender: {}", byteReceiver, senderAddress);
+      // LOG.trace("receive data: {} Sender: {}", byteReceiver, senderAddress);
     } catch (Exception ioe) {
-      LOG.error("Failure to receive data", ioe);
+      // LOG.error("Failure to receive data", ioe);
     }
     try {
       parseBuffer();
-      LOG.trace("Updated Game Pieces: {}", gamepieces);
+      // LOG.trace("Updated Game Pieces: {}", gamepieces);
     } catch (Exception e) {
-      LOG.error("Bad MESSAGE", e);
+      // LOG.error("Bad MESSAGE", e);
     }
   }
 
@@ -118,7 +118,7 @@ public class NoteFinder extends SubsystemBase {
     secondString = stringBuilder.substring(stringBuilder.indexOf("|") + 2, stringBuilder.lastIndexOf("]"));
     thirdString = stringBuilder.substring(stringBuilder.indexOf("\"") + 1, stringBuilder.lastIndexOf("\""));
     // Logging the data in the right order
-    LOG.trace("First String: {} Second String: {} Third String: {}", firstString, secondString, thirdString);
+    // LOG.trace("First String: {} Second String: {} Third String: {}", firstString, secondString, thirdString);
     status.setLength(0);
     status.append(thirdString);
     if (firstString.length() == 0) {
