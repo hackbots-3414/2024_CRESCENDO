@@ -71,7 +71,6 @@ public class Constants {
         public static final int rightMotorID = 58;
         public static final int leftMotorPDPID = 4;
         public static final int rightMotorPDPID = 5;
-        public static final double shootSpeed = 20;
         public static final boolean shooterMotorInvert = true;
 
         public static final double kP = 0.8;
@@ -80,10 +79,10 @@ public class Constants {
         public static final double kS = 8;
 
         public static final double shootVelo = 92.0; // Rotations per second
-
         public static final double shooterTolerance = 8.0;
 
         public static final double rangeTolerance = 0.01;
+        public static final double shootSpeed = shootVelo * Units.inchesToMeters(1.5) * Math.PI;
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
             entry(0.0, 0.0),
@@ -169,9 +168,9 @@ public class Constants {
         public static final double elevatorUpperLimit = 1;
         
         public static final double minimumDistanceToNotBreakRobot = 2; // meters from speaker
-        public static final double clearanceHeight = 0.2; // meters up;
-        public static final double elevatorTilt = Math.toRadians(30);
-        public static final double minimumHeight = 0.1; // ONLY Y DIRECTION
+        public static final double clearanceHeight = 0.05; // meters up;
+        public static final double elevatorTilt = Math.toRadians(60);
+        public static final double minimumHeight = 0.05; // ONLY Y DIRECTION
 
         public static final double elevatorManualUpSpeed = 0.1;
         public static final double elevatorManualDownSpeed = -0.1;
