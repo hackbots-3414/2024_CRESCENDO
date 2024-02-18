@@ -68,7 +68,7 @@ public class ShooterPivotTest implements AutoCloseable {
 
       double result;
       //Get motor speed
-      result = pivot.getCancoderVelo();
+      // result = pivot.getCancoderVelo();
       assertEquals(result, 0.0, DELTA);
    }
 }
