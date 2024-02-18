@@ -32,7 +32,7 @@ public class AimRobotCommand extends Command {
     double elevatorHeight;
     double shooterAngle;
     Rotation2d drivetrainRotation;
-    
+  
     Supplier<Double> xSupplier;
     Supplier<Double> ySupplier;
     Supplier<Double> rSupplier;
