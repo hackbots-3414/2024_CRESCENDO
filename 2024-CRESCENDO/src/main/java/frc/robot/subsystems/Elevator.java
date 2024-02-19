@@ -6,15 +6,18 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.HardwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
@@ -26,7 +29,6 @@ import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -46,20 +48,17 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
   private boolean forwardLimit;
   private boolean reverseLimit;
 
-  private MotionMagicConfigs motionMagicConfig = new MotionMagicConfigs()
-      .withMotionMagicCruiseVelocity(ElevatorMotionMagicConstants.cruiseVelocity)
-      .withMotionMagicAcceleration(ElevatorMotionMagicConstants.acceleration)
-      .withMotionMagicJerk(ElevatorMotionMagicConstants.jerk);
-
   public Elevator() {
     configElevatorMotors();
-    Timer.delay(0.1);
   }
 
   private void configElevatorMotors() {
+    elevatorMotor.clearStickyFaults();
+
     elevatorMotor.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
 
     TalonFXConfiguration configuration = new TalonFXConfiguration()
+
         .withSlot0(new Slot0Configs()
             .withKP(ElevatorSlot0ConfigConstants.kP)
             .withKI(ElevatorSlot0ConfigConstants.kI)
@@ -69,25 +68,35 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
             .withKA(ElevatorSlot0ConfigConstants.kA)
             .withKG(ElevatorSlot0ConfigConstants.kG)
             .withGravityType(GravityTypeValue.Elevator_Static))
-        .withMotionMagic(motionMagicConfig);
 
-    configuration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    configuration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-
-    configuration.Feedback.SensorToMechanismRatio = 25;
-
-    configuration.CurrentLimits.withSupplyCurrentLimitEnable(true)
-        .withSupplyCurrentLimit(ElevatorConstants.elevatorCurrentLimit).withSupplyCurrentThreshold(0)
-        .withSupplyTimeThreshold(0);
-
-    configuration.HardwareLimitSwitch.ForwardLimitEnable = true;
-    configuration.HardwareLimitSwitch.ReverseLimitEnable = true;
-
-    configuration.HardwareLimitSwitch.ReverseLimitAutosetPositionValue = 0.0;
-    configuration.HardwareLimitSwitch.ReverseLimitAutosetPositionEnable = true;
-
-    configuration.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 2.32; // output shaft rotations
-    configuration.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        .withMotionMagic(new MotionMagicConfigs()
+            .withMotionMagicCruiseVelocity(ElevatorMotionMagicConstants.cruiseVelocity)
+            .withMotionMagicAcceleration(ElevatorMotionMagicConstants.acceleration)
+            .withMotionMagicJerk(ElevatorMotionMagicConstants.jerk))
+            
+        .withMotorOutput(new MotorOutputConfigs()
+            .withNeutralMode(NeutralModeValue.Brake)
+            .withInverted(ElevatorConstants.invertMotor))
+            
+        .withFeedback(new FeedbackConfigs()
+            .withRotorToSensorRatio(ElevatorConstants.rotorToSensorRatio)
+            .withSensorToMechanismRatio(ElevatorConstants.sensorToMechanismRatio))
+            
+        .withCurrentLimits(new CurrentLimitsConfigs()
+            .withSupplyCurrentLimitEnable(true)
+            .withSupplyCurrentLimit(ElevatorConstants.elevatorCurrentLimit)
+            .withSupplyCurrentThreshold(0)
+            .withSupplyTimeThreshold(0))
+            
+        .withHardwareLimitSwitch(new HardwareLimitSwitchConfigs()
+            .withForwardLimitEnable(true)
+            .withReverseLimitEnable(true)
+            .withReverseLimitAutosetPositionEnable(true)
+            .withReverseLimitAutosetPositionValue(0.0))
+            
+        .withSoftwareLimitSwitch(new SoftwareLimitSwitchConfigs()
+            .withForwardSoftLimitThreshold(ElevatorConstants.elevatorForwardSoftLimit)
+            .withForwardSoftLimitEnable(true));
 
     elevatorMotor.getConfigurator().apply(configuration, 0.2);
   }
@@ -130,8 +139,11 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
   }
 
   public void setCurrentLimit(double limit) {
-    CurrentLimitsConfigs configs = new CurrentLimitsConfigs().withSupplyCurrentLimitEnable(true)
-        .withSupplyCurrentLimit(limit);
+    CurrentLimitsConfigs configs = new CurrentLimitsConfigs()
+            .withSupplyCurrentLimitEnable(true)
+            .withSupplyCurrentLimit(limit)
+            .withSupplyCurrentThreshold(0)
+            .withSupplyTimeThreshold(0);
     elevatorMotor.getConfigurator().apply(configs, 0.01);
   }
 

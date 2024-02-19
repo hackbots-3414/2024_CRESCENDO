@@ -20,10 +20,9 @@ public class LedSubsystem extends SubsystemBase {
   private static final double NOTE_IN_VIEW = 0.65;
   // private static final double CLIMBER_ACTIVATED = -0.95;
 
-  Spark ledcontroller;
+  Spark ledcontroller = new Spark(0);
 
   public LedSubsystem() {
-    ledcontroller = new Spark(0);
     ledcontroller.set(DEFAULT);
   }
 

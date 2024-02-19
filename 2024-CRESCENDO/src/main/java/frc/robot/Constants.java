@@ -4,6 +4,7 @@ import static java.util.Map.entry;
 
 import java.util.Map;
 
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
@@ -113,10 +114,11 @@ public class Constants {
 
     public static final class DriverConstants {
         public static final int resetGyroButton = 13;
-        public static final int repathButton = 12;
+        public static final int autoAimButton = 3;
         public static final int leftX = 0;
         public static final int leftY = 1;
         public static final int rightX = 3;
+        public static final int rightY = 2;
     }
 
     public static final class TransportConstants {
@@ -154,18 +156,21 @@ public class Constants {
 
     public static final class ElevatorConstants {
         public static final int elevatorMotorID = 50;
+        public static final int elevatorMotorPDPID = 2;
         
         public static final int forwardLimitChannelID = 0;
         public static final int reverseLimitChannelID = 1;
 
-        public static final int elevatorMotorPDPID = 2;
-        public static final int elevatorFollowerMotorPDPID = 3;
+        public static final double rotorToSensorRatio = 1.0;
+        public static final double sensorToMechanismRatio = 25.0;
 
         public static final double elevatorLowerLimit = 0;
         public static final double elevatorUpperLimit = 1;
 
         public static final double elevatorManualUpSpeed = 0.1;
         public static final double elevatorManualDownSpeed = -0.1;
+
+        public static final InvertedValue invertMotor = InvertedValue.Clockwise_Positive;
 
         public static final class ElevatorSlot0ConfigConstants {
             public static final double kP = 15.0; //output per unit of error in position (output/rotation)
@@ -184,6 +189,8 @@ public class Constants {
         }
 
         public static double elevatorCurrentLimit = 20;
+
+        public static double elevatorForwardSoftLimit = 2.32; //output shaft rotations
     }
 
     public static final class PivotConstants {
@@ -208,7 +215,10 @@ public class Constants {
         public static final double pivotManualUpSpeed = 0.05;
         public static final double pivotManualDownSpeed = -0.05;
 
-        public static final double motorCurrentLimit = 0;
+        public static final double pivotCurrentLimit = 0;
+
+        
+        public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         public static final class PivotSlot0ConfigConstants {
             public static final double kP = 50.0; //output per unit of error in position (output/rotation)
@@ -241,8 +251,15 @@ public class Constants {
     }
 
     public static final class WinchConstants {
-        public static double climbHeight = 21;
-        public static double restHeight = 4;
+        public static final int leftWinchMotorID = 60;
+        public static final int rightWinchMotorID = 61;
+
+        public static final boolean winchMotorInvert = true;
+
+        public static final double sensorToMechanismRatio = 25.0;
+
+        public static final double climbHeight = 21;
+        public static final double restHeight = 4;
     }
 
     public static class AprilTagObject {
