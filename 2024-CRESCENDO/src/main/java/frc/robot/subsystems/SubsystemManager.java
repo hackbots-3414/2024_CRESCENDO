@@ -1,15 +1,22 @@
 package frc.robot.subsystems;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.ApplyChassisSpeeds;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.PointWheelsAt;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.SwerveDriveBrake;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,10 +30,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.PivotConstants;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.WinchConstants;
 import frc.robot.Telemetry;
 import frc.robot.commands.AimRobotCommand;
 import frc.robot.commands.AmpScoreCommand;
+import frc.robot.commands.AutoPivotCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.IntakeCommand;
@@ -61,6 +70,9 @@ public class SubsystemManager extends SubsystemBase {
   PointWheelsAt pointRequest = new PointWheelsAt();
   Telemetry logger = new Telemetry();
 
+  ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
+  HashMap<String, Command> eventMarkers = new HashMap<>();
+
   double elevatorCurrent = 0;
   double intakeCurrent = 0;
   double shooterCurrent = 0;
@@ -87,6 +99,10 @@ public class SubsystemManager extends SubsystemBase {
   public Elevator getElevator() {return elevator;}
   public NoteFinder getNoteFinder() {return noteFinder;}
   public Winch getWinch() {return winch;}
+
+  private SubsystemManager() {
+    configurePathPlanner();
+  }
 
   @Override
   public void periodic() {
@@ -186,6 +202,10 @@ public class SubsystemManager extends SubsystemBase {
     return new AimRobotCommand(elevator, shooterPivot, drivetrain, x, y, turn, () -> DriverStation.getAlliance().get());
   }
 
+  public Command makeAutoPivotCommand() {
+    return new AutoPivotCommand(elevator, shooterPivot, drivetrain, shooter, () -> DriverStation.getAlliance().get());
+  }
+
   public Command makeTestingCommand() {
     SequentialCommandGroup commands = new SequentialCommandGroup();
     commands.addCommands(new ElevatorCommand(elevator, shooterPivot, ElevatorPresets.AMP).withTimeout(2),
@@ -199,5 +219,33 @@ public class SubsystemManager extends SubsystemBase {
         drivetrain.makeTestAuton());
 
     return commands;
+  }
+
+  private void configurePathPlanner() {
+    double driveBaseRadius = 0;
+    for (var moduleLocation : drivetrain.moduleLocations()) {
+        driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
+    }
+
+    eventMarkers.put("Intake", makeIntakeCommand());
+    eventMarkers.put("Auto Pivot", makeAutoPivotCommand());
+    NamedCommands.registerCommands(eventMarkers);
+
+    AutoBuilder.configureHolonomic(
+            () -> drivetrain.getState().Pose, // CurrentPose Supplier
+            drivetrain::seedFieldRelative, // PoseSetter Consumer
+            drivetrain::getCurrentRobotChassisSpeeds,
+            (speeds) -> drivetrain.setControl(autoRequest.withSpeeds(speeds)), // ChassisSpeeds Consumer
+            new HolonomicPathFollowerConfig(
+                    new PIDConstants(SwerveConstants.kPDrive, SwerveConstants.kIDrive, SwerveConstants.kDDrive),
+                    new PIDConstants(SwerveConstants.kPSteer, SwerveConstants.kISteer, SwerveConstants.kDSteer),
+                    TunerConstants.kSpeedAt12VoltsMps,
+                    driveBaseRadius,
+                    new ReplanningConfig(true, true)),
+            () -> {
+                var alliance = DriverStation.getAlliance();
+                return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
+            },
+            drivetrain); // Subsystem for requirements
   }
 }
