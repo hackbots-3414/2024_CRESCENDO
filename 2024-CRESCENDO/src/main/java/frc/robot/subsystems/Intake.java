@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -13,13 +12,17 @@ import frc.robot.Constants;
 
 public class Intake extends SubsystemBase implements AutoCloseable {
 
-  TalonFX intakeMotor;
-  DutyCycleOut m_DutyCycleOut = new DutyCycleOut(0.0);
+  TalonFX intakeMotor = new TalonFX(Constants.IntakeConstants.intakeMotorID);
 
   public Intake() {
-    intakeMotor = new TalonFX(Constants.IntakeConstants.intakeMotorID);
+    configIntakeMotor();
+  }
+
+  private void configIntakeMotor() {
     intakeMotor.clearStickyFaults();
-    intakeMotor.getConfigurator().apply(new TalonFXConfiguration());
+
+    intakeMotor.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
+    
     intakeMotor.setInverted(Constants.IntakeConstants.intakeMotorInvert);
   }
 
@@ -31,7 +34,7 @@ public class Intake extends SubsystemBase implements AutoCloseable {
   }
 
   public void stopMotor() {
-    intakeMotor.setControl(m_DutyCycleOut.withOutput(0.0));
+    intakeMotor.setControl(new DutyCycleOut(0.0));
   }
 
   public TalonFXSimState getSimState() {
@@ -44,12 +47,6 @@ public class Intake extends SubsystemBase implements AutoCloseable {
 
   public void setControl(ControlRequest request) {
     intakeMotor.setControl(request);
-  }
-
-  public void setCurrentLimit(double limit) {
-    CurrentLimitsConfigs configs = new CurrentLimitsConfigs().withSupplyCurrentLimitEnable(true)
-        .withSupplyCurrentLimit(limit);
-    intakeMotor.getConfigurator().apply(configs, 0.01);
   }
 
   @Override

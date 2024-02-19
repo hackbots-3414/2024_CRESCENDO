@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.AimConstants;
 import frc.robot.Constants.AprilTags;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
@@ -63,7 +62,7 @@ public class AutoPivotCommand extends Command {
         double v = AimConstants.shootSpeed;
         double g = 9.81;
         double x = speakerRelative.getTranslation().getNorm();
-        double y = FieldConstants.speakerHeight - AimConstants.minimumHeight;
+        double y = AimConstants.speakerHeight - AimConstants.minimumHeight;
 
         if (x > AimConstants.minimumDistanceToNotBreakRobot) {
             elevatorHeight = 0.0;

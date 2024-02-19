@@ -35,12 +35,6 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
   private double motorSpeed;
   private double motorPosition;
 
-  private Slot0Configs pidConfig = new Slot0Configs()
-      .withKP(Constants.ShooterConstants.kP)
-      .withKI(Constants.ShooterConstants.kI)
-      .withKD(Constants.ShooterConstants.kD)
-      .withKS(Constants.ShooterConstants.kS);
-
   public Shooter() {
     configMotors();
   }
@@ -49,29 +43,31 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
     leftMotor.clearStickyFaults();
     rightMotor.clearStickyFaults();
 
-    TalonFXConfiguration configuration = new TalonFXConfiguration();
+    rightMotor.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
+    leftMotor.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
 
-    rightMotor.getConfigurator().apply(configuration);
-    leftMotor.getConfigurator().apply(configuration);
+    TalonFXConfiguration configuration = new TalonFXConfiguration()
+        .withSlot0(new Slot0Configs()
+            .withKP(Constants.ShooterConstants.kP)
+            .withKI(Constants.ShooterConstants.kI)
+            .withKD(Constants.ShooterConstants.kD)
+            .withKS(Constants.ShooterConstants.kS));
 
-    configuration.Slot0 = pidConfig;
-
-    rightMotor.getConfigurator().apply(configuration);
+    rightMotor.getConfigurator().apply(configuration, 0.2);
+    leftMotor.getConfigurator().apply(configuration, 0.2);
 
     rightMotor.setInverted(Constants.ShooterConstants.shooterMotorInvert);
-
     leftMotor.setControl(new Follower(rightMotor.getDeviceID(), true));
   }
 
   @Override
   public void periodic() {
     motorVelocity = rightMotor.getVelocity().getValueAsDouble();
-    motorSpeed = rightMotor.get();
     motorPosition = rightMotor.getPosition().getValueAsDouble();
   }
 
   public void setVelocity(double velocity) {
-    rightMotor.setControl(new VelocityVoltage(velocity).withSlot(0));
+    rightMotor.setControl(new VelocityVoltage(velocity));
   }
 
   public void setMotor(double speed) {
@@ -82,24 +78,8 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
     setVelocity(0.0);;
   }
 
-  public double getMotorPos() {
-    return motorPosition;
-  }
-
-  public double getMotorPosRad() {
-    return getMotorPos() * 2.0 * Math.PI;
-  }
-
-  public double getMotorVelo() {
-    return motorVelocity;
-  }
-
-  public double getMotorSpeed() {
-    return motorSpeed;
-  }
-
-  public double getMotorVeloRad() {
-    return getMotorVelo() * 2.0 * Math.PI;
+  public boolean shooterAtSpeed() {
+    return Math.abs(motorVelocity - Constants.ShooterConstants.shootVelo) < Constants.ShooterConstants.shooterTolerance;
   }
 
   public void setCurrentLimit(double limit) {
@@ -113,10 +93,6 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
   public void close() {
     leftMotor.close();
     rightMotor.close();
-  }
-
-  public boolean shooterAtSpeed() {
-    return Math.abs(motorVelocity - Constants.ShooterConstants.shootVelo) < Constants.ShooterConstants.shooterTolerance;
   }
 
   public TalonFXSimState getSimStateLeft() {
@@ -133,6 +109,18 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
 
   public void setControl(DutyCycleOut dutyCycleOut) {
     rightMotor.setControl(dutyCycleOut);
+  }
+
+  public double getMotorPosRad() {
+    return motorPosition * 2.0 * Math.PI;
+  }
+
+  public double getMotorSpeed() {
+    return motorSpeed;
+  }
+
+  public double getMotorVeloRad() {
+    return motorVelocity * 2.0 * Math.PI;
   }
 
   // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.

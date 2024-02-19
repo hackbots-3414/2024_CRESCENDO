@@ -106,7 +106,7 @@ public class SubsystemManager extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // elevatorCurrent = pdp.getCurrent(ElevatorConstants.elevatorMotorPDPID) + pdp.getCurrent(ElevatorConstants.elevatorFollowerMotorPDPID);
+    // elevatorCurrent = pdp.getCurrent(ElevatorConstants.elevatorMotorPDPID);
     // intakeCurrent = pdp.getCurrent(IntakeConstants.intakeMotorPDPID);
     // shooterPivotCurrent = pdp.getCurrent(PivotConstants.pivotMotorPDPID);
     // shooterCurrent = pdp.getCurrent(ShooterConstants.leftMotorPDPID) + pdp.getCurrent(ShooterConstants.rightMotorPDPID);

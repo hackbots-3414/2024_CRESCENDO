@@ -12,21 +12,25 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.TransportConstants;
 
 public class Transport extends SubsystemBase implements AutoCloseable {
 
-  private TalonFX transportMotor;
-  private DigitalInput irSensor = new DigitalInput(Constants.TransportConstants.irSensorChannel);
+  private TalonFX transportMotor = new TalonFX(TransportConstants.transportMotorID);
+  private DigitalInput irSensor = new DigitalInput(TransportConstants.irSensorChannel);
   // private AnalogInput irSensor = new AnalogInput(Constants.TransportConstants.irSensorChannel);
   private boolean irValue;
 
   public Transport() {
-    transportMotor = new TalonFX(Constants.TransportConstants.transportMotorID);
+    configMotor();
+  }
+
+  private void configMotor() {
     transportMotor.clearStickyFaults();
-    transportMotor.getConfigurator().apply(new TalonFXConfiguration());
-    transportMotor.setInverted(Constants.TransportConstants.transportMotorInvert);
+
+    transportMotor.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
+
+    transportMotor.setInverted(TransportConstants.transportMotorInvert);
   }
 
   public void setMotor(double speed) {
