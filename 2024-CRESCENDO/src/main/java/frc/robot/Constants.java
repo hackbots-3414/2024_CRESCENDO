@@ -248,6 +248,8 @@ public class Constants {
 
         public static final double range = 5.5; // MAX RANGE FOR MATH- 5.5 meters from target
         public static final double shooterInRange = 5; // MAX RANGE TO MAKE THE SHOT - 5 meters from target
+
+        public static final double speakerHeight = 2.0515; // meters
     }
 
     public static final class WinchConstants {
@@ -286,9 +288,5 @@ public class Constants {
         public static final int DATAGRAM_PORT = 5800;
         public static final int BUFFER_SIZE = 512;
         public static final double CYCLE_TIME = 0.015;
-    }
-
-    public class FieldConstants {
-        public static final double speakerHeight = 2.0515; // meters
     }
 }
