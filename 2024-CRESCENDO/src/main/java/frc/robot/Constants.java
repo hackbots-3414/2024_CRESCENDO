@@ -80,7 +80,9 @@ public class Constants {
         public static final double kS = 8;
 
         public static final double shootVelo = 92.0; // Rotations per second
-        public static final double shooterTolerance = 8.0;
+        public static final double shooterTolerance = 3.0;
+
+        public static final double shooterIntakeSpeed = -0.1;
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
             entry(0.0, 0.0),
@@ -99,6 +101,7 @@ public class Constants {
         public static final int intakeMotorPDPID = 15;
         public static final double intakeSpeed = 1;
         public static final double ejectSpeed = -1;
+        // public static final InvertedValue intakeMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final boolean intakeMotorInvert = true;
     }
 
@@ -119,14 +122,19 @@ public class Constants {
         public static final int leftY = 1;
         public static final int rightX = 3;
         public static final int rightY = 2;
+
+        public static final double leftXMax = 0.75;
+        public static final double leftYMax = 0.66;
+        public static final double rightXMax = 0.8;
+        public static final double rightYMax = 0.8;
     }
 
     public static final class TransportConstants {
         public static final int transportMotorID = 56;
         public static final int transportMotorPDPID = 16;
         public static final boolean transportMotorInvert = true;
-        public static final double transportSpeed = 0.5;
-        public static final double transportEjectSpeed = -0.5;
+        public static final double transportSpeed = 1;
+        public static final double transportEjectSpeed = -1;
         public static final int irSensorChannel = 4;
 
         public static final double transportEjectDelay = 0.5; // seconds until note leaves shooter
@@ -134,7 +142,7 @@ public class Constants {
 
     public static final class PositionConstants {
         public static final class StowPresets {
-            public static final double elevator = 0;
+            public static final double elevator = 0.01;
             public static final double shooter = 0;
         }
 
@@ -247,14 +255,14 @@ public class Constants {
         public static final double shootSpeed = ShooterConstants.shootVelo * Units.inchesToMeters(1.5) * Math.PI;
 
         public static final double range = 5.5; // MAX RANGE FOR MATH- 5.5 meters from target
-        public static final double shooterInRange = 5; // MAX RANGE TO MAKE THE SHOT - 5 meters from target
+        public static final double shooterInRange = 3; // MAX RANGE TO MAKE THE SHOT - 5 meters from target
 
         public static final double speakerHeight = 2.0515; // meters
     }
 
     public static final class WinchConstants {
-        public static final int leftWinchMotorID = 60;
-        public static final int rightWinchMotorID = 61;
+        public static final int leftWinchMotorID = 30;
+        public static final int rightWinchMotorID = 31;
 
         public static final boolean winchMotorInvert = true;
 
@@ -262,6 +270,9 @@ public class Constants {
 
         public static final double climbHeight = 21;
         public static final double restHeight = 4;
+
+        public static final double winchManualUpSpeed = 0.1;
+        public static final double winchManualDownSpeed = -0.1;
     }
 
     public static class AprilTagObject {

@@ -33,11 +33,10 @@ public class Winch extends SubsystemBase implements AutoCloseable {
             .withSensorToMechanismRatio(WinchConstants.sensorToMechanismRatio));
 
     rightWinchMotor.getConfigurator().apply(configuration, 0.2);
-    leftWinchMotor.getConfigurator().apply(configuration, 0.2);
 
     rightWinchMotor.setInverted(WinchConstants.winchMotorInvert);
 
-    leftWinchMotor.setControl(new Follower(rightWinchMotor.getDeviceID(), true));
+    leftWinchMotor.setControl(new Follower(rightWinchMotor.getDeviceID(), false));
   }
 
   @Override

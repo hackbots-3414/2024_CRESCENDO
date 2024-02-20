@@ -79,7 +79,7 @@ public class AutoPivotCommand extends Command {
         if (x < AimConstants.shooterInRange) {
             shooter.setMotor(ShooterConstants.shootVelo);
         } else {
-            shooter.stopMotor();
+            shooter.stopMotor(); 
         }
     }
 

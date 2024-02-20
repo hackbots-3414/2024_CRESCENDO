@@ -41,6 +41,7 @@ import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ManualElevatorCommand;
 import frc.robot.commands.ManualPivotCommand;
+import frc.robot.commands.ManualWinchCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.TransportCommand;
 import frc.robot.commands.TrapScoreCommand;
@@ -164,8 +165,13 @@ public class SubsystemManager extends SubsystemBase {
         isUp ? PivotConstants.pivotManualUpSpeed : PivotConstants.pivotManualDownSpeed);
   }
 
+  public Command makeManualWinchCommand(boolean isUp) {
+    return new ManualWinchCommand(winch,
+        isUp ? WinchConstants.winchManualUpSpeed : WinchConstants.winchManualDownSpeed);
+  }
+
   public Command makeShootCommand() {
-    return new ShooterCommand(shooter);
+    return new ShooterCommand(shooter, transport);
   }
 
   public Command makeIntakeCommand() {
@@ -209,11 +215,11 @@ public class SubsystemManager extends SubsystemBase {
   public Command makeTestingCommand() {
     SequentialCommandGroup commands = new SequentialCommandGroup();
     commands.addCommands(new ElevatorCommand(elevator, shooterPivot, ElevatorPresets.AMP).withTimeout(2),
-        new ElevatorCommand(elevator, shooterPivot, ElevatorPresets.STOW).withTimeout(2),
         new ElevatorCommand(elevator, shooterPivot, ElevatorPresets.TRAP).withTimeout(2),
+        new ElevatorCommand(elevator, shooterPivot, ElevatorPresets.STOW).withTimeout(2),
         new IntakeCommand(transport, intake, 0.5, 0.5).withTimeout(2),
         new TransportCommand(transport, false).withTimeout(2),
-        new ShooterCommand(shooter).withTimeout(2),
+        new ShooterCommand(shooter, transport).withTimeout(2),
         new WinchCommand(winch, 10).withTimeout(2),
         new WinchCommand(winch, 4).withTimeout(2),
         drivetrain.makeTestAuton());

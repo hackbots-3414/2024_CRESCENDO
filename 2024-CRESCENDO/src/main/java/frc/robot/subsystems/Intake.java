@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -12,7 +11,7 @@ import frc.robot.Constants;
 
 public class Intake extends SubsystemBase implements AutoCloseable {
 
-  TalonFX intakeMotor = new TalonFX(Constants.IntakeConstants.intakeMotorID);
+  private TalonFX intakeMotor = new TalonFX(Constants.IntakeConstants.intakeMotorID);
 
   public Intake() {
     configIntakeMotor();
@@ -21,13 +20,10 @@ public class Intake extends SubsystemBase implements AutoCloseable {
   private void configIntakeMotor() {
     intakeMotor.clearStickyFaults();
 
-    intakeMotor.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
-    
+    // intakeMotor.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
+
     intakeMotor.setInverted(Constants.IntakeConstants.intakeMotorInvert);
   }
-
-  @Override
-  public void periodic() {}
 
   public void setMotor(double speed) {
     intakeMotor.set(speed);

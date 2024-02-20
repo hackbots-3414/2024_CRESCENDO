@@ -13,7 +13,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriverConstants;
 import frc.robot.Constants.InputConstants;
+import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.subsystems.NoteFinder;
 import frc.robot.subsystems.SubsystemManager;
 
@@ -33,10 +33,10 @@ public class RobotContainer {
   private final JoystickButton resetGyroButton = new JoystickButton(driver, DriverConstants.resetGyroButton);
   private final JoystickButton autoAimButton = new JoystickButton(driver, DriverConstants.autoAimButton);
 
-  private final Supplier<Double> driverLeftX = () -> driver.getRawAxis(DriverConstants.leftX);
-  private final Supplier<Double> driverLeftY = () -> driver.getRawAxis(DriverConstants.leftY);
-  private final Supplier<Double> driverRightX = () -> driver.getRawAxis(DriverConstants.rightX);
-  // private final Supplier<Double> driverRightY = () -> driver.getRawAxis(DriverConstants.rightY);
+  private final Supplier<Double> driverLeftX = () -> driver.getRawAxis(DriverConstants.leftX)/DriverConstants.leftXMax;
+  private final Supplier<Double> driverLeftY = () -> -driver.getRawAxis(DriverConstants.leftY)/DriverConstants.leftYMax;
+  private final Supplier<Double> driverRightX = () -> driver.getRawAxis(DriverConstants.rightX)/DriverConstants.rightXMax;
+  // private final Supplier<Double> driverRightY = () -> driver.getRawAxis(DriverConstants.rightY)/DriverConstants.rightYMax;
   
   private final CommandXboxController xboxOperator = new CommandXboxController(InputConstants.kOperatorControllerPort);
   private final CommandPS5Controller ps5Operator = new CommandPS5Controller(InputConstants.kOperatorControllerPort);
@@ -58,8 +58,11 @@ public class RobotContainer {
   private void configureXboxOperatorBindings() {
     xboxOperator.b().whileTrue(subsystemManager.makeShootCommand()); // shoot manually
     xboxOperator.x().whileTrue(subsystemManager.makeIntakeCommand()); // intake
-    xboxOperator.a().whileTrue(subsystemManager.makeAmpScoreCommand()); // auto amp (will do everything)
-    xboxOperator.y().whileTrue(subsystemManager.makeTrapScoreCommand()); // auto trap (will do everything)
+    // xboxOperator.a().whileTrue(subsystemManager.makeAmpScoreCommand()); // auto amp (will do everything)
+    xboxOperator.a().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.AMP));
+    // xboxOperator.y().whileTrue(subsystemManager.makeTrapScoreCommand()); // auto trap (will do everything)
+    xboxOperator.y().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));
+
 
     xboxOperator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
     xboxOperator.povDown().whileTrue(subsystemManager.makeManualElevatorCommand(false));
@@ -68,8 +71,11 @@ public class RobotContainer {
 
     xboxOperator.rightBumper().whileTrue(subsystemManager.makeEjectCommand());
 
-    xboxOperator.back().whileTrue(subsystemManager.makeWinchCommand(true));
-    xboxOperator.start().whileTrue(subsystemManager.makeWinchCommand(false));
+    // xboxOperator.back().whileTrue(subsystemManager.makeWinchCommand(true));
+    // xboxOperator.start().whileTrue(subsystemManager.makeWinchCommand(false));
+
+    xboxOperator.back().whileTrue(subsystemManager.makeManualWinchCommand(true));
+    xboxOperator.start().whileTrue(subsystemManager.makeManualWinchCommand(false));
 
 
     // xboxOperator.leftTrigger(InputConstants.triggerTolerance); // left trigger as button
@@ -125,8 +131,9 @@ public class RobotContainer {
 
   public RobotContainer() {
     configureDriverBindings();
-    if (DriverStation.getJoystickIsXbox(1)) {configureXboxOperatorBindings();} 
-    else {configurePS5OperatorBindings();}
+    configureXboxOperatorBindings();
+    // if (DriverStation.getJoystickIsXbox(1)) {configureXboxOperatorBindings();} 
+    // else {configurePS5OperatorBindings();}
 
     pathChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", pathChooser);
