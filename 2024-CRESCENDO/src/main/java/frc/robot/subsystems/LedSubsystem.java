@@ -55,6 +55,7 @@ public class LedSubsystem extends SubsystemBase {
     } else if (subsystemManager.transport.getIR()) {
       setColor(NOTE_ONBOARD);
       SmartDashboard.putBoolean(LABELS[1], true);
+      SmartDashboard.putBoolean(LABELS[0], true);
 
     } else if (DriverStation.getMatchTime() < 0.1) {
       setColor(END_GAME_0);
