@@ -58,10 +58,10 @@ public class RobotContainer {
   private void configureXboxOperatorBindings() {
     xboxOperator.b().whileTrue(subsystemManager.makeShootCommand()); // shoot manually
     xboxOperator.x().whileTrue(subsystemManager.makeIntakeCommand()); // intake
-    // xboxOperator.a().whileTrue(subsystemManager.makeAmpScoreCommand()); // auto amp (will do everything)
-    xboxOperator.a().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.AMP));
-    // xboxOperator.y().whileTrue(subsystemManager.makeTrapScoreCommand()); // auto trap (will do everything)
-    xboxOperator.y().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));
+    xboxOperator.a().whileTrue(subsystemManager.makeAmpScoreCommand()); // auto amp (will do everything)
+    // xboxOperator.a().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.AMP));
+    xboxOperator.y().whileTrue(subsystemManager.makeTrapScoreCommand()); // auto trap (will do everything)
+    // xboxOperator.y().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));
 
 
     xboxOperator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));

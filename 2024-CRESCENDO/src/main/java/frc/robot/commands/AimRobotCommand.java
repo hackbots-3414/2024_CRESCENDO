@@ -79,7 +79,6 @@ public class AimRobotCommand extends Command {
         double x = speakerRelative.getTranslation().getNorm();
         double y = AimConstants.speakerHeight - AimConstants.minimumHeight;
         
-        SmartDashboard.putNumber("GOAL HEIGHT", y);
         SmartDashboard.putNumber("DISTANCE FROM TARGET", x);
 
         if (x > AimConstants.minimumDistanceToNotBreakRobot) {
@@ -92,7 +91,7 @@ public class AimRobotCommand extends Command {
 
         double theta = Math.atan((Math.pow(v, 2) - Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(x, 2) + 2 * y * Math.pow(v, 2)))) / (g * x));
         drivetrain.setInRange(x < Constants.AimConstants.range);
-        shooterAngle = runTests(v, theta, g, x, y) && drivetrain.isInRange() ? (theta + pitchAdd) : shooterAngle;
+        shooterAngle = runTests(v, theta, g, x, y)  ? (theta + pitchAdd) : shooterAngle;
     }
 
     @Override
@@ -113,6 +112,7 @@ public class AimRobotCommand extends Command {
         currentDriveCommand.schedule();
 
         SmartDashboard.putNumber("SHOOTER ANGLE", shooterAngle);
+        System.out.println(shooterAngle);
         SmartDashboard.putNumber("SHOOTER FORCE", AimConstants.shootSpeed);
     }
 

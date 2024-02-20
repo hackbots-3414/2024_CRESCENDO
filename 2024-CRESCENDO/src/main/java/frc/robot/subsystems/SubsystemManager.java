@@ -193,11 +193,11 @@ public class SubsystemManager extends SubsystemBase {
   }
 
   public Command makeAmpScoreCommand() {
-    return new AmpScoreCommand(transport, elevator, shooterPivot);
+    return new AmpScoreCommand(transport, elevator, shooter, shooterPivot);
   }
 
   public Command makeTrapScoreCommand() {
-    return new TrapScoreCommand(transport, elevator, shooterPivot);
+    return new TrapScoreCommand(transport, elevator, shooter, shooterPivot);
   }
 
   public Command elevatorNeutralMode(NeutralModeValue neutralMode) {

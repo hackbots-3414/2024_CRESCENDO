@@ -79,7 +79,7 @@ public class Constants {
         public static final double kD = 0.0;
         public static final double kS = 8;
 
-        public static final double shootVelo = 92.0; // Rotations per second
+        public static final double shootVelo = 50.0; // Rotations per second
         public static final double shooterTolerance = 3.0;
 
         public static final double shooterIntakeSpeed = -0.1;
@@ -137,7 +137,7 @@ public class Constants {
         public static final double transportEjectSpeed = -1;
         public static final int irSensorChannel = 4;
 
-        public static final double transportEjectDelay = 0.5; // seconds until note leaves shooter
+        public static final double transportEjectDelay = 0.3; // seconds until note leaves shooter
     }
 
     public static final class PositionConstants {
@@ -147,12 +147,12 @@ public class Constants {
         }
 
         public static final class AmpPresets {
-            public static final double elevator = 2.32;
+            public static final double elevator = 2.34;
             public static final double shooter = 0;
         }
 
         public static final class TrapPresets {
-            public static final double elevator = 2.32;
+            public static final double elevator = 2.34;
             public static final double shooter = 0.088379;
         }
 
@@ -198,7 +198,7 @@ public class Constants {
 
         public static double elevatorCurrentLimit = 20;
 
-        public static double elevatorForwardSoftLimit = 2.32; //output shaft rotations
+        public static double elevatorForwardSoftLimit = 2.33; //output shaft rotations
     }
 
     public static final class PivotConstants {
@@ -217,11 +217,11 @@ public class Constants {
         public static final double forwardSoftLimitThreshold = 0.088379;
         public static final double reverseSoftLimitThreshold = 0;
 
-        public static final double angleAtZero = Math.toRadians(20);
-        public static final double angleAtMax = Math.toRadians(60);
+        public static final double angleAtZero = Math.toRadians(30);
+        public static final double angleAtMax = Math.toRadians(58);
 
-        public static final double pivotManualUpSpeed = 0.05;
-        public static final double pivotManualDownSpeed = -0.05;
+        public static final double pivotManualUpSpeed = 0.025;
+        public static final double pivotManualDownSpeed = -0.025;
 
         public static final double pivotCurrentLimit = 0;
 
