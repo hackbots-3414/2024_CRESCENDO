@@ -4,6 +4,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
