@@ -13,12 +13,10 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriverConstants;
@@ -32,14 +30,15 @@ public class RobotContainer {
   private final Joystick driver = new Joystick(InputConstants.kDriverControllerPort);
   private final JoystickButton resetGyroButton = new JoystickButton(driver, DriverConstants.resetGyroButton);
   private final JoystickButton autoAimButton = new JoystickButton(driver, DriverConstants.autoAimButton);
+  private final JoystickButton resetAtPointButton = new JoystickButton(driver, DriverConstants.resetAtPointButton);
 
-  private final Supplier<Double> driverLeftX = () -> driver.getRawAxis(DriverConstants.leftX);
-  private final Supplier<Double> driverLeftY = () -> driver.getRawAxis(DriverConstants.leftY);
-  private final Supplier<Double> driverRightX = () -> driver.getRawAxis(DriverConstants.rightX);
-  // private final Supplier<Double> driverRightY = () -> driver.getRawAxis(DriverConstants.rightY);
+  private final Supplier<Double> driverLeftX = () -> driver.getRawAxis(DriverConstants.leftX)/DriverConstants.leftXMax;
+  private final Supplier<Double> driverLeftY = () -> -driver.getRawAxis(DriverConstants.leftY)/DriverConstants.leftYMax;
+  private final Supplier<Double> driverRightX = () -> driver.getRawAxis(DriverConstants.rightX)/DriverConstants.rightXMax;
+  // private final Supplier<Double> driverRightY = () -> driver.getRawAxis(DriverConstants.rightY)/DriverConstants.rightYMax;
   
   private final CommandXboxController xboxOperator = new CommandXboxController(InputConstants.kOperatorControllerPort);
-  private final CommandPS5Controller ps5Operator = new CommandPS5Controller(InputConstants.kOperatorControllerPort);
+  // private final CommandPS5Controller ps5Operator = new CommandPS5Controller(InputConstants.kOperatorControllerPort);
 
   SendableChooser<Command> pathChooser = new SendableChooser<>();
   private SubsystemManager subsystemManager = SubsystemManager.getInstance();
@@ -48,6 +47,7 @@ public class RobotContainer {
     subsystemManager.configureDriveDefaults(driverLeftY, driverLeftX, driverRightX);
     
     resetGyroButton.onTrue(subsystemManager.makeResetCommand());
+    resetAtPointButton.onTrue(subsystemManager.resetAtPose2d(new Pose2d(15.1, 5.5, Rotation2d.fromDegrees(0))));
     autoAimButton.whileTrue(subsystemManager.makeAutoAimCommand(driverLeftX, driverLeftY, driverRightX));
 
 
@@ -59,7 +59,10 @@ public class RobotContainer {
     xboxOperator.b().whileTrue(subsystemManager.makeShootCommand()); // shoot manually
     xboxOperator.x().whileTrue(subsystemManager.makeIntakeCommand()); // intake
     xboxOperator.a().whileTrue(subsystemManager.makeAmpScoreCommand()); // auto amp (will do everything)
+    // xboxOperator.a().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.AMP));
     xboxOperator.y().whileTrue(subsystemManager.makeTrapScoreCommand()); // auto trap (will do everything)
+    // xboxOperator.y().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));
+
 
     xboxOperator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
     xboxOperator.povDown().whileTrue(subsystemManager.makeManualElevatorCommand(false));
@@ -68,8 +71,13 @@ public class RobotContainer {
 
     xboxOperator.rightBumper().whileTrue(subsystemManager.makeEjectCommand());
 
-    xboxOperator.back().whileTrue(subsystemManager.makeWinchCommand(true));
-    xboxOperator.start().whileTrue(subsystemManager.makeWinchCommand(false));
+    xboxOperator.leftBumper().whileTrue(subsystemManager.makeAutoAimCommand(() -> xboxOperator.getLeftX(), () -> xboxOperator.getLeftY(), () -> xboxOperator.getRightX()));
+
+    // xboxOperator.back().whileTrue(subsystemManager.makeWinchCommand(true));
+    // xboxOperator.start().whileTrue(subsystemManager.makeWinchCommand(false));
+
+    xboxOperator.back().whileTrue(subsystemManager.makeManualWinchCommand(true));
+    xboxOperator.start().whileTrue(subsystemManager.makeManualWinchCommand(false));
 
 
     // xboxOperator.leftTrigger(InputConstants.triggerTolerance); // left trigger as button
@@ -86,47 +94,46 @@ public class RobotContainer {
     // xboxOperator.getRightTriggerAxis();
   }
 
-  private void configurePS5OperatorBindings() {
-    ps5Operator.square().whileTrue(subsystemManager.makeShootCommand()); // shoot manually
-    ps5Operator.triangle().whileTrue(subsystemManager.makeIntakeCommand()); // intake
-    ps5Operator.circle().whileTrue(subsystemManager.makeAmpScoreCommand()); // auto amp (will do everything)
-    ps5Operator.cross().whileTrue(subsystemManager.makeTrapScoreCommand()); // auto trap (will do everything)
+  // private void configurePS5OperatorBindings() {
+  //   ps5Operator.square().whileTrue(subsystemManager.makeShootCommand()); // shoot manually
+  //   ps5Operator.triangle().whileTrue(subsystemManager.makeIntakeCommand()); // intake
+  //   ps5Operator.circle().whileTrue(subsystemManager.makeAmpScoreCommand()); // auto amp (will do everything)
+  //   ps5Operator.cross().whileTrue(subsystemManager.makeTrapScoreCommand()); // auto trap (will do everything)
     
-    ps5Operator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
-    ps5Operator.povDown().whileTrue(subsystemManager.makeManualElevatorCommand(false));
-    ps5Operator.povRight().whileTrue(subsystemManager.makeManualPivotCommand(true));
-    ps5Operator.povLeft().whileTrue(subsystemManager.makeManualPivotCommand(false));
+  //   ps5Operator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
+  //   ps5Operator.povDown().whileTrue(subsystemManager.makeManualElevatorCommand(false));
+  //   ps5Operator.povRight().whileTrue(subsystemManager.makeManualPivotCommand(true));
+  //   ps5Operator.povLeft().whileTrue(subsystemManager.makeManualPivotCommand(false));
 
-    ps5Operator.create().whileTrue(subsystemManager.makeWinchCommand(true)); // small button above dpad
-    ps5Operator.options().whileTrue(subsystemManager.makeWinchCommand(false)); // small button above square/triangle/etc.
+  //   ps5Operator.create().whileTrue(subsystemManager.makeWinchCommand(true)); // small button above dpad
+  //   ps5Operator.options().whileTrue(subsystemManager.makeWinchCommand(false)); // small button above square/triangle/etc.
 
-    ps5Operator.touchpad().whileTrue(subsystemManager.makeEjectCommand()); // touchpad as button
+  //   ps5Operator.touchpad().whileTrue(subsystemManager.makeEjectCommand()); // touchpad as button
 
 
-    // ps5Operator.L1(); // left bumper button
-    // ps5Operator.L2(); // left trigger as button
-    // ps5Operator.L3(); // left thumbstick button
+  //   // ps5Operator.L1(); // left bumper button
+  //   // ps5Operator.L2(); // left trigger as button
+  //   // ps5Operator.L3(); // left thumbstick button
 
-    // ps5Operator.R1(); // right bumper button
-    // ps5Operator.R2(); // right trigger as button
-    // ps5Operator.R3(); // right thumbstick button
+  //   // ps5Operator.R1(); // right bumper button
+  //   // ps5Operator.R2(); // right trigger as button
+  //   // ps5Operator.R3(); // right thumbstick button
 
-    // ps5Operator.PS(); // Logo as button
+  //   // ps5Operator.PS(); // Logo as button
 
-    // ps5Operator.getL2Axis(); // left trigger axis
-    // ps5Operator.getR2Axis(); // right trigger axis
+  //   // ps5Operator.getL2Axis(); // left trigger axis
+  //   // ps5Operator.getR2Axis(); // right trigger axis
 
-    // ps5Operator.getLeftX();
-    // ps5Operator.getLeftY();
+  //   // ps5Operator.getLeftX();
+  //   // ps5Operator.getLeftY();
 
-    // ps5Operator.getRightX();
-    // ps5Operator.getRightY();
-  }
+  //   // ps5Operator.getRightX();
+  //   // ps5Operator.getRightY();
+  // }
 
   public RobotContainer() {
     configureDriverBindings();
-    if (DriverStation.getJoystickIsXbox(1)) {configureXboxOperatorBindings();} 
-    else {configurePS5OperatorBindings();}
+    configureXboxOperatorBindings();
 
     pathChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", pathChooser);

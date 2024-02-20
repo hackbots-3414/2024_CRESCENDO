@@ -19,6 +19,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.PivotConstants;
@@ -101,7 +102,8 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
   }
 
   public void setPivotPositionFromRad(double radians) {
-    setPivotPosition(((radians - PivotConstants.angleAtZero) / (PivotConstants.angleAtMax - PivotConstants.angleAtZero)) * (PivotConstants.forwardSoftLimitThreshold - PivotConstants.reverseSoftLimitThreshold));
+    double goal = (radians / (Math.PI * 2)) - (PivotConstants.angleAtZero / (Math.PI * 2));
+    setPivotPosition(goal < 0.0 ? goal : 0.0);
   }
 
   public void set(double speed) {
@@ -119,6 +121,7 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
   @Override
   public void periodic() {
     cancoderPosition = cancoder.getAbsolutePosition().getValueAsDouble();
+    SmartDashboard.putNumber("CANCODERPOS", cancoderPosition);
   }
 
   public void setCurrentLimit(double limit) {

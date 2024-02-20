@@ -21,6 +21,7 @@ import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -54,7 +55,6 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
             .withKS(Constants.ShooterConstants.kS));
 
     rightMotor.getConfigurator().apply(configuration, 0.2);
-    leftMotor.getConfigurator().apply(configuration, 0.2);
 
     rightMotor.setInverted(Constants.ShooterConstants.shooterMotorInvert);
     leftMotor.setControl(new Follower(rightMotor.getDeviceID(), true));
@@ -64,6 +64,10 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
   public void periodic() {
     motorVelocity = rightMotor.getVelocity().getValueAsDouble();
     motorPosition = rightMotor.getPosition().getValueAsDouble();
+
+    SmartDashboard.putNumber("VELOCITY FOR SHOOTER", motorVelocity);
+    SmartDashboard.putNumber("VELOCITY REFERENCE", rightMotor.getClosedLoopReference().getValueAsDouble());
+    SmartDashboard.putBoolean("SHOOTER AT SPEED", shooterAtSpeed());
   }
 
   public void setVelocity(double velocity) {
@@ -71,15 +75,18 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
   }
 
   public void setMotor(double speed) {
-    rightMotor.set(speed);
+    rightMotor.setControl(new DutyCycleOut(speed));
   }
 
   public void stopMotor() {
-    setVelocity(0.0);;
+    setMotor(0.0);
   }
 
   public boolean shooterAtSpeed() {
-    return Math.abs(motorVelocity - Constants.ShooterConstants.shootVelo) < Constants.ShooterConstants.shooterTolerance;
+    if (rightMotor.getClosedLoopReference().getValueAsDouble() == 0) {
+      return false;
+    }
+    return Math.abs(motorVelocity - rightMotor.getClosedLoopReference().getValueAsDouble()) < Constants.ShooterConstants.shooterTolerance;
   }
 
   public void setCurrentLimit(double limit) {
