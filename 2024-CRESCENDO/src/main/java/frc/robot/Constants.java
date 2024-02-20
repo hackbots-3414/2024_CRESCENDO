@@ -101,7 +101,6 @@ public class Constants {
         public static final int intakeMotorPDPID = 15;
         public static final double intakeSpeed = 1;
         public static final double ejectSpeed = -1;
-        // public static final InvertedValue intakeMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final boolean intakeMotorInvert = true;
     }
 

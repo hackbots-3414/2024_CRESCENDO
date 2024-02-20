@@ -20,7 +20,7 @@ public class Intake extends SubsystemBase implements AutoCloseable {
   private void configIntakeMotor() {
     intakeMotor.clearStickyFaults();
 
-    // intakeMotor.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
+    intakeMotor.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
 
     intakeMotor.setInverted(Constants.IntakeConstants.intakeMotorInvert);
   }
