@@ -79,7 +79,7 @@ public class Constants {
         public static final double kD = 0.0;
         public static final double kS = 8;
 
-        public static final double shootVelo = 50.0; // Rotations per second
+        public static final double shootVelo = 92.0; // Rotations per second
         public static final double shooterTolerance = 3.0;
 
         public static final double shooterIntakeSpeed = -0.1;
@@ -252,7 +252,7 @@ public class Constants {
         public static final double minimumHeight = 0.19; // ONLY Y DIRECTION
 
         public static final double rangeTolerance = 0.01;
-        public static final double shootSpeed = ShooterConstants.shootVelo * Units.inchesToMeters(1.5) * Math.PI;
+        public static final double shootSpeed = 90 * Units.inchesToMeters(1.5) * Math.PI + 3;
 
         public static final double range = 5.5; // MAX RANGE FOR MATH- 5.5 meters from target
         public static final double shooterInRange = 3; // MAX RANGE TO MAKE THE SHOT - 5 meters from target

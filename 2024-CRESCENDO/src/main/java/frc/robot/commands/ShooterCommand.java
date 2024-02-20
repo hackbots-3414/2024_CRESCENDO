@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TransportConstants;
 import frc.robot.subsystems.Shooter;
@@ -27,7 +26,7 @@ public class ShooterCommand extends Command {
   public void execute() {
     // if (transport.getIR() == true) {
     //   transport.stopMotor();
-      shooter.setVelocity(/*Constants.ShooterConstants.shootVelo*/92);
+      shooter.setVelocity(ShooterConstants.shootVelo);
       if (shooter.shooterAtSpeed()) {
         transport.setMotor(TransportConstants.transportSpeed);
       }

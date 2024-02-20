@@ -11,13 +11,16 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentricFacingAngle
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.AimConstants;
 import frc.robot.Constants.AprilTags;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
@@ -45,6 +48,7 @@ public class AimRobotCommand extends Command {
 
     double velocityParallelGain = 0.0;
     double velocityPerpendicularGain = 0;
+    double pivotDragGain = 0.8;
 
     PIDController pidTurn = new PIDController(0.05, 0, 0);
     Pose2d robotPosition2d;
@@ -69,7 +73,7 @@ public class AimRobotCommand extends Command {
         double pitchAdd = velocityPerpendicular * velocityPerpendicularGain;
 
         robotPosition2d = drivetrain.getPose();
-        Pose2d speakerPosition =  blueSide ? AprilTags.BlueSpeakerCenter.value.getPose2d() : AprilTags.RedSpeakerCenter.value.getPose2d();
+        Pose2d speakerPosition =  (blueSide ? AprilTags.BlueSpeakerCenter.value.getPose2d() : AprilTags.RedSpeakerCenter.value.getPose2d()).transformBy(new Transform2d(Units.inchesToMeters(8), 0, Rotation2d.fromDegrees(0)));
         Pose2d speakerRelative = speakerPosition.relativeTo(robotPosition2d);
 
         drivetrainRotation = speakerPosition.getTranslation().minus(robotPosition2d.getTranslation()).getAngle().plus(Rotation2d.fromDegrees(yawAdd));
@@ -91,7 +95,7 @@ public class AimRobotCommand extends Command {
 
         double theta = Math.atan((Math.pow(v, 2) - Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(x, 2) + 2 * y * Math.pow(v, 2)))) / (g * x));
         drivetrain.setInRange(x < Constants.AimConstants.range);
-        shooterAngle = runTests(v, theta, g, x, y)  ? (theta + pitchAdd) : shooterAngle;
+        shooterAngle = runTests(v, theta, g, x, y) /*&& drivetrain.isInRange()*/ ? (theta + pitchAdd) * pivotDragGain : shooterAngle;
     }
 
     @Override
@@ -111,9 +115,7 @@ public class AimRobotCommand extends Command {
 
         currentDriveCommand.schedule();
 
-        SmartDashboard.putNumber("SHOOTER ANGLE", shooterAngle);
-        System.out.println(shooterAngle);
-        SmartDashboard.putNumber("SHOOTER FORCE", AimConstants.shootSpeed);
+        SmartDashboard.putNumber("SHOOTER ANGLE", (shooterAngle / (Math.PI * 2)) - (PivotConstants.angleAtZero / (Math.PI * 2)));
     }
 
     @Override
