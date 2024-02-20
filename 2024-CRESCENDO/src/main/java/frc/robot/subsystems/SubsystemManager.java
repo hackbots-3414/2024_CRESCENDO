@@ -143,8 +143,8 @@ public class SubsystemManager extends SubsystemBase {
     return drivetrain.runOnce(() -> drivetrain.seedFieldRelative());
   }
 
-  public void resetAtPose2d(Pose2d pose) {
-    drivetrain.seedFieldRelative(pose);
+  public Command resetAtPose2d(Pose2d pose) {
+    return drivetrain.runOnce(() -> drivetrain.seedFieldRelative(pose));
   }
 
   public void telemeterize() {

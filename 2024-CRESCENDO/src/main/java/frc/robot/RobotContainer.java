@@ -30,6 +30,7 @@ public class RobotContainer {
   private final Joystick driver = new Joystick(InputConstants.kDriverControllerPort);
   private final JoystickButton resetGyroButton = new JoystickButton(driver, DriverConstants.resetGyroButton);
   private final JoystickButton autoAimButton = new JoystickButton(driver, DriverConstants.autoAimButton);
+  private final JoystickButton resetAtPointButton = new JoystickButton(driver, DriverConstants.resetAtPointButton);
 
   private final Supplier<Double> driverLeftX = () -> driver.getRawAxis(DriverConstants.leftX)/DriverConstants.leftXMax;
   private final Supplier<Double> driverLeftY = () -> -driver.getRawAxis(DriverConstants.leftY)/DriverConstants.leftYMax;
@@ -46,6 +47,7 @@ public class RobotContainer {
     subsystemManager.configureDriveDefaults(driverLeftY, driverLeftX, driverRightX);
     
     resetGyroButton.onTrue(subsystemManager.makeResetCommand());
+    resetAtPointButton.onTrue(subsystemManager.resetAtPose2d(new Pose2d(15.1, 5.5, Rotation2d.fromDegrees(0))));
     autoAimButton.whileTrue(subsystemManager.makeAutoAimCommand(driverLeftX, driverLeftY, driverRightX));
 
 
