@@ -84,9 +84,6 @@
     },
     "transitory": {
       "SmartDashboard": {
-        "Run Tests": {
-          "open": true
-        },
         "open": true
       }
     }

@@ -105,10 +105,12 @@ public class AimHelper {
         // if distance farther than threshold, elevator can remain at bottom as pivot wont pivot as much
         // if distance too close, raise elevator till it will clear, then adjust height and distance from target to 
         // compensate for the movement of the launch pivot. (using sin and cos of elevator tilt.)
-        double elevatorHeight = 0.0;
-        if (distanceToTarget <= AimConstants.minimumDistanceToNotBreakRobot) {
-            elevatorHeight = AimConstants.clearanceHeight;
-            heightToTarget -= AimConstants.clearanceHeight * Math.sin(ElevatorConstants.elevatorTilt);
+        if (distanceToTarget > AimConstants.minimumDistanceToNotBreakRobot) {
+            output.setElevatorHeight(0.0);
+        } else {
+            
+            output.setElevatorHeight(AimConstants.clearanceHeight);
+            heightToTarget -= (AimConstants.clearanceHeight / (Math.PI * Units.inchesToMeters(1.751)) * Math.sin(ElevatorConstants.elevatorTilt));
             distanceToTarget += AimConstants.clearanceHeight * Math.cos(ElevatorConstants.elevatorTilt);
         }
 
@@ -142,11 +144,10 @@ public class AimHelper {
         double pivotAngleRadians = passesTesting ? (theta + pitchAdd) * pivotDragGain : 0.0;
 
         // because output is technically from floor, gotta convert into output from our zero
-        output.setPivotAngleFromDegreesFromFloor(Math.toDegrees(pivotAngleRadians));
+        output.setPivotAngleFromRadFromFloor(pivotAngleRadians);
         output.setShooterVelocity(velocity);
         output.setIsInRange(distanceToTarget < AimConstants.maxRange);
         output.setDrivetrainRotation(drivetrainGoalRotation);
-        output.setElevatorHeight(elevatorHeight);
 
         return output;
     }
@@ -198,6 +199,10 @@ public class AimHelper {
 
         public void setPivotAngleFromDegreesFromFloor(double degreesFromFloor) {
             this.pivotAngle = (degreesFromFloor - Math.toDegrees(PivotConstants.radiansAtZero)) / 360;
+        }
+
+        public void setPivotAngleFromRadFromFloor(double radiansFromFloor) {
+            this.pivotAngle = (radiansFromFloor - PivotConstants.radiansAtZero) / (Math.PI * 2);
         }
 
         public Rotation2d getDrivetrainRotation() {
