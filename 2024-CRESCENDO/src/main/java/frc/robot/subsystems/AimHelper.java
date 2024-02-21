@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants;
 import frc.robot.Constants.AimConstants;
 import frc.robot.Constants.AprilTags;
 import frc.robot.Constants.ElevatorConstants;
@@ -35,11 +34,11 @@ public class AimHelper {
         double shooterRotation = 0.0;
         double bestRotationError = Double.POSITIVE_INFINITY;
 
-        for (double currentDistance : Constants.ShooterConstants.rotationLookupTable.keySet()) {
+        for (double currentDistance : ShooterConstants.rotationLookupTable.keySet()) {
             double currentError = Math.abs(robotDistance - currentDistance);
             // what i want to do here is find the key that has the smallest error from the current distance.
             if (currentError < bestRotationError) {
-                shooterRotation = Constants.ShooterConstants.rotationLookupTable.get(currentDistance);
+                shooterRotation = ShooterConstants.rotationLookupTable.get(currentDistance);
                 bestRotationError = currentError;
             }
         }
@@ -47,11 +46,11 @@ public class AimHelper {
         double shooterSpeed = 0.0;
         double bestSpeedError = Double.POSITIVE_INFINITY;
 
-        for (double currentDistance : Constants.ShooterConstants.speedLookupTable.keySet()) {
+        for (double currentDistance : ShooterConstants.speedLookupTable.keySet()) {
             double currentError = Math.abs(robotDistance - currentDistance);
             // what i want to do here is find the key that has the smallest error from the current distance.
             if (currentError < bestSpeedError) {
-                shooterSpeed = Constants.ShooterConstants.speedLookupTable.get(currentDistance);
+                shooterSpeed = ShooterConstants.speedLookupTable.get(currentDistance);
                 bestSpeedError = currentError;
             }
         }
