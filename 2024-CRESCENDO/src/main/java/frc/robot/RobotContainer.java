@@ -32,9 +32,9 @@ public class RobotContainer {
   private final JoystickButton autoAimButton = new JoystickButton(driver, DriverConstants.autoAimButton);
   private final JoystickButton resetAtPointButton = new JoystickButton(driver, DriverConstants.resetAtPointButton);
 
-  private final Supplier<Double> driverLeftX = () -> driver.getRawAxis(DriverConstants.leftX)/DriverConstants.leftXMax;
-  private final Supplier<Double> driverLeftY = () -> -driver.getRawAxis(DriverConstants.leftY)/DriverConstants.leftYMax;
-  private final Supplier<Double> driverRightX = () -> driver.getRawAxis(DriverConstants.rightX)/DriverConstants.rightXMax;
+  private final Supplier<Double> driverLeftX = () -> Math.pow(driver.getRawAxis(DriverConstants.leftX)/DriverConstants.leftXMax, 3.0);
+  private final Supplier<Double> driverLeftY = () -> -Math.pow(driver.getRawAxis(DriverConstants.leftY)/DriverConstants.leftYMax, 3.0);
+  private final Supplier<Double> driverRightX = () -> Math.pow(driver.getRawAxis(DriverConstants.rightX)/DriverConstants.rightXMax,3.0);
   // private final Supplier<Double> driverRightY = () -> driver.getRawAxis(DriverConstants.rightY)/DriverConstants.rightYMax;
   
   private final CommandXboxController xboxOperator = new CommandXboxController(InputConstants.kOperatorControllerPort);
