@@ -33,6 +33,8 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
 
   private double cancoderPosition;
 
+  private double setpoint;
+
   public ShooterPivot() {
     configMotor();
     configEncoder();
@@ -98,16 +100,21 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
   }
 
   public void setPivotPosition(double position) { // position is in number of rotations as per documentation.
+    this.setpoint = position;
     pivotMotor.setControl(new MotionMagicVoltage(position));
   }
 
   public void setPivotPositionFromRad(double radians) {
-    double goal = (radians / (Math.PI * 2)) - (PivotConstants.angleAtZero / (Math.PI * 2));
+    double goal = (radians / (Math.PI * 2)) - (PivotConstants.radiansAtZero / (Math.PI * 2));
     setPivotPosition(goal > 0.0 ? goal : 0.0);
   }
 
   public void set(double speed) {
     pivotMotor.setControl(new DutyCycleOut(speed));
+  }
+
+  public boolean isAtSetpoint() {
+    return Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance;
   }
 
   public void stop() {
@@ -122,6 +129,7 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
   public void periodic() {
     cancoderPosition = cancoder.getAbsolutePosition().getValueAsDouble();
     SmartDashboard.putNumber("CANCODERPOS", cancoderPosition);
+    SmartDashboard.putBoolean("SHOOTER PIVOT SETPOINT", isAtSetpoint());
   }
 
   public void setCurrentLimit(double limit) {
