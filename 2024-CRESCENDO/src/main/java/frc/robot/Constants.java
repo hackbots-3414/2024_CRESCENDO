@@ -133,7 +133,7 @@ public class Constants {
         public static final int transportMotorID = 56;
         public static final int transportMotorPDPID = 16;
         public static final boolean transportMotorInvert = true;
-        public static final double transportSpeed = 0.60;
+        public static final double transportSpeed = 1;
         public static final double transportEjectSpeed = -1;
         public static final int irSensorChannel = 4;
 
@@ -142,7 +142,7 @@ public class Constants {
 
     public static final class PositionConstants {
         public static final class StowPresets {
-            public static final double elevator = 0.0;
+            public static final double elevator = 0.01;
             public static final double shooter = 0;
         }
 
@@ -246,20 +246,16 @@ public class Constants {
     }
 
     public static final class AimConstants {
-        public static final double minimumDistanceToNotBreakRobot = 3; // meters from speaker
-        public static final double clearanceHeight = 0.35; // meters up;
+        public static final double minimumDistanceToNotBreakRobot = 2; // meters from speaker
+        public static final double clearanceHeight = 0.05; // meters up;
         public static final double elevatorTilt = Math.toRadians(60);
         public static final double minimumHeight = 0.19; // ONLY Y DIRECTION
 
         public static final double rangeTolerance = 0.01;
+        public static final double shootSpeed = 90 * Units.inchesToMeters(1.5) * Math.PI + 3; // 3 for compression
 
-        public static final double minShootSpeed = 50;
-        public static final double maxShootSpeed = 90;
-
-        public static final double compressionAdder = 3;
-
-        public static final double minRange = 1;
-        public static final double maxRange = 5.5; // MAX RANGE FOR MATH- 5.5 meters from target
+        public static final double range = 5.5; // MAX RANGE FOR MATH- 5.5 meters from target
+        public static final double shooterInRange = 3; // MAX RANGE TO MAKE THE SHOT - 5 meters from target
 
         public static final double speakerHeight = 2.0515; // meters
     }
@@ -275,8 +271,8 @@ public class Constants {
         public static final double climbHeight = 21;
         public static final double restHeight = 4;
 
-        public static final double winchManualUpSpeed = 0.5;
-        public static final double winchManualDownSpeed = -0.5;
+        public static final double winchManualUpSpeed = 0.1;
+        public static final double winchManualDownSpeed = -0.1;
     }
 
     public static class AprilTagObject {

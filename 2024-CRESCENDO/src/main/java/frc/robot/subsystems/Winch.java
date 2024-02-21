@@ -4,7 +4,6 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -36,9 +35,6 @@ public class Winch extends SubsystemBase implements AutoCloseable {
     rightWinchMotor.getConfigurator().apply(configuration, 0.2);
 
     rightWinchMotor.setInverted(WinchConstants.winchMotorInvert);
-    
-    rightWinchMotor.setNeutralMode(NeutralModeValue.Brake);
-    leftWinchMotor.setNeutralMode(NeutralModeValue.Brake);
 
     leftWinchMotor.setControl(new Follower(rightWinchMotor.getDeviceID(), false));
   }

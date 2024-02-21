@@ -48,9 +48,7 @@ public class AimRobotCommand extends Command {
 
     double velocityParallelGain = 0.0;
     double velocityPerpendicularGain = 0;
-    double pivotDragGainFar = 0.88;
-    double pivotDragGainClose = 1.08;
-    double pivotSwitchCloseFar = 3.8;
+    double pivotDragGain = 0.8;
 
     PIDController pidTurn = new PIDController(0.05, 0, 0);
     Pose2d robotPosition2d;
@@ -80,7 +78,7 @@ public class AimRobotCommand extends Command {
 
         drivetrainRotation = speakerPosition.getTranslation().minus(robotPosition2d.getTranslation()).getAngle().plus(Rotation2d.fromDegrees(yawAdd));
 
-        double v = AimConstants.maxShootSpeed;
+        double v = AimConstants.shootSpeed;
         double g = 9.81;
         double x = speakerRelative.getTranslation().getNorm();
         double y = AimConstants.speakerHeight - AimConstants.minimumHeight;
@@ -96,8 +94,8 @@ public class AimRobotCommand extends Command {
         }
 
         double theta = Math.atan((Math.pow(v, 2) - Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(x, 2) + 2 * y * Math.pow(v, 2)))) / (g * x));
-        drivetrain.setInRange(x < Constants.AimConstants.maxRange);
-        shooterAngle = runTests(v, theta, g, x, y) && drivetrain.isInRange() ? (theta + pitchAdd) * (x > pivotSwitchCloseFar ? pivotDragGainFar : pivotDragGainClose) : shooterAngle;
+        drivetrain.setInRange(x < Constants.AimConstants.range);
+        shooterAngle = runTests(v, theta, g, x, y) /*&& drivetrain.isInRange()*/ ? (theta + pitchAdd) * pivotDragGain : shooterAngle;
     }
 
     @Override
@@ -111,7 +109,7 @@ public class AimRobotCommand extends Command {
         double setpoint = drivetrainRotation.getDegrees() > 0 ? drivetrainRotation.getDegrees() + compensate : drivetrainRotation.getDegrees();
 
         currentDriveCommand = drivetrain.applyRequest(() -> driveRequest.withVelocityX(xSupplier.get() * SwerveConstants.maxDriveVelocity)
-                                .withVelocityY(ySupplier.get() * SwerveConstants.maxDriveVelocity)
+                                .withVelocityY(-ySupplier.get() * SwerveConstants.maxDriveVelocity)
                                 .withRotationalRate((rSupplier.get() > 0.3 || rSupplier.get() < -0.3) ? (-rSupplier.get() * SwerveConstants.maxAngleVelocity) 
                                 : (pidTurn.calculate(measurement, setpoint) * Constants.SwerveConstants.maxAngleVelocity)));
 

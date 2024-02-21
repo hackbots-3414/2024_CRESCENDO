@@ -103,7 +103,7 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
 
   public void setPivotPositionFromRad(double radians) {
     double goal = (radians / (Math.PI * 2)) - (PivotConstants.angleAtZero / (Math.PI * 2));
-    setPivotPosition(goal > 0.0 ? goal : 0.0);
+    setPivotPosition(goal < 0.0 ? goal : 0.0);
   }
 
   public void set(double speed) {

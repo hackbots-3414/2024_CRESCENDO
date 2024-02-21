@@ -206,9 +206,8 @@ public class SubsystemManager extends SubsystemBase {
     return new InstantCommand(() -> elevator.setNeutralMode(neutralMode));
   }
 
-  public Command makeAutoAimCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn, Supplier<Boolean> shoot) {
+  public Command makeAutoAimCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
     return new AimRobotCommand(elevator, shooterPivot, drivetrain, x, y, turn, () -> DriverStation.getAlliance().get());
-    // return new AimRobotCommand(elevator, shooterPivot, /*shooter, transport, drivetrain,*/ x, y, turn, () -> DriverStation.getAlliance().get()/*, shoot*/);
   }
 
   public Command makeAutoPivotCommand() {
@@ -223,8 +222,8 @@ public class SubsystemManager extends SubsystemBase {
         new IntakeCommand(transport, intake, 0.5, 0.5).withTimeout(2),
         new TransportCommand(transport, false).withTimeout(2),
         new ShooterCommand(shooter, transport).withTimeout(2),
-        new ManualWinchCommand(winch, 0.1).withTimeout(2),
-        new ManualWinchCommand(winch, -0.1).withTimeout(2),
+        new WinchCommand(winch, 10).withTimeout(2),
+        new WinchCommand(winch, 4).withTimeout(2),
         drivetrain.makeTestAuton());
 
     return commands;
