@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -31,38 +33,52 @@ public class AimHelper {
         // calculate distance to speaker
         double robotDistance = speakerPosition.relativeTo(robotPose).getTranslation().getNorm();
 
-        double shooterRotation = 0.0;
-        double bestRotationError = Double.POSITIVE_INFINITY;
+        Double lowerDistance = null;
+        Double higherDistance = null;
 
-        for (double currentDistance : ShooterConstants.rotationLookupTable.keySet()) {
-            double currentError = Math.abs(robotDistance - currentDistance);
-            // what i want to do here is find the key that has the smallest error from the current distance.
-            if (currentError < bestRotationError) {
-                shooterRotation = ShooterConstants.rotationLookupTable.get(currentDistance);
-                bestRotationError = currentError;
+        double speed;
+        double pivot;
+
+        Map<Double, Double> rotationMap = ShooterConstants.rotationLookupTable;
+        Map<Double, Double> speedMap = ShooterConstants.speedLookupTable;
+        for (Double key : rotationMap.keySet()) {
+            if (key <= robotDistance && (lowerDistance == null || key > lowerDistance)) {
+                lowerDistance = key;
+            }
+            if (key >= robotDistance && (higherDistance == null || key < higherDistance)) {
+                higherDistance = key;
             }
         }
 
-        double shooterSpeed = 0.0;
-        double bestSpeedError = Double.POSITIVE_INFINITY;
+        // If exact distance is found, return the corresponding value
+        if (lowerDistance != null && lowerDistance == robotDistance) {
+            speed = speedMap.get(lowerDistance);
+            pivot = rotationMap.get(lowerDistance);
+        } else {
+            // If no lower or higher distance is found, return 0
+            if (lowerDistance == null || higherDistance == null) {
+                speed = 0;
+                pivot = 0;
+            } else {
+                // Interpolate value based on distances and their corresponding values
+                double lowerSpeed = speedMap.get(lowerDistance);
+                double higherSpeed = speedMap.get(higherDistance);
 
-        for (double currentDistance : ShooterConstants.speedLookupTable.keySet()) {
-            double currentError = Math.abs(robotDistance - currentDistance);
-            // what i want to do here is find the key that has the smallest error from the current distance.
-            if (currentError < bestSpeedError) {
-                shooterSpeed = ShooterConstants.speedLookupTable.get(currentDistance);
-                bestSpeedError = currentError;
+                double lowerPivot = rotationMap.get(lowerDistance);
+                double higherPivot = rotationMap.get(higherDistance);
+
+                speed = lowerSpeed + ((robotDistance - lowerDistance) / (higherDistance - lowerDistance)) * (higherSpeed - lowerSpeed);
+                pivot = lowerPivot + ((robotDistance - lowerDistance) / (higherDistance - lowerDistance)) * (higherPivot - lowerPivot);
             }
         }
-        
-        output.setPivotAngle(shooterRotation);
-        output.setShooterVelocity(shooterSpeed);
+
+        output.setPivotAngle(pivot);
+        output.setShooterVelocity(speed);
         output.setElevatorHeight(0.0);
         output.setDrivetrainRotation(speakerPosition.getTranslation().minus(robotPose.getTranslation()).getAngle());
         output.setIsInRange(robotDistance < AimConstants.maxRange); 
 
         return output;
-
     }
 
     public static AimOutputContainer calculateAimWithMath(Pose2d robotPosition, ChassisSpeeds robotSpeed, boolean isBlueSide) {
