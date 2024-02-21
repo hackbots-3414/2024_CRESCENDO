@@ -27,7 +27,6 @@ public class AutoPivotCommand extends Command {
 
 
     public AutoPivotCommand(Elevator elevator, ShooterPivot shooterPivot, CommandSwerveDrivetrain drivetrain, Shooter shooter, Supplier<Alliance> aSupplier) {
-        addRequirements(elevator);
         this.elevator = elevator;
         this.shooterPivot = shooterPivot;
         this.drivetrain = drivetrain;
