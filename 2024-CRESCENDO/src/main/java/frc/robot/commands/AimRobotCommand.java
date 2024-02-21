@@ -80,7 +80,7 @@ public class AimRobotCommand extends Command {
 
         drivetrainRotation = speakerPosition.getTranslation().minus(robotPosition2d.getTranslation()).getAngle().plus(Rotation2d.fromDegrees(yawAdd));
 
-        double v = AimConstants.shootSpeed;
+        double v = AimConstants.maxShootSpeed;
         double g = 9.81;
         double x = speakerRelative.getTranslation().getNorm();
         double y = AimConstants.speakerHeight - AimConstants.minimumHeight;
@@ -96,7 +96,7 @@ public class AimRobotCommand extends Command {
         }
 
         double theta = Math.atan((Math.pow(v, 2) - Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(x, 2) + 2 * y * Math.pow(v, 2)))) / (g * x));
-        drivetrain.setInRange(x < Constants.AimConstants.range);
+        drivetrain.setInRange(x < Constants.AimConstants.maxRange);
         shooterAngle = runTests(v, theta, g, x, y) && drivetrain.isInRange() ? (theta + pitchAdd) * (x > pivotSwitchCloseFar ? pivotDragGainFar : pivotDragGainClose) : shooterAngle;
     }
 

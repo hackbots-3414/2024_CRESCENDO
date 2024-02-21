@@ -205,7 +205,8 @@ public class SubsystemManager extends SubsystemBase {
   }
 
   public Command makeAutoAimCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn, Supplier<Boolean> shoot) {
-    return new AimRobotCommand(elevator, shooterPivot, shooter, transport, drivetrain, x, y, turn, () -> DriverStation.getAlliance().get(), shoot);
+    return new AimRobotCommand(elevator, shooterPivot, drivetrain, x, y, turn, () -> DriverStation.getAlliance().get());
+    // return new AimRobotCommand(elevator, shooterPivot, /*shooter, transport, drivetrain,*/ x, y, turn, () -> DriverStation.getAlliance().get()/*, shoot*/);
   }
 
   public Command makeAutoPivotCommand() {
