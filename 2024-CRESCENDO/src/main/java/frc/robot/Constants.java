@@ -263,7 +263,7 @@ public class Constants {
 
     public static final class AimConstants {
         public static final double minimumDistanceToNotBreakRobot = 3; // meters from speaker
-        public static final double clearanceHeight = 0.35; 
+        public static final double clearanceHeight = 1.9; 
         public static final double elevatorHeightFromFloorAtRest = 0.19; // ONLY Y DIRECTION
 
         public static final double rangeTolerance = 0.01;

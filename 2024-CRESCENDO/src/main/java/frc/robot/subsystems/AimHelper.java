@@ -124,9 +124,9 @@ public class AimHelper {
             output.setElevatorHeight(0.0);
         } else {
             
-            output.setElevatorHeight(AimConstants.clearanceHeight);
-            heightToTarget -= (AimConstants.clearanceHeight / (Math.PI * Units.inchesToMeters(1.751)) * Math.sin(ElevatorConstants.elevatorTilt));
-            distanceToTarget += AimConstants.clearanceHeight * Math.cos(ElevatorConstants.elevatorTilt);
+            output.setElevatorHeightFromInches(AimConstants.clearanceHeight);
+            heightToTarget -= Units.inchesToMeters(AimConstants.clearanceHeight) * Math.sin(ElevatorConstants.elevatorTilt);
+            distanceToTarget += Units.inchesToMeters(AimConstants.clearanceHeight) * Math.cos(ElevatorConstants.elevatorTilt);
         }
 
         SmartDashboard.putNumber("HEIGHT", heightToTarget);
