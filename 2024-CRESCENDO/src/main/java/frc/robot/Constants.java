@@ -99,7 +99,7 @@ public class Constants {
     public static final class IntakeConstants {
         public static final int intakeMotorID = 60;
         public static final int intakeMotorPDPID = 15;
-        public static final double intakeSpeed = 0.75;
+        public static final double intakeSpeed = 1;
         public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
     }
@@ -133,7 +133,7 @@ public class Constants {
         public static final int transportMotorID = 56;
         public static final int transportMotorPDPID = 16;
         public static final boolean transportMotorInvert = true;
-        public static final double transportSpeed = 1;
+        public static final double transportSpeed = 0.60;
         public static final double transportEjectSpeed = -1;
         public static final int irSensorChannel = 4;
 
@@ -252,10 +252,14 @@ public class Constants {
         public static final double minimumHeight = 0.19; // ONLY Y DIRECTION
 
         public static final double rangeTolerance = 0.01;
-        public static final double shootSpeed = 90 * Units.inchesToMeters(1.5) * Math.PI + 3; // 3 for compression
 
-        public static final double range = 5.5; // MAX RANGE FOR MATH- 5.5 meters from target
-        public static final double shooterInRange = 3; // MAX RANGE TO MAKE THE SHOT - 5 meters from target
+        public static final double minShootSpeed = 50;
+        public static final double maxShootSpeed = 90;
+
+        public static final double compressionAdder = 3;
+
+        public static final double minRange = 1;
+        public static final double maxRange = 5.5; // MAX RANGE FOR MATH- 5.5 meters from target
 
         public static final double speakerHeight = 2.0515; // meters
     }

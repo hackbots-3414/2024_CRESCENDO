@@ -6,13 +6,13 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.AimConstants;
 import frc.robot.Constants.AprilTags;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
@@ -27,6 +27,8 @@ public class AutoPivotCommand extends Command {
     double elevatorHeight;
     double shooterAngle;
     Rotation2d drivetrainRotation;
+    double shootSpeed;
+
     boolean blueSide = false;
     Supplier<Alliance> aSupplier;
 
@@ -59,9 +61,15 @@ public class AutoPivotCommand extends Command {
         Pose2d speakerPosition =  blueSide ? AprilTags.BlueSpeakerCenter.value.getPose2d() : AprilTags.RedSpeakerCenter.value.getPose2d();
         Pose2d speakerRelative = speakerPosition.relativeTo(robotPosition2d);
 
-        double v = AimConstants.shootSpeed;
-        double g = 9.81;
         double x = speakerRelative.getTranslation().getNorm();
+
+        double speedMultiplier = (x - AimConstants.minRange) / (AimConstants.maxRange - AimConstants.minRange);
+        double rps = speedMultiplier * (AimConstants.maxShootSpeed - AimConstants.minShootSpeed) + AimConstants.minShootSpeed;
+        
+        double v = rps * Units.inchesToMeters(1.5) * Math.PI + AimConstants.compressionAdder;
+        shootSpeed = v;
+
+        double g = 9.81;
         double y = AimConstants.speakerHeight - AimConstants.minimumHeight;
 
         if (x > AimConstants.minimumDistanceToNotBreakRobot) {
@@ -73,11 +81,11 @@ public class AutoPivotCommand extends Command {
         }
 
         double theta = Math.atan((Math.pow(v, 2) - Math.sqrt(Math.pow(v, 4) - g * (g * Math.pow(x, 2) + 2 * y * Math.pow(v, 2)))) / (g * x));
-        drivetrain.setInRange(x < Constants.AimConstants.range);
+        drivetrain.setInRange(x < Constants.AimConstants.maxRange);
         shooterAngle = runTests(v, theta, g, x, y) && drivetrain.isInRange() ? (theta + pitchAdd) : shooterAngle;
 
-        if (x < AimConstants.shooterInRange) {
-            shooter.setMotor(ShooterConstants.shootVelo);
+        if (x < AimConstants.maxRange) {
+            shooter.setMotor(shootSpeed);
         } else {
             shooter.stopMotor(); 
         }

@@ -18,19 +18,19 @@ public class ShooterCommand extends Command {
 
   @Override
   public void initialize() {
-    // transport.setMotor(TransportConstants.transportEjectSpeed);
-    // shooter.setMotor(ShooterConstants.shooterIntakeSpeed);
+    transport.setMotor(TransportConstants.transportEjectSpeed);
+    shooter.setMotor(ShooterConstants.shooterIntakeSpeed);
   }
 
   @Override
   public void execute() {
-    // if (transport.getIR() == true) {
-    //   transport.stopMotor();
+    if (transport.getIR() == true) {
+      transport.stopMotor();
       shooter.setVelocity(ShooterConstants.shootVelo);
       if (shooter.shooterAtSpeed()) {
         transport.setMotor(TransportConstants.transportSpeed);
       }
-    // }
+    }
   }
 
   @Override

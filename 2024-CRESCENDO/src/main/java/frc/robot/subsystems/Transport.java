@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 // import edu.wpi.first.wpilibj.AnalogInput;
@@ -31,6 +32,7 @@ public class Transport extends SubsystemBase implements AutoCloseable {
     transportMotor.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
 
     transportMotor.setInverted(TransportConstants.transportMotorInvert);
+    transportMotor.setNeutralMode(NeutralModeValue.Brake);
   }
 
   public void setMotor(double speed) {
