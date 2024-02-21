@@ -6,7 +6,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ShooterPivot;
 
 public class ElevatorCommand extends Command {
-    public enum ElevatorPresets {STOW, AMP, TRAP, TEST;}
+    public enum ElevatorPresets {STOW, AMP, TRAP, RESET, TEST, SUBWOOFER;}
 
     Elevator elevator;
     ShooterPivot shooterPivot;
@@ -37,6 +37,17 @@ public class ElevatorCommand extends Command {
             case TEST:
                 elevator.setElevatorPosition(PositionConstants.TestPresets.elevator);
                 shooterPivot.setPivotPosition(PositionConstants.TestPresets.shooter);
+            case RESET:
+                elevator.setElevatorPosition(PositionConstants.ResetPresets.elevator);
+                shooterPivot.setPivotPosition(PositionConstants.ResetPresets.shooter);
+            case SUBWOOFER:
+                elevator.setElevatorPosition(PositionConstants.SubwooferPresets.elevator);
+                shooterPivot.setPivotPosition(PositionConstants.SubwooferPresets.shooter);
         }
+    }
+
+    @Override
+    public boolean isFinished() {
+        return elevator.isAtSetpoint() && shooterPivot.isAtSetpoint();
     }
 }

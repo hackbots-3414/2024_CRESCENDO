@@ -170,6 +170,16 @@ public class Constants {
             public static final double elevator = 6 / (Math.PI * 1.751);
             public static final double shooter = 0.02;
         }
+
+        public static final class ResetPresets {
+            public static final double elevator = 0.25;
+            public static final double shooter = 0.0;
+        }
+
+        public static final class SubwooferPresets {
+            public static final double elevator = 0.0;
+            public static final double shooter = 0.072;
+        }
     }
 
     public static final class ElevatorConstants {
@@ -187,6 +197,8 @@ public class Constants {
 
         public static final double elevatorManualUpSpeed = 0.1;
         public static final double elevatorManualDownSpeed = -0.1;
+
+        public static final double elevatorTolerance = 0.05;
 
         public static final InvertedValue invertMotor = InvertedValue.Clockwise_Positive;
 
@@ -241,11 +253,12 @@ public class Constants {
 
         public static final double pivotCurrentLimit = 0;
 
+        public static final double pivotTolerance = 0.003;
         
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         public static final class PivotSlot0ConfigConstants {
-            public static final double kP = 50.0; //output per unit of error in position (output/rotation)
+            public static final double kP = 60.0; //output per unit of error in position (output/rotation)
             public static final double kI = 0.0; //output per unit of integrated error in position (output/(rotation*s))
             public static final double kD = 0.0; //output per unit of error in velocity (output/rps)
             public static final double kS = 0.0; //output to overcome static friction (output)

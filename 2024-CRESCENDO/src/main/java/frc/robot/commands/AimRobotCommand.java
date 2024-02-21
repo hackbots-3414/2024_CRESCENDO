@@ -56,8 +56,8 @@ public class AimRobotCommand extends Command {
         
         ChassisSpeeds speeds = drivetrain.getCurrentRobotChassisSpeeds();
         Pose2d robotPosition = drivetrain.getPose();
-        AimOutputContainer output = AimHelper.calculateAimWithMath(robotPosition, speeds, blueSide); // WITH MATH
-        // AimOutputContainer output = AimHelper.calculateAimLookupTable(robotPosition, blueSide); // LOOKUP TABLE
+        // AimOutputContainer output = AimHelper.calculateAimWithMath(robotPosition, speeds, blueSide); // WITH MATH
+        AimOutputContainer output = AimHelper.calculateAimLookupTable(robotPosition, blueSide); // LOOKUP TABLE
 
         elevator.setElevatorPosition(output.getElevatorHeight());
         shooterPivot.setPivotPosition(output.getPivotAngle());

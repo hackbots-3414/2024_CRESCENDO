@@ -9,11 +9,13 @@ import frc.robot.subsystems.Transport;
 public class ShooterCommand extends Command {
   Shooter shooter;
   Transport transport;
+  double velocity;
 
-  public ShooterCommand(Shooter shooter, Transport transport) {
+  public ShooterCommand(Shooter shooter, Transport transport, double velocity) {
     addRequirements(shooter, transport);
     this.shooter = shooter;
     this.transport = transport;
+    this.velocity = velocity;
   }
 
   @Override
@@ -26,7 +28,7 @@ public class ShooterCommand extends Command {
   public void execute() {
     if (transport.getIR() == true) {
       transport.stopMotor();
-      shooter.setVelocity(ShooterConstants.shootVelo);
+      shooter.setVelocity(velocity);
       if (shooter.shooterAtSpeed()) {
         transport.setMotor(TransportConstants.transportSpeed);
       }

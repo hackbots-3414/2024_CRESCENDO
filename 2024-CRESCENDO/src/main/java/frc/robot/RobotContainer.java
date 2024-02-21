@@ -70,7 +70,8 @@ public class RobotContainer {
     xboxOperator.povRight().whileTrue(subsystemManager.makeManualPivotCommand(true));
     xboxOperator.povLeft().whileTrue(subsystemManager.makeManualPivotCommand(false));
 
-    xboxOperator.rightBumper().whileTrue(subsystemManager.makeEjectCommand());
+    xboxOperator.rightBumper().whileTrue(subsystemManager.makeSubwooferShootCommand());
+    xboxOperator.leftBumper().onTrue(subsystemManager.makeResetElevatorCommand());
 
     // xboxOperator.back().whileTrue(subsystemManager.makeWinchCommand(true));
     // xboxOperator.start().whileTrue(subsystemManager.makeWinchCommand(false));
@@ -80,7 +81,6 @@ public class RobotContainer {
 
 
     // xboxOperator.leftTrigger(InputConstants.triggerTolerance); // left trigger as button
-    // xboxOperator.leftBumper(); 
     // xboxOperator.leftStick(); // left thumbstick button
     // xboxOperator.getLeftX();
     // xboxOperator.getLeftY();

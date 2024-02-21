@@ -48,6 +48,8 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
   private boolean forwardLimit;
   private boolean reverseLimit;
 
+  private double setpoint;
+
   public Elevator() {
     configElevatorMotors();
   }
@@ -108,7 +110,7 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
     } else if(position >= this.elevatorPosition){
       config.withLimitForwardMotion(getForwardLimit());
     }
-    
+    this.setpoint = position;
     elevatorMotor.setControl(config);
   }
 
@@ -116,6 +118,10 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
     elevatorMotor.setControl(new DutyCycleOut(speed)
         .withLimitForwardMotion(getForwardLimit())
         .withLimitReverseMotion(getReverseLimit()));
+  }
+
+  public boolean isAtSetpoint() {
+    return Math.abs(getPosition() - setpoint) < ElevatorConstants.elevatorTolerance;
   }
 
   public void stop() {
@@ -157,6 +163,7 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
     SmartDashboard.putBoolean("Forward Limit switch", forwardLimit);
     SmartDashboard.putBoolean("Reverse Limit Switch", reverseLimit);
     SmartDashboard.putNumber("Elevator Position", elevatorPosition);
+    SmartDashboard.putBoolean("ELEVATOR SETPOINT", isAtSetpoint());
   }
 
   @Override

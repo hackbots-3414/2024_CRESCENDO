@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.PivotConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.WinchConstants;
 import frc.robot.Telemetry;
@@ -42,6 +43,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ManualElevatorCommand;
 import frc.robot.commands.ManualPivotCommand;
 import frc.robot.commands.ManualWinchCommand;
+import frc.robot.commands.ResetElevatorCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.TransportCommand;
 import frc.robot.commands.TrapScoreCommand;
@@ -160,6 +162,14 @@ public class SubsystemManager extends SubsystemBase {
         isUp ? ElevatorConstants.elevatorManualUpSpeed : ElevatorConstants.elevatorManualDownSpeed);
   }
 
+  public Command makeSubwooferShootCommand() {
+    return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER), new ShooterCommand(shooter, transport, ShooterConstants.minShootSpeed));
+  }
+
+  public Command makeResetElevatorCommand() {
+    return new ResetElevatorCommand(elevator, shooterPivot);
+  }
+
   public Command makeManualPivotCommand(boolean isUp) {
     return new ManualPivotCommand(shooterPivot,
         isUp ? PivotConstants.pivotManualUpSpeed : PivotConstants.pivotManualDownSpeed);
@@ -171,17 +181,12 @@ public class SubsystemManager extends SubsystemBase {
   }
 
   public Command makeShootCommand() {
-    return new ShooterCommand(shooter, transport);
+    return new ShooterCommand(shooter, transport, ShooterConstants.shootVelo);
   }
 
   public Command makeIntakeCommand() {
     return new IntakeCommand(transport, intake, Constants.IntakeConstants.intakeSpeed,
         Constants.TransportConstants.transportSpeed);
-  }
-
-  public Command makeEjectCommand() {
-    return new IntakeCommand(transport, intake, Constants.IntakeConstants.ejectSpeed,
-        Constants.TransportConstants.transportEjectSpeed);
   }
 
   public Command makeTransportCommand(boolean forward) {
@@ -215,12 +220,11 @@ public class SubsystemManager extends SubsystemBase {
 
   public Command makeTestingCommand() {
     SequentialCommandGroup commands = new SequentialCommandGroup();
-    commands.addCommands(new ElevatorCommand(elevator, shooterPivot, ElevatorPresets.AMP).withTimeout(2),
-        new ElevatorCommand(elevator, shooterPivot, ElevatorPresets.TRAP).withTimeout(2),
-        new ElevatorCommand(elevator, shooterPivot, ElevatorPresets.STOW).withTimeout(2),
-        new IntakeCommand(transport, intake, 0.5, 0.5).withTimeout(2),
-        new TransportCommand(transport, false).withTimeout(2),
-        new ShooterCommand(shooter, transport).withTimeout(2),
+    commands.addCommands(makeElevatorCommand(ElevatorPresets.AMP).withTimeout(2),
+        makeElevatorCommand(ElevatorPresets.TRAP).withTimeout(2),
+        makeElevatorCommand(ElevatorPresets.STOW).withTimeout(2),
+        makeIntakeCommand().withTimeout(2),
+        makeShootCommand().withTimeout(2),
         new ManualWinchCommand(winch, 0.1).withTimeout(2),
         new ManualWinchCommand(winch, -0.1).withTimeout(2),
         drivetrain.makeTestAuton());
