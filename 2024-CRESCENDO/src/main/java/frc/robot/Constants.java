@@ -99,7 +99,7 @@ public class Constants {
     public static final class IntakeConstants {
         public static final int intakeMotorID = 60;
         public static final int intakeMotorPDPID = 15;
-        public static final double intakeSpeed = 1;
+        public static final double intakeSpeed = 0.75;
         public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
     }
@@ -142,7 +142,7 @@ public class Constants {
 
     public static final class PositionConstants {
         public static final class StowPresets {
-            public static final double elevator = 0.01;
+            public static final double elevator = 0.0;
             public static final double shooter = 0;
         }
 
@@ -246,8 +246,8 @@ public class Constants {
     }
 
     public static final class AimConstants {
-        public static final double minimumDistanceToNotBreakRobot = 2; // meters from speaker
-        public static final double clearanceHeight = 0.05; // meters up;
+        public static final double minimumDistanceToNotBreakRobot = 3; // meters from speaker
+        public static final double clearanceHeight = 0.35; // meters up;
         public static final double elevatorTilt = Math.toRadians(60);
         public static final double minimumHeight = 0.19; // ONLY Y DIRECTION
 
@@ -271,8 +271,8 @@ public class Constants {
         public static final double climbHeight = 21;
         public static final double restHeight = 4;
 
-        public static final double winchManualUpSpeed = 0.1;
-        public static final double winchManualDownSpeed = -0.1;
+        public static final double winchManualUpSpeed = 0.5;
+        public static final double winchManualDownSpeed = -0.5;
     }
 
     public static class AprilTagObject {

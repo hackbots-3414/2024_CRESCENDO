@@ -220,8 +220,8 @@ public class SubsystemManager extends SubsystemBase {
         new IntakeCommand(transport, intake, 0.5, 0.5).withTimeout(2),
         new TransportCommand(transport, false).withTimeout(2),
         new ShooterCommand(shooter, transport).withTimeout(2),
-        new WinchCommand(winch, 10).withTimeout(2),
-        new WinchCommand(winch, 4).withTimeout(2),
+        new ManualWinchCommand(winch, 0.1).withTimeout(2),
+        new ManualWinchCommand(winch, -0.1).withTimeout(2),
         drivetrain.makeTestAuton());
 
     return commands;
