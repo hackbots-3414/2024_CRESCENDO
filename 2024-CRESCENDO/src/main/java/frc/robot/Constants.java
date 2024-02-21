@@ -82,17 +82,27 @@ public class Constants {
         public static final double shootVelo = 92.0; // Rotations per second
         public static final double shooterTolerance = 3.0;
 
+        public static final double minShootSpeed = 50; // measured for AutoAim
+        public static final double maxShootSpeed = 90; // measured for AutoAim
+
         public static final double shooterIntakeSpeed = -0.1;
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
-            entry(0.0, 0.0),
-            entry(1.0, 1.0),
-            entry(2.0, 2.0),
-            entry(3.0, 3.0),
-            entry(4.0, 4.0),
-            entry(5.0, 5.0),
-            entry(6.0, 6.0),
-            entry(7.0, 7.0)
+            entry(1.41, 0.0720),
+            entry(1.70, 0.0600),
+            entry(2.31, 0.0385),
+            entry(2.92, 0.0227),
+            entry(3.54, 0.0130),
+            entry(4.14, 0.0030)
+        );
+
+        public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
+            entry(1.41, 50.0),
+            entry(1.70, 50.0),
+            entry(2.31, 50.0),
+            entry(2.92, 60.0),
+            entry(3.54, 70.0),
+            entry(4.14, 92.0)
         );
     }
 
@@ -196,9 +206,15 @@ public class Constants {
             public static final double jerk = 80; // Target Jerk - 23.2
         }
 
-        public static double elevatorCurrentLimit = 20;
+        public static final double elevatorCurrentLimit = 20;
 
-        public static double elevatorForwardSoftLimit = 2.33; //output shaft rotations
+        public static final double elevatorForwardSoftLimit = 2.33; //output shaft rotations
+
+        public static final double gearDiameter = 1.751;
+        public static final double elevatorTilt = Math.toRadians(60);
+
+        public static final double outputShaftToInchesMultiplier = Math.PI * gearDiameter;
+        public static final double inchesToOutputShaftMultiplier = 1 / outputShaftToInchesMultiplier;
     }
 
     public static final class PivotConstants {
@@ -217,8 +233,8 @@ public class Constants {
         public static final double forwardSoftLimitThreshold = 0.088379;
         public static final double reverseSoftLimitThreshold = 0;
 
-        public static final double angleAtZero = Math.toRadians(30);
-        public static final double angleAtMax = Math.toRadians(58);
+        public static final double radiansAtZero = Math.toRadians(30);
+        public static final double radiansAtMax = Math.toRadians(58);
 
         public static final double pivotManualUpSpeed = 0.025;
         public static final double pivotManualDownSpeed = -0.025;
@@ -247,14 +263,10 @@ public class Constants {
 
     public static final class AimConstants {
         public static final double minimumDistanceToNotBreakRobot = 3; // meters from speaker
-        public static final double clearanceHeight = 0.35; // meters up;
-        public static final double elevatorTilt = Math.toRadians(60);
-        public static final double minimumHeight = 0.19; // ONLY Y DIRECTION
+        public static final double clearanceHeightInches = 3.0; 
+        public static final double elevatorHeightFromFloorAtRest = 0.19; // ONLY Y DIRECTION
 
         public static final double rangeTolerance = 0.01;
-
-        public static final double minShootSpeed = 50;
-        public static final double maxShootSpeed = 90;
 
         public static final double compressionAdder = 3;
 
@@ -262,6 +274,13 @@ public class Constants {
         public static final double maxRange = 5.5; // MAX RANGE FOR MATH- 5.5 meters from target
 
         public static final double speakerHeight = 2.0515; // meters
+        public static final double aprilTagToHoodGoal = Units.inchesToMeters(8);
+
+        public static final double yawMomentumGain = 0.0;
+        public static final double pitchMomemtumGain = 0.0;
+
+        public static final double dragPitchGainSlope = -0.09836;
+        public static final double dragPitchGainYIntercept = 1.2;
     }
 
     public static final class WinchConstants {
