@@ -61,6 +61,7 @@ public class SubsystemManager extends SubsystemBase {
   Transport transport = new Transport();
   NoteFinder noteFinder = new NoteFinder();
   Winch winch = new Winch();
+  LedSubsystem ledSubsystem = new LedSubsystem();
 
   CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
   FieldCentric driveRequest = new SwerveRequest.FieldCentric()
@@ -100,6 +101,7 @@ public class SubsystemManager extends SubsystemBase {
   public Elevator getElevator() {return elevator;}
   public NoteFinder getNoteFinder() {return noteFinder;}
   public Winch getWinch() {return winch;}
+  public LedSubsystem getLedSubsystem() {return ledSubsystem;}
 
   private SubsystemManager() {
     configurePathPlanner();
