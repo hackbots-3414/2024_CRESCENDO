@@ -67,7 +67,7 @@ Hackbots code for the 2024 FRC Crescendo game.
 |Event|Color Pattern|Spark Value|
 |-----|-------------|-----------|
 |Speaker In Range For Shooting| Sky Blue | 0.83 | 
-|Note Onboard| Green | 0.77 |
+|Note in robot| Green | 0.77 |
 |End Game (0s) | Confetti | -0.87 | 
 |End Game (15s)| Strobe, Red| -0.11 |
 |End Game (30s)| Heartbeat, White | -0.21|
