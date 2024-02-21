@@ -73,7 +73,7 @@ public class SubsystemManager extends SubsystemBase {
   PointWheelsAt pointRequest = new PointWheelsAt();
   Telemetry logger = new Telemetry();
 
-  ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
+  ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds().withDriveRequestType(DriveRequestType.Velocity);
   HashMap<String, Command> eventMarkers = new HashMap<>();
 
   double elevatorCurrent = 0;
