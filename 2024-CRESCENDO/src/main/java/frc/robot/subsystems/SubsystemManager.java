@@ -166,6 +166,10 @@ public class SubsystemManager extends SubsystemBase {
     return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER), new ShooterCommand(shooter, transport, ShooterConstants.minShootSpeed));
   }
 
+  public Command makeSubwooferShootAutoCommand() {
+    return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER), new ShooterCommand(shooter, transport, ShooterConstants.minShootSpeed).withTimeout(1.5));
+  }
+
   public Command makeResetElevatorCommand() {
     return new ResetElevatorCommand(elevator, shooterPivot);
   }
@@ -241,7 +245,7 @@ public class SubsystemManager extends SubsystemBase {
 
     eventMarkers.put("Intake", makeIntakeCommand());
     eventMarkers.put("Auto Pivot", makeAutoPivotCommand());
-    eventMarkers.put("Subwoofer", makeSubwooferShootCommand());
+    eventMarkers.put("Subwoofer", makeSubwooferShootAutoCommand());
     NamedCommands.registerCommands(eventMarkers);
 
     AutoBuilder.configureHolonomic(

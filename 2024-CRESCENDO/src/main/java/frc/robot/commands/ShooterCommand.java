@@ -31,6 +31,7 @@ public class ShooterCommand extends Command {
       shooter.setVelocity(velocity);
       if (shooter.shooterAtSpeed()) {
         transport.setMotor(TransportConstants.transportSpeed);
+        
       }
     }
   }
@@ -39,5 +40,11 @@ public class ShooterCommand extends Command {
   public void end(boolean interrupted) {
     shooter.stopMotor();
     transport.stopMotor();
+  }
+
+  @Override
+  public boolean isFinished() {
+      // TODO Auto-generated method stub
+      return super.isFinished();
   }
 }

@@ -42,10 +42,10 @@ public class Constants {
     }
 
     public static final class SwerveConstants {
-        public static final double kPDrive = 0;
+        public static final double kPDrive = 5;
         public static final double kIDrive = 0;
         public static final double kDDrive = 0;
-        public static final double kPSteer = 0;
+        public static final double kPSteer = 15;
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
 
@@ -253,7 +253,7 @@ public class Constants {
 
         public static final double pivotCurrentLimit = 0;
 
-        public static final double pivotTolerance = 0.003;
+        public static final double pivotTolerance = 0.004;
         
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
