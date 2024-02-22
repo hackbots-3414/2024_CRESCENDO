@@ -284,7 +284,7 @@ public class Constants {
         public static final double compressionAdder = 3;
 
         public static final double minRange = 1;
-        public static final double maxRange = 5.5; // MAX RANGE FOR MATH- 5.5 meters from target
+        public static final double maxRange = 3; // MAX RANGE FOR MATH- 5.5 meters from target
 
         public static final double speakerHeight = 2.0515; // meters
         public static final double aprilTagToHoodGoal = Units.inchesToMeters(8);
