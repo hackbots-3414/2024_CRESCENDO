@@ -122,7 +122,8 @@ public class Constants {
         public static final int leftY = 1;
         public static final int rightX = 3;
         public static final int rightY = 2;
-
+        
+        public static final double deadband = 0.06;
         public static final double leftXMax = 0.75;
         public static final double leftYMax = 0.66;
         public static final double rightXMax = 0.8;
