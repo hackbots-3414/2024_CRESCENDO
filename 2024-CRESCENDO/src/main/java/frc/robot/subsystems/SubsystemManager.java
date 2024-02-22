@@ -40,7 +40,6 @@ import frc.robot.Constants.WinchConstants;
 import frc.robot.Telemetry;
 import frc.robot.commands.AimRobotCommand;
 import frc.robot.commands.AmpScoreCommand;
-import frc.robot.commands.AutoScoreCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.IntakeCommand;
@@ -52,6 +51,7 @@ import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.TransportCommand;
 import frc.robot.commands.TrapScoreCommand;
 import frc.robot.commands.WinchCommand;
+import frc.robot.commands.AutonCommands.AutoScoreCommand;
 import frc.robot.generated.TunerConstants;
 
 public class SubsystemManager extends SubsystemBase {
@@ -241,7 +241,7 @@ public class SubsystemManager extends SubsystemBase {
   }
 
   public Command makeAutoScoreCommand() {
-    return new AutoScoreCommand(elevator, shooterPivot, drivetrain, shooter, transport, makeIntakeCommand(), () -> DriverStation.getAlliance().get());
+    return new AutoScoreCommand(elevator, shooterPivot, shooter, transport, makeIntakeCommand(), () -> DriverStation.getAlliance().get(), () -> drivetrain.getPose(), () -> drivetrain.getCurrentRobotChassisSpeeds());
   }
 
   public Command makeTestingCommand() {
