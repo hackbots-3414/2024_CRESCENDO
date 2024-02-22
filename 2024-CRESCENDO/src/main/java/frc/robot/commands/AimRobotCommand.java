@@ -56,7 +56,6 @@ public class AimRobotCommand extends Command {
         
         ChassisSpeeds speeds = drivetrain.getCurrentRobotChassisSpeeds();
         Pose2d robotPosition = drivetrain.getPose();
-        SmartDashboard.putString("ROBOT POSE AS OF AIMROBOTCOMMAND", robotPosition.toString());
         AimOutputContainer output = AimHelper.calculateAimWithMath(robotPosition, speeds, blueSide); // WITH MATH
         // AimOutputContainer output = AimHelper.calculateAimLookupTable(robotPosition, blueSide); // LOOKUP TABLE
 
