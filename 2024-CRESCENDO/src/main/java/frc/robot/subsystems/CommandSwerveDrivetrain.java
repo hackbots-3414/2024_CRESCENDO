@@ -126,6 +126,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     @Override
     public void periodic() {
         // updateOdometry();
+        estimatedPose = m_odometry.getEstimatedPosition();
     }
 
     public boolean isInRange() {
