@@ -1,6 +1,4 @@
-package frc.robot.subsystems;
-
-import java.util.Map;
+package frc.robot.subsystems; 
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -33,38 +31,42 @@ public class AimHelper {
         // calculate distance to speaker
         double robotDistance = speakerPosition.relativeTo(robotPose).getTranslation().getNorm();
 
-        Double lowerDistance = Double.POSITIVE_INFINITY;
-        Double higherDistance = Double.POSITIVE_INFINITY;
-
         double speed;
         double pivot;
 
-        Map<Double, Double> rotationMap = ShooterConstants.rotationLookupTable;
-        Map<Double, Double> speedMap = ShooterConstants.speedLookupTable;
-        for (Double key : rotationMap.keySet()) {
-            if (key <= robotDistance && key > lowerDistance) {
-                lowerDistance = key;
-            }
-            if (key >= robotDistance && key < higherDistance) {
-                higherDistance = key;
+        double[][] lookupTable = ShooterConstants.pivotAndSpeedLookupTable;
+
+        double[] lowerDistance = lookupTable[0];
+        double[] higherDistance = lookupTable[lookupTable.length-1];
+
+        for (int i = 0; lowerDistance[0] < robotDistance && i < lookupTable.length; i++) {
+            lowerDistance = lookupTable[i];
+
+            if (i+1 == lookupTable.length) {
+                higherDistance = lowerDistance;
+            } else {
+                higherDistance = lookupTable[i+1];
             }
         }
 
         // If exact distance is found, return the corresponding value
-        if (lowerDistance == robotDistance) {
-            speed = speedMap.get(lowerDistance);
-            pivot = rotationMap.get(lowerDistance);
+        if (lowerDistance == higherDistance) {
+            pivot = lowerDistance[1];
+            speed = lowerDistance[2];
         } else {
             // Interpolate value based on distances and their corresponding values
-            double lowerSpeed = speedMap.get(lowerDistance);
-            double higherSpeed = speedMap.get(higherDistance);
+            double lowerPivot = lowerDistance[1];
+            double higherPivot = higherDistance[1];
 
-            double lowerPivot = rotationMap.get(lowerDistance);
-            double higherPivot = rotationMap.get(higherDistance);
+            double lowerSpeed = lowerDistance[2];
+            double higherSpeed = higherDistance[2];
 
-            speed = lowerSpeed + ((robotDistance - lowerDistance) / (higherDistance - lowerDistance)) * (higherSpeed - lowerSpeed);
-            pivot = lowerPivot + ((robotDistance - lowerDistance) / (higherDistance - lowerDistance)) * (higherPivot - lowerPivot);
+            speed = lowerSpeed + ((robotDistance - lowerDistance[0]) / (higherDistance[0] - lowerDistance[0])) * (higherSpeed - lowerSpeed);
+            pivot = lowerPivot + ((robotDistance - lowerDistance[0]) / (higherDistance[0] - lowerDistance[0])) * (higherPivot - lowerPivot);
         }
+
+        SmartDashboard.putNumber("SPEED", speed);
+        SmartDashboard.putNumber("PIVOT", pivot);
 
         output.setPivotAngle(pivot);
         output.setShooterVelocity(speed);
