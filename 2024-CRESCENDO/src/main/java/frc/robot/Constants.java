@@ -42,18 +42,30 @@ public class Constants {
     }
 
     public static final class SwerveConstants {
-        public static final double kPDrive = 0;
+        public static final double kPDrive = 10;
         public static final double kIDrive = 0;
         public static final double kDDrive = 0;
-        public static final double kPSteer = 0;
+        public static final double kPSteer = 12.5;
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
 
+        public static final double driveSupplyCurrentLimit = 80;
 
         public static final double maxDriveVelocity = TunerConstants.kSpeedAt12VoltsMps;
         public static final double maxDriveAcceleration = 4;
         public static final double maxAngleVelocity = 1.5*Math.PI;
         public static final double maxAngleAcceleration = 2*Math.PI;
+
+        /*
+         * FL D - 4
+         * FL S - 6
+         * FR D - 13
+         * FR S - 15
+         * BL D - 7
+         * BL S - 9
+         * BR D - 10
+         * BR S - 12
+         */
     }
 
     public static final class VisionConstants {
@@ -61,8 +73,10 @@ public class Constants {
          * A note about these transforms: They appear to follow the normal cordinate
          * system (x is right when pos. and so on).
          */
-        public static final Transform3d leftTransform = new Transform3d(Units.inchesToMeters(-11.813), Units.inchesToMeters(-22.373), Units.inchesToMeters(26.25), new Rotation3d(0, Math.PI * 40/180, 0));
-        public static final Transform3d rightTransform = new Transform3d(Units.inchesToMeters(11.813), Units.inchesToMeters(-22.373), Units.inchesToMeters(26.25), new Rotation3d(0, Math.PI * 40/180, 0));
+        public static final Transform3d leftTransform = new Transform3d(-0.282, 0.293, 0.646, 
+                                                        new Rotation3d(0, 0, Units.degreesToRadians(-40)));
+        public static final Transform3d rightTransform = new Transform3d(-0.282, -0.293, 0.646, 
+                                                        new Rotation3d(0, 0, Units.degreesToRadians(40)));
         public static final String leftCameraName = "Cam2";
         public static final String rightCameraName = "Cam1";
     }
