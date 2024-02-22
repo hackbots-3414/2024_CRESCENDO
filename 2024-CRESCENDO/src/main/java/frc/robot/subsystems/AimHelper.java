@@ -33,8 +33,8 @@ public class AimHelper {
         // calculate distance to speaker
         double robotDistance = speakerPosition.relativeTo(robotPose).getTranslation().getNorm();
 
-        Double lowerDistance = Double.POSITIVE_INFINITY;
-        Double higherDistance = Double.POSITIVE_INFINITY;
+        Double lowerDistance = null;
+        Double higherDistance = null;
 
         double speed;
         double pivot;
@@ -42,28 +42,34 @@ public class AimHelper {
         Map<Double, Double> rotationMap = ShooterConstants.rotationLookupTable;
         Map<Double, Double> speedMap = ShooterConstants.speedLookupTable;
         for (Double key : rotationMap.keySet()) {
-            if (key <= robotDistance && key > lowerDistance) {
+            if (key <= robotDistance && (lowerDistance == null || key > lowerDistance)) {
                 lowerDistance = key;
             }
-            if (key >= robotDistance && key < higherDistance) {
+            if (key >= robotDistance && (higherDistance == null || key < higherDistance)) {
                 higherDistance = key;
             }
         }
 
         // If exact distance is found, return the corresponding value
-        if (lowerDistance == robotDistance) {
+        if (lowerDistance != null && lowerDistance == robotDistance) {
             speed = speedMap.get(lowerDistance);
             pivot = rotationMap.get(lowerDistance);
         } else {
-            // Interpolate value based on distances and their corresponding values
-            double lowerSpeed = speedMap.get(lowerDistance);
-            double higherSpeed = speedMap.get(higherDistance);
+            // If no lower or higher distance is found, return 0
+            if (lowerDistance == null || higherDistance == null) {
+                speed = 0;
+                pivot = 0;
+            } else {
+                // Interpolate value based on distances and their corresponding values
+                double lowerSpeed = speedMap.get(lowerDistance);
+                double higherSpeed = speedMap.get(higherDistance);
 
-            double lowerPivot = rotationMap.get(lowerDistance);
-            double higherPivot = rotationMap.get(higherDistance);
+                double lowerPivot = rotationMap.get(lowerDistance);
+                double higherPivot = rotationMap.get(higherDistance);
 
-            speed = lowerSpeed + ((robotDistance - lowerDistance) / (higherDistance - lowerDistance)) * (higherSpeed - lowerSpeed);
-            pivot = lowerPivot + ((robotDistance - lowerDistance) / (higherDistance - lowerDistance)) * (higherPivot - lowerPivot);
+                speed = lowerSpeed + ((robotDistance - lowerDistance) / (higherDistance - lowerDistance)) * (higherSpeed - lowerSpeed);
+                pivot = lowerPivot + ((robotDistance - lowerDistance) / (higherDistance - lowerDistance)) * (higherPivot - lowerPivot);
+            }
         }
 
         output.setPivotAngle(pivot);
