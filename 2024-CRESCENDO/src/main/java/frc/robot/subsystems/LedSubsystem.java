@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.sql.Driver;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
