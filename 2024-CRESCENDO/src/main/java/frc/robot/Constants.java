@@ -45,7 +45,7 @@ public class Constants {
         public static final double kPDrive = 10;
         public static final double kIDrive = 0;
         public static final double kDDrive = 0;
-        public static final double kPSteer = 12.5;
+        public static final double kPSteer = 10;
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
 
@@ -112,15 +112,6 @@ public class Constants {
             entry(3.54, 0.0130),
             entry(4.14, 0.0030)
         );
-
-        public static final double[][] pivotAndSpeedLookupTable = {
-            {1.41, 0.0720, 50.0},
-            {1.70, 0.0600, 50.0},
-            {2.31, 0.0385, 50.0},
-            {2.92, 0.0227, 60.0},
-            {3.54, 0.0130, 70.0},
-            {4.14, 0.0030, 92.0}
-        };
 
         public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
             entry(1.41, 50.0),
