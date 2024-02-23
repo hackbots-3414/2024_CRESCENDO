@@ -1,14 +1,56 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.7912916726734353,
+      "y": 6.600718066300997
+    },
+    "rotation": -121.90810693565317
+  },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Subwoofer"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "3PieceWingClear"
+            "pathName": "AmpSide2Piece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Subwoofer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2PieceCenter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Subwoofer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3PieceEnd"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Subwoofer"
           }
         }
       ]
