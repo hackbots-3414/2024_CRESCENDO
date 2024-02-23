@@ -33,17 +33,11 @@
   "eventMarkers": [
     {
       "name": "ShootAndIntake",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "sequential",
         "data": {
           "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Subwoofer"
-              }
-            },
             {
               "type": "named",
               "data": {
