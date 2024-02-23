@@ -139,8 +139,8 @@ public class Constants {
     }
 
     public static final class DriverConstants {
-        public static final int resetGyroButton = 13;
-        public static final int autoAimButton = 3;
+        public static final int resetGyroButton = 1;
+        public static final int autoAimButton = 13;
         public static final int resetAtPointButton = 5;
         public static final int leftX = 0;
         public static final int leftY = 1;

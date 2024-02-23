@@ -125,7 +125,7 @@ public class SubsystemManager extends SubsystemBase {
     // winchCurrent = pdp.getCurrent(WinchConstants.leftMotorPDPID) + pdp.getCurrent(rightMotor.PDPID)
 
     // dampenDrivetrain();
-    updateOdometryWithPhotonVision();
+    // updateOdometryWithPhotonViion();
   }
 
   private void updateOdometryWithPhotonVision() {

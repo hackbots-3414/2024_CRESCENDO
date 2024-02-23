@@ -9,7 +9,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,9 +33,9 @@ public class AimRobotCommand extends Command {
 
     Command currentDriveCommand;
 
-    FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.2).withRotationalDeadband(Constants.SwerveConstants.maxAngleVelocity).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+    FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.2).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-    PIDController pidTurn = new PIDController(0.05, 0, 0);
+    PIDController pidTurn = new PIDController(1, 0, 0);
 
 
     public AimRobotCommand(Elevator elevator, ShooterPivot shooterPivot, CommandSwerveDrivetrain drivetrain, Supplier<Double> xSupplier, Supplier<Double> ySupplier, Supplier<Double> rSupplier, Supplier<Alliance> aSupplier) {
@@ -54,24 +53,28 @@ public class AimRobotCommand extends Command {
     public void execute() {
         blueSide = aSupplier.get() == Alliance.Blue;
         
-        ChassisSpeeds speeds = drivetrain.getCurrentRobotChassisSpeeds();
+        // ChassisSpeeds speeds = drivetrain.getCurrentRobotChassisSpeeds();
         Pose2d robotPosition = drivetrain.getPose();
-        SmartDashboard.putString("ROBOT POSE AS OF AIMROBOTCOMMAND", robotPosition.toString());
-        AimOutputContainer output = AimHelper.calculateAimWithMath(robotPosition, speeds, blueSide); // WITH MATH
-        // AimOutputContainer output = AimHelper.calculateAimLookupTable(robotPosition, blueSide); // LOOKUP TABLE
+        // AimOutputContainer output = AimHelper.calculateAimWithMath(robotPosition, speeds, blueSide); // WITH MATH
+        AimOutputContainer output = AimHelper.calculateAimLookupTable(robotPosition, blueSide); // LOOKUP TABLE
 
         elevator.setElevatorPosition(output.getElevatorHeight());
         shooterPivot.setPivotPosition(output.getPivotAngle());
 
         Rotation2d drivetrainRotation = output.getDrivetrainRotation();
 
-        double compensate = blueSide ? -360 : 0;
-        double measurement = robotPosition.getRotation().getDegrees() > 0 ? robotPosition.getRotation().getDegrees() + compensate : robotPosition.getRotation().getDegrees();
-        double setpoint = drivetrainRotation.getDegrees() > 0 ? drivetrainRotation.getDegrees() + compensate : drivetrainRotation.getDegrees();
+        double compensate = blueSide ? -Math.PI * 2 : 0;
+
+        double measurement = robotPosition.getRotation().getRadians() > 0 ? robotPosition.getRotation().getRadians() + compensate : robotPosition.getRotation().getRadians();
+        double setpoint = drivetrainRotation.getRadians() > 0 ? drivetrainRotation.getRadians() + compensate : drivetrainRotation.getRadians();
+
+        SmartDashboard.putNumber("MEASUREMENT", measurement);
+        SmartDashboard.putNumber("SETPOINT", setpoint);
+
 
         currentDriveCommand = drivetrain.applyRequest(() -> driveRequest.withVelocityX(xSupplier.get() * SwerveConstants.maxDriveVelocity)
                                 .withVelocityY(ySupplier.get() * SwerveConstants.maxDriveVelocity)
-                                .withRotationalRate((rSupplier.get() > 0.3 || rSupplier.get() < -0.3) ? (-rSupplier.get() * SwerveConstants.maxAngleVelocity) 
+                                .withRotationalRate((rSupplier.get() > 0.2 || rSupplier.get() < -0.2) ? (-rSupplier.get() * SwerveConstants.maxAngleVelocity) 
                                 : (pidTurn.calculate(measurement, setpoint) * Constants.SwerveConstants.maxAngleVelocity)));
 
         currentDriveCommand.schedule();
