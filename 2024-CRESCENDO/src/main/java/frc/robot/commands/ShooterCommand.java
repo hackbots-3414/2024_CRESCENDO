@@ -29,9 +29,9 @@ public class ShooterCommand extends Command {
     if (transport.getIR() == true) {
       transport.stopMotor();
       shooter.setVelocity(velocity);
-      if (shooter.shooterAtSpeed()) {
-        transport.setMotor(TransportConstants.transportSpeed);
-      }
+    }
+    if (shooter.shooterAtSpeed()) {
+      transport.setMotor(TransportConstants.transportSpeed);
     }
   }
 

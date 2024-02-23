@@ -48,6 +48,7 @@ public class RobotContainer {
     subsystemManager.configureDriveDefaults(driverLeftY, driverLeftX, driverRightX);
     
     resetGyroButton.onTrue(subsystemManager.makeResetCommand());
+    resetGyroButton.onFalse(subsystemManager.makeResetCommand());
     resetAtPointButton.onTrue(subsystemManager.resetAtPose2d(new Pose2d(15.1, 5.5, Rotation2d.fromDegrees(0))));
     autoAimButton.whileTrue(subsystemManager.makeAutoAimCommand(driverLeftY, driverLeftX, driverRightX, () -> xboxOperator.b().getAsBoolean()));
 
@@ -73,7 +74,7 @@ public class RobotContainer {
     xboxOperator.rightBumper().whileTrue(subsystemManager.makeSubwooferShootCommand());
     xboxOperator.leftBumper().onTrue(subsystemManager.makeResetElevatorCommand());
 
-    // xboxOperator.back().whileTrue(subsystemManager.makeWinchCommand(true));
+    // xboxOperator.back().whileTrue(subsystemManager.makeWinchCommand(true));  
     // xboxOperator.start().whileTrue(subsystemManager.makeWinchCommand(false));
 
     xboxOperator.back().whileTrue(subsystemManager.makeManualWinchCommand(true));

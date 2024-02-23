@@ -15,9 +15,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants.SwerveConstants;
 
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.002; // 5 ms
@@ -25,8 +27,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private double m_lastSimTime;
 
     private Pose2d estimatedPose;
-
     private boolean isInRange;
+
+    private Field2d field = new Field2d();
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
             SwerveModuleConstants... modules) {
@@ -35,6 +38,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        setCurrentLimit(SwerveConstants.driveSupplyCurrentLimit);
     }
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
@@ -43,6 +47,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        setCurrentLimit(SwerveConstants.driveSupplyCurrentLimit);
     }
 
     public Translation2d[] moduleLocations() {
@@ -93,6 +98,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     @Override
     public void periodic() {
         estimatedPose = m_odometry.getEstimatedPosition();
+        field.setRobotPose(estimatedPose);
+        SmartDashboard.putData(field);
+        
         SmartDashboard.putString("ROBOTPOSE", estimatedPose.toString());
         SmartDashboard.putNumber("ROBOTX", estimatedPose.getX());
         SmartDashboard.putNumber("ROBOTY", estimatedPose.getY());

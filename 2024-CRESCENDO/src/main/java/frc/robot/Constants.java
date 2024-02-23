@@ -42,18 +42,30 @@ public class Constants {
     }
 
     public static final class SwerveConstants {
-        public static final double kPDrive = 0;
+        public static final double kPDrive = 10;
         public static final double kIDrive = 0;
         public static final double kDDrive = 0;
-        public static final double kPSteer = 0;
+        public static final double kPSteer = 12.5;
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
 
+        public static final double driveSupplyCurrentLimit = 80;
 
         public static final double maxDriveVelocity = TunerConstants.kSpeedAt12VoltsMps;
         public static final double maxDriveAcceleration = 4;
         public static final double maxAngleVelocity = 1.5*Math.PI;
         public static final double maxAngleAcceleration = 2*Math.PI;
+
+        /*
+         * FL D - 4
+         * FL S - 6
+         * FR D - 13
+         * FR S - 15
+         * BL D - 7
+         * BL S - 9
+         * BR D - 10
+         * BR S - 12
+         */
     }
 
     public static final class VisionConstants {
@@ -61,8 +73,10 @@ public class Constants {
          * A note about these transforms: They appear to follow the normal cordinate
          * system (x is right when pos. and so on).
          */
-        public static final Transform3d leftTransform = new Transform3d(Units.inchesToMeters(-11.813), Units.inchesToMeters(-22.373), Units.inchesToMeters(26.25), new Rotation3d(0, Math.PI * 40/180, 0));
-        public static final Transform3d rightTransform = new Transform3d(Units.inchesToMeters(11.813), Units.inchesToMeters(-22.373), Units.inchesToMeters(26.25), new Rotation3d(0, Math.PI * 40/180, 0));
+        public static final Transform3d leftTransform = new Transform3d(-0.282, 0.293, 0.646, 
+                                                        new Rotation3d(0, 0, Units.degreesToRadians(-40)));
+        public static final Transform3d rightTransform = new Transform3d(-0.282, -0.293, 0.646, 
+                                                        new Rotation3d(0, 0, Units.degreesToRadians(40)));
         public static final String leftCameraName = "Cam2";
         public static final String rightCameraName = "Cam1";
     }
@@ -96,6 +110,15 @@ public class Constants {
             entry(4.14, 0.0030)
         );
 
+        public static final double[][] pivotAndSpeedLookupTable = {
+            {1.41, 0.0720, 50.0},
+            {1.70, 0.0600, 50.0},
+            {2.31, 0.0385, 50.0},
+            {2.92, 0.0227, 60.0},
+            {3.54, 0.0130, 70.0},
+            {4.14, 0.0030, 92.0}
+        };
+
         public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
             entry(1.41, 50.0),
             entry(1.70, 50.0),
@@ -125,8 +148,8 @@ public class Constants {
     }
 
     public static final class DriverConstants {
-        public static final int resetGyroButton = 13;
-        public static final int autoAimButton = 3;
+        public static final int resetGyroButton = 1;
+        public static final int autoAimButton = 13;
         public static final int resetAtPointButton = 5;
         public static final int leftX = 0;
         public static final int leftY = 1;
@@ -178,7 +201,7 @@ public class Constants {
 
         public static final class SubwooferPresets {
             public static final double elevator = 0.0;
-            public static final double shooter = 0.072;
+            public static final double shooter = 0.066;
         }
     }
 
@@ -253,12 +276,12 @@ public class Constants {
 
         public static final double pivotCurrentLimit = 0;
 
-        public static final double pivotTolerance = 0.003;
+        public static final double pivotTolerance = 0.004;
         
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         public static final class PivotSlot0ConfigConstants {
-            public static final double kP = 60.0; //output per unit of error in position (output/rotation)
+            public static final double kP = 75.0; //output per unit of error in position (output/rotation)
             public static final double kI = 0.0; //output per unit of integrated error in position (output/(rotation*s))
             public static final double kD = 0.0; //output per unit of error in velocity (output/rps)
             public static final double kS = 0.0; //output to overcome static friction (output)
@@ -268,7 +291,7 @@ public class Constants {
         }
 
         public static final class PivotMotionMagicConstants {
-            public static final double cruiseVelocity = 0.088379; // Target cruise velocity
+            public static final double cruiseVelocity = 0.088379 * 3; // Target cruise velocity
             public static final double acceleration = cruiseVelocity * 2; // Target acceleration
             public static final double jerk = acceleration * 10; // Target Jerk
         }
