@@ -13,7 +13,7 @@ public class ElevatorCommand extends Command {
     ElevatorPresets selector;
 
     public ElevatorCommand(Elevator elevator, ShooterPivot shooterPivot, ElevatorPresets selector) {
-        addRequirements(elevator); // Don't add requirements for shooter pivot -> auto aim needs requirements
+        // addRequirements(elevator); // Don't add requirements for shooter pivot -> auto aim needs requirements
         this.elevator = elevator;
         this.shooterPivot = shooterPivot;
         this.selector = selector;

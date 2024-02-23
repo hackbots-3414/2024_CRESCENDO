@@ -12,7 +12,7 @@ public class ShooterCommand extends Command {
   double velocity;
 
   public ShooterCommand(Shooter shooter, Transport transport, double velocity) {
-    addRequirements(shooter, transport);
+    addRequirements(shooter);
     this.shooter = shooter;
     this.transport = transport;
     this.velocity = velocity;
