@@ -245,8 +245,8 @@ public class SubsystemManager extends SubsystemBase {
   }
 
   public Command makeAutoScoreCommand() {
-    // return new AutoScoreCommand(elevator, shooterPivot, shooter, transport, makeIntakeCommand(), () -> DriverStation.getAlliance().get(), () -> drivetrain.getPose(), () -> drivetrain.getCurrentRobotChassisSpeeds());
-    return new InstantCommand(() -> System.out.println("THIS IS A FILLER"));
+    return new AutoScoreCommand(elevator, shooterPivot, shooter, transport, makeIntakeCommand(), () -> DriverStation.getAlliance().get(), () -> drivetrain.getPose(), () -> drivetrain.getCurrentRobotChassisSpeeds());
+    // return new InstantCommand(() -> System.out.println("THIS IS A FILLER"));
   }
 
   public Command makeTestingCommand() {
@@ -269,7 +269,7 @@ public class SubsystemManager extends SubsystemBase {
         driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
     }
 
-    // eventMarkers.put("Auto Pivot", makeAutoScoreCommand());
+    eventMarkers.put("Auto Score", makeAutoScoreCommand());
     eventMarkers.put("Subwoofer", makeSubwooferShootAutoCommand());
     eventMarkers.put("Intake", makeIntakeCommand());
     NamedCommands.registerCommands(eventMarkers);

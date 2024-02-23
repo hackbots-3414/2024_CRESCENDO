@@ -26,15 +26,15 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
-                      "data": {
-                        "name": "Intake"
-                      }
-                    },
-                    {
                       "type": "path",
                       "data": {
                         "pathName": "2PieceCenter"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": null
                       }
                     }
                   ]

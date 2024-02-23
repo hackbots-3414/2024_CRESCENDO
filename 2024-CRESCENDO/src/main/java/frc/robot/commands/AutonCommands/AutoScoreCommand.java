@@ -30,6 +30,7 @@ public class AutoScoreCommand extends Command {
     Command elevatorCommand;
 
     public AutoScoreCommand(Elevator elevator, ShooterPivot shooterPivot, Shooter shooter, Transport transport, Command intakeCommand, Supplier<Alliance> aSupplier, Supplier<Pose2d> poseSupplier, Supplier<ChassisSpeeds> chassisSpeedsSupplier) {
+        addRequirements(elevator, shooterPivot, shooter, transport);
         this.elevator = elevator;
         this.shooterPivot = shooterPivot;
         this.shooter = shooter;

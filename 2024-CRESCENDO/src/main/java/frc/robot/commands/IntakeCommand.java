@@ -11,7 +11,7 @@ public class IntakeCommand extends Command {
   double transportSpeed;
 
   public IntakeCommand(Transport transport, Intake intake, double intakeSpeed, double transportSpeed) {
-    // addRequirements(intake);
+    addRequirements(intake, transport);
     this.transport = transport;
     this.intake = intake;
     this.intakeSpeed = intakeSpeed;
