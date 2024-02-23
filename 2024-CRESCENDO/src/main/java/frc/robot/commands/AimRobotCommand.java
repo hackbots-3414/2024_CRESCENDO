@@ -68,9 +68,6 @@ public class AimRobotCommand extends Command {
         double measurement = robotPosition.getRotation().getRadians() > 0 ? robotPosition.getRotation().getRadians() + compensate : robotPosition.getRotation().getRadians();
         double setpoint = drivetrainRotation.getRadians() > 0 ? drivetrainRotation.getRadians() + compensate : drivetrainRotation.getRadians();
 
-        SmartDashboard.putNumber("MEASUREMENT", measurement);
-        SmartDashboard.putNumber("SETPOINT", setpoint);
-
 
         currentDriveCommand = drivetrain.applyRequest(() -> driveRequest.withVelocityX(xSupplier.get() * SwerveConstants.maxDriveVelocity)
                                 .withVelocityY(ySupplier.get() * SwerveConstants.maxDriveVelocity)
@@ -78,8 +75,6 @@ public class AimRobotCommand extends Command {
                                 : (pidTurn.calculate(measurement, setpoint) * Constants.SwerveConstants.maxAngleVelocity)));
 
         currentDriveCommand.schedule();
-
-        SmartDashboard.putNumber("SHOOTER ANGLE", output.getPivotAngle());
     }
 
     @Override

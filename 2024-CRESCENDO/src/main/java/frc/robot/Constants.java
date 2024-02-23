@@ -110,6 +110,15 @@ public class Constants {
             entry(4.14, 0.0030)
         );
 
+        public static final double[][] pivotAndSpeedLookupTable = {
+            {1.41, 0.0720, 50.0},
+            {1.70, 0.0600, 50.0},
+            {2.31, 0.0385, 50.0},
+            {2.92, 0.0227, 60.0},
+            {3.54, 0.0130, 70.0},
+            {4.14, 0.0030, 92.0}
+        };
+
         public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
             entry(1.41, 50.0),
             entry(1.70, 50.0),
@@ -192,7 +201,7 @@ public class Constants {
 
         public static final class SubwooferPresets {
             public static final double elevator = 0.0;
-            public static final double shooter = 0.072;
+            public static final double shooter = 0.066;
         }
     }
 
@@ -267,12 +276,12 @@ public class Constants {
 
         public static final double pivotCurrentLimit = 0;
 
-        public static final double pivotTolerance = 0.003;
+        public static final double pivotTolerance = 0.004;
         
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         public static final class PivotSlot0ConfigConstants {
-            public static final double kP = 60.0; //output per unit of error in position (output/rotation)
+            public static final double kP = 75.0; //output per unit of error in position (output/rotation)
             public static final double kI = 0.0; //output per unit of integrated error in position (output/(rotation*s))
             public static final double kD = 0.0; //output per unit of error in velocity (output/rps)
             public static final double kS = 0.0; //output to overcome static friction (output)
@@ -282,7 +291,7 @@ public class Constants {
         }
 
         public static final class PivotMotionMagicConstants {
-            public static final double cruiseVelocity = 0.088379; // Target cruise velocity
+            public static final double cruiseVelocity = 0.088379 * 3; // Target cruise velocity
             public static final double acceleration = cruiseVelocity * 2; // Target acceleration
             public static final double jerk = acceleration * 10; // Target Jerk
         }

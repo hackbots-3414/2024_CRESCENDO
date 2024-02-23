@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems; 
 
 import java.util.Map;
 
@@ -71,6 +71,9 @@ public class AimHelper {
                 pivot = lowerPivot + ((robotDistance - lowerDistance) / (higherDistance - lowerDistance)) * (higherPivot - lowerPivot);
             }
         }
+
+        SmartDashboard.putNumber("SPEED", speed);
+        SmartDashboard.putNumber("PIVOT", pivot);
 
         output.setPivotAngle(pivot);
         output.setShooterVelocity(speed);

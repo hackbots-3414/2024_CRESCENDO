@@ -79,7 +79,7 @@ public class SubsystemManager extends SubsystemBase {
   PointWheelsAt pointRequest = new PointWheelsAt();
   Telemetry logger = new Telemetry();
 
-  ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
+  ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds().withDriveRequestType(DriveRequestType.Velocity);
   HashMap<String, Command> eventMarkers = new HashMap<>();
 
   double elevatorCurrent = 0;
@@ -192,6 +192,10 @@ public class SubsystemManager extends SubsystemBase {
     return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER), new ShooterCommand(shooter, transport, ShooterConstants.minShootSpeed));
   }
 
+  public Command makeSubwooferShootAutoCommand() {
+    return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER), new ShooterCommand(shooter, transport, ShooterConstants.minShootSpeed).withTimeout(1.5));
+  }
+
   public Command makeResetElevatorCommand() {
     return new ResetElevatorCommand(elevator, shooterPivot);
   }
@@ -265,7 +269,8 @@ public class SubsystemManager extends SubsystemBase {
     }
 
     eventMarkers.put("Auto Pivot", makeAutoScoreCommand());
-    eventMarkers.put("Subwoofer", makeSubwooferShootCommand());
+    eventMarkers.put("Subwoofer", makeSubwooferShootAutoCommand());
+    eventMarkers.put("Intake", makeIntakeCommand());
     NamedCommands.registerCommands(eventMarkers);
 
     AutoBuilder.configureHolonomic(
