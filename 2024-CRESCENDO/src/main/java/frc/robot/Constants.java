@@ -105,6 +105,7 @@ public class Constants {
         public static final double shooterIntakeSpeed = -0.1;
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
+            entry(0.0, 0.0720),
             entry(1.41, 0.0720),
             entry(1.70, 0.0600),
             entry(2.31, 0.0385),
@@ -114,12 +115,14 @@ public class Constants {
         );
 
         public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
+            entry(0.0, 50.0),
             entry(1.41, 50.0),
             entry(1.70, 50.0),
             entry(2.31, 50.0),
             entry(2.92, 60.0),
             entry(3.54, 70.0),
-            entry(4.14, 92.0)
+            entry(4.14, 92.0),
+            entry(50.0, 92.0)
         );
     }
 
@@ -318,6 +321,9 @@ public class Constants {
     public static final class WinchConstants {
         public static final int leftWinchMotorID = 30;
         public static final int rightWinchMotorID = 31;
+
+        public static final int leftWinchMotorPDPID = 30;
+        public static final int rightWinchMotorPDPID = 31;
 
         public static final boolean winchMotorInvert = true;
 

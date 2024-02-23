@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 1.3557149261949524,
+      "y": 5.571577854565105
+    },
+    "rotation": 0
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -12,7 +18,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "7 Piece"
+                  "pathName": "Testing AutoShoot"
                 }
               },
               {
@@ -27,6 +33,6 @@
       ]
     }
   },
-  "folder": "Goals",
+  "folder": null,
   "choreoAuto": false
 }

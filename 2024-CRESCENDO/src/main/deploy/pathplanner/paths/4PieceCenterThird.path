@@ -63,24 +63,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Intake"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "SubwooferPreset",
-      "waypointRelativePos": 1.5,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "SubwooferPreset"
+                "name": "IntakeThenSubwooferPreset"
               }
             }
           ]

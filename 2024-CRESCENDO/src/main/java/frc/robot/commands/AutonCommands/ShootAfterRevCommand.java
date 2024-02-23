@@ -5,12 +5,12 @@ import frc.robot.Constants.TransportConstants;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transport;
 
-public class SubwooferShootCommand extends Command {
+public class ShootAfterRevCommand extends Command {
     Shooter shooter;
     Transport transport;
     double velocity;
 
-    public SubwooferShootCommand(Shooter shooter, Transport transport, double velocity) {
+    public ShootAfterRevCommand(Shooter shooter, Transport transport, double velocity) {
         addRequirements(shooter, transport);
         this.shooter = shooter;
         this.transport = transport;
