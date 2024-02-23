@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -169,6 +170,14 @@ public class SubsystemManager extends SubsystemBase {
 
   public Command makeResetCommand() {
     return drivetrain.runOnce(() -> drivetrain.seedFieldRelative());
+  }
+
+  public Command makeShellyCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
+    Command shellyCommand = drivetrain.applyRequest(() -> driveRequest.withVelocityX(-y.get() * Constants.SwerveConstants.shellyDriveVelocity)
+            .withVelocityY(-x.get() * Constants.SwerveConstants.shellyDriveVelocity)
+            .withRotationalRate(-turn.get() * Constants.SwerveConstants.shellyAngleVelocity)); 
+    shellyCommand.addRequirements(drivetrain);
+    return shellyCommand;
   }
 
   public Command resetAtPose2d(Pose2d pose) {
