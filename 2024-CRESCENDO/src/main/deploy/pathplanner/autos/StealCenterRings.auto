@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7233010829658023,
+      "y": 4.393839333133212
+    },
+    "rotation": 120.25643716352927
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Subwoofer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "StealCenterRings"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

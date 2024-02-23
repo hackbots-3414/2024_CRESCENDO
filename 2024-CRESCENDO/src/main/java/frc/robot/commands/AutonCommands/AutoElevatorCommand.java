@@ -1,6 +1,7 @@
 package frc.robot.commands.AutonCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.PositionConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ShooterPivot;
 
@@ -21,6 +22,12 @@ public class AutoElevatorCommand extends Command {
     public void execute() {
         elevator.setElevatorPosition(elevatorPos);
         shooterPivot.setPivotPosition(pivotPos);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        elevator.setElevatorPosition(PositionConstants.StowPresets.elevator);
+        shooterPivot.setPivotPosition(PositionConstants.StowPresets.shooter);
     }
 
     @Override

@@ -21,7 +21,7 @@ public class ShooterCommand extends Command {
   @Override
   public void initialize() {
     transport.setMotor(TransportConstants.transportEjectSpeed);
-    shooter.setMotor(ShooterConstants.shooterIntakeSpeed);
+    shooter.setMotor(ShooterConstants.shooterBackupSpeed);
   }
 
   @Override

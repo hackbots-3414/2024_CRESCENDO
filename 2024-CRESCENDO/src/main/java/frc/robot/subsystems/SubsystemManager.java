@@ -48,6 +48,7 @@ import frc.robot.commands.ManualPivotCommand;
 import frc.robot.commands.ManualWinchCommand;
 import frc.robot.commands.ResetElevatorCommand;
 import frc.robot.commands.ShooterCommand;
+import frc.robot.commands.StealRingCommand;
 import frc.robot.commands.TrapScoreCommand;
 import frc.robot.commands.WinchCommand;
 import frc.robot.commands.AutonCommands.AutoScoreCommand;
@@ -240,10 +241,14 @@ public class SubsystemManager extends SubsystemBase {
 
 
 	// INTAKE COMMANDS
-	public Command makeIntakeCommand() {
+	public Command makeStowAndIntakeCommand() {
 		return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.STOW),
 				new IntakeCommand(transport, intake, Constants.IntakeConstants.intakeSpeed,
 						Constants.TransportConstants.transportSpeed));
+	}
+	public Command makeIntakeCommand() {
+		return new IntakeCommand(transport, intake, Constants.IntakeConstants.intakeSpeed,
+						Constants.TransportConstants.transportSpeed);
 	}
 
 
@@ -271,17 +276,24 @@ public class SubsystemManager extends SubsystemBase {
 				() -> DriverStation.getAlliance().get());
 	}
 	public Command makeAutoScoreCommand() {
-		return new AutoScoreCommand(elevator, shooterPivot, shooter, transport, makeIntakeCommand(),
+		return new AutoScoreCommand(elevator, shooterPivot, shooter, transport, makeStowAndIntakeCommand(),
 				() -> DriverStation.getAlliance().get(),
 				() -> drivetrain.getPose(), () -> drivetrain.getCurrentRobotChassisSpeeds());
 	}
+
+
+	// AUTON COMMANDS
+	public Command makeStealRingCommand() {
+		return new StealRingCommand(shooter, makeIntakeCommand(), elevator, shooterPivot);
+	}
+
 
 	public Command makeTestingCommand() {
 		SequentialCommandGroup commands = new SequentialCommandGroup();
 		commands.addCommands(makeElevatorCommand(ElevatorPresets.AMP).withTimeout(2),
 				makeElevatorCommand(ElevatorPresets.TRAP).withTimeout(2),
 				makeElevatorCommand(ElevatorPresets.STOW).withTimeout(2),
-				makeIntakeCommand().withTimeout(2),
+				makeStowAndIntakeCommand().withTimeout(2),
 				makeShootCommand().withTimeout(2),
 				new ManualWinchCommand(winch, 0.1).withTimeout(2),
 				new ManualWinchCommand(winch, -0.1).withTimeout(2),
@@ -298,9 +310,10 @@ public class SubsystemManager extends SubsystemBase {
 
 		eventMarkers.put("Auto Score", makeAutoScoreCommand());
 		eventMarkers.put("Subwoofer", makeShootAfterRevCommand(ShooterConstants.minShootSpeed));
-		// eventMarkers.put("Intake", makeIntakeCommand()); // WILL THROW
-		// ADDREQUIREMENTS ERRORS!!!!
-		eventMarkers.put("IntakeThenSubwooferPreset", makeIntakeCommand().andThen(makeSubwooferRevvingCommand()));
+		eventMarkers.put("Intake", makeStowAndIntakeCommand()); 
+		eventMarkers.put("IntakeThenSubwooferPreset", makeStowAndIntakeCommand().andThen(makeSubwooferRevvingCommand()));
+		eventMarkers.put("StealRings", makeStealRingCommand());
+
 		NamedCommands.registerCommands(eventMarkers);
 
 		AutoBuilder.configureHolonomic(

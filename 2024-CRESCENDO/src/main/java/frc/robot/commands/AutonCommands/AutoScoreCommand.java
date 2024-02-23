@@ -6,9 +6,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.ShooterCommand;
 import frc.robot.subsystems.AimHelper;
 import frc.robot.subsystems.AimHelper.AimOutputContainer;
 import frc.robot.subsystems.Elevator;
@@ -27,9 +24,9 @@ public class AutoScoreCommand extends Command {
     Supplier<ChassisSpeeds> chassisSpeedsSupplier;
 
     Command shootCommand;
-    Command intakeCommand;
     Command elevatorCommand;
     Command shootAfterRevCommand;
+    Command intakeCommand;
 
     public AutoScoreCommand(Elevator elevator, ShooterPivot shooterPivot, Shooter shooter, Transport transport, Command intakeCommand, Supplier<Alliance> aSupplier, Supplier<Pose2d> poseSupplier, Supplier<ChassisSpeeds> chassisSpeedsSupplier) {
         this.elevator = elevator;
@@ -51,15 +48,29 @@ public class AutoScoreCommand extends Command {
         shootCommand = new RevShooterCommand(shooter, transport, output.getShooterVelocity());
         shootAfterRevCommand = new ShootAfterRevCommand(shooter, transport, output.getShooterVelocity());
 
-
-        SequentialCommandGroup shootSequence = new SequentialCommandGroup(new ParallelCommandGroup(elevatorCommand, shootCommand), shootAfterRevCommand);
+        if (!elevatorCommand.isFinished()) {elevatorCommand.execute();}
+        if (!shootCommand.isFinished()) {shootCommand.execute();}
+        if (elevatorCommand.isFinished() && shootCommand.isFinished()) {shootAfterRevCommand.execute();}
 
         if (output.getIsInRange()) {
-            intakeCommand.cancel();
-            shootSequence.schedule();
+            intakeCommand.end(true);
+            
+            if (!elevatorCommand.isFinished()) {elevatorCommand.execute();}
+            if (!shootCommand.isFinished()) {shootCommand.execute();}
+            if (elevatorCommand.isFinished() && shootCommand.isFinished()) {shootAfterRevCommand.execute();}
         } else {
-            shootSequence.cancel();
-            intakeCommand.schedule();
+            elevatorCommand.end(true);
+            shootCommand.end(true);
+            shootAfterRevCommand.end(true);            
+
+            if (!intakeCommand.isFinished()) {intakeCommand.initialize();}
         }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        intakeCommand.end(interrupted);
+        elevatorCommand.end(interrupted);
+        shootAfterRevCommand.end(interrupted);
     }
 }

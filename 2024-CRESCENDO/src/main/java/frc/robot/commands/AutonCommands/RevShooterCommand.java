@@ -24,7 +24,7 @@ public class RevShooterCommand extends Command {
             shooter.setVelocity(velocity);
         } else {
             transport.setMotor(TransportConstants.transportEjectSpeed);
-            shooter.setMotor(ShooterConstants.shooterIntakeSpeed);
+            shooter.setMotor(ShooterConstants.shooterBackupSpeed);
         }
     }
     @Override

@@ -1,0 +1,135 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.7233010829658023,
+        "y": 4.393839333133212
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.2270533631976355,
+        "y": 2.686678827903111
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.009051654466946,
+        "y": 0.7462996744175311
+      },
+      "prevControl": {
+        "x": 7.025181744367041,
+        "y": 0.9251851126175076
+      },
+      "nextControl": {
+        "x": 8.111667859699356,
+        "y": 0.7276421825570936
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.009051654466946,
+        "y": 7.4909829819659635
+      },
+      "prevControl": {
+        "x": 8.037037892257603,
+        "y": 3.395663518599765
+      },
+      "nextControl": {
+        "x": 8.00870997679576,
+        "y": 7.540981814516024
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.048190823654374,
+        "y": 7.4909829819659635
+      },
+      "prevControl": {
+        "x": 7.4026831690027,
+        "y": 7.621585424989031
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": -178.10394700187217,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.4,
+      "rotationDegrees": -120.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.0,
+      "rotationDegrees": -120.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Steal",
+      "waypointRelativePos": 0.5,
+      "command": {
+        "type": "race",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StealRings"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.21,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -178.93250031625982,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 120.57922687248902,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
