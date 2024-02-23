@@ -3,7 +3,10 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
+
+import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -23,6 +26,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -31,22 +35,24 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.PivotConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.WinchConstants;
 import frc.robot.Telemetry;
 import frc.robot.commands.AimRobotCommand;
 import frc.robot.commands.AmpScoreCommand;
-import frc.robot.commands.AutoPivotCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ManualElevatorCommand;
 import frc.robot.commands.ManualPivotCommand;
 import frc.robot.commands.ManualWinchCommand;
+import frc.robot.commands.ResetElevatorCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.TransportCommand;
 import frc.robot.commands.TrapScoreCommand;
 import frc.robot.commands.WinchCommand;
+import frc.robot.commands.AutonCommands.AutoScoreCommand;
 import frc.robot.generated.TunerConstants;
 
 public class SubsystemManager extends SubsystemBase {
@@ -62,6 +68,8 @@ public class SubsystemManager extends SubsystemBase {
   Transport transport = new Transport();
   NoteFinder noteFinder = new NoteFinder();
   Winch winch = new Winch();
+  LedSubsystem ledSubsystem = new LedSubsystem();
+  PhotonVision photonVision = new PhotonVision();
 
   CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
   FieldCentric driveRequest = new SwerveRequest.FieldCentric()
@@ -72,7 +80,7 @@ public class SubsystemManager extends SubsystemBase {
   PointWheelsAt pointRequest = new PointWheelsAt();
   Telemetry logger = new Telemetry();
 
-  ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds();
+  ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds().withDriveRequestType(DriveRequestType.Velocity);
   HashMap<String, Command> eventMarkers = new HashMap<>();
 
   double elevatorCurrent = 0;
@@ -101,6 +109,8 @@ public class SubsystemManager extends SubsystemBase {
   public Elevator getElevator() {return elevator;}
   public NoteFinder getNoteFinder() {return noteFinder;}
   public Winch getWinch() {return winch;}
+  public LedSubsystem getLedSubsystem() {return ledSubsystem;}
+  public PhotonVision getPhotonVision() {return photonVision;}
 
   private SubsystemManager() {
     configurePathPlanner();
@@ -115,15 +125,33 @@ public class SubsystemManager extends SubsystemBase {
     // transportCurrent = pdp.getCurrent(TransportConstants.transportMotorPDPID);
     // winchCurrent = pdp.getCurrent(WinchConstants.leftMotorPDPID) + pdp.getCurrent(rightMotor.PDPID)
 
-    dampenDrivetrain();
+    // dampenDrivetrain();
+    // updateOdometryWithPhotonViion();
   }
 
-  private void dampenDrivetrain() {
-    double supplyLimitDrivetrain = ((availableCurrent / runTimeHours
-        - (elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent + transportCurrent))) / 4.0; // (Ah Available - Ah Being Used) / Ah to Amps conversion / 4 motors to distribute over
-    supplyLimitDrivetrain = supplyLimitDrivetrain > 40 ? 39.5 : supplyLimitDrivetrain;
-    drivetrain.setCurrentLimit(supplyLimitDrivetrain);
-  }
+  private void updateOdometryWithPhotonVision() {
+        Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
+        Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
+
+        SmartDashboard.putBoolean("SeesRight", rightPoseMaybe.isPresent());
+        SmartDashboard.putBoolean("SeesLeft", leftPoseMaybe.isPresent());
+
+        if (leftPoseMaybe.isPresent()) {
+            EstimatedRobotPose leftPose = leftPoseMaybe.get();
+            drivetrain.addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
+        }
+        if (rightPoseMaybe.isPresent()) {
+            EstimatedRobotPose rightPose = rightPoseMaybe.get();
+            drivetrain.addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
+        }
+    }
+
+  // private void dampenDrivetrain() {
+  //   double supplyLimitDrivetrain = ((availableCurrent / runTimeHours
+  //       - (elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent + transportCurrent))) / 4.0; // (Ah Available - Ah Being Used) / Ah to Amps conversion / 4 motors to distribute over
+  //   supplyLimitDrivetrain = supplyLimitDrivetrain > 40 ? 39.5 : supplyLimitDrivetrain;
+  //   drivetrain.setCurrentLimit(supplyLimitDrivetrain);
+  // }
 
   public void configureDriveDefaults(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
     drivetrain.setDefaultCommand(
@@ -169,6 +197,18 @@ public class SubsystemManager extends SubsystemBase {
         isUp ? ElevatorConstants.elevatorManualUpSpeed : ElevatorConstants.elevatorManualDownSpeed);
   }
 
+  public Command makeSubwooferShootCommand() {
+    return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER), new ShooterCommand(shooter, transport, ShooterConstants.minShootSpeed));
+  }
+
+  public Command makeSubwooferShootAutoCommand() {
+    return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER), new ShooterCommand(shooter, transport, ShooterConstants.minShootSpeed).withTimeout(1.5));
+  }
+
+  public Command makeResetElevatorCommand() {
+    return new ResetElevatorCommand(elevator, shooterPivot);
+  }
+
   public Command makeManualPivotCommand(boolean isUp) {
     return new ManualPivotCommand(shooterPivot,
         isUp ? PivotConstants.pivotManualUpSpeed : PivotConstants.pivotManualDownSpeed);
@@ -180,17 +220,13 @@ public class SubsystemManager extends SubsystemBase {
   }
 
   public Command makeShootCommand() {
-    return new ShooterCommand(shooter, transport);
+    return new ShooterCommand(shooter, transport, ShooterConstants.shootVelo);
   }
 
   public Command makeIntakeCommand() {
-    return new IntakeCommand(transport, intake, Constants.IntakeConstants.intakeSpeed,
-        Constants.TransportConstants.transportSpeed);
-  }
-
-  public Command makeEjectCommand() {
-    return new IntakeCommand(transport, intake, Constants.IntakeConstants.ejectSpeed,
-        Constants.TransportConstants.transportEjectSpeed);
+    return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.STOW), 
+        new IntakeCommand(transport, intake, Constants.IntakeConstants.intakeSpeed,
+        Constants.TransportConstants.transportSpeed));
   }
 
   public Command makeTransportCommand(boolean forward) {
@@ -213,24 +249,23 @@ public class SubsystemManager extends SubsystemBase {
     return new InstantCommand(() -> elevator.setNeutralMode(neutralMode));
   }
 
-  public Command makeAutoAimCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
+  public Command makeAutoAimCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn, Supplier<Boolean> shoot) {
     return new AimRobotCommand(elevator, shooterPivot, drivetrain, x, y, turn, () -> DriverStation.getAlliance().get());
   }
 
-  public Command makeAutoPivotCommand() {
-    return new AutoPivotCommand(elevator, shooterPivot, drivetrain, shooter, () -> DriverStation.getAlliance().get());
+  public Command makeAutoScoreCommand() {
+    return new AutoScoreCommand(elevator, shooterPivot, shooter, transport, makeIntakeCommand(), () -> DriverStation.getAlliance().get(), () -> drivetrain.getPose(), () -> drivetrain.getCurrentRobotChassisSpeeds());
   }
 
   public Command makeTestingCommand() {
     SequentialCommandGroup commands = new SequentialCommandGroup();
-    commands.addCommands(new ElevatorCommand(elevator, shooterPivot, ElevatorPresets.AMP).withTimeout(2),
-        new ElevatorCommand(elevator, shooterPivot, ElevatorPresets.TRAP).withTimeout(2),
-        new ElevatorCommand(elevator, shooterPivot, ElevatorPresets.STOW).withTimeout(2),
-        new IntakeCommand(transport, intake, 0.5, 0.5).withTimeout(2),
-        new TransportCommand(transport, false).withTimeout(2),
-        new ShooterCommand(shooter, transport).withTimeout(2),
-        new WinchCommand(winch, 10).withTimeout(2),
-        new WinchCommand(winch, 4).withTimeout(2),
+    commands.addCommands(makeElevatorCommand(ElevatorPresets.AMP).withTimeout(2),
+        makeElevatorCommand(ElevatorPresets.TRAP).withTimeout(2),
+        makeElevatorCommand(ElevatorPresets.STOW).withTimeout(2),
+        makeIntakeCommand().withTimeout(2),
+        makeShootCommand().withTimeout(2),
+        new ManualWinchCommand(winch, 0.1).withTimeout(2),
+        new ManualWinchCommand(winch, -0.1).withTimeout(2),
         drivetrain.makeTestAuton());
 
     return commands;
@@ -242,8 +277,9 @@ public class SubsystemManager extends SubsystemBase {
         driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
     }
 
+    eventMarkers.put("Auto Pivot", makeAutoScoreCommand());
+    eventMarkers.put("Subwoofer", makeSubwooferShootAutoCommand());
     eventMarkers.put("Intake", makeIntakeCommand());
-    eventMarkers.put("Auto Pivot", makeAutoPivotCommand());
     NamedCommands.registerCommands(eventMarkers);
 
     AutoBuilder.configureHolonomic(

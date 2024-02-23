@@ -1,5 +1,10 @@
 {
   "HALProvider": {
+    "DIO": {
+      "window": {
+        "visible": true
+      }
+    },
     "Other Devices": {
       "window": {
         "visible": false
@@ -49,10 +54,7 @@
         "left": 150,
         "right": 2961,
         "top": 79,
-        "width": 16.541748046875,
-        "window": {
-          "visible": true
-        }
+        "width": 16.541748046875
       },
       "/SmartDashboard/Module 0": {
         "window": {
@@ -87,9 +89,6 @@
     },
     "transitory": {
       "SmartDashboard": {
-        "Run Tests": {
-          "open": true
-        },
         "open": true
       }
     }

@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriverConstants;
 import frc.robot.Constants.InputConstants;
+import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.subsystems.NoteFinder;
 import frc.robot.subsystems.SubsystemManager;
 
@@ -49,11 +50,11 @@ public class RobotContainer {
     subsystemManager.configureDriveDefaults(driverLeftY, driverLeftX, driverRightX);
     
     resetGyroButton.onTrue(subsystemManager.makeResetCommand());
+    resetGyroButton.onFalse(subsystemManager.makeResetCommand());
     resetAtPointButton.onTrue(subsystemManager.resetAtPose2d(new Pose2d(15.1, 5.5, Rotation2d.fromDegrees(0))));
-    autoAimButton.whileTrue(subsystemManager.makeAutoAimCommand(driverLeftX, driverLeftY, driverRightX));
+    autoAimButton.whileTrue(subsystemManager.makeAutoAimCommand(driverLeftY, driverLeftX, driverRightX, () -> xboxOperator.b().getAsBoolean()));
     shellyButton.whileTrue(subsystemManager.makeShellyCommand(driverLeftX, driverLeftY, driverRightX));
-
-
+    
     if (Utils.isSimulation()) {subsystemManager.resetAtPose2d(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));}
     subsystemManager.telemeterize();
   }
@@ -63,8 +64,8 @@ public class RobotContainer {
     xboxOperator.x().whileTrue(subsystemManager.makeIntakeCommand()); // intake
     xboxOperator.a().whileTrue(subsystemManager.makeAmpScoreCommand()); // auto amp (will do everything)
     // xboxOperator.a().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.AMP));
-    xboxOperator.y().whileTrue(subsystemManager.makeTrapScoreCommand()); // auto trap (will do everything)
-    // xboxOperator.y().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));
+    // xboxOperator.y().whileTrue(subsystemManager.makeTrapScoreCommand()); // auto trap (will do everything)
+    xboxOperator.y().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));
 
 
     xboxOperator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
@@ -72,11 +73,10 @@ public class RobotContainer {
     xboxOperator.povRight().whileTrue(subsystemManager.makeManualPivotCommand(true));
     xboxOperator.povLeft().whileTrue(subsystemManager.makeManualPivotCommand(false));
 
-    xboxOperator.rightBumper().whileTrue(subsystemManager.makeEjectCommand());
+    xboxOperator.rightBumper().whileTrue(subsystemManager.makeSubwooferShootCommand());
+    xboxOperator.leftBumper().onTrue(subsystemManager.makeResetElevatorCommand());
 
-    xboxOperator.leftBumper().whileTrue(subsystemManager.makeAutoAimCommand(() -> xboxOperator.getLeftX(), () -> xboxOperator.getLeftY(), () -> xboxOperator.getRightX()));
-
-    // xboxOperator.back().whileTrue(subsystemManager.makeWinchCommand(true));
+    // xboxOperator.back().whileTrue(subsystemManager.makeWinchCommand(true));  
     // xboxOperator.start().whileTrue(subsystemManager.makeWinchCommand(false));
 
     xboxOperator.back().whileTrue(subsystemManager.makeManualWinchCommand(true));
@@ -84,7 +84,6 @@ public class RobotContainer {
 
 
     // xboxOperator.leftTrigger(InputConstants.triggerTolerance); // left trigger as button
-    // xboxOperator.leftBumper(); 
     // xboxOperator.leftStick(); // left thumbstick button
     // xboxOperator.getLeftX();
     // xboxOperator.getLeftY();
