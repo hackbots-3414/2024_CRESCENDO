@@ -77,7 +77,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "4PieceWingClear",
   "previewStartingState": {
     "rotation": 180.0,
     "velocity": 0

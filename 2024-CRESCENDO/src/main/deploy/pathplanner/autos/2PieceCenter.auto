@@ -12,46 +12,26 @@
     "data": {
       "commands": [
         {
-          "type": "sequential",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Subwoofer"
-                }
-              },
-              {
-                "type": "parallel",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "2PieceCenter"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": null
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Subwoofer"
-                }
-              }
-            ]
+            "name": "Subwoofer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2PieceCenter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Subwoofer"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Week1Ready",
   "choreoAuto": false
 }

@@ -2,8 +2,17 @@
   "robotWidth": 0.85,
   "robotLength": 0.85,
   "holonomicMode": true,
-  "pathFolders": [],
-  "autoFolders": [],
+  "pathFolders": [
+    "4PieceCenter",
+    "4PieceWingClear",
+    "Goals",
+    "Test"
+  ],
+  "autoFolders": [
+    "Goals",
+    "New Folder",
+    "Week1Ready"
+  ],
   "defaultMaxVel": 5.21,
   "defaultMaxAccel": 4.0,
   "defaultMaxAngVel": 540.0,

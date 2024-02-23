@@ -29,7 +29,6 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -53,6 +52,8 @@ import frc.robot.commands.TransportCommand;
 import frc.robot.commands.TrapScoreCommand;
 import frc.robot.commands.WinchCommand;
 import frc.robot.commands.AutonCommands.AutoScoreCommand;
+import frc.robot.commands.AutonCommands.RevShooterCommand;
+import frc.robot.commands.AutonCommands.SubwooferShootCommand;
 import frc.robot.generated.TunerConstants;
 
 public class SubsystemManager extends SubsystemBase {
@@ -202,7 +203,15 @@ public class SubsystemManager extends SubsystemBase {
   }
 
   public Command makeSubwooferShootAutoCommand() {
-    return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER), new ShooterCommand(shooter, transport, ShooterConstants.minShootSpeed).withTimeout(1.5));
+    return new SubwooferShootCommand(shooter, transport, ShooterConstants.minShootSpeed).withTimeout(0.5);
+  }
+
+  public Command makeRevShootCommand(double velocity) {
+    return new RevShooterCommand(shooter, transport, velocity);
+  }
+
+  public Command makeSubwooferPresetCommand() {
+    return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER), makeRevShootCommand(ShooterConstants.minShootSpeed));
   }
 
   public Command makeResetElevatorCommand() {
@@ -278,9 +287,11 @@ public class SubsystemManager extends SubsystemBase {
         driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
     }
 
-    eventMarkers.put("Auto Score", makeAutoScoreCommand());
+    // eventMarkers.put("Auto Score", makeAutoScoreCommand());
     eventMarkers.put("Subwoofer", makeSubwooferShootAutoCommand());
+    eventMarkers.put("SubwooferPreset", makeSubwooferPresetCommand());
     eventMarkers.put("Intake", makeIntakeCommand());
+    eventMarkers.put("IntakeThenSubwooferPreset", makeIntakeCommand().andThen(makeSubwooferPresetCommand()));
     NamedCommands.registerCommands(eventMarkers);
 
     AutoBuilder.configureHolonomic(
