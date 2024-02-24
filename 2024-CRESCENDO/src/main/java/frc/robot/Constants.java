@@ -2,7 +2,11 @@ package frc.robot;
 
 import static java.util.Map.entry;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -78,11 +82,20 @@ public class Constants {
          * system (x is right when pos. and so on).
          */
         public static final Transform3d leftTransform = new Transform3d(-0.282, 0.293, 0.646, 
-                                                        new Rotation3d(0, Units.degreesToRadians(30), Units.degreesToRadians(-40)));
+                                                        new Rotation3d(Units.degreesToRadians(23), Units.degreesToRadians(30), Units.degreesToRadians(-50)));
         public static final Transform3d rightTransform = new Transform3d(-0.282, -0.293, 0.646, 
-                                                        new Rotation3d(0, Units.degreesToRadians(30), Units.degreesToRadians(40)));
-        public static final String leftCameraName = "Cam2";
-        public static final String rightCameraName = "Cam1";
+                                                        new Rotation3d(Units.degreesToRadians(-23), Units.degreesToRadians(30), Units.degreesToRadians(50)));
+        public static final String leftCameraName = "LeftCam";
+        public static final String rightCameraName = "RightCam";
+
+        public static final double maxAmbiguity = 0.1;
+        public static final List<Integer> validTagIds = Arrays.asList(3, 4, 8, 7);
+        // public static final List<Integer> validTagIds = null;
+
+        public static final PoseStrategy mainStrategy = PoseStrategy.AVERAGE_BEST_TARGETS;
+        public static final PoseStrategy fallbackStrategy = PoseStrategy.AVERAGE_BEST_TARGETS;
+        public static final int aprilTagUpdateFrequency = 50; // in seconds, between 1 and 50.
+
     }
 
     public static final class ShooterConstants {
