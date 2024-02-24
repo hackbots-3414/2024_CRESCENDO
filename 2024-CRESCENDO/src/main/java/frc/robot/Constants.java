@@ -77,9 +77,9 @@ public class Constants {
          * system (x is right when pos. and so on).
          */
         public static final Transform3d leftTransform = new Transform3d(-0.282, 0.293, 0.646, 
-                                                        new Rotation3d(0, 0, Units.degreesToRadians(-40)));
+                                                        new Rotation3d(0, Units.degreesToRadians(30), Units.degreesToRadians(-40)));
         public static final Transform3d rightTransform = new Transform3d(-0.282, -0.293, 0.646, 
-                                                        new Rotation3d(0, 0, Units.degreesToRadians(40)));
+                                                        new Rotation3d(0, Units.degreesToRadians(30), Units.degreesToRadians(40)));
         public static final String leftCameraName = "Cam2";
         public static final String rightCameraName = "Cam1";
     }
@@ -291,7 +291,7 @@ public class Constants {
         }
 
         public static final class PivotMotionMagicConstants {
-            public static final double cruiseVelocity = 0.088379 * 3; // Target cruise velocity
+            public static final double cruiseVelocity = 0.088379 * 5; // Target cruise velocity
             public static final double acceleration = cruiseVelocity * 2; // Target acceleration
             public static final double jerk = acceleration * 10; // Target Jerk
         }
@@ -306,8 +306,7 @@ public class Constants {
 
         public static final double compressionAdder = 3;
 
-        public static final double minRange = 1;
-        public static final double maxRange = 3; // MAX RANGE FOR MATH- 5.5 meters from target
+        public static final double maxRange = 3; 
 
         public static final double speakerHeight = 2.0515; // meters
         public static final double aprilTagToHoodGoal = Units.inchesToMeters(8);
