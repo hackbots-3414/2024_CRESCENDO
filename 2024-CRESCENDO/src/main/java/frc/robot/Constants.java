@@ -45,10 +45,11 @@ public class Constants {
         public static final double kPDrive = 10;
         public static final double kIDrive = 0;
         public static final double kDDrive = 0;
-        public static final double kPSteer = 8;
+        public static final double kPSteer = 6;
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
 
+        
         public static final double driveSupplyCurrentLimit = 80;
 
         public static final double maxDriveAcceleration = 4;
