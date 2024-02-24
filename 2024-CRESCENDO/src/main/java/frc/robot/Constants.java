@@ -45,7 +45,7 @@ public class Constants {
         public static final double kPDrive = 10;
         public static final double kIDrive = 0;
         public static final double kDDrive = 0;
-        public static final double kPSteer = 10;
+        public static final double kPSteer = 8;
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
 
@@ -77,9 +77,9 @@ public class Constants {
          * system (x is right when pos. and so on).
          */
         public static final Transform3d leftTransform = new Transform3d(-0.282, 0.293, 0.646, 
-                                                        new Rotation3d(0, 0, Units.degreesToRadians(-40)));
+                                                        new Rotation3d(0, Units.degreesToRadians(30), Units.degreesToRadians(-40)));
         public static final Transform3d rightTransform = new Transform3d(-0.282, -0.293, 0.646, 
-                                                        new Rotation3d(0, 0, Units.degreesToRadians(40)));
+                                                        new Rotation3d(0, Units.degreesToRadians(30), Units.degreesToRadians(40)));
         public static final String leftCameraName = "Cam2";
         public static final String rightCameraName = "Cam1";
     }
@@ -101,10 +101,12 @@ public class Constants {
 
         public static final double minShootSpeed = 50; // measured for AutoAim
         public static final double maxShootSpeed = 90; // measured for AutoAim
+        public static final double spitOutSpeed = 20;
 
-        public static final double shooterIntakeSpeed = -0.1;
+        public static final double shooterBackupSpeed = -0.1;
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
+            entry(0.0, 0.0720),
             entry(1.41, 0.0720),
             entry(1.70, 0.0600),
             entry(2.31, 0.0385),
@@ -114,12 +116,14 @@ public class Constants {
         );
 
         public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
+            entry(0.0, 50.0),
             entry(1.41, 50.0),
             entry(1.70, 50.0),
             entry(2.31, 50.0),
             entry(2.92, 60.0),
             entry(3.54, 70.0),
-            entry(4.14, 92.0)
+            entry(4.14, 92.0),
+            entry(50.0, 92.0)
         );
     }
 
@@ -151,7 +155,7 @@ public class Constants {
         public static final int rightX = 3;
         public static final int rightY = 2;
 
-        public static final double deadband = 0.06;
+        public static final double deadband = 0.01;//0.06;
         public static final double leftXMax = 0.75;
         public static final double leftYMax = 0.66;
         public static final double rightXMax = 0.8;
@@ -172,7 +176,7 @@ public class Constants {
     public static final class PositionConstants {
         public static final class StowPresets {
             public static final double elevator = 0.0;
-            public static final double shooter = 0;
+            public static final double shooter = 0.0;
         }
 
         public static final class AmpPresets {
@@ -197,7 +201,7 @@ public class Constants {
 
         public static final class SubwooferPresets {
             public static final double elevator = 0.0;
-            public static final double shooter = 0.066;
+            public static final double shooter = 0.076;
         }
     }
 
@@ -277,18 +281,18 @@ public class Constants {
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         public static final class PivotSlot0ConfigConstants {
-            public static final double kP = 75.0; //output per unit of error in position (output/rotation)
+            public static final double kP = 150.0; //output per unit of error in position (output/rotation)
             public static final double kI = 0.0; //output per unit of integrated error in position (output/(rotation*s))
             public static final double kD = 0.0; //output per unit of error in velocity (output/rps)
             public static final double kS = 0.0; //output to overcome static friction (output)
-            public static final double kV = 15.0; //output per unit of target velocity (output/rps)
+            public static final double kV = 50.0; //output per unit of target velocity (output/rps)
             public static final double kA = 0.0; //output per unit of target acceleration (output/(rps/s))
             public static final double kG = 0.0; //feedforward Constant
         }
 
         public static final class PivotMotionMagicConstants {
-            public static final double cruiseVelocity = 0.088379 * 3; // Target cruise velocity
-            public static final double acceleration = cruiseVelocity * 2; // Target acceleration
+            public static final double cruiseVelocity = 0.088379 * 50; // Target cruise velocity
+            public static final double acceleration = (0.088379 * 20) * 2; // Target acceleration
             public static final double jerk = acceleration * 10; // Target Jerk
         }
     }
@@ -302,8 +306,7 @@ public class Constants {
 
         public static final double compressionAdder = 3;
 
-        public static final double minRange = 1;
-        public static final double maxRange = 3; // MAX RANGE FOR MATH- 5.5 meters from target
+        public static final double maxRange = 3; 
 
         public static final double speakerHeight = 2.0515; // meters
         public static final double aprilTagToHoodGoal = Units.inchesToMeters(8);
@@ -318,6 +321,9 @@ public class Constants {
     public static final class WinchConstants {
         public static final int leftWinchMotorID = 30;
         public static final int rightWinchMotorID = 31;
+
+        public static final int leftWinchMotorPDPID = 30;
+        public static final int rightWinchMotorPDPID = 31;
 
         public static final boolean winchMotorInvert = true;
 

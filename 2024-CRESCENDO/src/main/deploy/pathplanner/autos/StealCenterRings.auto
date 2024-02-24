@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3829526758152613,
-      "y": 5.537577201280529
+      "x": 0.7233010829658023,
+      "y": 4.393839333133212
     },
-    "rotation": 180.0
+    "rotation": 120.25643716352927
   },
   "command": {
     "type": "sequential",
@@ -20,13 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2PieceCenter"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Subwoofer"
+            "pathName": "StealCenterRings"
           }
         }
       ]

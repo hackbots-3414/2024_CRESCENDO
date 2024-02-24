@@ -222,7 +222,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Goals",
   "previewStartingState": {
     "rotation": -134.78214637490285,
     "velocity": 0

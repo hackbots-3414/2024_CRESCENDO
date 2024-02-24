@@ -2,29 +2,29 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3921973789893525,
-      "y": 5.565311310802802
+      "x": 1.3557149261949524,
+      "y": 5.571577854565105
     },
-    "rotation": 180.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Subwoofer"
+                  "pathName": "Testing AutoShoot"
                 }
               },
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "ShootBackup"
+                  "name": "Auto Pivot"
                 }
               }
             ]
