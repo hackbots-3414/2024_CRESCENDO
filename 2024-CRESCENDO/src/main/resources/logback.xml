@@ -19,8 +19,8 @@
  <logger name="frc.robot.subsystems.NoteFinder" level="WARN"/>
  <logger name = "frc.robot.commands.ActivateNearNote" level="WARN"/>
  <logger name = "frc.robot.commands.ActivateNearNoteAndAlign" level="WARN"/>
- <logger name = "frc.robot.commands.ApproachAlignIntake" level="TRACE"/>
-  <logger name = "frc.robot.subsystems.CommandSwerveDrivetrain" level="TRACE"/>
+ <logger name = "frc.robot.commands.ApproachAlignIntake" level="WARN"/>
+  <logger name = "frc.robot.subsystems.CommandSwerveDrivetrain" level="WARN"/>
  <root level = "WARN">
    <appender-ref ref="STDOUT"/>
    <appender-ref ref="FILE"/>

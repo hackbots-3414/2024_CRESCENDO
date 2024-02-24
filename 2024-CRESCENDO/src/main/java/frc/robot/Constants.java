@@ -356,6 +356,7 @@ public class Constants {
         public static final int BUFFER_SIZE = 512;
         public static final double CYCLE_TIME = 0.015;
         // TODO Update EXPIRY_SECONDS for comp
-        public static final long EXPIRY_SECONDS = 250;
+        public static final long EXPIRY_SECONDS = 30;
+        public static final double FIELD_LENGTH = 16.54;
     }
 }

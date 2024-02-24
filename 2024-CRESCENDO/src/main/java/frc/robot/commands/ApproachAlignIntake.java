@@ -10,12 +10,15 @@ import org.slf4j.LoggerFactory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.NoteFinder;
 import frc.robot.subsystems.NoteFinder.Gamepiece;
 import frc.robot.subsystems.Transport;
+import com.pathplanner.lib.util.GeometryUtil;
 
 public class ApproachAlignIntake extends Command {
   private static final Logger LOGGER = LoggerFactory.getLogger(ApproachAlignIntake.class);
@@ -56,6 +59,13 @@ public class ApproachAlignIntake extends Command {
     return goalPose2d;
   }
 
+  private Pose2d createRedGoalPose2d() {
+    Pose2d bluePose = createBlueGoalPose2d();
+    Translation2d position = GeometryUtil.flipFieldPosition(bluePose.getTranslation());
+
+    return new Pose2d(position, bluePose.getRotation());
+  }
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
@@ -70,7 +80,7 @@ public class ApproachAlignIntake extends Command {
     }
     intake.activateIntake();
     transport.activateTransport();
-    nextCommand = drivetrain.makeDriveToPoseCommand(createBlueGoalPose2d(), true)
+    nextCommand = drivetrain.makeDriveToPoseCommand(DriverStation.getAlliance().get() == Alliance.Blue ? createBlueGoalPose2d() : createRedGoalPose2d(), true)
         .until(transport::isNoteDetected)
         .finallyDo((boolean end) -> {
           intake.stopMotor();

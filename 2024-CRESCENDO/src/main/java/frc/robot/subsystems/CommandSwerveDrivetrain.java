@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.function.Supplier;
 
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.RotationTarget;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -139,7 +142,12 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         GoalEndState goal = DriverStation.getAlliance().get() == Alliance.Blue
                 ? new GoalEndState(0.0, goalPose.getRotation())
                 : new GoalEndState(0, new Rotation2d(Math.PI - goalPose.getRotation().getRadians()));
+        ArrayList<RotationTarget> rotateTargetList = new ArrayList<>();
+        rotateTargetList.add(new RotationTarget(0.1, goalPose.getRotation()));
         PathPlannerPath path = new PathPlannerPath(PathPlannerPath.bezierFromPoses(estimatedPose, goalPose),
+                rotateTargetList,
+                Collections.emptyList(),
+                Collections.emptyList(),
                 new PathConstraints(SwerveConstants.maxDriveVelocity, SwerveConstants.maxDriveAcceleration,
                         SwerveConstants.maxAngleVelocity, SwerveConstants.maxAngleAcceleration),
                 goal,
