@@ -33,27 +33,27 @@
     {
       "anchor": {
         "x": 8.009051654466946,
-        "y": 7.4909829819659635
+        "y": 7.405007242446917
       },
       "prevControl": {
         "x": 8.037037892257603,
-        "y": 3.395663518599765
+        "y": 3.3096877790807184
       },
       "nextControl": {
         "x": 8.00870997679576,
-        "y": 7.540981814516024
+        "y": 7.4550060749969775
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.048190823654374,
-        "y": 7.4909829819659635
+        "x": 0.7233010829658023,
+        "y": 6.674675691693726
       },
       "prevControl": {
-        "x": 7.4026831690027,
-        "y": 7.621585424989031
+        "x": 0.5140065255158762,
+        "y": 8.008019397455813
       },
       "nextControl": null,
       "isLocked": false,
@@ -83,26 +83,28 @@
       "name": "Steal",
       "waypointRelativePos": 0.5,
       "command": {
-        "type": "race",
+        "type": "sequential",
         "data": {
           "commands": [
             {
-              "type": "named",
+              "type": "race",
               "data": {
-                "name": "StealRings"
+                "commands": [
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "StealRings"
+                    }
+                  },
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 3.0
+                    }
+                  }
+                ]
               }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Intake",
-      "waypointRelativePos": 0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
+            },
             {
               "type": "named",
               "data": {
@@ -115,14 +117,14 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 5.21,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -178.93250031625982,
+    "rotation": -119.41327011239292,
     "rotateFast": false
   },
   "reversed": false,
@@ -131,5 +133,5 @@
     "rotation": 120.57922687248902,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
