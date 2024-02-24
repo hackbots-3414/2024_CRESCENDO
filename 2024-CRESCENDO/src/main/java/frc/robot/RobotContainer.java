@@ -51,7 +51,7 @@ public class RobotContainer {
     
     resetGyroButton.onTrue(subsystemManager.makeResetCommand());
     resetGyroButton.onFalse(subsystemManager.makeResetCommand());
-    resetAtPointButton.onTrue(subsystemManager.resetAtPose2d(new Pose2d(15.1, 5.5, Rotation2d.fromDegrees(0))));
+    resetAtPointButton.onTrue(subsystemManager.resetAtPose2d(new Pose2d(15.4, 5.5, Rotation2d.fromDegrees(0))));
     autoAimButton.whileTrue(subsystemManager.makeAutoAimCommand(driverLeftY, driverLeftX, driverRightX, () -> xboxOperator.b().getAsBoolean()));
     shellyButton.whileTrue(subsystemManager.makeShellyCommand(driverLeftX, driverLeftY, driverRightX));
     

@@ -106,13 +106,13 @@ public class Constants {
         public static final double shooterBackupSpeed = -0.1;
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
-            entry(0.0, 0.0720),
-            entry(1.41, 0.0720),
-            entry(1.70, 0.0600),
-            entry(2.31, 0.0385),
-            entry(2.92, 0.0227),
-            entry(3.54, 0.0130),
-            entry(4.14, 0.0030)
+            entry(0.0, 0.0780),
+            entry(1.41, 0.0780), // lined up
+            entry(1.70, 0.0610), // 4
+            entry(2.31, 0.0385), // 6
+            entry(2.92, 0.0227), // 8
+            entry(3.54, 0.0130), // 10
+            entry(4.14, 0.0030) // 12
         );
 
         public static final Map<Double, Double> speedLookupTable = Map.ofEntries(

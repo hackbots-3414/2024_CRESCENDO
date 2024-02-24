@@ -74,6 +74,7 @@ public class AimHelper {
 
         SmartDashboard.putNumber("SPEED", speed);
         SmartDashboard.putNumber("PIVOT", pivot);
+        SmartDashboard.putNumber("DISTANCE", robotDistance);
 
         output.setPivotAngle(pivot);
         output.setShooterVelocity(speed);
