@@ -33,11 +33,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.Constants.TransportConstants;
 import frc.robot.Constants.WinchConstants;
 import frc.robot.Telemetry;
 import frc.robot.commands.AimRobotCommand;
@@ -53,12 +51,10 @@ import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.StealRingCommand;
 import frc.robot.commands.TrapScoreCommand;
 import frc.robot.commands.WinchCommand;
-import frc.robot.commands.AutonCommands.AutoElevatorCommand;
 import frc.robot.commands.AutonCommands.AutoScoreCommand;
 import frc.robot.commands.AutonCommands.RevShooterCommand;
 import frc.robot.commands.AutonCommands.ShootAfterRevCommand;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.AimHelper.AimOutputContainer;
 
 public class SubsystemManager extends SubsystemBase {
 	private static SubsystemManager me = null;
@@ -117,6 +113,16 @@ public class SubsystemManager extends SubsystemBase {
 	public LedSubsystem getLedSubsystem() {return ledSubsystem;}
 	public PhotonVision getPhotonVision() {return photonVision;}
 
+	private SubsystemManager() {
+		configurePathPlanner();
+	}
+
+	public static synchronized SubsystemManager getInstance() {
+		if (me == null) {
+			me = new SubsystemManager();
+		}
+		return me;
+	}
 
   @Override
   public void periodic() {
@@ -130,12 +136,12 @@ public class SubsystemManager extends SubsystemBase {
     // pdp.getCurrent(rightMotor.PDPID)
 
     // dampenDrivetrain();
-    periodicRuns++;
+    // periodicRuns++;
 
-    periodicRuns %= (50 / Constants.VisionConstants.aprilTagUpdateFrequency);
-    if (periodicRuns == 0) { //Only run once per second
-      updateOdometryWithPhotonVision();
-    }
+    // periodicRuns %= (50 / Constants.VisionConstants.aprilTagUpdateFrequency);
+    // if (periodicRuns == 0) { //Only run once per second
+    //   updateOdometryWithPhotonVision();
+    // }
 
   }
 
