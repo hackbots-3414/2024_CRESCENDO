@@ -136,7 +136,7 @@ public class RobotContainer {
   public RobotContainer() {
     configureDriverBindings();
     configureXboxOperatorBindings();
-
+/* 
     pathChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", pathChooser);
 
@@ -144,7 +144,7 @@ public class RobotContainer {
     SmartDashboard.putData("Brake Elevator", subsystemManager.elevatorNeutralMode(NeutralModeValue.Brake));
 
     SmartDashboard.putData("Run Tests", subsystemManager.makeTestingCommand());
-  }
+  */ } 
 
   public Command getAutonomousCommand() {return pathChooser.getSelected();}
   public NoteFinder getNoteFinder() {return subsystemManager.getNoteFinder();}

@@ -41,23 +41,9 @@ public class ApproachAlignIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    LOGGER.debug("initialize");
-    if (!noteFinder.isNoteDetected()) {
-      return;
-    }
-    intake.activateIntake();
-    transport.activateTransport();
-    nextCommand = drivetrain.makeDriveToPoseCommand(createGoalPose2d(), true)
-        .until(transport::isNoteDetected)
-        .finallyDo((boolean end) -> {
-          intake.stopMotor();
-          transport.stopMotor();
-        });
-        nextCommand.schedule();
-    LOGGER.trace("initialize exit");
   }
 
-  private Pose2d createGoalPose2d() {
+  private Pose2d createBlueGoalPose2d() {
     gamepiece = noteFinder.getGamepieces()[0];
     // rotation2d includes an invert angle because the camera is on the back
     Rotation2d rotation2d = Rotation2d
@@ -78,6 +64,20 @@ public class ApproachAlignIntake extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    LOGGER.debug("end");
+    if (!noteFinder.isNoteDetected()) {
+      return;
+    }
+    intake.activateIntake();
+    transport.activateTransport();
+    nextCommand = drivetrain.makeDriveToPoseCommand(createBlueGoalPose2d(), true)
+        .until(transport::isNoteDetected)
+        .finallyDo((boolean end) -> {
+          intake.stopMotor();
+          transport.stopMotor();
+        });
+        nextCommand.schedule();
+    LOGGER.trace("end exit");
   }
 
   // Returns true when the command should end.

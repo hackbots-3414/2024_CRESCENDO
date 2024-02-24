@@ -1,9 +1,4 @@
 {
-  "FMS": {
-    "window": {
-      "visible": false
-    }
-  },
   "Keyboard 0 Settings": {
     "window": {
       "visible": true
@@ -105,9 +100,6 @@
     }
   ],
   "robotJoysticks": [
-    {
-      "guid": "78696e70757401000000000000000000"
-    },
     {
       "guid": "Keyboard0"
     }

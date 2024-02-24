@@ -113,11 +113,12 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public void periodic() {
         estimatedPose = m_odometry.getEstimatedPosition();
         field.setRobotPose(estimatedPose);
-        SmartDashboard.putData(field);
+        // SmartDashboard.putData(field);
         
         SmartDashboard.putString("ROBOTPOSE", estimatedPose.toString());
         SmartDashboard.putNumber("ROBOTX", estimatedPose.getX());
         SmartDashboard.putNumber("ROBOTY", estimatedPose.getY());
+        LOGGER.trace("Estimated Pose: {}", estimatedPose);
     }
 
     public boolean isInRange() {

@@ -41,6 +41,7 @@ import frc.robot.Constants.WinchConstants;
 import frc.robot.Telemetry;
 import frc.robot.commands.AimRobotCommand;
 import frc.robot.commands.AmpScoreCommand;
+import frc.robot.commands.ApproachAlignIntake;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.IntakeCommand;
@@ -114,6 +115,7 @@ public class SubsystemManager extends SubsystemBase {
 
   private SubsystemManager() {
     configurePathPlanner();
+    makeApproachAlignIntakeCommand(); // TODO Remove When Done TESTING
   }
 
   @Override
@@ -270,6 +272,12 @@ public class SubsystemManager extends SubsystemBase {
         drivetrain.makeTestAuton());
 
     return commands;
+  }
+
+  public Command makeApproachAlignIntakeCommand() {
+    Command alignCommand = new ApproachAlignIntake(noteFinder, intake, transport, drivetrain);
+    SmartDashboard.putData("ApproachAlignIntake", alignCommand);
+    return alignCommand;
   }
 
   private void configurePathPlanner() {
