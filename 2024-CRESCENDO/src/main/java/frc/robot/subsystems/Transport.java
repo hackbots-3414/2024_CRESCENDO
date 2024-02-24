@@ -35,6 +35,10 @@ public class Transport extends SubsystemBase implements AutoCloseable {
     transportMotor.setNeutralMode(NeutralModeValue.Brake);
   }
 
+  public void activateTransport() {
+    transportMotor.set(TransportConstants.transportSpeed);  
+  }
+
   public void setMotor(double speed) {
     transportMotor.set(speed);
   }
@@ -46,6 +50,10 @@ public class Transport extends SubsystemBase implements AutoCloseable {
 
   public void stopMotor() {
     transportMotor.set(0);
+  }
+
+  public boolean isNoteDetected(){
+    return irSensor.get();
   }
 
   public boolean getIR() {

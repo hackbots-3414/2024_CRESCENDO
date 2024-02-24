@@ -9,6 +9,7 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 
 public class Intake extends SubsystemBase implements AutoCloseable {
 
@@ -24,6 +25,10 @@ public class Intake extends SubsystemBase implements AutoCloseable {
     intakeMotor.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
 
     intakeMotor.setInverted(Constants.IntakeConstants.intakeMotorInvert);
+  }
+
+  public void activateIntake() {
+    intakeMotor.set(IntakeConstants.intakeSpeed);
   }
 
   public void setMotor(double speed) {
@@ -45,6 +50,7 @@ public class Intake extends SubsystemBase implements AutoCloseable {
   public void setControl(ControlRequest request) {
     intakeMotor.setControl(request);
   }
+
 
   @Override
   public void close() {

@@ -82,6 +82,7 @@ public class Constants {
                                                         new Rotation3d(0, 0, Units.degreesToRadians(40)));
         public static final String leftCameraName = "Cam2";
         public static final String rightCameraName = "Cam1";
+        public static final String noteCameraName = "NoteCam";
     }
 
     public static final class ShooterConstants {
@@ -354,5 +355,7 @@ public class Constants {
         public static final int DATAGRAM_PORT = 5800;
         public static final int BUFFER_SIZE = 512;
         public static final double CYCLE_TIME = 0.015;
+        // TODO Update EXPIRY_SECONDS for comp
+        public static final long EXPIRY_SECONDS = 250;
     }
 }
