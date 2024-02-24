@@ -22,22 +22,9 @@
                 }
               },
               {
-                "type": "parallel",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Intake"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "ShootBackup"
-                      }
-                    }
-                  ]
+                  "pathName": "ShootBackup"
                 }
               }
             ]

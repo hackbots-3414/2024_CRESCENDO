@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3829526758152613,
-      "y": 5.537577201280529
+      "x": 0.7450681568029801,
+      "y": 6.665430988519635
     },
-    "rotation": 180.0
+    "rotation": -121.20619138782345
   },
   "command": {
     "type": "sequential",
@@ -20,7 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2PieceCenter"
+            "pathName": "AmpSide2Piece"
           }
         },
         {
@@ -32,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "3PieceStart"
+            "pathName": "AmpSideCenterRush"
           }
         },
         {
@@ -44,19 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "3PieceEnd"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Subwoofer"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "CenterRush"
+            "pathName": "AmpSideCenterRush2"
           }
         },
         {
