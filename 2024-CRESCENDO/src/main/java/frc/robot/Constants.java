@@ -51,10 +51,13 @@ public class Constants {
 
         public static final double driveSupplyCurrentLimit = 80;
 
-        public static final double maxDriveVelocity = TunerConstants.kSpeedAt12VoltsMps;
         public static final double maxDriveAcceleration = 4;
-        public static final double maxAngleVelocity = 1.5*Math.PI;
         public static final double maxAngleAcceleration = 2*Math.PI;
+        public static final double maxDriveVelocity = TunerConstants.kSpeedAt12VoltsMps;
+        public static final double maxAngleVelocity = 1.5*Math.PI;
+        public static final double shellyDriveVelocity = maxDriveVelocity * 0.25;
+        public static final double shellyAngleVelocity = maxAngleVelocity * 0.50;
+        
 
         /*
          * FL D - 4
@@ -142,11 +145,13 @@ public class Constants {
         public static final int resetGyroButton = 1;
         public static final int autoAimButton = 13;
         public static final int resetAtPointButton = 5;
+        public static final int shellyButton = 2;
         public static final int leftX = 0;
         public static final int leftY = 1;
         public static final int rightX = 3;
         public static final int rightY = 2;
 
+        public static final double deadband = 0.06;
         public static final double leftXMax = 0.75;
         public static final double leftYMax = 0.66;
         public static final double rightXMax = 0.8;

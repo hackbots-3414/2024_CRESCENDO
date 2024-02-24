@@ -19,23 +19,25 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Robot;
 import frc.robot.Constants.SwerveConstants;
 
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.002; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
+    private Field2d field;
 
     private Pose2d estimatedPose;
     private boolean isInRange;
-
-    private Field2d field = new Field2d();
-
+    
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
             SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
         this.estimatedPose = new Pose2d();
-        if (Utils.isSimulation()) {
+        if (Robot.isSimulation()) {
+            field = new Field2d();
+            SmartDashboard.putData("Field", field);
             startSimThread();
         }
         setCurrentLimit(SwerveConstants.driveSupplyCurrentLimit);
@@ -44,7 +46,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
         this.estimatedPose = new Pose2d();
-        if (Utils.isSimulation()) {
+        if (Robot.isSimulation()) {
+            field = new Field2d();
+            SmartDashboard.putData("Field", field);
             startSimThread();
         }
         setCurrentLimit(SwerveConstants.driveSupplyCurrentLimit);
@@ -113,4 +117,12 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public void setInRange(boolean isInRange) {
         this.isInRange = isInRange;
     }
+
+    @Override
+    public void simulationPeriodic() {
+        Subsystem.super.simulationPeriodic();
+        field.setRobotPose(estimatedPose);
+    }
+    
+
 }

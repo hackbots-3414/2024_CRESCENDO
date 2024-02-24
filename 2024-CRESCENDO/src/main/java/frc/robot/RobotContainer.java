@@ -10,6 +10,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -32,10 +33,11 @@ public class RobotContainer {
   private final JoystickButton resetGyroButton = new JoystickButton(driver, DriverConstants.resetGyroButton);
   private final JoystickButton autoAimButton = new JoystickButton(driver, DriverConstants.autoAimButton);
   private final JoystickButton resetAtPointButton = new JoystickButton(driver, DriverConstants.resetAtPointButton);
+  private final JoystickButton shellyButton = new JoystickButton(driver, DriverConstants.shellyButton);
 
-  private final Supplier<Double> driverLeftX = () -> driver.getRawAxis(DriverConstants.leftX)/DriverConstants.leftXMax;
-  private final Supplier<Double> driverLeftY = () -> -driver.getRawAxis(DriverConstants.leftY)/DriverConstants.leftYMax;
-  private final Supplier<Double> driverRightX = () -> driver.getRawAxis(DriverConstants.rightX)/DriverConstants.rightXMax;
+  private final Supplier<Double> driverLeftX = () -> Math.pow(MathUtil.applyDeadband(driver.getRawAxis(DriverConstants.leftX),DriverConstants.deadband)/DriverConstants.leftXMax, 3.0);
+  private final Supplier<Double> driverLeftY = () -> -Math.pow(MathUtil.applyDeadband(driver.getRawAxis(DriverConstants.leftY), DriverConstants.deadband)/DriverConstants.leftYMax, 3.0);
+  private final Supplier<Double> driverRightX = () -> Math.pow(MathUtil.applyDeadband(driver.getRawAxis(DriverConstants.rightX), DriverConstants.deadband)/DriverConstants.rightXMax,3.0);
   // private final Supplier<Double> driverRightY = () -> driver.getRawAxis(DriverConstants.rightY)/DriverConstants.rightYMax;
   
   private final CommandXboxController xboxOperator = new CommandXboxController(InputConstants.kOperatorControllerPort);
@@ -51,8 +53,8 @@ public class RobotContainer {
     resetGyroButton.onFalse(subsystemManager.makeResetCommand());
     resetAtPointButton.onTrue(subsystemManager.resetAtPose2d(new Pose2d(15.1, 5.5, Rotation2d.fromDegrees(0))));
     autoAimButton.whileTrue(subsystemManager.makeAutoAimCommand(driverLeftY, driverLeftX, driverRightX, () -> xboxOperator.b().getAsBoolean()));
-
-
+    shellyButton.whileTrue(subsystemManager.makeShellyCommand(driverLeftX, driverLeftY, driverRightX));
+    
     if (Utils.isSimulation()) {subsystemManager.resetAtPose2d(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));}
     subsystemManager.telemeterize();
   }
