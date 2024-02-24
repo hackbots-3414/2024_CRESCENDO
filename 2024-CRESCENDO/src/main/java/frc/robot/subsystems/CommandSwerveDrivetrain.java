@@ -66,6 +66,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
     }
 
+    public double getTranslationalRobotSpeed() {
+        return Math.sqrt(Math.pow(getCurrentRobotChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(getCurrentRobotChassisSpeeds().vyMetersPerSecond, 2));
+    }
+
+    public double getRotationalRobotSpeed() {
+        return getCurrentRobotChassisSpeeds().omegaRadiansPerSecond;
+    }
+
     public Command makeTestAuton() {
         return AutoBuilder.buildAuto("Test Auton");
     }

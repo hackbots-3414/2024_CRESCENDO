@@ -2,7 +2,11 @@ package frc.robot;
 
 import static java.util.Map.entry;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -82,6 +86,14 @@ public class Constants {
                                                         new Rotation3d(0, 0, Units.degreesToRadians(40)));
         public static final String leftCameraName = "Cam2";
         public static final String rightCameraName = "Cam1";
+
+        public static final double maxAmbiguity = 0.3;
+        // public static final List<Integer> validTagIds = Arrays.asList(3, 4, 8, 7);
+        public static final List<Integer> validTagIds = null;
+
+        public static final PoseStrategy mainStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
+        public static final PoseStrategy fallbackStrategy = PoseStrategy.AVERAGE_BEST_TARGETS;
+
     }
 
     public static final class ShooterConstants {

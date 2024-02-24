@@ -29,7 +29,6 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -80,7 +79,8 @@ public class SubsystemManager extends SubsystemBase {
   PointWheelsAt pointRequest = new PointWheelsAt();
   Telemetry logger = new Telemetry();
 
-  ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds().withDriveRequestType(DriveRequestType.Velocity);
+  ApplyChassisSpeeds autoRequest = new SwerveRequest.ApplyChassisSpeeds()
+      .withDriveRequestType(DriveRequestType.Velocity);
   HashMap<String, Command> eventMarkers = new HashMap<>();
 
   double elevatorCurrent = 0;
@@ -95,6 +95,8 @@ public class SubsystemManager extends SubsystemBase {
   double coprocessorsAmpRating = 3 * 2 * runTimeHours; // 3 AMP HOURS for runTimeHours per coprocessor
   double availableCurrent = inputCurrent - coprocessorsAmpRating;
 
+  int periodicRuns = 0;
+
   public static synchronized SubsystemManager getInstance() {
     if (me == null) {
       me = new SubsystemManager();
@@ -102,15 +104,41 @@ public class SubsystemManager extends SubsystemBase {
     return me;
   }
 
-  public Intake getIntake() {return intake;}
-  public Shooter getShooter() {return shooter;}
-  public ShooterPivot getShooterPivot() {return shooterPivot;}
-  public Transport getTransport() {return transport;}
-  public Elevator getElevator() {return elevator;}
-  public NoteFinder getNoteFinder() {return noteFinder;}
-  public Winch getWinch() {return winch;}
-  public LedSubsystem getLedSubsystem() {return ledSubsystem;}
-  public PhotonVision getPhotonVision() {return photonVision;}
+  public Intake getIntake() {
+    return intake;
+  }
+
+  public Shooter getShooter() {
+    return shooter;
+  }
+
+  public ShooterPivot getShooterPivot() {
+    return shooterPivot;
+  }
+
+  public Transport getTransport() {
+    return transport;
+  }
+
+  public Elevator getElevator() {
+    return elevator;
+  }
+
+  public NoteFinder getNoteFinder() {
+    return noteFinder;
+  }
+
+  public Winch getWinch() {
+    return winch;
+  }
+
+  public LedSubsystem getLedSubsystem() {
+    return ledSubsystem;
+  }
+
+  public PhotonVision getPhotonVision() {
+    return photonVision;
+  }
 
   private SubsystemManager() {
     configurePathPlanner();
@@ -121,36 +149,52 @@ public class SubsystemManager extends SubsystemBase {
     // elevatorCurrent = pdp.getCurrent(ElevatorConstants.elevatorMotorPDPID);
     // intakeCurrent = pdp.getCurrent(IntakeConstants.intakeMotorPDPID);
     // shooterPivotCurrent = pdp.getCurrent(PivotConstants.pivotMotorPDPID);
-    // shooterCurrent = pdp.getCurrent(ShooterConstants.leftMotorPDPID) + pdp.getCurrent(ShooterConstants.rightMotorPDPID);
+    // shooterCurrent = pdp.getCurrent(ShooterConstants.leftMotorPDPID) +
+    // pdp.getCurrent(ShooterConstants.rightMotorPDPID);
     // transportCurrent = pdp.getCurrent(TransportConstants.transportMotorPDPID);
-    // winchCurrent = pdp.getCurrent(WinchConstants.leftMotorPDPID) + pdp.getCurrent(rightMotor.PDPID)
+    // winchCurrent = pdp.getCurrent(WinchConstants.leftMotorPDPID) +
+    // pdp.getCurrent(rightMotor.PDPID)
 
     // dampenDrivetrain();
-    // updateOdometryWithPhotonViion();
+    periodicRuns++;
+
+    periodicRuns %= 50;
+    if (periodicRuns == 1) { //Only run once per second
+      updateOdometryWithPhotonVision();
+    }
+
   }
 
   private void updateOdometryWithPhotonVision() {
-        Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
-        Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
+    Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
+    Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
 
-        SmartDashboard.putBoolean("SeesRight", rightPoseMaybe.isPresent());
-        SmartDashboard.putBoolean("SeesLeft", leftPoseMaybe.isPresent());
+    SmartDashboard.putBoolean("SeesRight", rightPoseMaybe.isPresent());
+    SmartDashboard.putBoolean("SeesLeft", leftPoseMaybe.isPresent());
 
-        if (leftPoseMaybe.isPresent()) {
-            EstimatedRobotPose leftPose = leftPoseMaybe.get();
-            drivetrain.addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
-        }
-        if (rightPoseMaybe.isPresent()) {
-            EstimatedRobotPose rightPose = rightPoseMaybe.get();
-            drivetrain.addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
-        }
+    if (drivetrain.getTranslationalRobotSpeed() <= 1.0 && drivetrain.getRotationalRobotSpeed() <= Math.PI) {
+
+      if (leftPoseMaybe.isPresent()) {
+        EstimatedRobotPose leftPose = leftPoseMaybe.get();
+        drivetrain.addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
+      }
+      if (rightPoseMaybe.isPresent()) {
+        EstimatedRobotPose rightPose = rightPoseMaybe.get();
+        drivetrain.addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
+      }
+    } else {
+      periodicRuns = 0; // this way it will try again next time
     }
+  }
 
   // private void dampenDrivetrain() {
-  //   double supplyLimitDrivetrain = ((availableCurrent / runTimeHours
-  //       - (elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent + transportCurrent))) / 4.0; // (Ah Available - Ah Being Used) / Ah to Amps conversion / 4 motors to distribute over
-  //   supplyLimitDrivetrain = supplyLimitDrivetrain > 40 ? 39.5 : supplyLimitDrivetrain;
-  //   drivetrain.setCurrentLimit(supplyLimitDrivetrain);
+  // double supplyLimitDrivetrain = ((availableCurrent / runTimeHours
+  // - (elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent +
+  // transportCurrent))) / 4.0; // (Ah Available - Ah Being Used) / Ah to Amps
+  // conversion / 4 motors to distribute over
+  // supplyLimitDrivetrain = supplyLimitDrivetrain > 40 ? 39.5 :
+  // supplyLimitDrivetrain;
+  // drivetrain.setCurrentLimit(supplyLimitDrivetrain);
   // }
 
   public void configureDriveDefaults(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
@@ -173,9 +217,10 @@ public class SubsystemManager extends SubsystemBase {
   }
 
   public Command makeShellyCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
-    Command shellyCommand = drivetrain.applyRequest(() -> driveRequest.withVelocityX(-y.get() * Constants.SwerveConstants.shellyDriveVelocity)
+    Command shellyCommand = drivetrain
+        .applyRequest(() -> driveRequest.withVelocityX(-y.get() * Constants.SwerveConstants.shellyDriveVelocity)
             .withVelocityY(-x.get() * Constants.SwerveConstants.shellyDriveVelocity)
-            .withRotationalRate(-turn.get() * Constants.SwerveConstants.shellyAngleVelocity)); 
+            .withRotationalRate(-turn.get() * Constants.SwerveConstants.shellyAngleVelocity));
     shellyCommand.addRequirements(drivetrain);
     return shellyCommand;
   }
@@ -198,11 +243,13 @@ public class SubsystemManager extends SubsystemBase {
   }
 
   public Command makeSubwooferShootCommand() {
-    return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER), new ShooterCommand(shooter, transport, ShooterConstants.minShootSpeed));
+    return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER),
+        new ShooterCommand(shooter, transport, ShooterConstants.minShootSpeed));
   }
 
   public Command makeSubwooferShootAutoCommand() {
-    return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER), new ShooterCommand(shooter, transport, ShooterConstants.minShootSpeed).withTimeout(1.5));
+    return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER),
+        new ShooterCommand(shooter, transport, ShooterConstants.minShootSpeed).withTimeout(1.5));
   }
 
   public Command makeResetElevatorCommand() {
@@ -224,9 +271,9 @@ public class SubsystemManager extends SubsystemBase {
   }
 
   public Command makeIntakeCommand() {
-    return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.STOW), 
+    return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.STOW),
         new IntakeCommand(transport, intake, Constants.IntakeConstants.intakeSpeed,
-        Constants.TransportConstants.transportSpeed));
+            Constants.TransportConstants.transportSpeed));
   }
 
   public Command makeTransportCommand(boolean forward) {
@@ -249,12 +296,15 @@ public class SubsystemManager extends SubsystemBase {
     return new InstantCommand(() -> elevator.setNeutralMode(neutralMode));
   }
 
-  public Command makeAutoAimCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn, Supplier<Boolean> shoot) {
+  public Command makeAutoAimCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn,
+      Supplier<Boolean> shoot) {
     return new AimRobotCommand(elevator, shooterPivot, drivetrain, x, y, turn, () -> DriverStation.getAlliance().get());
   }
 
   public Command makeAutoScoreCommand() {
-    return new AutoScoreCommand(elevator, shooterPivot, shooter, transport, makeIntakeCommand(), () -> DriverStation.getAlliance().get(), () -> drivetrain.getPose(), () -> drivetrain.getCurrentRobotChassisSpeeds());
+    return new AutoScoreCommand(elevator, shooterPivot, shooter, transport, makeIntakeCommand(),
+        () -> DriverStation.getAlliance().get(), () -> drivetrain.getPose(),
+        () -> drivetrain.getCurrentRobotChassisSpeeds());
     // return new InstantCommand(() -> System.out.println("THIS IS A FILLER"));
   }
 
@@ -275,7 +325,7 @@ public class SubsystemManager extends SubsystemBase {
   private void configurePathPlanner() {
     double driveBaseRadius = 0;
     for (var moduleLocation : drivetrain.moduleLocations()) {
-        driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
+      driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
     }
 
     eventMarkers.put("Auto Score", makeAutoScoreCommand());
@@ -284,20 +334,20 @@ public class SubsystemManager extends SubsystemBase {
     NamedCommands.registerCommands(eventMarkers);
 
     AutoBuilder.configureHolonomic(
-            () -> drivetrain.getState().Pose, // CurrentPose Supplier
-            drivetrain::seedFieldRelative, // PoseSetter Consumer
-            drivetrain::getCurrentRobotChassisSpeeds,
-            (speeds) -> drivetrain.setControl(autoRequest.withSpeeds(speeds)), // ChassisSpeeds Consumer
-            new HolonomicPathFollowerConfig(
-                    new PIDConstants(SwerveConstants.kPDrive, SwerveConstants.kIDrive, SwerveConstants.kDDrive),
-                    new PIDConstants(SwerveConstants.kPSteer, SwerveConstants.kISteer, SwerveConstants.kDSteer),
-                    TunerConstants.kSpeedAt12VoltsMps,
-                    driveBaseRadius,
-                    new ReplanningConfig(true, true)),
-            () -> {
-                var alliance = DriverStation.getAlliance();
-                return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
-            },
-            drivetrain); // Subsystem for requirements
+        () -> drivetrain.getState().Pose, // CurrentPose Supplier
+        drivetrain::seedFieldRelative, // PoseSetter Consumer
+        drivetrain::getCurrentRobotChassisSpeeds,
+        (speeds) -> drivetrain.setControl(autoRequest.withSpeeds(speeds)), // ChassisSpeeds Consumer
+        new HolonomicPathFollowerConfig(
+            new PIDConstants(SwerveConstants.kPDrive, SwerveConstants.kIDrive, SwerveConstants.kDDrive),
+            new PIDConstants(SwerveConstants.kPSteer, SwerveConstants.kISteer, SwerveConstants.kDSteer),
+            TunerConstants.kSpeedAt12VoltsMps,
+            driveBaseRadius,
+            new ReplanningConfig(true, true)),
+        () -> {
+          var alliance = DriverStation.getAlliance();
+          return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
+        },
+        drivetrain); // Subsystem for requirements
   }
 }
