@@ -26,7 +26,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private static final double kSimLoopPeriod = 0.002; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
-    private Field2d field;
+    private Field2d field = new Field2d();
 
     private Pose2d estimatedPose;
     private boolean isInRange;
@@ -36,8 +36,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
         this.estimatedPose = new Pose2d();
         if (Robot.isSimulation()) {
-            field = new Field2d();
-            SmartDashboard.putData("Field", field);
             startSimThread();
         }
         setCurrentLimit(SwerveConstants.driveSupplyCurrentLimit);
@@ -47,8 +45,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         super(driveTrainConstants, modules);
         this.estimatedPose = new Pose2d();
         if (Robot.isSimulation()) {
-            field = new Field2d();
-            SmartDashboard.putData("Field", field);
             startSimThread();
         }
         setCurrentLimit(SwerveConstants.driveSupplyCurrentLimit);

@@ -158,8 +158,8 @@ public class SubsystemManager extends SubsystemBase {
     // dampenDrivetrain();
     periodicRuns++;
 
-    periodicRuns %= 50;
-    if (periodicRuns == 1) { //Only run once per second
+    periodicRuns %= (50 / Constants.VisionConstants.aprilTagUpdateFrequency);
+    if (periodicRuns == 0) { //Only run once per second
       updateOdometryWithPhotonVision();
     }
 
@@ -183,7 +183,7 @@ public class SubsystemManager extends SubsystemBase {
         drivetrain.addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
       }
     } else {
-      periodicRuns = 0; // this way it will try again next time
+      periodicRuns = -1; // this way it will try again next time
     }
   }
 
@@ -328,9 +328,9 @@ public class SubsystemManager extends SubsystemBase {
       driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
     }
 
-    eventMarkers.put("Auto Score", makeAutoScoreCommand());
-    eventMarkers.put("Subwoofer", makeSubwooferShootAutoCommand());
-    eventMarkers.put("Intake", makeIntakeCommand());
+    // eventMarkers.put("Auto Score", makeAutoScoreCommand());
+    // eventMarkers.put("Subwoofer", makeSubwooferShootAutoCommand());
+    // eventMarkers.put("Intake", makeIntakeCommand());
     NamedCommands.registerCommands(eventMarkers);
 
     AutoBuilder.configureHolonomic(
