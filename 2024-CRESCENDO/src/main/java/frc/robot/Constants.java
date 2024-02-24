@@ -45,7 +45,7 @@ public class Constants {
         public static final double kPDrive = 10;
         public static final double kIDrive = 0;
         public static final double kDDrive = 0;
-        public static final double kPSteer = 10;
+        public static final double kPSteer = 8;
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
 
@@ -155,7 +155,7 @@ public class Constants {
         public static final int rightX = 3;
         public static final int rightY = 2;
 
-        public static final double deadband = 0.06;
+        public static final double deadband = 0.01;//0.06;
         public static final double leftXMax = 0.75;
         public static final double leftYMax = 0.66;
         public static final double rightXMax = 0.8;
@@ -176,7 +176,7 @@ public class Constants {
     public static final class PositionConstants {
         public static final class StowPresets {
             public static final double elevator = 0.0;
-            public static final double shooter = 0;
+            public static final double shooter = 0.0;
         }
 
         public static final class AmpPresets {
@@ -201,7 +201,7 @@ public class Constants {
 
         public static final class SubwooferPresets {
             public static final double elevator = 0.0;
-            public static final double shooter = 0.066;
+            public static final double shooter = 0.076;
         }
     }
 
@@ -281,18 +281,18 @@ public class Constants {
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         public static final class PivotSlot0ConfigConstants {
-            public static final double kP = 75.0; //output per unit of error in position (output/rotation)
+            public static final double kP = 150.0; //output per unit of error in position (output/rotation)
             public static final double kI = 0.0; //output per unit of integrated error in position (output/(rotation*s))
             public static final double kD = 0.0; //output per unit of error in velocity (output/rps)
             public static final double kS = 0.0; //output to overcome static friction (output)
-            public static final double kV = 15.0; //output per unit of target velocity (output/rps)
+            public static final double kV = 50.0; //output per unit of target velocity (output/rps)
             public static final double kA = 0.0; //output per unit of target acceleration (output/(rps/s))
             public static final double kG = 0.0; //feedforward Constant
         }
 
         public static final class PivotMotionMagicConstants {
-            public static final double cruiseVelocity = 0.088379 * 5; // Target cruise velocity
-            public static final double acceleration = cruiseVelocity * 2; // Target acceleration
+            public static final double cruiseVelocity = 0.088379 * 50; // Target cruise velocity
+            public static final double acceleration = (0.088379 * 20) * 2; // Target acceleration
             public static final double jerk = acceleration * 10; // Target Jerk
         }
     }

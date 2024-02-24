@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 2.88,
-        "y": 5.6
+        "x": 2.436848837661639,
+        "y": 5.537577201280529
       },
       "prevControl": {
-        "x": 3.880000000000001,
-        "y": 5.6
+        "x": 3.4359819107539904,
+        "y": 5.495946656568348
       },
       "nextControl": {
-        "x": 1.88,
-        "y": 5.6
+        "x": 1.5493573329489003,
+        "y": 5.574556013976893
       },
       "isLocked": false,
       "linkedName": null
@@ -57,7 +57,7 @@
             {
               "type": "named",
               "data": {
-                "name": "IntakeThenSubwooferPreset"
+                "name": "Intake"
               }
             }
           ]
@@ -77,7 +77,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "4PieceWingClear",
+  "folder": null,
   "previewStartingState": {
     "rotation": 180.0,
     "velocity": 0

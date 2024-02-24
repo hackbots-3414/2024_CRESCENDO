@@ -53,10 +53,12 @@ import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.StealRingCommand;
 import frc.robot.commands.TrapScoreCommand;
 import frc.robot.commands.WinchCommand;
+import frc.robot.commands.AutonCommands.AutoElevatorCommand;
 import frc.robot.commands.AutonCommands.AutoScoreCommand;
 import frc.robot.commands.AutonCommands.RevShooterCommand;
 import frc.robot.commands.AutonCommands.ShootAfterRevCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.AimHelper.AimOutputContainer;
 
 public class SubsystemManager extends SubsystemBase {
 	private static SubsystemManager me = null;
@@ -67,8 +69,8 @@ public class SubsystemManager extends SubsystemBase {
 	// DRIVETRAIN
 	CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
 	FieldCentric driveRequest = new SwerveRequest.FieldCentric()
-			.withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.1)
-			.withRotationalDeadband(Constants.SwerveConstants.maxAngleVelocity * 0.1)
+			// .withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.05)
+			// .withRotationalDeadband(Constants.SwerveConstants.maxAngleVelocity * 0.05)
 			.withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 	SwerveDriveBrake brakeRequest = new SwerveDriveBrake();
 	PointWheelsAt pointRequest = new PointWheelsAt();
@@ -311,10 +313,11 @@ public class SubsystemManager extends SubsystemBase {
 		}
 
 		eventMarkers.put("Auto Score", makeAutoScoreCommand());
-		eventMarkers.put("Subwoofer", makeShootAfterRevCommand(ShooterConstants.minShootSpeed));
-		eventMarkers.put("Intake", makeStowAndIntakeCommand()); 
+		eventMarkers.put("Subwoofer", makeElevatorCommand(ElevatorPresets.SUBWOOFER).andThen(makeShootAfterRevCommand(ShooterConstants.minShootSpeed)));
+		eventMarkers.put("Intake", makeStowAndIntakeCommand().andThen(makeSubwooferRevvingCommand())); 
 		eventMarkers.put("IntakeThenSubwooferPreset", makeStowAndIntakeCommand().andThen(makeSubwooferRevvingCommand()));
 		eventMarkers.put("StealRings", makeStealRingCommand());
+		eventMarkers.put("IntakeShootAnywhere", makeStowAndIntakeCommand().andThen(makeAutoScoreCommand()));
 
 		NamedCommands.registerCommands(eventMarkers);
 

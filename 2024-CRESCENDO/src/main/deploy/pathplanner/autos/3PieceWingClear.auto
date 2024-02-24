@@ -2,27 +2,15 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7912916726734353,
-      "y": 6.600718066300997
+      "x": 1.3829526758152613,
+      "y": 5.537577201280529
     },
-    "rotation": -121.90810693565317
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "named",
-          "data": {
-            "name": "Subwoofer"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AmpSide2Piece"
-          }
-        },
         {
           "type": "named",
           "data": {
@@ -44,7 +32,31 @@
         {
           "type": "path",
           "data": {
+            "pathName": "3PieceStart"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Subwoofer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
             "pathName": "3PieceEnd"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Subwoofer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterRush"
           }
         },
         {
@@ -56,6 +68,6 @@
       ]
     }
   },
-  "folder": "Week1Ready",
+  "folder": null,
   "choreoAuto": false
 }

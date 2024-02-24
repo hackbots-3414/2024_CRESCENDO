@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7358234536288891,
-        "y": 6.637696878997361
+        "x": 1.3459738631188973,
+        "y": 5.509843091758257
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7358234536288866,
-        "y": 6.637696878997361
+        "x": 1.9653689757829964,
+        "y": 6.2124405329891745
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.2041592011111946,
-        "y": 7.06295322500555
+        "x": 2.9083286995402817,
+        "y": 6.998240302786913
       },
       "prevControl": {
-        "x": 2.207343922575071,
-        "y": 7.142698447288441
+        "x": 2.5570299789248225,
+        "y": 6.9797508964387305
       },
       "nextControl": {
-        "x": 3.4352767804634707,
-        "y": 7.044463818657367
+        "x": 3.139864211066844,
+        "y": 7.010426382340943
       },
       "isLocked": false,
       "linkedName": null
@@ -47,7 +47,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.55,
-      "rotationDegrees": -179.7552742996117,
+      "rotationDegrees": -142.3645151263856,
       "rotateFast": false
     }
   ],
@@ -83,9 +83,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "4PieceWingClear",
+  "folder": null,
   "previewStartingState": {
-    "rotation": -119.40718906073373,
+    "rotation": 177.9786350596441,
     "velocity": 0
   },
   "useDefaultConstraints": true
