@@ -33,11 +33,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.Constants.TransportConstants;
 import frc.robot.Constants.WinchConstants;
 import frc.robot.Telemetry;
 import frc.robot.commands.AimRobotCommand;
@@ -53,12 +51,10 @@ import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.StealRingCommand;
 import frc.robot.commands.TrapScoreCommand;
 import frc.robot.commands.WinchCommand;
-import frc.robot.commands.AutonCommands.AutoElevatorCommand;
 import frc.robot.commands.AutonCommands.AutoScoreCommand;
 import frc.robot.commands.AutonCommands.RevShooterCommand;
 import frc.robot.commands.AutonCommands.ShootAfterRevCommand;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.AimHelper.AimOutputContainer;
 
 public class SubsystemManager extends SubsystemBase {
 	private static SubsystemManager me = null;
@@ -94,6 +90,7 @@ public class SubsystemManager extends SubsystemBase {
 	double coprocessorsAmpRating = 3 * 2 * runTimeHours; // 3 AMP HOURS for runTimeHours per coprocessor
 	double availableCurrent = inputCurrent - coprocessorsAmpRating;
 
+	int periodicRuns = 0;
 
 	// SUBSYSTEMS
 	Elevator elevator = new Elevator();
@@ -116,7 +113,6 @@ public class SubsystemManager extends SubsystemBase {
 	public LedSubsystem getLedSubsystem() {return ledSubsystem;}
 	public PhotonVision getPhotonVision() {return photonVision;}
 
-
 	private SubsystemManager() {
 		configurePathPlanner();
 	}
@@ -128,35 +124,58 @@ public class SubsystemManager extends SubsystemBase {
 		return me;
 	}
 
-	@Override
-	public void periodic() {
-		// elevatorCurrent = pdp.getCurrent(ElevatorConstants.elevatorMotorPDPID);
-		// intakeCurrent = pdp.getCurrent(IntakeConstants.intakeMotorPDPID);
-		// shooterPivotCurrent = pdp.getCurrent(PivotConstants.pivotMotorPDPID);
-		// shooterCurrent = pdp.getCurrent(ShooterConstants.leftMotorPDPID) + pdp.getCurrent(ShooterConstants.rightMotorPDPID);
-		// transportCurrent = pdp.getCurrent(TransportConstants.transportMotorPDPID);
-		// winchCurrent = pdp.getCurrent(WinchConstants.leftWinchMotorPDPID) + pdp.getCurrent(WinchConstants.rightWinchMotorPDPID);
+  @Override
+  public void periodic() {
+    // elevatorCurrent = pdp.getCurrent(ElevatorConstants.elevatorMotorPDPID);
+    // intakeCurrent = pdp.getCurrent(IntakeConstants.intakeMotorPDPID);
+    // shooterPivotCurrent = pdp.getCurrent(PivotConstants.pivotMotorPDPID);
+    // shooterCurrent = pdp.getCurrent(ShooterConstants.leftMotorPDPID) +
+    // pdp.getCurrent(ShooterConstants.rightMotorPDPID);
+    // transportCurrent = pdp.getCurrent(TransportConstants.transportMotorPDPID);
+    // winchCurrent = pdp.getCurrent(WinchConstants.leftMotorPDPID) +
+    // pdp.getCurrent(rightMotor.PDPID)
 
-		dampenDrivetrain();
-		// updateOdometryWithPhotonVision();
-	}
+    // dampenDrivetrain();
+    // periodicRuns++;
 
-	private void updateOdometryWithPhotonVision() {
-		Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
-		Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
+    // periodicRuns %= (50 / Constants.VisionConstants.aprilTagUpdateFrequency);
+    // if (periodicRuns == 0) { //Only run once per second
+    //   updateOdometryWithPhotonVision();
+    // }
 
-		SmartDashboard.putBoolean("SeesRight", rightPoseMaybe.isPresent());
-		SmartDashboard.putBoolean("SeesLeft", leftPoseMaybe.isPresent());
+  }
 
-		if (leftPoseMaybe.isPresent()) {
-			EstimatedRobotPose leftPose = leftPoseMaybe.get();
-			drivetrain.addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
-		}
-		if (rightPoseMaybe.isPresent()) {
-			EstimatedRobotPose rightPose = rightPoseMaybe.get();
-			drivetrain.addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
-		}
-	}
+  private void updateOdometryWithPhotonVision() {
+    Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
+    Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
+
+    SmartDashboard.putBoolean("SeesRight", rightPoseMaybe.isPresent());
+    SmartDashboard.putBoolean("SeesLeft", leftPoseMaybe.isPresent());
+
+    if (drivetrain.getTranslationalRobotSpeed() <= 1.0 && drivetrain.getRotationalRobotSpeed() <= Math.PI) {
+
+      if (leftPoseMaybe.isPresent()) {
+        EstimatedRobotPose leftPose = leftPoseMaybe.get();
+        drivetrain.addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
+      }
+      if (rightPoseMaybe.isPresent()) {
+        EstimatedRobotPose rightPose = rightPoseMaybe.get();
+        drivetrain.addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
+      }
+    } else {
+      periodicRuns = -1; // this way it will try again next time
+    }
+  }
+
+  // private void dampenDrivetrain() {
+  // double supplyLimitDrivetrain = ((availableCurrent / runTimeHours
+  // - (elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent +
+  // transportCurrent))) / 4.0; // (Ah Available - Ah Being Used) / Ah to Amps
+  // conversion / 4 motors to distribute over
+  // supplyLimitDrivetrain = supplyLimitDrivetrain > 40 ? 39.5 :
+  // supplyLimitDrivetrain;
+  // drivetrain.setCurrentLimit(supplyLimitDrivetrain);
+  // }
 
 	private void dampenDrivetrain() {
 		// (Ah Available - Ah Being Used) / Ah to Amps conversion / 4 motors to distribute over

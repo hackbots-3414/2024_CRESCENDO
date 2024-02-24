@@ -10,7 +10,7 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -21,9 +21,7 @@ public class PhotonVision extends SubsystemBase implements AutoCloseable {
   private PhotonCamera cameraLeft;
   private PhotonCamera cameraRight;
   private AprilTagFieldLayout field;
-  private PoseStrategy strategy;
-  private PhotonPoseEstimator leftEstimator;
-  private PhotonPoseEstimator rightEstimator;
+  private PhotonPoseEstimator estimator;
 
   /**
    * Creates a new PhotonVision.
@@ -39,18 +37,39 @@ public class PhotonVision extends SubsystemBase implements AutoCloseable {
       System.out.println("Error while opening file for april tag locations. Sincerely, PhotonVision.java");
       System.out.println(AprilTagFields.k2024Crescendo.m_resourceFile);
     }
-    strategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
 
-    leftEstimator = new PhotonPoseEstimator(field, strategy, cameraLeft, Constants.VisionConstants.leftTransform);
-    rightEstimator = new PhotonPoseEstimator(field, strategy, cameraRight, Constants.VisionConstants.rightTransform);
+    estimator = new PhotonPoseEstimator(field, Constants.VisionConstants.mainStrategy, Constants.VisionConstants.leftTransform);
+    estimator.setMultiTagFallbackStrategy(Constants.VisionConstants.fallbackStrategy);
   }
 
+  private void filterPipelineResultByTargetID(PhotonPipelineResult original) {
+    if (Constants.VisionConstants.validTagIds == null) return;
+    original.targets.removeIf(target -> (!Constants.VisionConstants.validTagIds.contains(target.getFiducialId())));
+  }
+
+  private void filterPipelineResultByAmbiguity(PhotonPipelineResult original) {
+    original.targets.removeIf(target -> (target.getPoseAmbiguity() > Constants.VisionConstants.maxAmbiguity));
+  }
+
+  private void filterPipelineResult(PhotonPipelineResult original) {
+    filterPipelineResultByAmbiguity(original);
+    filterPipelineResultByTargetID(original);
+    // create more methods if we want, but keep them in their own separate methods for easier code management.
+  }
+
+  private PhotonPipelineResult getFilteredResult(PhotonCamera camera) {
+    PhotonPipelineResult result = camera.getLatestResult();
+    filterPipelineResult(result);
+    return result;
+  }
+
+
   public Optional<EstimatedRobotPose> getGlobalPoseFromLeft() {
-    return leftEstimator.update();
+    return estimator.update(getFilteredResult(cameraLeft));
   }
 
   public Optional<EstimatedRobotPose> getGlobalPoseFromRight() {
-    return rightEstimator.update();
+    return estimator.update(getFilteredResult(cameraRight));
   }
 
   @Override

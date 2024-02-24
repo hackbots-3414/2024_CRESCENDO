@@ -46,7 +46,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         super(driveTrainConstants, modules);
         this.estimatedPose = new Pose2d();
         if (Robot.isSimulation()) {
-            
             startSimThread();
         }
         setCurrentLimit(SwerveConstants.driveSupplyCurrentLimit);
@@ -63,6 +62,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public ChassisSpeeds getCurrentRobotChassisSpeeds() {
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
+    }
+
+    public double getTranslationalRobotSpeed() {
+        return Math.sqrt(Math.pow(getCurrentRobotChassisSpeeds().vxMetersPerSecond, 2) + Math.pow(getCurrentRobotChassisSpeeds().vyMetersPerSecond, 2));
+    }
+
+    public double getRotationalRobotSpeed() {
+        return getCurrentRobotChassisSpeeds().omegaRadiansPerSecond;
     }
 
     public Command makeTestAuton() {
