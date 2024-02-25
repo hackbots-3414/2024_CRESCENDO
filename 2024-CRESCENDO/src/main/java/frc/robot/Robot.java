@@ -4,12 +4,21 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.LogFileUtil;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.NoteFinderConstants;
 
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
   private boolean runSysID = false;
 
   private Command m_autonomousCommand;
@@ -19,12 +28,31 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+    Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
+
+    if (isReal()) {
+      Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
+      Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+      new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
+    } //else {
+    //   setUseTiming(false); // Run as fast as possible
+    //   String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
+    //   Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
+    //   Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim"))); // Save outputs to a new log
+    // }
+
+    // Logger.disableDeterministicTimestamps() // See "Deterministic Timestamps" in
+    // the "Understanding Data Flow" page
+    Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may
+                    // be added.
+
     if (runSysID) {
       m_SysIdRoutineBot = new SysIdRoutineBot();
       m_SysIdRoutineBot.configureBindings();
     } else {
       m_robotContainer = new RobotContainer();
-      addPeriodic(m_robotContainer.getNoteFinder()::dataReceiver, NoteFinderConstants.CYCLE_TIME, 0);
+      // addPeriodic(m_robotContainer.getNoteFinder()::dataReceiver,
+      // NoteFinderConstants.CYCLE_TIME, 0);
     }
   }
 
@@ -34,17 +62,21 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+  }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+  }
 
   @Override
-  public void disabledExit() {}
+  public void disabledExit() {
+  }
 
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = !runSysID ? m_robotContainer.getAutonomousCommand() : m_SysIdRoutineBot.getAutonomousCommand();
+    m_autonomousCommand = !runSysID ? m_robotContainer.getAutonomousCommand()
+        : m_SysIdRoutineBot.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -52,10 +84,12 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+  }
 
   @Override
-  public void autonomousExit() {}
+  public void autonomousExit() {
+  }
 
   @Override
   public void teleopInit() {
@@ -65,10 +99,12 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+  }
 
   @Override
-  public void teleopExit() {}
+  public void teleopExit() {
+  }
 
   @Override
   public void testInit() {
@@ -76,11 +112,14 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+  }
 
   @Override
-  public void testExit() {}
+  public void testExit() {
+  }
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+  }
 }

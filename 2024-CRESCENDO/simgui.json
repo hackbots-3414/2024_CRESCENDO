@@ -15,6 +15,7 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/Pose": "Field2d",
+      "/Shuffleboard/Vision/Field": "Field2d",
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Auton Mode": "String Chooser",
       "/SmartDashboard/Brake Elevator": "Command",
