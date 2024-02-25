@@ -3,10 +3,7 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
-
-import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -27,7 +24,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -158,27 +154,27 @@ public class SubsystemManager extends SubsystemBase {
 	drivetrain.addDashboardWidgets(tab);
   }
 
-  private void updateOdometryWithPhotonVision() {
-    Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
-    Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
+//   private void updateOdometryWithPhotonVision() {
+//     Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
+//     Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
 
-    SmartDashboard.putBoolean("SeesRight", rightPoseMaybe.isPresent());
-    SmartDashboard.putBoolean("SeesLeft", leftPoseMaybe.isPresent());
+//     SmartDashboard.putBoolean("SeesRight", rightPoseMaybe.isPresent());
+//     SmartDashboard.putBoolean("SeesLeft", leftPoseMaybe.isPresent());
 
-    if (drivetrain.getTranslationalRobotSpeed() <= 1.0 && drivetrain.getRotationalRobotSpeed() <= Math.PI) {
+//     if (drivetrain.getTranslationalRobotSpeed() <= 1.0 && drivetrain.getRotationalRobotSpeed() <= Math.PI) {
 
-      if (leftPoseMaybe.isPresent()) {
-        EstimatedRobotPose leftPose = leftPoseMaybe.get();
-        drivetrain.addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
-      }
-      if (rightPoseMaybe.isPresent()) {
-        EstimatedRobotPose rightPose = rightPoseMaybe.get();
-        drivetrain.addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
-      }
-    } else {
-      periodicRuns = -1; // this way it will try again next time
-    }
-  }
+//       if (leftPoseMaybe.isPresent()) {
+//         EstimatedRobotPose leftPose = leftPoseMaybe.get();
+//         drivetrain.addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
+//       }
+//       if (rightPoseMaybe.isPresent()) {
+//         EstimatedRobotPose rightPose = rightPoseMaybe.get();
+//         drivetrain.addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
+//       }
+//     } else {
+//       periodicRuns = -1; // this way it will try again next time
+//     }
+//   }
 
   // private void dampenDrivetrain() {
   // double supplyLimitDrivetrain = ((availableCurrent / runTimeHours

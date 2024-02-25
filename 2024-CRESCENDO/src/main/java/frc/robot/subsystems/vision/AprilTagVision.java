@@ -7,6 +7,16 @@
 
 package frc.robot.subsystems.vision;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,14 +25,6 @@ import frc.robot.subsystems.vision.AprilTagVisionIO.AprilTagVisionIOInputs;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.VisionHelpers.PoseEstimate;
 import frc.robot.util.VisionHelpers.TimestampedVisionUpdate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
-import org.littletonrobotics.junction.Logger;
 
 public class AprilTagVision extends SubsystemBase {
 
@@ -162,9 +164,9 @@ public class AprilTagVision extends SubsystemBase {
      * @param tagPosesSize The number of detected tag poses
      * @return The standard deviation of the x and y coordinates
      */
-    private double calculateXYStdDev(PoseEstimate poseEstimates, int tagPosesSize) {
-        return Constants.SwerveConstants.xyStdDevCoefficient * Math.pow(poseEstimates.averageTagDistance(), 2.0) / tagPosesSize;
-    }
+    // private double calculateXYStdDev(PoseEstimate poseEstimates, int tagPosesSize) {
+    //     return Constants.SwerveConstants.xyStdDevCoefficient * Math.pow(poseEstimates.averageTagDistance(), 2.0) / tagPosesSize;
+    // }
 
     /**
      * Calculate the standard deviation of the x and y coordinates.
@@ -203,9 +205,9 @@ public class AprilTagVision extends SubsystemBase {
      * @param tagPosesSize The number of detected tag poses
      * @return The standard deviation of the theta coordinate
      */
-    private double calculateThetaStdDev(PoseEstimate poseEstimates, int tagPosesSize) {
-        return Constants.SwerveConstants.thetaStdDevCoefficient * Math.pow(poseEstimates.averageTagDistance(), 2.0) / tagPosesSize;
-    }
+    // private double calculateThetaStdDev(PoseEstimate poseEstimates, int tagPosesSize) {
+    //     return Constants.SwerveConstants.thetaStdDevCoefficient * Math.pow(poseEstimates.averageTagDistance(), 2.0) / tagPosesSize;
+    // }
 
     /**
      * Log the data for a specific instance.
