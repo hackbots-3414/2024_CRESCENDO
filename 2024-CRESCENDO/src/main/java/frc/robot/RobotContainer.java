@@ -80,6 +80,7 @@ public class RobotContainer {
     // xboxOperator.start().whileTrue(subsystemManager.makeWinchCommand(false));
 
     xboxOperator.back().whileTrue(subsystemManager.makeManualWinchCommand(true));
+    // xboxOperator.back().whileTrue(subsystemManager.makeAllInOneWinchCommand());
     xboxOperator.start().whileTrue(subsystemManager.makeManualWinchCommand(false));
 
 
