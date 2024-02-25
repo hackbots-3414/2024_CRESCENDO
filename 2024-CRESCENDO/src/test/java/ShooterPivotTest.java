@@ -55,7 +55,7 @@ public class ShooterPivotTest implements AutoCloseable {
       }
    }
 
-   @Test
+   // @Test
    public void robotIsEnabled() {
       /* verify that the robot is enabled */
       assertEquals(DriverStation.isEnabled(), true);

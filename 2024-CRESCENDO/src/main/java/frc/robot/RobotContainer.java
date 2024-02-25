@@ -15,6 +15,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,6 +27,8 @@ import frc.robot.Constants.InputConstants;
 import frc.robot.commands.ElevatorCommand.ElevatorPresets;
 import frc.robot.subsystems.NoteFinder;
 import frc.robot.subsystems.SubsystemManager;
+import frc.robot.subsystems.vision.AprilTagVision;
+import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVision;
 
 public class RobotContainer {
   public enum RepathChoices {SHOOTER,AMP,SOURCE,NULL;}
@@ -133,9 +137,20 @@ public class RobotContainer {
   //   // ps5Operator.getRightY();
   // }
 
+  private void configureDashboard() {
+        /**** Driver tab ****/
+
+        // /**** Vision tab ****/
+        final ShuffleboardTab visionTab = Shuffleboard.getTab("Vision");
+
+        // Pose estimation
+        SubsystemManager.getInstance().runDriverstationAddTab(visionTab);
+    }
+
   public RobotContainer() {
     configureDriverBindings();
     configureXboxOperatorBindings();
+    configureDashboard();
 
     pathChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", pathChooser);

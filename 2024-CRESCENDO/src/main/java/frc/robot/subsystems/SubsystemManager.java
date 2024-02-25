@@ -26,6 +26,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -55,8 +56,11 @@ import frc.robot.commands.AutonCommands.AutoScoreCommand;
 import frc.robot.commands.AutonCommands.RevShooterCommand;
 import frc.robot.commands.AutonCommands.ShootAfterRevCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.vision.AprilTagVision;
+import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVision;
 
 public class SubsystemManager extends SubsystemBase {
+	private AprilTagVision aprilTagVision;
 	private static SubsystemManager me = null;
 	PowerDistribution pdp = new PowerDistribution(1, ModuleType.kRev);
 	List<SubsystemBase> subsystems = new ArrayList<>();
@@ -115,6 +119,11 @@ public class SubsystemManager extends SubsystemBase {
 
 	private SubsystemManager() {
 		configurePathPlanner();
+
+		if (Constants.VisionConstants.USE_VISION == true) {
+            aprilTagVision = new AprilTagVision(new AprilTagVisionIOPhotonVision());
+            aprilTagVision.setDataInterfaces(drivetrain::addVisionData);
+        }
 	}
 
 	public static synchronized SubsystemManager getInstance() {
@@ -143,6 +152,10 @@ public class SubsystemManager extends SubsystemBase {
     //   updateOdometryWithPhotonVision();
     // }
 
+  }
+
+  public void runDriverstationAddTab(ShuffleboardTab tab) {
+	drivetrain.addDashboardWidgets(tab);
   }
 
   private void updateOdometryWithPhotonVision() {
