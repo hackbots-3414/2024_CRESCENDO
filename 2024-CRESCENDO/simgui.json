@@ -25,7 +25,8 @@
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",
       "/SmartDashboard/Module 3": "Mechanism2d",
-      "/SmartDashboard/Run Tests": "Command"
+      "/SmartDashboard/Run Tests": "Command",
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
     },
     "windows": {
       "/FMSInfo": {
@@ -50,10 +51,7 @@
         "left": 150,
         "right": 2961,
         "top": 79,
-        "width": 16.541748046875,
-        "window": {
-          "visible": true
-        }
+        "width": 16.541748046875
       },
       "/SmartDashboard/Auto Chooser": {
         "window": {
@@ -87,6 +85,17 @@
         }
       },
       "/SmartDashboard/Module 3": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
         "window": {
           "visible": true
         }

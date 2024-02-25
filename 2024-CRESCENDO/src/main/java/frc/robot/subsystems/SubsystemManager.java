@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -53,7 +54,9 @@ import frc.robot.commands.AutonCommands.RevShooterCommand;
 import frc.robot.commands.AutonCommands.ShootAfterRevCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.vision.AprilTagVision;
+import frc.robot.subsystems.vision.AprilTagVisionIO;
 import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVision;
+import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVisionSIM;
 
 public class SubsystemManager extends SubsystemBase {
 	private AprilTagVision aprilTagVision;
@@ -101,7 +104,6 @@ public class SubsystemManager extends SubsystemBase {
 	NoteFinder noteFinder = new NoteFinder();
 	Winch winch = new Winch();
 	LedSubsystem ledSubsystem = new LedSubsystem();
-	PhotonVision photonVision = new PhotonVision();
 
 	public Intake getIntake() {return intake;}
 	public Shooter getShooter() {return shooter;}
@@ -111,13 +113,16 @@ public class SubsystemManager extends SubsystemBase {
 	public NoteFinder getNoteFinder() {return noteFinder;}
 	public Winch getWinch() {return winch;}
 	public LedSubsystem getLedSubsystem() {return ledSubsystem;}
-	public PhotonVision getPhotonVision() {return photonVision;}
 
 	private SubsystemManager() {
 		configurePathPlanner();
 
 		if (Constants.VisionConstants.USE_VISION == true) {
-            aprilTagVision = new AprilTagVision(new AprilTagVisionIOPhotonVision());
+			if (Robot.isReal()) {
+            	aprilTagVision = new AprilTagVision(new AprilTagVisionIOPhotonVision());
+			} else {
+				aprilTagVision = new AprilTagVision(new AprilTagVisionIOPhotonVisionSIM(drivetrain::getCurrentPose2d));
+			}
             aprilTagVision.setDataInterfaces(drivetrain::addVisionData);
         }
 	}
@@ -148,10 +153,6 @@ public class SubsystemManager extends SubsystemBase {
     //   updateOdometryWithPhotonVision();
     // }
 
-  }
-
-  public void runDriverstationAddTab(ShuffleboardTab tab) {
-	drivetrain.addDashboardWidgets(tab);
   }
 
 //   private void updateOdometryWithPhotonVision() {
@@ -310,7 +311,7 @@ public class SubsystemManager extends SubsystemBase {
 	public Command makeAutoScoreCommand() {
 		return new AutoScoreCommand(elevator, shooterPivot, shooter, transport, makeStowAndIntakeCommand(),
 				() -> DriverStation.getAlliance().get(),
-				() -> drivetrain.getPose(), () -> drivetrain.getCurrentRobotChassisSpeeds());
+				() -> drivetrain.getCurrentPose2d(), () -> drivetrain.getCurrentRobotChassisSpeeds());
 	}
 
 

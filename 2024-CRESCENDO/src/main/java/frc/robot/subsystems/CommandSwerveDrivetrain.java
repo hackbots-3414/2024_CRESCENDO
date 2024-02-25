@@ -99,6 +99,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
+    public Pose2d getCurrentPose2d() {
+        return this.getState().Pose;
+    }
+
     public Pose2d getPose() {
         return estimatedPose;
     }

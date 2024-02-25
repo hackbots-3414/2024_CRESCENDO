@@ -137,20 +137,9 @@ public class RobotContainer {
   //   // ps5Operator.getRightY();
   // }
 
-  private void configureDashboard() {
-        /**** Driver tab ****/
-
-        // /**** Vision tab ****/
-        final ShuffleboardTab visionTab = Shuffleboard.getTab("Vision");
-
-        // Pose estimation
-        SubsystemManager.getInstance().runDriverstationAddTab(visionTab);
-    }
-
   public RobotContainer() {
     configureDriverBindings();
     configureXboxOperatorBindings();
-    configureDashboard();
 
     pathChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", pathChooser);
