@@ -23,18 +23,17 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.WinchConstants;
+import frc.robot.Robot;
 import frc.robot.Telemetry;
 import frc.robot.commands.AimRobotCommand;
 import frc.robot.commands.AmpScoreCommand;
@@ -54,7 +53,6 @@ import frc.robot.commands.AutonCommands.RevShooterCommand;
 import frc.robot.commands.AutonCommands.ShootAfterRevCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.vision.AprilTagVision;
-import frc.robot.subsystems.vision.AprilTagVisionIO;
 import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVision;
 import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVisionSIM;
 
@@ -113,6 +111,7 @@ public class SubsystemManager extends SubsystemBase {
 	public NoteFinder getNoteFinder() {return noteFinder;}
 	public Winch getWinch() {return winch;}
 	public LedSubsystem getLedSubsystem() {return ledSubsystem;}
+	public AprilTagVision geAprilTagVision() {return aprilTagVision;}
 
 	private SubsystemManager() {
 		configurePathPlanner();
