@@ -22,15 +22,8 @@ public class AimHelper {
      */
     public static AimOutputContainer calculateAimLookupTable(Pose2d robotPose, boolean isBlueSide) {
         AimOutputContainer output = new AimOutputContainer();
-
-        // based on alliance, choose red or blue side speaker as target
-        // then move 8ish inches away from april tag into the field (based on alliance, -8 or +8)
-        // ^ because april tag is nested outside perimeter (-1.5 inches), we need to move our target goal
-        // to be the actual center of the speaker hood (approximated 8)
-        Pose2d speakerPosition = (isBlueSide ? AprilTags.BlueSpeakerCenter.value.getPose2d() : AprilTags.RedSpeakerCenter.value.getPose2d()) 
-                                    .transformBy(new Transform2d((isBlueSide ? AimConstants.aprilTagToHoodGoal : -AimConstants.aprilTagToHoodGoal), 0, Rotation2d.fromDegrees(0)));
-
-        // calculate distance to speaker
+        Pose2d speakerPosition = isBlueSide ? AimConstants.blueSpeakerPos : AimConstants.redSpeakerPos;
+        
         double robotDistance = speakerPosition.relativeTo(robotPose).getTranslation().getNorm();
 
         Double lowerDistance = null;
@@ -71,10 +64,6 @@ public class AimHelper {
                 pivot = lowerPivot + ((robotDistance - lowerDistance) / (higherDistance - lowerDistance)) * (higherPivot - lowerPivot);
             }
         }
-
-        SmartDashboard.putNumber("SPEED", speed);
-        SmartDashboard.putNumber("PIVOT", pivot);
-        SmartDashboard.putNumber("DISTANCE", robotDistance);
 
         output.setPivotAngle(pivot);
         output.setShooterVelocity(speed);
