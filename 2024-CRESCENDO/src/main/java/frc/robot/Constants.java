@@ -98,9 +98,9 @@ public class Constants {
          * system (x is right when pos. and so on).
          */
         public static final Transform3d leftTransform = new Transform3d(-0.282, 0.293, 0.646,
-                new Rotation3d(Units.degreesToRadians(23), Units.degreesToRadians(30), Units.degreesToRadians(-50)));
+                new Rotation3d(Units.degreesToRadians(23), Units.degreesToRadians(-30), Units.degreesToRadians(-50)));
         public static final Transform3d rightTransform = new Transform3d(-0.282, -0.293, 0.646,
-                new Rotation3d(Units.degreesToRadians(-23), Units.degreesToRadians(30), Units.degreesToRadians(50)));
+                new Rotation3d(Units.degreesToRadians(-23), Units.degreesToRadians(-30), Units.degreesToRadians(50)));
         public static final String leftCameraName = "LeftCam";
         public static final String rightCameraName = "RightCam";
 
