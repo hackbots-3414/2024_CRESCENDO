@@ -270,7 +270,7 @@ public class SubsystemManager extends SubsystemBase {
 		return new RevShooterCommand(shooter, transport, velocity);
 	}
 	public Command makeShootAfterRevCommand(double velocity) {
-		return new ShootAfterRevCommand(shooter, transport, velocity).withTimeout(0.5);
+		return new ShootAfterRevCommand(shooter, transport, velocity).withTimeout(0.35);
 	}
 	public Command makeShootCommand() {
 		return new ShooterCommand(shooter, transport, ShooterConstants.shootVelo);
