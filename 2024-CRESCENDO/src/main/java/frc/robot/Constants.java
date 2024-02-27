@@ -97,16 +97,10 @@ public class Constants {
          * A note about these transforms: They appear to follow the normal cordinate
          * system (x is right when pos. and so on).
          */
-        public static final Transform3d leftTransform = new Transform3d(-0.282, 0.293, 0.646,
-                new Rotation3d(Units.degreesToRadians(23), Units.degreesToRadians(-~30), Units.degreesToRadians(-50)));
-        public static final Transform3d rightTransform = new Transform3d(-0.282, -0.293, 0.646,
-                new Rotation3d(Units.degreesToRadians(-23), Units.degreesToRadians(-30), Units.degreesToRadians(50)));
-
-        // New Mounts:
-        // public static final Transform3d leftTransform = new Transform3d(-0.281, 0.291, 0.636,
-        //         new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(-30), Units.degreesToRadians(-10)));
-        // public static final Transform3d rightTransform = new Transform3d(-0.281, -0.291, 0.636,
-        //         new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(-30), Units.degreesToRadians(10)));
+        public static final Transform3d leftTransform = new Transform3d(-0.281, 0.291, 0.636,
+                new Rotation3d(Units.degreesToRadians(-2.5), Units.degreesToRadians(-30), Units.degreesToRadians(-10)));
+        public static final Transform3d rightTransform = new Transform3d(-0.281, -0.291, 0.636,
+                new Rotation3d(Units.degreesToRadians(2.5), Units.degreesToRadians(-30), Units.degreesToRadians(10)));
 
         public static final String leftCameraName = "LeftCam";
         public static final String rightCameraName = "RightCam";
