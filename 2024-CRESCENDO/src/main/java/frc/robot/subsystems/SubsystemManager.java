@@ -323,7 +323,7 @@ public class SubsystemManager extends SubsystemBase {
 		}
 	}
 	public Command makeAutonEverythingCommand() {
-		return makeIntakeCommand().andThen(new AutoScoreCommand(elevator, shooterPivot, shooter, transport, this::getAimOutputContainer));
+		return /*makeIntakeCommand().andThen(*/new AutoScoreCommand(elevator, shooterPivot, shooter, transport, this::getAimOutputContainer).withTimeout(1.5);
 	}
 
 
