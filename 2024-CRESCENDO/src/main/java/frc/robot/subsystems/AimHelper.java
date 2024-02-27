@@ -65,7 +65,7 @@ public class AimHelper {
                 double location = (distanceToTarget - lowerDistance) / (higherDistance - lowerDistance);
                 output.setShooterVelocity(MathUtil.interpolate(speedMap.get(lowerDistance), speedMap.get(higherDistance), location));
                 output.setPivotAngle(MathUtil.interpolate(rotationMap.get(lowerDistance), rotationMap.get(higherDistance), location));
-            }
+            } 
         }
 
         return output;
