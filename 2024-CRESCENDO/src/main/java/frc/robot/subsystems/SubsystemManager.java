@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -251,6 +252,9 @@ public class SubsystemManager extends SubsystemBase {
 	public Command makeWinchCommand(boolean up) {
 		return new WinchCommand(winch, up ? Constants.WinchConstants.climbHeight : WinchConstants.restHeight);
 	}
+	public Command makeAllInOneWinchCommand() {
+		return new ParallelCommandGroup(makeElevatorCommand(ElevatorPresets.TRAP), makeWinchCommand(true));
+	}
 
 
 	// PIVOT COMMANDS
@@ -323,7 +327,6 @@ public class SubsystemManager extends SubsystemBase {
 	public Command makeTestingCommand() {
 		SequentialCommandGroup commands = new SequentialCommandGroup();
 		commands.addCommands(makeElevatorCommand(ElevatorPresets.AMP).withTimeout(2),
-				makeElevatorCommand(ElevatorPresets.TRAP).withTimeout(2),
 				makeElevatorCommand(ElevatorPresets.STOW).withTimeout(2),
 				makeStowAndIntakeCommand().withTimeout(2),
 				makeShootCommand().withTimeout(2),

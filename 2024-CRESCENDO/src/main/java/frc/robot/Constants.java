@@ -210,7 +210,7 @@ public class Constants {
     public static final class DriverConstants {
         public static final int resetGyroButton = 1;
         public static final int autoAimButton = 13;
-        public static final int resetAtPointButton = 5;
+        public static final int resetAtPointButton = 12;
         public static final int shellyButton = 2;
         public static final int leftX = 0;
         public static final int leftY = 1;
@@ -222,6 +222,8 @@ public class Constants {
         public static final double leftYMax = 0.66;
         public static final double rightXMax = 0.8;
         public static final double rightYMax = 0.8;
+
+        public static final double expoPower = 2.0;
     }
 
     public static final class TransportConstants {
