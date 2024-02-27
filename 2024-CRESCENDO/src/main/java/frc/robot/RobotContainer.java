@@ -28,7 +28,7 @@ import frc.robot.subsystems.NoteFinder;
 import frc.robot.subsystems.SubsystemManager;
 
 public class RobotContainer {
-  public enum RepathChoices {SHOOTER,AMP,SOURCE,NULL;}
+  public enum JoystickChoice {PS5, XBOX;}
   
   private final Joystick driver = new Joystick(InputConstants.kDriverControllerPort);
   private final JoystickButton resetGyroButton = new JoystickButton(driver, DriverConstants.resetGyroButton);
@@ -61,24 +61,20 @@ public class RobotContainer {
   }
 
   private void configureXboxOperatorBindings() {
-    xboxOperator.rightBumper().whileTrue(subsystemManager.makeShootCommand()); // shoot manually
-    xboxOperator.leftBumper().whileTrue(subsystemManager.makeIntakeCommand()); // intake
+    xboxOperator.y().whileTrue(subsystemManager.makeSubwooferShootCommand());
+    xboxOperator.b().onTrue(subsystemManager.makeResetElevatorCommand());
     xboxOperator.x().whileTrue(subsystemManager.makeAmpScoreCommand()); // auto amp (will do everything)
-    // xboxOperator.a().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.AMP));
-    // xboxOperator.y().whileTrue(subsystemManager.makeTrapScoreCommand()); // auto trap (will do everything)
     xboxOperator.a().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));
-
 
     xboxOperator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
     xboxOperator.povDown().whileTrue(subsystemManager.makeManualElevatorCommand(false));
     xboxOperator.povRight().whileTrue(subsystemManager.makeManualPivotCommand(true));
     xboxOperator.povLeft().whileTrue(subsystemManager.makeManualPivotCommand(false));
 
-    xboxOperator.y().whileTrue(subsystemManager.makeSubwooferShootCommand());
-    xboxOperator.b().onTrue(subsystemManager.makeResetElevatorCommand());
+    xboxOperator.rightBumper().whileTrue(subsystemManager.makeShootCommand()); // shoot manually
+    xboxOperator.leftBumper().whileTrue(subsystemManager.makeIntakeCommand()); // intake
 
     xboxOperator.back().whileTrue(subsystemManager.makeManualWinchCommand(true));
-    // xboxOperator.back().whileTrue(subsystemManager.makeAllInOneWinchCommand());
     xboxOperator.start().whileTrue(subsystemManager.makeManualWinchCommand(false));
 
 
@@ -135,8 +131,12 @@ public class RobotContainer {
 
   public RobotContainer() {
     configureDriverBindings();
-    // configureXboxOperatorBindings();
-    configurePS5OperatorBindings();
+
+    if (DriverConstants.operatorController == JoystickChoice.PS5) {
+      configurePS5OperatorBindings();
+    } else {
+      configureXboxOperatorBindings();
+    }
 
     pathChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", pathChooser);

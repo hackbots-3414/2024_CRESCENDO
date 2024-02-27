@@ -15,7 +15,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.SwerveDriveBrake;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -119,12 +118,12 @@ public class SubsystemManager extends SubsystemBase {
 	public NoteFinder getNoteFinder() {return noteFinder;}
 	public Winch getWinch() {return winch;}
 	public LedSubsystem getLedSubsystem() {return ledSubsystem;}
-	public AprilTagVision geAprilTagVision() {return aprilTagVision;}
+	public AprilTagVision getAprilTagVision() {return aprilTagVision;}
 
 	private SubsystemManager() {
 		configurePathPlanner();
 
-		if (Constants.VisionConstants.USE_VISION == true) {
+		if (Constants.VisionConstants.USE_VISION) {
 			if (Robot.isReal()) {
             	aprilTagVision = new AprilTagVision(new AprilTagVisionIOPhotonVision());
 			} else {
@@ -184,23 +183,13 @@ public class SubsystemManager extends SubsystemBase {
 //     }
 //   }
 
-  // private void dampenDrivetrain() {
-  // double supplyLimitDrivetrain = ((availableCurrent / runTimeHours
-  // - (elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent +
-  // transportCurrent))) / 4.0; // (Ah Available - Ah Being Used) / Ah to Amps
-  // conversion / 4 motors to distribute over
-  // supplyLimitDrivetrain = supplyLimitDrivetrain > 40 ? 39.5 :
-  // supplyLimitDrivetrain;
-  // drivetrain.setCurrentLimit(supplyLimitDrivetrain);
-  // }
-
-	private void dampenDrivetrain() {
-		// (Ah Available - Ah Being Used) / Ah to Amps conversion / 4 motors to distribute over
-		double supplyLimitDrivetrain = ((availableCurrent / runTimeHours
-				- (elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent + transportCurrent))) / 4.0; 
-		supplyLimitDrivetrain = supplyLimitDrivetrain > SwerveConstants.driveSupplyCurrentLimit ? SwerveConstants.driveSupplyCurrentLimit : supplyLimitDrivetrain;
-		drivetrain.setCurrentLimit(supplyLimitDrivetrain);
-	}
+	// private void dampenDrivetrain() {
+	// 	// (Ah Available - Ah Being Used) / Ah to Amps conversion / 4 motors to distribute over
+	// 	double supplyLimitDrivetrain = ((availableCurrent / runTimeHours
+	// 			- (elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent + transportCurrent))) / 4.0; 
+	// 	supplyLimitDrivetrain = supplyLimitDrivetrain > SwerveConstants.driveSupplyCurrentLimit ? SwerveConstants.driveSupplyCurrentLimit : supplyLimitDrivetrain;
+	// 	drivetrain.setCurrentLimit(supplyLimitDrivetrain);
+	// }
 
 	// DRIVETRAIN COMMANDS
 	public void configureDriveDefaults(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
@@ -372,6 +361,6 @@ public class SubsystemManager extends SubsystemBase {
 				},
 				drivetrain); // Subsystem for requirements
 
-		PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
+		// PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
 	}
 }

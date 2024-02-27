@@ -18,15 +18,11 @@ public class LedSubsystem extends SubsystemBase {
   private static final double END_GAME_0 = -0.87;
   private static final double END_GAME_15 = -0.11;
   private static final double END_GAME_30 = -0.21;
-  private static final double NOTE_IN_VIEW = 0.65;
+  // private static final double NOTE_IN_VIEW = 0.65;
   ///private static final double CLIMBER_ACTIVATED = -0.95;
   private static final double DEFAULT = 0.91;
 
-  private static final String[] LABELS = {
-    "In Range", "Note Onboard", "End Game 0", "End Game 15", "End Game 30", "Note In View", "Climber Activated"
-  };
-
-
+  private static final String[] LABELS = {"In Range", "Note Onboard", "End Game 0", "End Game 15", "End Game 30", "Note In View"};
 
   Spark ledcontroller = new Spark(0);
 
@@ -74,14 +70,9 @@ public class LedSubsystem extends SubsystemBase {
       setColor(NOTE_IN_VIEW);
       SmartDashboard.putBoolean(LABELS[5], true);
 
-    } else if (false) {
-      // TODO make Climber subsystem
-      setColor(CLIMBER_ACTIVATED);
-      SmartDashboard.putBoolean(LABELS[6], true);
-    } */else {
+    }*/ else {
       setColor(DEFAULT);
     }
-
   }
 
   public void setColor(double color) {
