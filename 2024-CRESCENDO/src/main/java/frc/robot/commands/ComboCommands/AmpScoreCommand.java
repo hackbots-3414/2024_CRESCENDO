@@ -1,20 +1,20 @@
-package frc.robot.commands;
+package frc.robot.commands.ComboCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.PositionConstants.TrapPresets;
+import frc.robot.Constants.PositionConstants.AmpPresets;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
 import frc.robot.subsystems.Transport;
 
-public class TrapScoreCommand extends Command {
+public class AmpScoreCommand extends Command {
   private Transport transport;
   private Elevator elevator;
   private ShooterPivot shooterPivot;
   private Command stowElevator;
   private Shooter shooter;
 
-  public TrapScoreCommand(Transport transport, Elevator elevator, Shooter shooter, ShooterPivot shooterPivot) {
+  public AmpScoreCommand(Transport transport, Elevator elevator, Shooter shooter, ShooterPivot shooterPivot) {
     addRequirements(transport, elevator, shooterPivot);
     this.transport = transport;
     this.elevator = elevator;
@@ -25,8 +25,8 @@ public class TrapScoreCommand extends Command {
 
   @Override
   public void execute() {
-    elevator.setElevatorPosition(TrapPresets.elevator);
-    shooterPivot.setPivotPosition(TrapPresets.shooter);
+    elevator.setElevatorPosition(AmpPresets.elevator);
+    shooterPivot.setPivotPosition(AmpPresets.shooter);
   }
 
   @Override

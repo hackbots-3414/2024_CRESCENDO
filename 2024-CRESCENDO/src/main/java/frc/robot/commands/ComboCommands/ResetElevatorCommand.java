@@ -1,8 +1,9 @@
-package frc.robot.commands;
+package frc.robot.commands.ComboCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.ElevatorCommand.ElevatorPresets;
+import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand;
+import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ShooterPivot;
 

@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.BaseSubsystemCommands;
 
 import java.util.function.Supplier;
 
@@ -15,11 +15,12 @@ import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.AimHelper;
 import frc.robot.subsystems.AimHelper.AimOutputContainer;
+import frc.robot.subsystems.AimHelper.AimStrategies;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ShooterPivot;
 
-public class AimRobotCommand extends Command {
+public class AimCommand extends Command {
     Elevator elevator;
     ShooterPivot shooterPivot;
     CommandSwerveDrivetrain drivetrain;
@@ -34,10 +35,10 @@ public class AimRobotCommand extends Command {
 
     FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.2).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-    PIDController pidTurn = new PIDController(1, 0, 0);
+    PIDController thetaController = new PIDController(1, 0, 0);
 
 
-    public AimRobotCommand(Elevator elevator, ShooterPivot shooterPivot, CommandSwerveDrivetrain drivetrain, Supplier<Double> xSupplier, Supplier<Double> ySupplier, Supplier<Double> rSupplier, Supplier<Alliance> aSupplier) {
+    public AimCommand(Elevator elevator, ShooterPivot shooterPivot, CommandSwerveDrivetrain drivetrain, Supplier<Double> xSupplier, Supplier<Double> ySupplier, Supplier<Double> rSupplier, Supplier<Alliance> aSupplier) {
         addRequirements(elevator);
         this.elevator = elevator;
         this.shooterPivot = shooterPivot;
@@ -52,10 +53,8 @@ public class AimRobotCommand extends Command {
     public void execute() {
         blueSide = aSupplier.get() == Alliance.Blue;
         
-        // ChassisSpeeds speeds = drivetrain.getCurrentRobotChassisSpeeds();
         Pose2d robotPosition = drivetrain.getPose();
-        // AimOutputContainer output = AimHelper.calculateAimWithMath(robotPosition, speeds, blueSide); // WITH MATH
-        AimOutputContainer output = AimHelper.calculateAimLookupTable(robotPosition, blueSide); // LOOKUP TABLE
+        AimOutputContainer output = AimHelper.getAimOutputs(drivetrain, blueSide, AimStrategies.LOOKUP);
 
         elevator.setElevatorPosition(output.getElevatorHeight());
         shooterPivot.setPivotPosition(output.getPivotAngle());
@@ -71,7 +70,7 @@ public class AimRobotCommand extends Command {
         currentDriveCommand = drivetrain.applyRequest(() -> driveRequest.withVelocityX(xSupplier.get() * SwerveConstants.maxDriveVelocity)
                                 .withVelocityY(ySupplier.get() * SwerveConstants.maxDriveVelocity)
                                 .withRotationalRate((rSupplier.get() > 0.2 || rSupplier.get() < -0.2) ? (-rSupplier.get() * SwerveConstants.maxAngleVelocity) 
-                                : (pidTurn.calculate(measurement, setpoint) * Constants.SwerveConstants.maxAngleVelocity)));
+                                : (thetaController.calculate(measurement, setpoint) * Constants.SwerveConstants.maxAngleVelocity)));
 
         currentDriveCommand.schedule();
     }
