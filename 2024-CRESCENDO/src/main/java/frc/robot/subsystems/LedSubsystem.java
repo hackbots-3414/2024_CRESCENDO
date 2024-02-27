@@ -70,11 +70,11 @@ public class LedSubsystem extends SubsystemBase {
       setColor(END_GAME_30);
       SmartDashboard.putBoolean(LABELS[4], true);
 
-    } else if (subsystemManager.noteFinder.isNoteDetected()) {
+    } /*else if (subsystemManager.noteFinder.isNoteDetected()) {
       setColor(NOTE_IN_VIEW);
       SmartDashboard.putBoolean(LABELS[5], true);
 
-    } /*else if (false) {
+    } else if (false) {
       // TODO make Climber subsystem
       setColor(CLIMBER_ACTIVATED);
       SmartDashboard.putBoolean(LABELS[6], true);
