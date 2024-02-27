@@ -16,11 +16,11 @@
    </encoder>
  </appender>
  
- <logger name="frc.robot.subsystems.NoteFinder" level="WARN"/>
+ <logger name="frc.robot.subsystems.NoteFinder" level="TRACE"/>
  <logger name = "frc.robot.commands.ActivateNearNote" level="WARN"/>
  <logger name = "frc.robot.commands.ActivateNearNoteAndAlign" level="WARN"/>
- <logger name = "frc.robot.commands.ApproachAlignIntake" level="WARN"/>
-  <logger name = "frc.robot.subsystems.CommandSwerveDrivetrain" level="WARN"/>
+ <logger name = "frc.robot.commands.ApproachAlignIntake" level="TRACE"/>
+  <logger name = "frc.robot.subsystems.CommandSwerveDrivetrain" level="DEBUG"/>
  <root level = "WARN">
    <appender-ref ref="STDOUT"/>
    <appender-ref ref="FILE"/>

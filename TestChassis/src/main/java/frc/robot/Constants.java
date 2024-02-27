@@ -53,8 +53,10 @@ public class Constants {
 
         public static final double maxDriveAcceleration = 4;
         public static final double maxAngleAcceleration = 2*Math.PI;
-        public static final double maxDriveVelocity = TunerConstants.kSpeedAt12VoltsMps;
-        public static final double maxAngleVelocity = 1.5*Math.PI;
+        public static final double maxDriveVelocity = TunerConstants.kSpeedAt12VoltsMps * 0.1;
+        // not originally multiplied by 0.1
+        public static final double maxAngleVelocity = 1.5*Math.PI*0.1;
+        // not originally multiplied by 0.1
         public static final double shellyDriveVelocity = maxDriveVelocity * 0.25;
         public static final double shellyAngleVelocity = maxAngleVelocity * 0.50;
         
@@ -356,7 +358,7 @@ public class Constants {
         public static final int BUFFER_SIZE = 512;
         public static final double CYCLE_TIME = 0.015;
         // TODO Update EXPIRY_SECONDS for comp
-        public static final long EXPIRY_SECONDS = 30;
+        public static final long EXPIRY_SECONDS = 120;
         public static final double FIELD_LENGTH = 16.54;
     }
 }

@@ -39,8 +39,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private static final double kSimLoopPeriod = 0.002; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
-    private Field2d field;
-
+    private Field2d field = new Field2d();
+  
     private Pose2d estimatedPose;
     private boolean isInRange;
     
@@ -48,9 +48,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
         this.estimatedPose = new Pose2d();
+        SmartDashboard.putData("Field", field);
         if (Robot.isSimulation()) {
-            field = new Field2d();
-            SmartDashboard.putData("Field", field);
             startSimThread();
         }
         setCurrentLimit(SwerveConstants.driveSupplyCurrentLimit);
@@ -59,9 +58,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
         this.estimatedPose = new Pose2d();
+        SmartDashboard.putData("Field", field);
         if (Robot.isSimulation()) {
-            field = new Field2d();
-            SmartDashboard.putData("Field", field);
+            
             startSimThread();
         }
         setCurrentLimit(SwerveConstants.driveSupplyCurrentLimit);
@@ -115,9 +114,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     @Override
     public void periodic() {
         estimatedPose = m_odometry.getEstimatedPosition();
-        if (Robot.isSimulation()){
+       // if (Robot.isSimulation()){
             field.setRobotPose(estimatedPose);
-        }
+      //  }
         // SmartDashboard.putData(field);
         
         SmartDashboard.putString("ROBOTPOSE", estimatedPose.toString());
@@ -154,9 +153,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                         SwerveConstants.maxAngleVelocity, SwerveConstants.maxAngleAcceleration),
                 goal,
                 isReversed);
-        if (Robot.isSimulation()) {
-          //  field.getRobotObject().setPoses(path.getPathPoses());
-        }
+       // if (Robot.isSimulation()) {
+           field.getRobotObject().setPoses(path.getPathPoses());
+       // }
         LOGGER.debug("makeDriveToPoseCommand: Calculated Poses: {}", path.getPathPoses());
 
         return AutoBuilder.followPath(path);
