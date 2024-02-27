@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.photonvision.EstimatedRobotPose;
-
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.ApplyChassisSpeeds;
@@ -28,10 +26,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -40,6 +36,7 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.WinchConstants;
+import frc.robot.Robot;
 import frc.robot.Telemetry;
 import frc.robot.commands.AutonCommands.AutoScoreCommand;
 import frc.robot.commands.AutonCommands.RevShooterCommand;
@@ -59,8 +56,12 @@ import frc.robot.commands.ManualCommands.ManualWinchCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AimHelper.AimOutputContainer;
 import frc.robot.subsystems.AimHelper.AimStrategies;
+import frc.robot.subsystems.vision.AprilTagVision;
+import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVision;
+import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVisionSIM;
 
 public class SubsystemManager extends SubsystemBase {
+	private AprilTagVision aprilTagVision;
 	private static SubsystemManager me = null;
 	PowerDistribution pdp = new PowerDistribution(1, ModuleType.kRev);
 	List<SubsystemBase> subsystems = new ArrayList<>();
@@ -109,7 +110,6 @@ public class SubsystemManager extends SubsystemBase {
 	NoteFinder noteFinder = new NoteFinder();
 	Winch winch = new Winch();
 	LedSubsystem ledSubsystem = new LedSubsystem();
-	PhotonVision photonVision = new PhotonVision();
 
 	public Intake getIntake() {return intake;}
 	public Shooter getShooter() {return shooter;}
@@ -119,10 +119,19 @@ public class SubsystemManager extends SubsystemBase {
 	public NoteFinder getNoteFinder() {return noteFinder;}
 	public Winch getWinch() {return winch;}
 	public LedSubsystem getLedSubsystem() {return ledSubsystem;}
-	public PhotonVision getPhotonVision() {return photonVision;}
+	public AprilTagVision geAprilTagVision() {return aprilTagVision;}
 
 	private SubsystemManager() {
 		configurePathPlanner();
+
+		if (Constants.VisionConstants.USE_VISION == true) {
+			if (Robot.isReal()) {
+            	aprilTagVision = new AprilTagVision(new AprilTagVisionIOPhotonVision());
+			} else {
+				aprilTagVision = new AprilTagVision(new AprilTagVisionIOPhotonVisionSIM(drivetrain::getCurrentPose2d));
+			}
+            aprilTagVision.setDataInterfaces(drivetrain::addVisionData);
+        }
 	}
 
 	public static synchronized SubsystemManager getInstance() {
@@ -153,27 +162,27 @@ public class SubsystemManager extends SubsystemBase {
 
   }
 
-  private void updateOdometryWithPhotonVision() {
-    Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
-    Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
+//   private void updateOdometryWithPhotonVision() {
+//     Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
+//     Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
 
-    SmartDashboard.putBoolean("SeesRight", rightPoseMaybe.isPresent());
-    SmartDashboard.putBoolean("SeesLeft", leftPoseMaybe.isPresent());
+//     SmartDashboard.putBoolean("SeesRight", rightPoseMaybe.isPresent());
+//     SmartDashboard.putBoolean("SeesLeft", leftPoseMaybe.isPresent());
 
-    if (drivetrain.getTranslationalRobotSpeed() <= 1.0 && drivetrain.getRotationalRobotSpeed() <= Math.PI) {
+//     if (drivetrain.getTranslationalRobotSpeed() <= 1.0 && drivetrain.getRotationalRobotSpeed() <= Math.PI) {
 
-      if (leftPoseMaybe.isPresent()) {
-        EstimatedRobotPose leftPose = leftPoseMaybe.get();
-        drivetrain.addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
-      }
-      if (rightPoseMaybe.isPresent()) {
-        EstimatedRobotPose rightPose = rightPoseMaybe.get();
-        drivetrain.addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
-      }
-    } else {
-      periodicRuns = -1; // this way it will try again next time
-    }
-  }
+//       if (leftPoseMaybe.isPresent()) {
+//         EstimatedRobotPose leftPose = leftPoseMaybe.get();
+//         drivetrain.addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
+//       }
+//       if (rightPoseMaybe.isPresent()) {
+//         EstimatedRobotPose rightPose = rightPoseMaybe.get();
+//         drivetrain.addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
+//       }
+//     } else {
+//       periodicRuns = -1; // this way it will try again next time
+//     }
+//   }
 
   // private void dampenDrivetrain() {
   // double supplyLimitDrivetrain = ((availableCurrent / runTimeHours

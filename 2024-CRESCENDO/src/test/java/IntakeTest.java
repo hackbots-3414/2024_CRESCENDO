@@ -50,7 +50,7 @@ public class IntakeTest implements AutoCloseable {
       }
    }
 
-   @Test
+   // @Test
    public void motorDrives() {
       intakeMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
 

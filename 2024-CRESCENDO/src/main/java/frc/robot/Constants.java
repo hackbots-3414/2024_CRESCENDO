@@ -12,12 +12,18 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import frc.robot.generated.TunerConstants;
+import frc.robot.util.FieldConstants;
 
 public class Constants {
     public enum AprilTags {
@@ -53,16 +59,23 @@ public class Constants {
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
 
-        
         public static final double driveSupplyCurrentLimit = 80;
 
         public static final double maxDriveAcceleration = 4;
-        public static final double maxAngleAcceleration = 2*Math.PI;
+        public static final double maxAngleAcceleration = 2 * Math.PI;
         public static final double maxDriveVelocity = TunerConstants.kSpeedAt12VoltsMps;
-        public static final double maxAngleVelocity = 1.5*Math.PI;
+        public static final double maxAngleVelocity = 1.5 * Math.PI;
         public static final double shellyDriveVelocity = maxDriveVelocity * 0.25;
         public static final double shellyAngleVelocity = maxAngleVelocity * 0.50;
-        
+
+        // Need to change below Constants.
+        // If using TunerX estimator,which uses default values for standard deviations
+        // for odometry are 0.1 for x,y and
+        // theta.
+        // Default for Vision estimator are 0.9, 0.9, 0.9
+
+        public static final double xyStdDevCoefficient = 0.01;
+        public static final double thetaStdDevCoefficient = 1.0;
 
         /*
          * FL D - 4
@@ -77,25 +90,61 @@ public class Constants {
     }
 
     public static final class VisionConstants {
+
+        public static final boolean USE_VISION = true; // Vision enabled or not
+
         /*
          * A note about these transforms: They appear to follow the normal cordinate
          * system (x is right when pos. and so on).
          */
-        public static final Transform3d leftTransform = new Transform3d(-0.282, 0.293, 0.646, 
-                                                        new Rotation3d(Units.degreesToRadians(23), Units.degreesToRadians(30), Units.degreesToRadians(-50)));
-        public static final Transform3d rightTransform = new Transform3d(-0.282, -0.293, 0.646, 
-                                                        new Rotation3d(Units.degreesToRadians(-23), Units.degreesToRadians(30), Units.degreesToRadians(50)));
+        public static final Transform3d leftTransform = new Transform3d(-0.281, 0.291, 0.636,
+                new Rotation3d(Units.degreesToRadians(-2.5), Units.degreesToRadians(-30), Units.degreesToRadians(-10)));
+        public static final Transform3d rightTransform = new Transform3d(-0.281, -0.291, 0.636,
+                new Rotation3d(Units.degreesToRadians(2.5), Units.degreesToRadians(-30), Units.degreesToRadians(10)));
+
         public static final String leftCameraName = "LeftCam";
         public static final String rightCameraName = "RightCam";
 
-        public static final double maxAmbiguity = 0.1;
-        public static final List<Integer> validTagIds = Arrays.asList(3, 4, 8, 7);
-        // public static final List<Integer> validTagIds = null;
+        /** Minimum target ambiguity. Targets with higher ambiguity will be discarded */
+        public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
 
-        public static final PoseStrategy mainStrategy = PoseStrategy.AVERAGE_BEST_TARGETS;
-        public static final PoseStrategy fallbackStrategy = PoseStrategy.AVERAGE_BEST_TARGETS;
-        public static final int aprilTagUpdateFrequency = 50; // in seconds, between 1 and 50.
+        public static final double POSE_AMBIGUITY_SHIFTER = 0.2;
+        public static final double POSE_AMBIGUITY_MULTIPLIER = 4;
+        public static final double NOISY_DISTANCE_METERS = 2.5;
+        public static final double DISTANCE_WEIGHT = 7;
+        public static final int TAG_PRESENCE_WEIGHT = 10;
 
+        /**
+         * Standard deviations of model states. Increase these numbers to trust your
+         * model's state estimates less. This
+         * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then
+         * meters.
+         */
+        public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = Matrix.mat(Nat.N3(), Nat.N1())
+                .fill(
+                        // if these numbers are less than one, multiplying will do bad things
+                        1, // x
+                        1, // y
+                        1 * Math.PI // theta
+                );
+                
+        /**
+         * Standard deviations of the vision measurements. Increase these numbers to
+         * trust global measurements from vision
+         * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and
+         * radians.
+         */
+        public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = Matrix.mat(Nat.N3(), Nat.N1())
+                .fill(
+                        // if these numbers are less than one, multiplying will do bad things
+                        .1, // x
+                        .1, // y
+                        .1);
+
+        // Pose on the opposite side of the field. Use with `relativeTo` to flip a pose
+        // to the opposite alliance
+        public static final Pose2d FLIPPING_POSE = new Pose2d(
+                new Translation2d(FieldConstants.fieldLength, FieldConstants.fieldWidth), new Rotation2d(Math.PI));
     }
 
     public static final class ShooterConstants {
@@ -120,25 +169,24 @@ public class Constants {
         public static final double shooterBackupSpeed = -0.1;
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
-            entry(0.0, 0.0780),
-            entry(1.41, 0.0780), // lined up
-            entry(1.70, 0.0610), // 4
-            entry(2.31, 0.0385), // 6
-            entry(2.92, 0.0227), // 8
-            entry(3.54, 0.0130), // 10
-            entry(4.14, 0.0030) // 12
+                entry(0.0, 0.0780),
+                entry(1.41, 0.0780), // lined up
+                entry(1.70, 0.0610), // 4
+                entry(2.31, 0.0385), // 6
+                entry(2.92, 0.0227), // 8
+                entry(3.54, 0.0130), // 10
+                entry(4.14, 0.0030) // 12
         );
 
         public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
-            entry(0.0, 50.0),
-            entry(1.41, 50.0),
-            entry(1.70, 50.0),
-            entry(2.31, 50.0),
-            entry(2.92, 60.0),
-            entry(3.54, 70.0),
-            entry(4.14, 92.0),
-            entry(50.0, 92.0)
-        );
+                entry(0.0, 50.0),
+                entry(1.41, 50.0),
+                entry(1.70, 50.0),
+                entry(2.31, 50.0),
+                entry(2.92, 60.0),
+                entry(3.54, 70.0),
+                entry(4.14, 92.0),
+                entry(50.0, 92.0));
     }
 
     public static final class IntakeConstants {
@@ -169,7 +217,7 @@ public class Constants {
         public static final int rightX = 3;
         public static final int rightY = 2;
 
-        public static final double deadband = 0.01;//0.06;
+        public static final double deadband = 0.01;// 0.06;
         public static final double leftXMax = 0.75;
         public static final double leftYMax = 0.66;
         public static final double rightXMax = 0.8;
@@ -224,7 +272,7 @@ public class Constants {
     public static final class ElevatorConstants {
         public static final int elevatorMotorID = 50;
         public static final int elevatorMotorPDPID = 2;
-        
+
         public static final int forwardLimitChannelID = 0;
         public static final int reverseLimitChannelID = 1;
 
@@ -242,13 +290,14 @@ public class Constants {
         public static final InvertedValue invertMotor = InvertedValue.Clockwise_Positive;
 
         public static final class ElevatorSlot0ConfigConstants {
-            public static final double kP = 15.0; //output per unit of error in position (output/rotation)
-            public static final double kI = 0.0; //output per unit of integrated error in position (output/(rotation*s))
-            public static final double kD = 0.0; //output per unit of error in velocity (output/rps)
-            public static final double kS = 0.0; //output to overcome static friction (output)
-            public static final double kV = 2.8; //output per unit of target velocity (output/rps)
-            public static final double kA = 0.0; //output per unit of target acceleration (output/(rps/s))
-            public static final double kG = 0.0; //Feedforward Constant
+            public static final double kP = 15.0; // output per unit of error in position (output/rotation)
+            public static final double kI = 0.0; // output per unit of integrated error in position
+                                                 // (output/(rotation*s))
+            public static final double kD = 0.0; // output per unit of error in velocity (output/rps)
+            public static final double kS = 0.0; // output to overcome static friction (output)
+            public static final double kV = 2.8; // output per unit of target velocity (output/rps)
+            public static final double kA = 0.0; // output per unit of target acceleration (output/(rps/s))
+            public static final double kG = 0.0; // Feedforward Constant
         }
 
         public static final class ElevatorMotionMagicConstants {
@@ -259,7 +308,7 @@ public class Constants {
 
         public static final double elevatorCurrentLimit = 20;
 
-        public static final double elevatorForwardSoftLimit = 2.33; //output shaft rotations
+        public static final double elevatorForwardSoftLimit = 2.33; // output shaft rotations
 
         public static final double gearDiameter = 1.751;
         public static final double elevatorTilt = Math.toRadians(60);
@@ -293,17 +342,18 @@ public class Constants {
         public static final double pivotCurrentLimit = 0;
 
         public static final double pivotTolerance = 0.004;
-        
+
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         public static final class PivotSlot0ConfigConstants {
-            public static final double kP = 150.0; //output per unit of error in position (output/rotation)
-            public static final double kI = 0.0; //output per unit of integrated error in position (output/(rotation*s))
-            public static final double kD = 0.0; //output per unit of error in velocity (output/rps)
-            public static final double kS = 0.0; //output to overcome static friction (output)
-            public static final double kV = 50.0; //output per unit of target velocity (output/rps)
-            public static final double kA = 0.0; //output per unit of target acceleration (output/(rps/s))
-            public static final double kG = 0.0; //feedforward Constant
+            public static final double kP = 150.0; // output per unit of error in position (output/rotation)
+            public static final double kI = 0.0; // output per unit of integrated error in position
+                                                 // (output/(rotation*s))
+            public static final double kD = 0.0; // output per unit of error in velocity (output/rps)
+            public static final double kS = 0.0; // output to overcome static friction (output)
+            public static final double kV = 50.0; // output per unit of target velocity (output/rps)
+            public static final double kA = 0.0; // output per unit of target acceleration (output/(rps/s))
+            public static final double kG = 0.0; // feedforward Constant
         }
 
         public static final class PivotMotionMagicConstants {
@@ -315,14 +365,14 @@ public class Constants {
 
     public static final class AimConstants {
         public static final double minimumDistanceToNotBreakRobot = 3; // meters from speaker
-        public static final double clearanceHeight = 1.9; 
+        public static final double clearanceHeight = 1.9;
         public static final double elevatorHeightFromFloorAtRest = 0.19; // ONLY Y DIRECTION
 
         public static final double rangeTolerance = 0.01;
 
         public static final double compressionAdder = 3;
 
-        public static final double maxRange = 3; 
+        public static final double maxRange = 3;
 
         public static final double aprilTagToHoodGoal = Units.inchesToMeters(8);
 

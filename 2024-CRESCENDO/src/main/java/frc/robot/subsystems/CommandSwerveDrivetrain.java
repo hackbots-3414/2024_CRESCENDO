@@ -1,6 +1,10 @@
 package frc.robot.subsystems;
 
+import java.util.List;
 import java.util.function.Supplier;
+import static edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide;
+import static edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition.kRedAllianceWallRightSide;
+import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -15,11 +19,14 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Robot;
+import frc.robot.util.VisionHelpers;
+import frc.robot.util.VisionHelpers.TimestampedVisionUpdate;
 import frc.robot.Constants.SwerveConstants;
 
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
@@ -27,6 +34,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
     private Field2d field = new Field2d();
+    private OriginPosition originPosition = kBlueAllianceWallRightSide;
 
     private Pose2d estimatedPose;
     private boolean isInRange;
@@ -91,6 +99,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
+    public Pose2d getCurrentPose2d() {
+        return this.getState().Pose;
+    }
+
     public Pose2d getPose() {
         return estimatedPose;
     }
@@ -105,15 +117,43 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         getModule(3).getDriveMotor().getConfigurator().apply(configs, 0.015);
     }
 
+     /**
+     * Adds vision data to the pose esimation.
+     *
+     * @param visionData The vision data to add.
+     */
+    public void addVisionData(List<TimestampedVisionUpdate> visionData) {
+        visionData.forEach(visionUpdate ->
+                addVisionMeasurement(visionUpdate.pose(), visionUpdate.timestamp(), visionUpdate.stdDevs()));
+    }
+
+    public void addDashboardWidgets(ShuffleboardTab tab) {
+        tab.add("Field", field).withPosition(0, 0).withSize(6, 4);
+        tab.addString("Pose", this::getFomattedPose).withPosition(6, 2).withSize(2, 1);
+    }
+
+    private String getFomattedPose() {
+        var pose = this.getState().Pose;
+        return String.format(
+                "(%.3f, %.3f) %.2f degrees",
+                pose.getX(), pose.getY(), pose.getRotation().getDegrees());
+    }
+
     @Override
     public void periodic() {
         estimatedPose = m_odometry.getEstimatedPosition();
-        field.setRobotPose(estimatedPose);
-        SmartDashboard.putData(field);
         
         SmartDashboard.putString("ROBOTPOSE", estimatedPose.toString());
         SmartDashboard.putNumber("ROBOTX", estimatedPose.getX());
         SmartDashboard.putNumber("ROBOTY", estimatedPose.getY());
+
+        var dashboardPose = this.getState().Pose;
+        if (originPosition == kRedAllianceWallRightSide) {
+            // Flip the pose when red, since the dashboard field photo cannot be rotated
+            dashboardPose = VisionHelpers.flipAlliance(dashboardPose);
+        }
+        field.setRobotPose(dashboardPose);
+        SmartDashboard.putData(field);
     }
 
     public boolean isInRange() {

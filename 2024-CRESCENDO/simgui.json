@@ -1,11 +1,11 @@
 {
   "HALProvider": {
-    "DIO": {
+    "Other Devices": {
       "window": {
-        "visible": true
+        "visible": false
       }
     },
-    "Other Devices": {
+    "Timing": {
       "window": {
         "visible": false
       }
@@ -15,6 +15,7 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/Pose": "Field2d",
+      "/Shuffleboard/Vision/Field": "Field2d",
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Auton Mode": "String Chooser",
       "/SmartDashboard/Brake Elevator": "Command",
@@ -24,14 +25,10 @@
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",
       "/SmartDashboard/Module 3": "Mechanism2d",
-      "/SmartDashboard/Run Tests": "Command"
+      "/SmartDashboard/Run Tests": "Command",
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
     },
     "windows": {
-      "/FMSInfo": {
-        "window": {
-          "visible": true
-        }
-      },
       "/Pose": {
         "bottom": 1476,
         "height": 8.210550308227539,
@@ -43,7 +40,13 @@
           "visible": true
         }
       },
-      "/SmartDashboard/Auto Chooser": {
+      "/Shuffleboard/Vision/Field": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
         "window": {
           "visible": true
         }
@@ -78,6 +81,17 @@
         "window": {
           "visible": true
         }
+      },
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
       }
     }
   },
@@ -99,7 +113,9 @@
   "NetworkTables Info": {
     "Connections": {
       "open": true
-    },
-    "visible": true
+    }
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }
