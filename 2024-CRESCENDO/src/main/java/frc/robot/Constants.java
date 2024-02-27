@@ -372,7 +372,6 @@ public class Constants {
 
         public static final double maxRange = 3;
 
-        public static final double speakerHeight = 2.0515; // meters
         public static final double aprilTagToHoodGoal = Units.inchesToMeters(8);
 
         public static final double yawMomentumGain = 0.0;
@@ -380,6 +379,14 @@ public class Constants {
 
         public static final double dragPitchGainSlope = -0.09836;
         public static final double dragPitchGainYIntercept = 1.2;
+
+        public static final double speakerY = Units.inchesToMeters(218.42);
+        public static final double speakerXBlue = Units.inchesToMeters(0);
+        public static final double speakerXRed = Units.inchesToMeters(652.73);
+        public static final double speakerHeight = Units.inchesToMeters(80.515); // (82.90 + 78.13) / 2
+
+        public static final Pose2d blueSpeakerPos = new Pose2d(speakerXBlue, speakerY, new Rotation2d(0));
+        public static final Pose2d redSpeakerPos = new Pose2d(speakerXRed, speakerY, new Rotation2d(Math.PI));
     }
 
     public static final class WinchConstants {
