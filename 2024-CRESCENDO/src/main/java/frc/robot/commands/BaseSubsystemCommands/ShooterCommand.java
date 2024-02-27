@@ -1,9 +1,10 @@
-package frc.robot.commands;
+package frc.robot.commands.BaseSubsystemCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TransportConstants;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.SubsystemManager;
 import frc.robot.subsystems.Transport;
 
 public class ShooterCommand extends Command {
@@ -32,6 +33,7 @@ public class ShooterCommand extends Command {
     }
     if (shooter.shooterAtSpeed()) {
       transport.setMotor(TransportConstants.transportSpeed);
+      SubsystemManager.getInstance().noteOnBoard = false;
     }
   }
 

@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriverConstants;
 import frc.robot.Constants.InputConstants;
-import frc.robot.commands.ElevatorCommand.ElevatorPresets;
+import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
 import frc.robot.subsystems.NoteFinder;
 import frc.robot.subsystems.SubsystemManager;
 
@@ -62,7 +62,7 @@ public class RobotContainer {
 
   private void configureXboxOperatorBindings() {
     xboxOperator.rightBumper().whileTrue(subsystemManager.makeShootCommand()); // shoot manually
-    xboxOperator.leftBumper().whileTrue(subsystemManager.makeStowAndIntakeCommand()); // intake
+    xboxOperator.leftBumper().whileTrue(subsystemManager.makeIntakeCommand()); // intake
     xboxOperator.x().whileTrue(subsystemManager.makeAmpScoreCommand()); // auto amp (will do everything)
     // xboxOperator.a().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.AMP));
     // xboxOperator.y().whileTrue(subsystemManager.makeTrapScoreCommand()); // auto trap (will do everything)
@@ -76,9 +76,6 @@ public class RobotContainer {
 
     xboxOperator.y().whileTrue(subsystemManager.makeSubwooferShootCommand());
     xboxOperator.b().onTrue(subsystemManager.makeResetElevatorCommand());
-
-    // xboxOperator.back().whileTrue(subsystemManager.makeWinchCommand(true));  
-    // xboxOperator.start().whileTrue(subsystemManager.makeWinchCommand(false));
 
     xboxOperator.back().whileTrue(subsystemManager.makeManualWinchCommand(true));
     // xboxOperator.back().whileTrue(subsystemManager.makeAllInOneWinchCommand());
@@ -112,7 +109,7 @@ public class RobotContainer {
     ps5Operator.create().whileTrue(subsystemManager.makeManualWinchCommand(false)); // back
     ps5Operator.options().whileTrue(subsystemManager.makeManualWinchCommand(true)); // start
 
-    ps5Operator.L2().whileTrue(subsystemManager.makeStowAndIntakeCommand());
+    ps5Operator.L2().whileTrue(subsystemManager.makeIntakeCommand());
     ps5Operator.R2().whileTrue(subsystemManager.makeShootCommand());
 
 

@@ -389,6 +389,10 @@ public class Constants {
 
         public static final Pose2d blueSpeakerPos = new Pose2d(speakerXBlue, speakerY, new Rotation2d(0));
         public static final Pose2d redSpeakerPos = new Pose2d(speakerXRed, speakerY, new Rotation2d(Math.PI));
+
+        public static final double speakerHeightMinusElevatorRaise = speakerHeight - elevatorHeightFromFloorAtRest;
+        public static final double gravity = 9.81;
+        public static final double velocity = ShooterConstants.maxShootSpeed * Units.inchesToMeters(1.5) * Math.PI + AimConstants.compressionAdder;
     }
 
     public static final class WinchConstants {

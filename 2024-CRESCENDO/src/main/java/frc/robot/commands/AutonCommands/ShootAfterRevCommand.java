@@ -3,6 +3,7 @@ package frc.robot.commands.AutonCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.TransportConstants;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.SubsystemManager;
 import frc.robot.subsystems.Transport;
 
 public class ShootAfterRevCommand extends Command {
@@ -22,6 +23,7 @@ public class ShootAfterRevCommand extends Command {
         shooter.setVelocity(velocity);
         if (shooter.shooterAtSpeed()) {
             transport.setMotor(TransportConstants.transportSpeed);
+            SubsystemManager.getInstance().noteOnBoard = false;
         }
     }
 
