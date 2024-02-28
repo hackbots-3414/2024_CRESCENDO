@@ -42,7 +42,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     private static Notifier allNotifier;
 
     static {
-        if (Constants.VisionConstants.USE_VISION == true) {
+        if (Constants.VisionConstants.USE_VISION) {
             rightEstimator = new PhotonVisionRunnable(
                     Constants.VisionConstants.rightCameraName,
                     Constants.VisionConstants.rightTransform);
@@ -66,7 +66,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     public PoseEstimatorSubsystem(CommandSwerveDrivetrain driveTrain) {
 
         this.driveTrain = driveTrain;
-        if (Constants.VisionConstants.USE_VISION == true) {
+        if (Constants.VisionConstants.USE_VISION) {
             // Start PhotonVision threads
             allNotifier.setName("runAll");
             allNotifier.startPeriodic(0.02);
