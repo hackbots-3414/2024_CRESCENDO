@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorMotionMagicConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorSlot0ConfigConstants;
@@ -160,10 +161,12 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
     reverseLimit = !reverseLimiter.get();
     forwardLimit = !forwardLimiter.get();
 
-    SmartDashboard.putBoolean("Forward Limit switch", forwardLimit);
-    SmartDashboard.putBoolean("Reverse Limit Switch", reverseLimit);
-    SmartDashboard.putNumber("Elevator Position", elevatorPosition);
-    SmartDashboard.putBoolean("ELEVATOR SETPOINT", isAtSetpoint());
+    if (DebugConstants.debugMode) {
+      SmartDashboard.putBoolean("Forward Limit switch", forwardLimit);
+      SmartDashboard.putBoolean("Reverse Limit Switch", reverseLimit);
+      SmartDashboard.putNumber("Elevator Position", elevatorPosition);
+      SmartDashboard.putBoolean("ELEVATOR SETPOINT", isAtSetpoint());
+    }
   }
 
   @Override

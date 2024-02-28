@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.Constants.DebugConstants;
 
 public class Shooter extends SubsystemBase implements AutoCloseable {
 
@@ -65,9 +66,11 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
     motorVelocity = rightMotor.getVelocity().getValueAsDouble();
     motorPosition = rightMotor.getPosition().getValueAsDouble();
 
-    SmartDashboard.putNumber("VELOCITY FOR SHOOTER", motorVelocity);
-    SmartDashboard.putNumber("VELOCITY REFERENCE", rightMotor.getClosedLoopReference().getValueAsDouble());
-    SmartDashboard.putBoolean("SHOOTER AT SPEED", shooterAtSpeed());
+    if (DebugConstants.debugMode) {
+      SmartDashboard.putNumber("VELOCITY FOR SHOOTER", motorVelocity);
+      SmartDashboard.putNumber("VELOCITY REFERENCE", rightMotor.getClosedLoopReference().getValueAsDouble());
+      SmartDashboard.putBoolean("SHOOTER AT SPEED", shooterAtSpeed());
+    }
   }
 
   public void setVelocity(double velocity) {

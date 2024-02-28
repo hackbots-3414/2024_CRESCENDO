@@ -387,4 +387,8 @@ public class Constants {
         public static final int BUFFER_SIZE = 512;
         public static final double CYCLE_TIME = 0.015;
     }
+
+    public static final class DebugConstants {
+        public static final boolean debugMode = false; // setting this to true will increase your network table traffic.
+    }
 }

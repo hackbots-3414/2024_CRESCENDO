@@ -22,6 +22,7 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.PivotConstants.PivotMotionMagicConstants;
 import frc.robot.Constants.PivotConstants.PivotSlot0ConfigConstants;
@@ -128,8 +129,10 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
   @Override
   public void periodic() {
     cancoderPosition = cancoder.getAbsolutePosition().getValueAsDouble();
-    SmartDashboard.putNumber("CANCODERPOS", cancoderPosition);
-    SmartDashboard.putBoolean("SHOOTER PIVOT SETPOINT", isAtSetpoint());
+    if (DebugConstants.debugMode) {
+      SmartDashboard.putNumber("CANCODERPOS", cancoderPosition);
+      SmartDashboard.putBoolean("SHOOTER PIVOT SETPOINT", isAtSetpoint());
+    }
   }
 
   public void setCurrentLimit(double limit) {
