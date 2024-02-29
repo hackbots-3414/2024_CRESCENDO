@@ -47,7 +47,7 @@ public class ApproachAlignIntake extends Command {
         .fromDegrees(drivetrain.getPose().getRotation().getDegrees() - gamepiece.getAngle());
     // Put safety checks on the distance
     // Made change on PathPlanner NavGrid
-    Translation2d targetGoal = new Translation2d(-2, rotation2d);
+    Translation2d targetGoal = new Translation2d(-3, rotation2d);
     Pose2d goalPose2d = new Pose2d(drivetrain.getPose().getTranslation().plus(targetGoal), rotation2d);
     LOGGER.trace("currentPose: {}, goalPose2d: {}, gamepiece: {}", drivetrain.getPose(), goalPose2d, gamepiece);
     return goalPose2d;

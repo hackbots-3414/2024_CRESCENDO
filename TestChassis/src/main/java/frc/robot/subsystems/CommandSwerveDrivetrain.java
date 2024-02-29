@@ -23,6 +23,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -43,6 +45,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
   
     private Pose2d estimatedPose;
     private boolean isInRange;
+    private Pose2d startPose;
     
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
             SwerveModuleConstants... modules) {
@@ -140,12 +143,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
      public Command makeDriveToPoseCommand(Pose2d goalPose, boolean isReversed) {
+        // Start pose is 180 degrees opposite of estimated pose
+        Pose2d startPose = new Pose2d(estimatedPose.getTranslation(), estimatedPose.getRotation().minus(new Rotation2d(Math.PI)));
         GoalEndState goal = DriverStation.getAlliance().get() == Alliance.Blue
                 ? new GoalEndState(0.0, goalPose.getRotation())
                 : new GoalEndState(0, new Rotation2d(Math.PI - goalPose.getRotation().getRadians()));
         ArrayList<RotationTarget> rotateTargetList = new ArrayList<>();
         rotateTargetList.add(new RotationTarget(0.1, goalPose.getRotation()));
-        PathPlannerPath path = new PathPlannerPath(PathPlannerPath.bezierFromPoses(estimatedPose, goalPose),
+        PathPlannerPath path = new PathPlannerPath(PathPlannerPath.bezierFromPoses(startPose, goalPose),
                 rotateTargetList,
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -160,7 +165,4 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
         return AutoBuilder.followPath(path);
     }
-
-    
-
 }
