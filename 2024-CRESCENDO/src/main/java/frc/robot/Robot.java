@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.NoteFinderConstants;
+import edu.wpi.first.cameraserver.CameraServer;;
 
 public class Robot extends LoggedRobot {
   private boolean runSysID = false;
@@ -51,6 +52,7 @@ public class Robot extends LoggedRobot {
       m_SysIdRoutineBot.configureBindings();
     } else {
       m_robotContainer = new RobotContainer();
+      CameraServer.startAutomaticCapture();
       // addPeriodic(m_robotContainer.getNoteFinder()::dataReceiver,
       // NoteFinderConstants.CYCLE_TIME, 0);
     }
