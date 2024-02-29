@@ -367,14 +367,14 @@ public class Constants {
 
     public class PDPConstants {
         public static final int pdp = 0;
-        public static final int winchLeft = 0;
-        public static final int winchRight = 0;
+        public static final int winchLeft = 3;
+        public static final int winchRight = 13;
         public static final int shooterLeft = 0;
-        public static final int shooterRight = 0;
-        public static final int elevator = 0;
-        public static final int pivot = 0;
-        public static final int intake = 0;
-        public static final int transport = 0;
+        public static final int shooterRight = 1;
+        public static final int elevator = 17;
+        public static final int pivot = 5;
+        public static final int intake = 18;
+        public static final int transport = 2;
 
         public static final int frontLeftDrive = 4;
         public static final int frontLeftSteer = 6;
@@ -403,7 +403,7 @@ public class Constants {
         public static final double shooterPivotSupplyLimit = 0;
 
         public static final double elevatorStatorLimit = 0;
-        public static final double elevatorSupplyLimit = 0;
+        public static final double elevatorSupplyLimit = 20;
 
         public static final double drivetrainStatorLimit = 0;
         public static final double drivetrainSupplyLimit = 80;
