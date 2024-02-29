@@ -2,16 +2,13 @@ package frc.robot;
 
 import static java.util.Map.entry;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
-
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,35 +19,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import frc.robot.RobotContainer.JoystickChoice;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.FieldConstants;
 
 public class Constants {
-    public enum AprilTags {
-        BlueWallSideSource(new AprilTagObject(1, 593.68, 9.68, 120)),
-        BlueSpeakerSideSource(new AprilTagObject(2, 637.21, 34.79, 120)),
-        RedSpeakerOffset(new AprilTagObject(3, 652.73, 196.17, 180)),
-        RedSpeakerCenter(new AprilTagObject(4, 652.73, 218.42, 180)),
-        RedAmp(new AprilTagObject(5, 578.77, 323.00, 270)),
-        BlueAmp(new AprilTagObject(6, 72.5, 323.00, 270)),
-        BlueSpeakerCenter(new AprilTagObject(7, -1.5, 218.42, 0)),
-        BlueSpeakerOffset(new AprilTagObject(8, -1.5, 196.17, 0)),
-        RedSpeakerSideSource(new AprilTagObject(9, 14.02, 34.79, 60)),
-        RedWallSideSource(new AprilTagObject(10, 57.54, 9.68, 60)),
-        RedStageFacingSource(new AprilTagObject(11, 468.69, 146.19, 300)),
-        RedStageFacingSpeaker(new AprilTagObject(12, 468.69, 177.10, 60)),
-        RedStageFacingBlue(new AprilTagObject(13, 441.74, 161.62, 180)),
-        BlueStageFacingRed(new AprilTagObject(14, 209.48, 161.62, 0)),
-        BlueStageFacingSpeaker(new AprilTagObject(15, 182.73, 177.10, 120)),
-        BlueStageFacingSource(new AprilTagObject(16, 182.73, 146.19, 240));
-
-        public final AprilTagObject value;
-
-        AprilTags(AprilTagObject value) {
-            this.value = value;
-        }
-    }
-
     public static final class SwerveConstants {
         public static final double kPDrive = 10;
         public static final double kIDrive = 0;
@@ -120,8 +93,7 @@ public class Constants {
          * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then
          * meters.
          */
-        public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = Matrix.mat(Nat.N3(), Nat.N1())
-                .fill(
+        public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(), 
                         // if these numbers are less than one, multiplying will do bad things
                         1, // x
                         1, // y
@@ -134,8 +106,7 @@ public class Constants {
          * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and
          * radians.
          */
-        public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = Matrix.mat(Nat.N3(), Nat.N1())
-                .fill(
+        public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(), 
                         // if these numbers are less than one, multiplying will do bad things
                         .1, // x
                         .1, // y
@@ -224,6 +195,8 @@ public class Constants {
         public static final double rightYMax = 0.8;
 
         public static final double expoPower = 2.0;
+
+        public static final JoystickChoice operatorController = JoystickChoice.PS5;
     }
 
     public static final class TransportConstants {
@@ -291,8 +264,7 @@ public class Constants {
 
         public static final class ElevatorSlot0ConfigConstants {
             public static final double kP = 15.0; // output per unit of error in position (output/rotation)
-            public static final double kI = 0.0; // output per unit of integrated error in position
-                                                 // (output/(rotation*s))
+            public static final double kI = 0.0; // output per unit of integrated error in position (output/(rotation*s))
             public static final double kD = 0.0; // output per unit of error in velocity (output/rps)
             public static final double kS = 0.0; // output to overcome static friction (output)
             public static final double kV = 2.8; // output per unit of target velocity (output/rps)
@@ -336,8 +308,8 @@ public class Constants {
         public static final double radiansAtZero = Math.toRadians(30);
         public static final double radiansAtMax = Math.toRadians(58);
 
-        public static final double pivotManualUpSpeed = 0.025;
-        public static final double pivotManualDownSpeed = -0.025;
+        public static final double pivotManualUpSpeed = 0.2;
+        public static final double pivotManualDownSpeed = -0.2;
 
         public static final double pivotCurrentLimit = 0;
 
@@ -406,31 +378,8 @@ public class Constants {
 
         public static final double sensorToMechanismRatio = 25.0;
 
-        public static final double climbHeight = 21;
-        public static final double restHeight = 4;
-
         public static final double winchManualUpSpeed = 0.5;
         public static final double winchManualDownSpeed = -0.5;
-    }
-
-    public static class AprilTagObject {
-        private int ID;
-
-        public int getID() {
-            return ID;
-        }
-
-        private Pose2d position;
-
-        public Pose2d getPose2d() {
-            return position;
-        }
-
-        public AprilTagObject(int id, double x, double y, double degrees) {
-            this.ID = id;
-            this.position = new Pose2d(Units.inchesToMeters(x), Units.inchesToMeters(y),
-                    Rotation2d.fromDegrees(degrees));
-        }
     }
 
     public class NoteFinderConstants {

@@ -34,7 +34,7 @@ public class AprilTagVisionIOPhotonVision implements AprilTagVisionIO {
      *
      */
     public AprilTagVisionIOPhotonVision() {
-        if (Constants.VisionConstants.USE_VISION == true) {
+        if (Constants.VisionConstants.USE_VISION) {
 
             rightEstimator = new PhotonVisionRunnable(
                     Constants.VisionConstants.rightCameraName,
@@ -63,7 +63,7 @@ public class AprilTagVisionIOPhotonVision implements AprilTagVisionIO {
 
         inputs.poseEstimates = new ArrayList<>();
 
-        if (Constants.VisionConstants.USE_VISION == true) {
+        if (Constants.VisionConstants.USE_VISION) {
             updatePoseEstimates(rightEstimator, inputs);
             updatePoseEstimates(leftEstimator, inputs);
         }

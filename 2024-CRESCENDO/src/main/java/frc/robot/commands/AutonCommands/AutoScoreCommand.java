@@ -60,10 +60,4 @@ public class AutoScoreCommand extends Command {
         elevatorCommand.end(interrupted);
         shootAfterRevCommand.end(interrupted);
     }
-
-    @Override
-    public boolean isFinished() {
-        ticks++;
-        return ticks == (shootWaitTicks);
-    }
 }
