@@ -29,6 +29,7 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.util.VisionHelpers;
 import frc.robot.util.VisionHelpers.TimestampedVisionUpdate;
+import frc.robot.Constants.DebugConstants;
 
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.002; // 5 ms
@@ -48,7 +49,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             startSimThread();
         }
         setCurrentLimit(SwerveConstants.driveSupplyCurrentLimit);
-        SmartDashboard.putData("Field", field);
+        if (DebugConstants.debugMode) SmartDashboard.putData("Field", field);
     }
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
@@ -58,7 +59,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             startSimThread();
         }
         setCurrentLimit(SwerveConstants.driveSupplyCurrentLimit);
-        SmartDashboard.putData("Field", field);
+        if (DebugConstants.debugMode) SmartDashboard.putData("Field", field);
     }
 
     public Translation2d[] moduleLocations() {
@@ -144,9 +145,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public void periodic() {
         estimatedPose = m_odometry.getEstimatedPosition();
         
-        SmartDashboard.putString("ROBOTPOSE", estimatedPose.toString());
-        SmartDashboard.putNumber("ROBOTX", estimatedPose.getX());
-        SmartDashboard.putNumber("ROBOTY", estimatedPose.getY());
+        if (DebugConstants.debugMode) {
+            SmartDashboard.putString("ROBOTPOSE", estimatedPose.toString());
+            SmartDashboard.putNumber("ROBOTX", estimatedPose.getX());
+            SmartDashboard.putNumber("ROBOTY", estimatedPose.getY());
+        }        
 
         var dashboardPose = this.getState().Pose;
         if (originPosition == kRedAllianceWallRightSide) {
@@ -154,7 +157,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             dashboardPose = VisionHelpers.flipAlliance(dashboardPose);
         }
         field.setRobotPose(dashboardPose);
-        SmartDashboard.putData(field);
+        if (DebugConstants.debugMode) SmartDashboard.putData(field);
     }
 
     public boolean isInRange() {
