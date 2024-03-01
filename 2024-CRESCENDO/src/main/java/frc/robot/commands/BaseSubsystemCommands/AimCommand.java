@@ -1,5 +1,6 @@
 package frc.robot.commands.BaseSubsystemCommands;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
@@ -30,6 +31,8 @@ public class AimCommand extends Command {
     Supplier<Double> rSupplier;
     Supplier<Alliance> aSupplier;
     boolean blueSide = false;
+    
+    Consumer<Boolean> setDone;
 
     Command currentDriveCommand;
 
@@ -38,7 +41,7 @@ public class AimCommand extends Command {
     PIDController thetaController = new PIDController(1, 0, 0);
 
 
-    public AimCommand(Elevator elevator, ShooterPivot shooterPivot, CommandSwerveDrivetrain drivetrain, Supplier<Double> xSupplier, Supplier<Double> ySupplier, Supplier<Double> rSupplier, Supplier<Alliance> aSupplier) {
+    public AimCommand(Elevator elevator, ShooterPivot shooterPivot, CommandSwerveDrivetrain drivetrain, Supplier<Double> xSupplier, Supplier<Double> ySupplier, Supplier<Double> rSupplier, Supplier<Alliance> aSupplier, Consumer<Boolean> setDone) {
         addRequirements(elevator);
         this.elevator = elevator;
         this.shooterPivot = shooterPivot;
@@ -47,6 +50,7 @@ public class AimCommand extends Command {
         this.ySupplier = ySupplier;
         this.rSupplier = rSupplier;
         this.aSupplier = aSupplier;
+        this.setDone = setDone;
     }
 
     @Override
@@ -58,6 +62,7 @@ public class AimCommand extends Command {
 
         elevator.setElevatorPosition(output.getElevatorHeight());
         shooterPivot.setPivotPosition(output.getPivotAngle());
+        drivetrain.setInRange(output.getIsInRange());
 
         Rotation2d drivetrainRotation = output.getDrivetrainRotation();
 
@@ -73,6 +78,8 @@ public class AimCommand extends Command {
                                 : (thetaController.calculate(measurement, setpoint) * Constants.SwerveConstants.maxAngleVelocity)));
 
         currentDriveCommand.schedule();
+
+        setDone.accept(elevator.isAtSetpoint() && shooterPivot.isAtSetpoint() && measurement - setpoint < SwerveConstants.pidTurnTolerance);
     }
 
     @Override

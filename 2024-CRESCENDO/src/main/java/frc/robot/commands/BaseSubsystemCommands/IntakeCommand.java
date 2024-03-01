@@ -1,11 +1,12 @@
 package frc.robot.commands.BaseSubsystemCommands;
 
+import java.util.function.Consumer;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.PositionConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ShooterPivot;
-import frc.robot.subsystems.SubsystemManager;
 import frc.robot.subsystems.Transport;
 
 public class IntakeCommand extends Command {
@@ -15,8 +16,9 @@ public class IntakeCommand extends Command {
   ShooterPivot pivot;
   double intakeSpeed;
   double transportSpeed;
+  Consumer<Boolean> setNoteIsOnBoard;
 
-  public IntakeCommand(Transport transport, Intake intake, Elevator elevator, ShooterPivot pivot, double intakeSpeed, double transportSpeed) {
+  public IntakeCommand(Transport transport, Intake intake, Elevator elevator, ShooterPivot pivot, double intakeSpeed, double transportSpeed, Consumer<Boolean> setNoteIsOnBoard) {
     addRequirements(intake, transport);
     this.transport = transport;
     this.intake = intake;
@@ -24,6 +26,7 @@ public class IntakeCommand extends Command {
     this.transportSpeed = transportSpeed;
     this.elevator = elevator;
     this.pivot = pivot;
+    this.setNoteIsOnBoard = setNoteIsOnBoard;
   }
 
   @Override
@@ -52,7 +55,7 @@ public class IntakeCommand extends Command {
   @Override
   public boolean isFinished() {
     if (transport.getIR()) {
-      SubsystemManager.getInstance().noteOnBoard = true;
+      setNoteIsOnBoard.accept(true);
     }
     return transport.getIR();
   }

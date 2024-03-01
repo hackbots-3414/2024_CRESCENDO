@@ -1,22 +1,25 @@
 package frc.robot.commands.BaseSubsystemCommands;
 
+import java.util.function.Consumer;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TransportConstants;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.SubsystemManager;
 import frc.robot.subsystems.Transport;
 
 public class ShooterCommand extends Command {
   Shooter shooter;
   Transport transport;
   double velocity;
+  Consumer<Boolean> setNoteIsOnBoard;
 
-  public ShooterCommand(Shooter shooter, Transport transport, double velocity) {
+  public ShooterCommand(Shooter shooter, Transport transport, double velocity, Consumer<Boolean> setNoteIsOnBoard) {
     addRequirements(shooter);
     this.shooter = shooter;
     this.transport = transport;
     this.velocity = velocity;
+    this.setNoteIsOnBoard = setNoteIsOnBoard;
   }
 
   @Override
@@ -33,7 +36,7 @@ public class ShooterCommand extends Command {
     }
     if (shooter.shooterAtSpeed()) {
       transport.setMotor(TransportConstants.transportSpeed);
-      SubsystemManager.getInstance().noteOnBoard = false;
+      setNoteIsOnBoard.accept(false);
     }
   }
 
