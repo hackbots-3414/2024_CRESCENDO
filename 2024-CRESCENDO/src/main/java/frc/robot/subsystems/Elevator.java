@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.DebugConstants;
+import frc.robot.Constants.CurrentLimits;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorMotionMagicConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorSlot0ConfigConstants;
@@ -87,7 +88,7 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
             
         .withCurrentLimits(new CurrentLimitsConfigs()
             .withSupplyCurrentLimitEnable(true)
-            .withSupplyCurrentLimit(ElevatorConstants.elevatorCurrentLimit)
+            .withSupplyCurrentLimit(CurrentLimits.elevatorSupplyLimit)
             .withSupplyCurrentThreshold(0)
             .withSupplyTimeThreshold(0))
             

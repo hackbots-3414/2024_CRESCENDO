@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DebugConstants;
+import frc.robot.Constants.CurrentLimits;
 import frc.robot.Constants.TransportConstants;
 
 public class Transport extends SubsystemBase implements AutoCloseable {
@@ -34,6 +35,7 @@ public class Transport extends SubsystemBase implements AutoCloseable {
 
     transportMotor.setInverted(TransportConstants.transportMotorInvert);
     transportMotor.setNeutralMode(NeutralModeValue.Brake);
+    setCurrentLimit(CurrentLimits.transportSupplyLimit);
   }
 
   public void setMotor(double speed) {

@@ -50,16 +50,7 @@ public class Constants {
         public static final double xyStdDevCoefficient = 0.01;
         public static final double thetaStdDevCoefficient = 1.0;
 
-        /*
-         * FL D - 4
-         * FL S - 6
-         * FR D - 13
-         * FR S - 15
-         * BL D - 7
-         * BL S - 9
-         * BR D - 10
-         * BR S - 12
-         */
+        public static final double pidTurnTolerance = 0.1; // radians
     }
 
     public static final class VisionConstants {
@@ -121,8 +112,6 @@ public class Constants {
     public static final class ShooterConstants {
         public static final int leftMotorID = 57;
         public static final int rightMotorID = 58;
-        public static final int leftMotorPDPID = 4;
-        public static final int rightMotorPDPID = 5;
         public static final boolean shooterMotorInvert = true;
 
         public static final double kP = 0.8;
@@ -162,7 +151,6 @@ public class Constants {
 
     public static final class IntakeConstants {
         public static final int intakeMotorID = 60;
-        public static final int intakeMotorPDPID = 15;
         public static final double intakeSpeed = 1;
         public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
@@ -196,12 +184,11 @@ public class Constants {
 
         public static final double expoPower = 2.0;
 
-        public static final JoystickChoice operatorController = JoystickChoice.PS5;
+        public static final JoystickChoice operatorController = JoystickChoice.XBOX;
     }
 
     public static final class TransportConstants {
         public static final int transportMotorID = 56;
-        public static final int transportMotorPDPID = 16;
         public static final boolean transportMotorInvert = true;
         public static final double transportSpeed = 0.60;
         public static final double transportEjectSpeed = -1;
@@ -244,7 +231,6 @@ public class Constants {
 
     public static final class ElevatorConstants {
         public static final int elevatorMotorID = 50;
-        public static final int elevatorMotorPDPID = 2;
 
         public static final int forwardLimitChannelID = 0;
         public static final int reverseLimitChannelID = 1;
@@ -278,8 +264,6 @@ public class Constants {
             public static final double jerk = 80; // Target Jerk - 23.2
         }
 
-        public static final double elevatorCurrentLimit = 20;
-
         public static final double elevatorForwardSoftLimit = 2.33; // output shaft rotations
 
         public static final double gearDiameter = 1.751;
@@ -297,8 +281,6 @@ public class Constants {
         public static final double rotorToSensorRatio = 125;
         public static final double sensorToMechanismRatio = 1.0;
 
-        public static final int pivotMotorPDPID = 14;
-
         public static final InvertedValue motorInvert = InvertedValue.CounterClockwise_Positive;
         public static final SensorDirectionValue cancoderInvert = SensorDirectionValue.Clockwise_Positive;
 
@@ -310,8 +292,6 @@ public class Constants {
 
         public static final double pivotManualUpSpeed = 0.2;
         public static final double pivotManualDownSpeed = -0.2;
-
-        public static final double pivotCurrentLimit = 0;
 
         public static final double pivotTolerance = 0.004;
 
@@ -371,9 +351,6 @@ public class Constants {
         public static final int leftWinchMotorID = 30;
         public static final int rightWinchMotorID = 31;
 
-        public static final int leftWinchMotorPDPID = 30;
-        public static final int rightWinchMotorPDPID = 31;
-
         public static final boolean winchMotorInvert = true;
 
         public static final double sensorToMechanismRatio = 25.0;
@@ -390,5 +367,49 @@ public class Constants {
 
     public static final class DebugConstants {
         public static final boolean debugMode = false; // setting this to true will increase your network table traffic.
+    }
+
+    public class PDPConstants {
+        public static final int pdp = 0;
+        public static final int winchLeft = 3;
+        public static final int winchRight = 13;
+        public static final int shooterLeft = 0;
+        public static final int shooterRight = 1;
+        public static final int elevator = 17;
+        public static final int pivot = 5;
+        public static final int intake = 18;
+        public static final int transport = 2;
+
+        public static final int frontLeftDrive = 4;
+        public static final int frontLeftSteer = 6;
+        public static final int backLeftDrive = 7;
+        public static final int backLeftSteer = 9;
+        public static final int frontRightDrive = 13;
+        public static final int frontRightSteer = 15;
+        public static final int backRightDrive = 10;
+        public static final int backRightSteer = 12;
+    }
+
+    public class CurrentLimits {
+        public static final double intakeStatorLimit = 0;
+        public static final double intakeSupplyLimit = 0;
+        
+        public static final double transportStatorLimit = 0;
+        public static final double transportSupplyLimit = 0;
+
+        public static final double winchStatorLimit = 0;
+        public static final double winchSupplyLimit = 0;
+
+        public static final double shooterStatorLimit = 0;
+        public static final double shooterSupplyLimit = 0;
+
+        public static final double shooterPivotStatorLimit = 0;
+        public static final double shooterPivotSupplyLimit = 0;
+
+        public static final double elevatorStatorLimit = 0;
+        public static final double elevatorSupplyLimit = 20;
+
+        public static final double drivetrainStatorLimit = 0;
+        public static final double drivetrainSupplyLimit = 80;
     }
 }
