@@ -1,21 +1,24 @@
 package frc.robot.commands.AutonCommands;
 
+import java.util.function.Consumer;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.TransportConstants;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.SubsystemManager;
 import frc.robot.subsystems.Transport;
 
 public class ShootAfterRevCommand extends Command {
     Shooter shooter;
     Transport transport;
     double velocity;
+    Consumer<Boolean> setNoteOnBoard;
 
-    public ShootAfterRevCommand(Shooter shooter, Transport transport, double velocity) {
+    public ShootAfterRevCommand(Shooter shooter, Transport transport, double velocity, Consumer<Boolean> setNoteOnBoard) {
         addRequirements(shooter, transport);
         this.shooter = shooter;
         this.transport = transport;
         this.velocity = velocity;
+        this.setNoteOnBoard = setNoteOnBoard;
     }
 
     @Override
@@ -23,7 +26,7 @@ public class ShootAfterRevCommand extends Command {
         shooter.setVelocity(velocity);
         if (shooter.shooterAtSpeed()) {
             transport.setMotor(TransportConstants.transportSpeed);
-            SubsystemManager.getInstance().noteOnBoard = false;
+            setNoteOnBoard.accept(false);
         }
     }
 

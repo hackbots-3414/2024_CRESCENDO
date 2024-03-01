@@ -63,12 +63,13 @@ import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVisionSIM;
 public class SubsystemManager extends SubsystemBase {
 	private AprilTagVision aprilTagVision;
 	private static SubsystemManager me = null;
-	PowerDistribution pdp = new PowerDistribution(1, ModuleType.kRev);
+	PowerDistribution pdp = new PowerDistribution(PDPConstants.pdp, ModuleType.kRev);
 	List<SubsystemBase> subsystems = new ArrayList<>();
 
 	Supplier<Alliance> allianceSupplier = () -> DriverStation.getAlliance().get();
 
-	public boolean noteOnBoard = false;
+	private boolean noteOnBoard = false;
+	private boolean aimReady = false;
 
 	
 	// DRIVETRAIN
@@ -109,7 +110,7 @@ public class SubsystemManager extends SubsystemBase {
 	Transport transport = new Transport();
 	NoteFinder noteFinder = new NoteFinder();
 	Winch winch = new Winch();
-	LedSubsystem ledSubsystem = new LedSubsystem();
+	LedSubsystem ledSubsystem = new LedSubsystem(this::getNoteOnBoard, this::getIsInRange, this::getAimIsReady);
 
 	public Intake getIntake() {return intake;}
 	public Shooter getShooter() {return shooter;}
@@ -229,16 +230,16 @@ public class SubsystemManager extends SubsystemBase {
 		return new RevShooterCommand(shooter, transport, velocity);
 	}
 	public Command makeShootAfterRevCommand(double velocity) {
-		return new ShootAfterRevCommand(shooter, transport, velocity).withTimeout(0.35);
+		return new ShootAfterRevCommand(shooter, transport, velocity, this::setNoteOnBoard).withTimeout(0.35);
 	}
 	public Command makeShootCommand() {
-		return new ShooterCommand(shooter, transport, ShooterConstants.shootVelo);
+		return new ShooterCommand(shooter, transport, ShooterConstants.shootVelo, this::setNoteOnBoard);
 	}
 
 
 	// INTAKE COMMANDS
 	public Command makeIntakeCommand() {
-		return new IntakeCommand(transport, intake, elevator, shooterPivot, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed);
+		return new IntakeCommand(transport, intake, elevator, shooterPivot, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed, this::setNoteOnBoard);
 	}
 
 
@@ -251,7 +252,7 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public Command makeSubwooferShootCommand() {
 		return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER),
-				new ShooterCommand(shooter, transport, ShooterConstants.minShootSpeed));
+				new ShooterCommand(shooter, transport, ShooterConstants.minShootSpeed, this::setNoteOnBoard));
 	}
 	public Command makeSubwooferRevvingCommand() {
 		return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER),
@@ -260,13 +261,29 @@ public class SubsystemManager extends SubsystemBase {
 
 
 	// AIMING COMMANDS
-	public Command makeAutoAimCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn,
-			Supplier<Boolean> shoot) {
-		return new AimCommand(elevator, shooterPivot, drivetrain, x, y, turn,
-				allianceSupplier);
+	public Command makeAutoAimCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
+		return new AimCommand(elevator, shooterPivot, drivetrain, x, y, turn, allianceSupplier, this::setAimReady);
 	}
 	public AimOutputContainer getAimOutputContainer() {
         return AimHelper.getAimOutputs(drivetrain, allianceSupplier.get() == Alliance.Blue, AimStrategies.LOOKUP); // BASIC MATH
+	}
+	public void setAimReady(boolean isReady) {
+		this.aimReady = isReady;
+	}
+
+
+	// LED GETTERS
+	public boolean getAimIsReady() {
+		return aimReady;
+	}
+	public boolean getIsInRange() {
+		return drivetrain.isInRange();
+	}
+	public boolean getNoteOnBoard() {
+		return noteOnBoard;
+	}
+	public void setNoteOnBoard(boolean noteOnBoard) {
+		this.noteOnBoard = noteOnBoard;
 	}
 
 
@@ -282,7 +299,7 @@ public class SubsystemManager extends SubsystemBase {
 		}
 	}
 	public Command makeAutonEverythingCommand() {
-		return /*makeIntakeCommand().andThen(*/new AutoScoreCommand(elevator, shooterPivot, shooter, transport, this::getAimOutputContainer).withTimeout(1.5);
+		return /*makeIntakeCommand().andThen(*/new AutoScoreCommand(elevator, shooterPivot, shooter, transport, this::getAimOutputContainer, this::setNoteOnBoard).withTimeout(1.5);
 	}
 
 

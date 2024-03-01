@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,21 +15,26 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LedSubsystem extends SubsystemBase {
   // final static Logger logger = LoggerFactory.getLogger(LedSubsystem.class);
-  private static final double IN_RANGE = 0.83;
-  private static final double NOTE_ONBOARD = 0.77;
-  private static final double END_GAME_0 = -0.87;
-  private static final double END_GAME_15 = -0.11;
-  private static final double END_GAME_30 = -0.21;
+  private static final double IN_RANGE = 0.87; // BLUE
+  private static final double NOTE_ONBOARD = 0.77; // GREEN
+  private static final double END_GAME_15 = -0.61; // RED
+  private static final double END_GAME_30 = -0.93; // WHITE
+  private static final double AIM_READY = 0.69; // YELLOW
   // private static final double NOTE_IN_VIEW = 0.65;
   ///private static final double CLIMBER_ACTIVATED = -0.95;
-  private static final double DEFAULT = 0.91;
+  private static final double DEFAULT = 0.91; // PURPPLE
 
-  private static final String[] LABELS = {"In Range", "Note Onboard", "End Game 0", "End Game 15", "End Game 30", "Note In View"};
+  private Supplier<Boolean> noteOnBoard, isInRange, aimReady;
+
+  private static final String[] LABELS = {"In Range", "Note Onboard", "End Game 15", "End Game 30", "Target Locked"};
 
   Spark ledcontroller = new Spark(0);
 
-  public LedSubsystem() {
+  public LedSubsystem(Supplier<Boolean> noteOnBoard, Supplier<Boolean> isInRange, Supplier<Boolean> aimReady) {
     ledcontroller.set(DEFAULT);
+    this.noteOnBoard = noteOnBoard;
+    this.isInRange = isInRange;
+    this.aimReady = aimReady;
   }
 
   private void resetStatus() {
@@ -38,39 +45,26 @@ public class LedSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    super.periodic();
     SmartDashboard.putNumber("Countdown", DriverStation.getMatchTime());
     resetStatus();
-    SubsystemManager subsystemManager = SubsystemManager.getInstance();
-    if (subsystemManager.transport.getIR() && subsystemManager.drivetrain.isInRange()) {
+
+    if (noteOnBoard.get() && isInRange.get()) {
       setColor(IN_RANGE);
       SmartDashboard.putBoolean(LABELS[0], true);
-
-    } else if (subsystemManager.transport.getIR()) {
+    } else if (noteOnBoard.get()) {
       setColor(NOTE_ONBOARD);
       SmartDashboard.putBoolean(LABELS[1], true);
-      SmartDashboard.putBoolean(LABELS[0], true);
-
-    } else if (DriverStation.getMatchTime() < 0.1) {
-      setColor(END_GAME_0);
-      SmartDashboard.putBoolean(LABELS[2], true);
-      SmartDashboard.putBoolean(LABELS[3], true);
+    } else if (aimReady.get()) {
+      setColor(AIM_READY);
       SmartDashboard.putBoolean(LABELS[4], true);
-
     } else if (DriverStation.getMatchTime() < 15) {
       setColor(END_GAME_15);
+      SmartDashboard.putBoolean(LABELS[2], true);
       SmartDashboard.putBoolean(LABELS[3], true);
-      SmartDashboard.putBoolean(LABELS[4], true);
-
     } else if (DriverStation.getMatchTime() < 30) {
       setColor(END_GAME_30);
-      SmartDashboard.putBoolean(LABELS[4], true);
-
-    } /*else if (subsystemManager.noteFinder.isNoteDetected()) {
-      setColor(NOTE_IN_VIEW);
-      SmartDashboard.putBoolean(LABELS[5], true);
-
-    }*/ else {
+      SmartDashboard.putBoolean(LABELS[3], true);
+    } else {
       setColor(DEFAULT);
     }
   }
