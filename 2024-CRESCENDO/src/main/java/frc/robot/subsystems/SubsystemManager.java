@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.PDPConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
@@ -141,55 +142,24 @@ public class SubsystemManager extends SubsystemBase {
 	}
 
   @Override
-  public void periodic() {
-    // elevatorCurrent = pdp.getCurrent(ElevatorConstants.elevatorMotorPDPID);
-    // intakeCurrent = pdp.getCurrent(IntakeConstants.intakeMotorPDPID);
-    // shooterPivotCurrent = pdp.getCurrent(PivotConstants.pivotMotorPDPID);
-    // shooterCurrent = pdp.getCurrent(ShooterConstants.leftMotorPDPID) +
-    // pdp.getCurrent(ShooterConstants.rightMotorPDPID);
-    // transportCurrent = pdp.getCurrent(TransportConstants.transportMotorPDPID);
-    // winchCurrent = pdp.getCurrent(WinchConstants.leftMotorPDPID) +
-    // pdp.getCurrent(rightMotor.PDPID)
+	public void periodic() {
+		elevatorCurrent = pdp.getCurrent(PDPConstants.elevator);
+		intakeCurrent = pdp.getCurrent(PDPConstants.intake);
+		shooterPivotCurrent = pdp.getCurrent(PDPConstants.pivot);
+		shooterCurrent = pdp.getCurrent(PDPConstants.shooterLeft) + pdp.getCurrent(PDPConstants.shooterRight);
+		transportCurrent = pdp.getCurrent(PDPConstants.transport);
+		winchCurrent = pdp.getCurrent(PDPConstants.winchLeft) + pdp.getCurrent(PDPConstants.winchRight);
 
-    // dampenDrivetrain();
-    // periodicRuns++;
+		// dampenDrivetrain();
+	}
 
-    // periodicRuns %= (50 / Constants.VisionConstants.aprilTagUpdateFrequency);
-    // if (periodicRuns == 0) { //Only run once per second
-    //   updateOdometryWithPhotonVision();
-    // }
-
-  }
-
-//   private void updateOdometryWithPhotonVision() {
-//     Optional<EstimatedRobotPose> leftPoseMaybe = photonVision.getGlobalPoseFromLeft();
-//     Optional<EstimatedRobotPose> rightPoseMaybe = photonVision.getGlobalPoseFromRight();
-
-//     SmartDashboard.putBoolean("SeesRight", rightPoseMaybe.isPresent());
-//     SmartDashboard.putBoolean("SeesLeft", leftPoseMaybe.isPresent());
-
-//     if (drivetrain.getTranslationalRobotSpeed() <= 1.0 && drivetrain.getRotationalRobotSpeed() <= Math.PI) {
-
-//       if (leftPoseMaybe.isPresent()) {
-//         EstimatedRobotPose leftPose = leftPoseMaybe.get();
-//         drivetrain.addVisionMeasurement(leftPose.estimatedPose.toPose2d(), leftPose.timestampSeconds);
-//       }
-//       if (rightPoseMaybe.isPresent()) {
-//         EstimatedRobotPose rightPose = rightPoseMaybe.get();
-//         drivetrain.addVisionMeasurement(rightPose.estimatedPose.toPose2d(), rightPose.timestampSeconds);
-//       }
-//     } else {
-//       periodicRuns = -1; // this way it will try again next time
-//     }
-//   }
-
-	// private void dampenDrivetrain() {
-	// 	// (Ah Available - Ah Being Used) / Ah to Amps conversion / 4 motors to distribute over
-	// 	double supplyLimitDrivetrain = ((availableCurrent / runTimeHours
-	// 			- (elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent + transportCurrent))) / 4.0; 
-	// 	supplyLimitDrivetrain = supplyLimitDrivetrain > SwerveConstants.driveSupplyCurrentLimit ? SwerveConstants.driveSupplyCurrentLimit : supplyLimitDrivetrain;
-	// 	drivetrain.setCurrentLimit(supplyLimitDrivetrain);
-	// }
+	private void dampenDrivetrain() {
+		// (Ah Available - Ah Being Used) / Ah to Amps conversion / 4 motors to distribute over
+		double supplyLimitDrivetrain = ((availableCurrent / runTimeHours
+				- (elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent + transportCurrent))) / 4.0; 
+		supplyLimitDrivetrain = supplyLimitDrivetrain > SwerveConstants.driveSupplyCurrentLimit ? SwerveConstants.driveSupplyCurrentLimit : supplyLimitDrivetrain;
+		drivetrain.setCurrentLimit(supplyLimitDrivetrain);
+	}
 
 	// DRIVETRAIN COMMANDS
 	public void configureDriveDefaults(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
