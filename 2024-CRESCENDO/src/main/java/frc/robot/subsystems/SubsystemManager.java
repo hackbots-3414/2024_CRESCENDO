@@ -150,7 +150,7 @@ public class SubsystemManager extends SubsystemBase {
 		transportCurrent = pdp.getCurrent(PDPConstants.transport);
 		winchCurrent = pdp.getCurrent(PDPConstants.winchLeft) + pdp.getCurrent(PDPConstants.winchRight);
 
-		dampenDrivetrain();
+		// dampenDrivetrain();
 	}
 
 	private void dampenDrivetrain() {
