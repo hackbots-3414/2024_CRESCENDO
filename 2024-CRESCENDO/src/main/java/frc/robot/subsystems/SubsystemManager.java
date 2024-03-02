@@ -129,7 +129,8 @@ public class SubsystemManager extends SubsystemBase {
 			if (Robot.isReal()) {
             	aprilTagVision = new AprilTagVision(new AprilTagVisionIOPhotonVision());
 			} else {
-				aprilTagVision = new AprilTagVision(new AprilTagVisionIOPhotonVisionSIM(drivetrain::getCurrentPose2d));
+				aprilTagVision = new AprilTagVision(new AprilTagVisionIOPhotonVision());
+				// aprilTagVision = new AprilTagVision(new AprilTagVisionIOPhotonVisionSIM(drivetrain::getCurrentPose2d));
 			}
             aprilTagVision.setDataInterfaces(drivetrain::addVisionData);
         }
@@ -178,6 +179,9 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public Command makeResetCommand() {
 		return drivetrain.runOnce(() -> drivetrain.seedFieldRelative());
+	}
+	public Command resetAfterAuton() {
+		return drivetrain.runOnce(() -> drivetrain.setOperatorPerspectiveForward(allianceSupplier.get() == Alliance.Blue ? Rotation2d.fromDegrees(0) : Rotation2d.fromDegrees(180)));
 	}
 	public Command makeShellyCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
 		Command shellyCommand = drivetrain
@@ -310,8 +314,7 @@ public class SubsystemManager extends SubsystemBase {
 				makeIntakeCommand().withTimeout(2),
 				makeShootCommand().withTimeout(2),
 				new ManualWinchCommand(winch, 0.1).withTimeout(2),
-				new ManualWinchCommand(winch, -0.1).withTimeout(2),
-				drivetrain.makeTestAuton());
+				new ManualWinchCommand(winch, -0.1).withTimeout(2));
 
 		return commands;
 	}

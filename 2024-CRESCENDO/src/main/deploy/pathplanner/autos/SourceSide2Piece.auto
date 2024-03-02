@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7046435911053639,
+      "y": 4.449811808714527
+    },
+    "rotation": 120.59997869320895
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Subwoofer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SourceSide2Piece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Subwoofer"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

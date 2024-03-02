@@ -18,8 +18,10 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,6 +31,7 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.util.VisionHelpers;
 import frc.robot.util.VisionHelpers.TimestampedVisionUpdate;
+import frc.robot.Constants.AimConstants;
 import frc.robot.Constants.DebugConstants;
 
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
@@ -49,7 +52,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             startSimThread();
         }
         setCurrentLimit(SwerveConstants.driveSupplyCurrentLimit);
-        if (DebugConstants.debugMode) SmartDashboard.putData("Field", field);
+        SmartDashboard.putData("Field", field);
     }
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
@@ -80,10 +83,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public double getRotationalRobotSpeed() {
         return getCurrentRobotChassisSpeeds().omegaRadiansPerSecond;
-    }
-
-    public Command makeTestAuton() {
-        return AutoBuilder.buildAuto("Test Auton");
     }
 
     private void startSimThread() {
@@ -157,7 +156,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             dashboardPose = VisionHelpers.flipAlliance(dashboardPose);
         }
         field.setRobotPose(dashboardPose);
-        if (DebugConstants.debugMode) SmartDashboard.putData(field);
+        SmartDashboard.putData(field);
+
+        Pose2d speakerPose = DriverStation.getAlliance().get() == Alliance.Blue ? AimConstants.blueSpeakerPos : AimConstants.redSpeakerPos;
+        double robotDistance = speakerPose.relativeTo(getPose()).getTranslation().getNorm();
+        SmartDashboard.putNumber("DISTANCE FROM TARGET", robotDistance);
     }
 
     public boolean isInRange() {

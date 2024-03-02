@@ -129,24 +129,24 @@ public class Constants {
         public static final double shooterBackupSpeed = -0.1;
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
-                entry(0.0, 0.0780),
-                entry(1.41, 0.0780), // lined up
-                entry(1.70, 0.0610), // 4
-                entry(2.31, 0.0385), // 6
-                entry(2.92, 0.0227), // 8
-                entry(3.54, 0.0130), // 10
+                entry(0.0, 0.18),
+                entry(1.41, 0.18), // lined up
+                entry(1.56, 0.12), // 4
+                entry(1.9, 0.105), // 6
+                entry(2.2, 0.092), // 8
+                entry(2.55, 0.081), // 10
                 entry(4.14, 0.0030) // 12
         );
 
-        public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
-                entry(0.0, 50.0),
-                entry(1.41, 50.0),
-                entry(1.70, 50.0),
-                entry(2.31, 50.0),
-                entry(2.92, 60.0),
-                entry(3.54, 70.0),
-                entry(4.14, 92.0),
-                entry(50.0, 92.0));
+        // public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
+        //         entry(0.0, 50.0),
+        //         entry(1.41, 50.0),
+        //         entry(1.70, 50.0),
+        //         entry(2.31, 50.0),
+        //         entry(2.92, 60.0),
+        //         entry(3.54, 70.0),
+        //         entry(4.14, 92.0),
+        //         entry(50.0, 92.0));
     }
 
     public static final class IntakeConstants {
@@ -210,7 +210,7 @@ public class Constants {
 
         public static final class TrapPresets {
             public static final double elevator = 2.34;
-            public static final double shooter = 0.088379;
+            public static final double shooter = 0.135;
         }
 
         public static final class TestPresets {
@@ -225,7 +225,7 @@ public class Constants {
 
         public static final class SubwooferPresets {
             public static final double elevator = 0.0;
-            public static final double shooter = 0.076;
+            public static final double shooter = 0.135;
         }
     }
 
@@ -284,14 +284,14 @@ public class Constants {
         public static final InvertedValue motorInvert = InvertedValue.CounterClockwise_Positive;
         public static final SensorDirectionValue cancoderInvert = SensorDirectionValue.Clockwise_Positive;
 
-        public static final double forwardSoftLimitThreshold = 0.088379;
+        public static final double forwardSoftLimitThreshold = 0.135;
         public static final double reverseSoftLimitThreshold = 0;
 
         public static final double radiansAtZero = Math.toRadians(30);
         public static final double radiansAtMax = Math.toRadians(58);
 
-        public static final double pivotManualUpSpeed = 0.2;
-        public static final double pivotManualDownSpeed = -0.2;
+        public static final double pivotManualUpSpeed = 0.3;
+        public static final double pivotManualDownSpeed = -0.3;
 
         public static final double pivotTolerance = 0.004;
 

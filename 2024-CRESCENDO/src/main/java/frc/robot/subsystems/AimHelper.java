@@ -46,7 +46,7 @@ public class AimHelper {
         Double lowerDistance = null, higherDistance = null;
 
         Map<Double, Double> rotationMap = ShooterConstants.rotationLookupTable;
-        Map<Double, Double> speedMap = ShooterConstants.speedLookupTable;
+        // Map<Double, Double> speedMap = ShooterConstants.speedLookupTable;
         for (Double key : rotationMap.keySet()) {
             lowerDistance = (key <= distanceToTarget && (lowerDistance == null || key > lowerDistance)) ? key : lowerDistance;
             higherDistance = (key >= distanceToTarget && (higherDistance == null || key < higherDistance)) ? key : higherDistance;
@@ -54,19 +54,21 @@ public class AimHelper {
 
         // If exact distance is found, return the corresponding value
         if (lowerDistance != null && lowerDistance == distanceToTarget) {
-            output.setShooterVelocity(speedMap.get(lowerDistance));
+            // output.setShooterVelocity(speedMap.get(lowerDistance));
             output.setPivotAngle(rotationMap.get(lowerDistance));
         } else {
             // If no lower or higher distance is found, return 0
             if (lowerDistance == null || higherDistance == null) {
-                output.setShooterVelocity(0);
+                // output.setShooterVelocity(0);
                 output.setPivotAngle(0);
             } else {
                 double location = (distanceToTarget - lowerDistance) / (higherDistance - lowerDistance);
-                output.setShooterVelocity(MathUtil.interpolate(speedMap.get(lowerDistance), speedMap.get(higherDistance), location));
+                // output.setShooterVelocity(MathUtil.interpolate(speedMap.get(lowerDistance), speedMap.get(higherDistance), location));
                 output.setPivotAngle(MathUtil.interpolate(rotationMap.get(lowerDistance), rotationMap.get(higherDistance), location));
             } 
         }
+
+        output.setShooterVelocity(ShooterConstants.maxShootSpeed);
 
         return output;
     }
