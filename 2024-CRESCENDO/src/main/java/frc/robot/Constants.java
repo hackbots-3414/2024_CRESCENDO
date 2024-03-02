@@ -190,7 +190,7 @@ public class Constants {
     public static final class TransportConstants {
         public static final int transportMotorID = 56;
         public static final boolean transportMotorInvert = true;
-        public static final double transportSpeed = 0.60;
+        public static final double transportSpeed = 0.70;
         public static final double transportEjectSpeed = -1;
         public static final int irSensorChannel = 4;
 
@@ -324,7 +324,7 @@ public class Constants {
 
         public static final double compressionAdder = 3;
 
-        public static final double maxRange = 3;
+        public static final double maxRange = 2.5;
 
         public static final double aprilTagToHoodGoal = Units.inchesToMeters(8);
 

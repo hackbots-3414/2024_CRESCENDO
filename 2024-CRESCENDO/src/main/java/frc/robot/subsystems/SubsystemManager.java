@@ -329,6 +329,7 @@ public class SubsystemManager extends SubsystemBase {
 		eventMarkers.put("Intake", makeIntakeCommand().andThen(makeSubwooferRevvingCommand())); 
 		eventMarkers.put("IntakeThenSubwooferPreset", makeIntakeCommand().andThen(makeSubwooferRevvingCommand()));
 		eventMarkers.put("StealRings", makeStealRingCommand());
+		eventMarkers.put("Stow", makeElevatorCommand(ElevatorPresets.STOW));
 		
 		eventMarkers.put("ShootAnywhere", makeAutonEverythingCommand());
 
