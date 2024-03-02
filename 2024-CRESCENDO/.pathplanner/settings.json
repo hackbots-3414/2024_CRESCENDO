@@ -5,15 +5,9 @@
   "pathFolders": [
     "4PieceCenter",
     "4PieceWingClear",
-    "Goals",
-    "7Piece",
-    "Test"
+    "7Piece"
   ],
-  "autoFolders": [
-    "Goals",
-    "Test",
-    "Week1Ready"
-  ],
+  "autoFolders": [],
   "defaultMaxVel": 5.21,
   "defaultMaxAccel": 4.0,
   "defaultMaxAngVel": 540.0,

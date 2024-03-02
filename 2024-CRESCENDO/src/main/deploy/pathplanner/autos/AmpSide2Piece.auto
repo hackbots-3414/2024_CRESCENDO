@@ -2,19 +2,25 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.9360380538942894,
-      "y": 6.0
+      "x": 0.7265787504547981,
+      "y": 6.6561862853455445
     },
-    "rotation": 0
+    "rotation": -117.98675276705386
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Subwoofer"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Test Auton"
+            "pathName": "AmpSide2Piece"
           }
         }
       ]

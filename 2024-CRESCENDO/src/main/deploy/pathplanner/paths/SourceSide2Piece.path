@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3274844567707151,
-        "y": 5.565311310802802
+        "x": 0.7046435911053639,
+        "y": 4.449811808714527
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.872921944042086,
-        "y": 4.529904555304607
+        "x": 1.7681206271503453,
+        "y": 4.244579398249706
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.436848837661639,
-        "y": 4.160116428340965
+        "x": 2.523749047498095,
+        "y": 4.104648209296419
       },
       "prevControl": {
-        "x": 2.6885402602666835,
-        "y": 4.020287860227053
+        "x": 2.0666404969173575,
+        "y": 4.216593160459048
       },
       "nextControl": {
-        "x": 2.270444180528001,
-        "y": 4.252563460081874
+        "x": 2.945742028935563,
+        "y": 4.00130298935255
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.3274844567707151,
-        "y": 5.565311310802802
+        "x": 0.7046435911053639,
+        "y": 4.449811808714527
       },
       "prevControl": {
-        "x": 1.7434960996048117,
-        "y": 4.82573505687552
+        "x": 1.7214768974992496,
+        "y": 4.263236890110144
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,8 +46,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 145.7812904817478,
+      "waypointRelativePos": 1.05,
+      "rotationDegrees": 165.3624375156593,
       "rotateFast": false
     }
   ],
@@ -55,7 +55,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.05,
+      "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
         "data": {
@@ -79,13 +79,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -178.15238973400554,
+    "rotation": 118.84266013541206,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "4PieceWingClear",
+  "folder": null,
   "previewStartingState": {
-    "rotation": -178.45184230102205,
+    "rotation": 119.56035446468071,
     "velocity": 0
   },
   "useDefaultConstraints": true
