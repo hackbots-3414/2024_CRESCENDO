@@ -97,8 +97,8 @@ public class RobotContainer {
     ps5Operator.circle().onTrue(subsystemManager.makeResetElevatorCommand()); // b
     ps5Operator.cross().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW)); // a
     
-    ps5Operator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
-    ps5Operator.povDown().whileTrue(subsystemManager.makeManualElevatorCommand(false));
+    // ps5Operator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
+    // ps5Operator.povDown().whileTrue(subsystemManager.makeManualElevatorCommand(false));
     ps5Operator.povRight().whileTrue(subsystemManager.makeManualPivotCommand(true));
     ps5Operator.povLeft().whileTrue(subsystemManager.makeManualPivotCommand(false));
 
