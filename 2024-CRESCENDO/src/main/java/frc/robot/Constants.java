@@ -151,7 +151,7 @@ public class Constants {
 
     public static final class IntakeConstants {
         public static final int intakeMotorID = 60;
-        public static final double intakeSpeed = 1;
+        public static final double intakeSpeed = 0.7;
         public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
     }
@@ -190,7 +190,7 @@ public class Constants {
     public static final class TransportConstants {
         public static final int transportMotorID = 56;
         public static final boolean transportMotorInvert = true;
-        public static final double transportSpeed = 0.70;
+        public static final double transportSpeed = 1;
         public static final double transportEjectSpeed = -1;
         public static final int irSensorChannel = 4;
 
