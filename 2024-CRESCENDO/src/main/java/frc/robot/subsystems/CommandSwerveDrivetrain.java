@@ -52,7 +52,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             startSimThread();
         }
         setCurrentLimit(SwerveConstants.driveSupplyCurrentLimit);
-        SmartDashboard.putData("Field", field);
+        if (DebugConstants.debugMode) SmartDashboard.putData("Field", field);
     }
 
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
@@ -160,7 +160,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
         Pose2d speakerPose = DriverStation.getAlliance().get() == Alliance.Blue ? AimConstants.blueSpeakerPos : AimConstants.redSpeakerPos;
         double robotDistance = speakerPose.relativeTo(getPose()).getTranslation().getNorm();
-        SmartDashboard.putNumber("DISTANCE FROM TARGET", robotDistance);
+        if (DebugConstants.debugMode) SmartDashboard.putNumber("DISTANCE FROM TARGET", robotDistance);
     }
 
     public boolean isInRange() {
