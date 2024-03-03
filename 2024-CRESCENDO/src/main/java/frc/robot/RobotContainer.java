@@ -92,7 +92,7 @@ public class RobotContainer {
   }
 
   private void configurePS5OperatorBindings() {
-    ps5Operator.R1().whileTrue(subsystemManager.makeAmpScoreCommand()); // x
+    ps5Operator.square().whileTrue(subsystemManager.makeAmpScoreCommand()); // x
     ps5Operator.triangle().whileTrue(subsystemManager.makeSubwooferShootCommand()); // y
     ps5Operator.circle().onTrue(subsystemManager.makeResetElevatorCommand()); // b
     ps5Operator.cross().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW)); // a
@@ -104,7 +104,7 @@ public class RobotContainer {
 
     ps5Operator.create().whileTrue(subsystemManager.makeManualWinchCommand(false)); // back
     ps5Operator.options().whileTrue(subsystemManager.makeManualWinchCommand(true)); // start
-    ps5Operator.square().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.TRAP));
+    // ps5Operator.square().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.TRAP));
 
     ps5Operator.L2().whileTrue(subsystemManager.makeIntakeCommand());
     ps5Operator.R2().whileTrue(subsystemManager.makeShootCommand());

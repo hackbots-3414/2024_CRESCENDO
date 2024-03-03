@@ -10,6 +10,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -161,6 +162,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         Pose2d speakerPose = DriverStation.getAlliance().get() == Alliance.Blue ? AimConstants.blueSpeakerPos : AimConstants.redSpeakerPos;
         double robotDistance = speakerPose.relativeTo(getPose()).getTranslation().getNorm();
         if (DebugConstants.debugMode) SmartDashboard.putNumber("DISTANCE FROM TARGET", robotDistance);
+
+        for (SwerveModule module : Modules) {
+            SmartDashboard.putNumber("SWERVE MODULE MOVEMENT", module.getDriveMotor().getPosition().getValueAsDouble());
+        }
     }
 
     public boolean isInRange() {

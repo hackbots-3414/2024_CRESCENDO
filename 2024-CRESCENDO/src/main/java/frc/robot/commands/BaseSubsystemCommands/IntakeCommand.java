@@ -38,7 +38,7 @@ public class IntakeCommand extends Command {
   public void initialize() {
     elevator.setElevatorPosition(PositionConstants.StowPresets.elevator);
     pivot.setPivotPosition(PositionConstants.StowPresets.shooter);
-    log.debug("INITIALIZE OF INTAKE COMMAND");
+    // log.debug("INITIALIZE OF INTAKE COMMAND");
     alreadyStarted = false;
   }
 
@@ -49,14 +49,14 @@ public class IntakeCommand extends Command {
         transport.setMotor(transportSpeed);
         alreadyStarted = true;
       }
-      log.debug("EXECUTE OF INTAKE COMMAND");
+      // log.debug("EXECUTE OF INTAKE COMMAND");
   }
 
   @Override
   public void end(boolean interrupted) {
     intake.stopMotor();
     transport.stopMotor();
-    log.debug("END OF INTAKE COMMAND");
+    // log.debug("END OF INTAKE COMMAND");
   }
 
   @Override
@@ -64,7 +64,7 @@ public class IntakeCommand extends Command {
     if (transport.getIR()) {
       setNoteIsOnBoard.accept(true);
     }
-    log.debug("ISFINISHED OF INTAKE COMMAND");
+    // log.debug("ISFINISHED OF INTAKE COMMAND");
     return transport.getIR();
   }
 }

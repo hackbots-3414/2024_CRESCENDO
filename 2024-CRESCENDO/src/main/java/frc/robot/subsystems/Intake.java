@@ -7,6 +7,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -49,5 +50,10 @@ public class Intake extends SubsystemBase implements AutoCloseable {
   @Override
   public void close() {
     intakeMotor.close();
+  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("INTAKE SPEED", intakeMotor.getVelocity().getValueAsDouble());
   }
 }
