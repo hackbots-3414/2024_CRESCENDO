@@ -107,6 +107,7 @@ public class RobotContainer {
     // ps5Operator.square().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.TRAP));
 
     ps5Operator.L2().whileTrue(subsystemManager.makeIntakeCommand());
+    ps5Operator.L1().whileTrue(subsystemManager.makeEjectCommand());
     ps5Operator.R2().whileTrue(subsystemManager.makeShootCommand());
 
 

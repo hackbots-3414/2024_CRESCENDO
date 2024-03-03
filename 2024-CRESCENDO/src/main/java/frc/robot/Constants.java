@@ -191,6 +191,7 @@ public class Constants {
         public static final int transportMotorID = 56;
         public static final boolean transportMotorInvert = true;
         public static final double transportSpeed = 0.6;
+        public static final double ejectSpeed = -0.6;
         public static final double transportEjectSpeed = -1;
         public static final int irSensorChannel = 4;
 
@@ -369,7 +370,7 @@ public class Constants {
         public static final boolean debugMode = true; // setting this to true will increase your network table traffic.
     }
 
-    public class PDPConstants {
+    private class PDPConstants {
         public static final int pdp = 1;
         public static final int winchLeft = 3;
         public static final int winchRight = 13;
@@ -380,21 +381,21 @@ public class Constants {
         public static final int intake = 18;
         public static final int transport = 2;
 
-        public static final int frontLeftDrive = 4;
-        public static final int frontLeftSteer = 6;
-        public static final int backLeftDrive = 7;
-        public static final int backLeftSteer = 9;
-        public static final int frontRightDrive = 13;
-        public static final int frontRightSteer = 15;
-        public static final int backRightDrive = 10;
-        public static final int backRightSteer = 12;
+        public static final int frontLeftDrive = 6;
+        public static final int frontLeftSteer = 4;
+        public static final int backLeftDrive = 9;
+        public static final int backLeftSteer = 7;
+        public static final int frontRightDrive = 15;
+        public static final int frontRightSteer = 13;
+        public static final int backRightDrive = 12;
+        public static final int backRightSteer = 10;
     }
 
     public class CurrentLimits {
-        public static final double intakeStatorLimit = 0;
+        public static final double intakeStatorLimit = 40;
         public static final double intakeSupplyLimit = 0;
         
-        public static final double transportStatorLimit = 0;
+        public static final double transportStatorLimit = 20;
         public static final double transportSupplyLimit = 0;
 
         public static final double winchStatorLimit = 0;
