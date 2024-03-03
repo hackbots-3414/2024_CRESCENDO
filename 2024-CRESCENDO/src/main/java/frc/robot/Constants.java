@@ -192,7 +192,7 @@ public class Constants {
         public static final boolean transportMotorInvert = true;
         public static final double transportSpeed = 0.83;
         public static final double ejectSpeed = -0.6;
-        public static final double transportEjectSpeed = -1;
+        public static final double transportEjectSpeed = -0.5;
         public static final int irSensorChannel = 4;
 
         public static final double transportEjectDelay = 0.3; // seconds until note leaves shooter
