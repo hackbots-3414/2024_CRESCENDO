@@ -26,12 +26,12 @@ public class Intake extends SubsystemBase implements AutoCloseable {
 
     intakeMotor.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
 
-    TalonFXConfiguration configuration = new TalonFXConfiguration()
-      	.withCurrentLimits(new CurrentLimitsConfigs()
-			.withStatorCurrentLimit(CurrentLimits.intakeStatorLimit)
-			.withStatorCurrentLimitEnable(true));
+    // TalonFXConfiguration configuration = new TalonFXConfiguration()
+    //   	.withCurrentLimits(new CurrentLimitsConfigs()
+	// 		.withStatorCurrentLimit(CurrentLimits.intakeStatorLimit)
+	// 		.withStatorCurrentLimitEnable(true));
 
-	intakeMotor.getConfigurator().apply(configuration, 0.2);
+	// intakeMotor.getConfigurator().apply(configuration, 0.2);
 
     intakeMotor.setInverted(Constants.IntakeConstants.intakeMotorInvert);
   }

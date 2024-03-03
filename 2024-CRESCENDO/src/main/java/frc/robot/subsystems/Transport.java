@@ -33,12 +33,12 @@ public class Transport extends SubsystemBase implements AutoCloseable {
 
     transportMotor.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
 
-    TalonFXConfiguration configuration = new TalonFXConfiguration()
-      	.withCurrentLimits(new CurrentLimitsConfigs()
-			.withStatorCurrentLimit(CurrentLimits.transportStatorLimit)
-			.withStatorCurrentLimitEnable(true));
+    // TalonFXConfiguration configuration = new TalonFXConfiguration()
+    //   	.withCurrentLimits(new CurrentLimitsConfigs()
+		// 	.withStatorCurrentLimit(CurrentLimits.transportStatorLimit)
+		// 	.withStatorCurrentLimitEnable(true));
 
-      transportMotor.getConfigurator().apply(configuration, 0.2);
+    //   transportMotor.getConfigurator().apply(configuration, 0.2);
 
     transportMotor.setInverted(TransportConstants.transportMotorInvert);
     transportMotor.setNeutralMode(NeutralModeValue.Brake);
