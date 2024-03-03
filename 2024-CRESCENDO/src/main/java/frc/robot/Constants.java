@@ -392,7 +392,7 @@ public class Constants {
     }
 
     public class CurrentLimits {
-        public static final double intakeStatorLimit = 40;
+        public static final double intakeStatorLimit = 35;
         public static final double intakeSupplyLimit = 0;
         
         public static final double transportStatorLimit = 20;
