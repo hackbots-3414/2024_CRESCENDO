@@ -19,6 +19,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
@@ -29,6 +30,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.generated.TunerConstants;
 import frc.robot.Robot;
 import frc.robot.util.VisionHelpers;
 import frc.robot.util.VisionHelpers.TimestampedVisionUpdate;
@@ -163,8 +165,12 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         double robotDistance = speakerPose.relativeTo(getPose()).getTranslation().getNorm();
         if (DebugConstants.debugMode) SmartDashboard.putNumber("DISTANCE FROM TARGET", robotDistance);
 
-        for (SwerveModule module : Modules) {
-            SmartDashboard.putNumber("SWERVE MODULE MOVEMENT", module.getDriveMotor().getPosition().getValueAsDouble());
+        if (DebugConstants.debugMode) {
+            for (int i = 0; i < Modules.length; i++) {
+                SmartDashboard.putNumber("SWERVE MODULE MOVEMENT RADS" + i, (Modules[i].getDriveMotor().getPosition().getValueAsDouble() / 6.122448979591837) * Math.PI * 2.0);
+            }
+
+            SmartDashboard.putNumber("GYRO_RADS", Units.degreesToRadians(m_pigeon2.getAngle()));
         }
     }
 

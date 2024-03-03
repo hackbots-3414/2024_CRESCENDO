@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -58,7 +59,6 @@ import frc.robot.subsystems.AimHelper.AimOutputContainer;
 import frc.robot.subsystems.AimHelper.AimStrategies;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVision;
-import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVisionSIM;
 
 public class SubsystemManager extends SubsystemBase {
 	private AprilTagVision aprilTagVision;
@@ -325,7 +325,9 @@ public class SubsystemManager extends SubsystemBase {
 			driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
 		}
 
-		eventMarkers.put("Subwoofer", makeElevatorCommand(ElevatorPresets.SUBWOOFER).andThen(makeShootAfterRevCommand(ShooterConstants.minShootSpeed)));
+		SmartDashboard.putNumber("driveabase radius", driveBaseRadius);
+	
+		eventMarkers.put("Subwoofer", makeElevatorCommand(ElevatorPresets.SUBWOOFER).andThen(makeShootAfterRevCommand(ShooterConstants.minShootSpeed)).andThen(makeElevatorCommand(ElevatorPresets.STOW)));
 		eventMarkers.put("Intake", makeIntakeCommand().andThen(makeSubwooferRevvingCommand())); 
 		eventMarkers.put("IntakeThenSubwooferPreset", makeIntakeCommand().andThen(makeSubwooferRevvingCommand()));
 		eventMarkers.put("StealRings", makeStealRingCommand());
