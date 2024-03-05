@@ -48,6 +48,7 @@ import frc.robot.commands.ComboCommands.AmpScoreCommand;
 import frc.robot.commands.ComboCommands.ResetElevatorCommand;
 import frc.robot.commands.ComboCommands.StealRingCommand;
 import frc.robot.commands.ComboCommands.TrapScoreCommand;
+import frc.robot.commands.DebugCommands.WheelRadiusCharacterization;
 import frc.robot.commands.ManualCommands.ManualElevatorCommand;
 import frc.robot.commands.ManualCommands.ManualPivotCommand;
 import frc.robot.commands.ManualCommands.ManualWinchCommand;
@@ -304,6 +305,11 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public Command makeAutonEverythingCommand() {
 		return /*makeIntakeCommand().andThen(*/new AutoScoreCommand(elevator, shooterPivot, shooter, transport, this::getAimOutputContainer, this::setNoteOnBoard).withTimeout(1.5);
+	}
+
+	// Debug Commands
+	public Command makeWheelRadiusCharacterizationCommand() {
+		return new WheelRadiusCharacterization();
 	}
 
 
