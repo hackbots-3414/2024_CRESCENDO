@@ -23,15 +23,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.PDPConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
@@ -58,12 +56,11 @@ import frc.robot.subsystems.AimHelper.AimOutputContainer;
 import frc.robot.subsystems.AimHelper.AimStrategies;
 import frc.robot.subsystems.vision.AprilTagVision;
 import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVision;
-import frc.robot.subsystems.vision.AprilTagVisionIOPhotonVisionSIM;
 
 public class SubsystemManager extends SubsystemBase {
 	private AprilTagVision aprilTagVision;
 	private static SubsystemManager me = null;
-	PowerDistribution pdp = new PowerDistribution(PDPConstants.pdp, ModuleType.kRev);
+	// PowerDistribution pdp = new PowerDistribution(PDPConstants.pdp, ModuleType.kRev);
 	List<SubsystemBase> subsystems = new ArrayList<>();
 
 	Supplier<Alliance> allianceSupplier = () -> DriverStation.getAlliance().get();
@@ -129,7 +126,8 @@ public class SubsystemManager extends SubsystemBase {
 			if (Robot.isReal()) {
             	aprilTagVision = new AprilTagVision(new AprilTagVisionIOPhotonVision());
 			} else {
-				aprilTagVision = new AprilTagVision(new AprilTagVisionIOPhotonVisionSIM(drivetrain::getCurrentPose2d));
+				aprilTagVision = new AprilTagVision(new AprilTagVisionIOPhotonVision());
+				// aprilTagVision = new AprilTagVision(new AprilTagVisionIOPhotonVisionSIM(drivetrain::getCurrentPose2d));
 			}
             aprilTagVision.setDataInterfaces(drivetrain::addVisionData);
         }
@@ -144,23 +142,23 @@ public class SubsystemManager extends SubsystemBase {
 
   @Override
 	public void periodic() {
-		elevatorCurrent = pdp.getCurrent(PDPConstants.elevator);
-		intakeCurrent = pdp.getCurrent(PDPConstants.intake);
-		shooterPivotCurrent = pdp.getCurrent(PDPConstants.pivot);
-		shooterCurrent = pdp.getCurrent(PDPConstants.shooterLeft) + pdp.getCurrent(PDPConstants.shooterRight);
-		transportCurrent = pdp.getCurrent(PDPConstants.transport);
-		winchCurrent = pdp.getCurrent(PDPConstants.winchLeft) + pdp.getCurrent(PDPConstants.winchRight);
+		// elevatorCurrent = pdp.getCurrent(PDPConstants.elevator);
+		// intakeCurrent = pdp.getCurrent(PDPConstants.intake);
+		// shooterPivotCurrent = pdp.getCurrent(PDPConstants.pivot);
+		// shooterCurrent = pdp.getCurrent(PDPConstants.shooterLeft) + pdp.getCurrent(PDPConstants.shooterRight);
+		// transportCurrent = pdp.getCurrent(PDPConstants.transport);
+		// winchCurrent = pdp.getCurrent(PDPConstants.winchLeft) + pdp.getCurrent(PDPConstants.winchRight);
 
 		// dampenDrivetrain();
 	}
 
-	private void dampenDrivetrain() {
-		// (Ah Available - Ah Being Used) / Ah to Amps conversion / 4 motors to distribute over
-		double supplyLimitDrivetrain = ((availableCurrent / runTimeHours
-				- (elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent + transportCurrent))) / 4.0; 
-		supplyLimitDrivetrain = supplyLimitDrivetrain > SwerveConstants.driveSupplyCurrentLimit ? SwerveConstants.driveSupplyCurrentLimit : supplyLimitDrivetrain;
-		drivetrain.setCurrentLimit(supplyLimitDrivetrain);
-	}
+	// private void dampenDrivetrain() {
+	// 	// (Ah Available - Ah Being Used) / Ah to Amps conversion / 4 motors to distribute over
+	// 	double supplyLimitDrivetrain = ((availableCurrent / runTimeHours
+	// 			- (elevatorCurrent + intakeCurrent + shooterPivotCurrent + shooterCurrent + transportCurrent))) / 4.0; 
+	// 	supplyLimitDrivetrain = supplyLimitDrivetrain > SwerveConstants.driveSupplyCurrentLimit ? SwerveConstants.driveSupplyCurrentLimit : supplyLimitDrivetrain;
+	// 	drivetrain.setCurrentLimit(supplyLimitDrivetrain);
+	// }
 
 	// DRIVETRAIN COMMANDS
 	public void configureDriveDefaults(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
@@ -178,6 +176,9 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public Command makeResetCommand() {
 		return drivetrain.runOnce(() -> drivetrain.seedFieldRelative());
+	}
+	public Command resetAfterAuton() {
+		return drivetrain.runOnce(() -> drivetrain.setOperatorPerspectiveForward(allianceSupplier.get() == Alliance.Blue ? Rotation2d.fromDegrees(0) : Rotation2d.fromDegrees(180)));
 	}
 	public Command makeShellyCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
 		Command shellyCommand = drivetrain
@@ -240,6 +241,9 @@ public class SubsystemManager extends SubsystemBase {
 	// INTAKE COMMANDS
 	public Command makeIntakeCommand() {
 		return new IntakeCommand(transport, intake, elevator, shooterPivot, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed, this::setNoteOnBoard);
+	}
+	public Command makeEjectCommand() {
+		return new IntakeCommand(transport, intake, elevator, shooterPivot, Constants.IntakeConstants.ejectSpeed, Constants.TransportConstants.ejectSpeed, this::setNoteOnBoard);
 	}
 
 
@@ -310,8 +314,7 @@ public class SubsystemManager extends SubsystemBase {
 				makeIntakeCommand().withTimeout(2),
 				makeShootCommand().withTimeout(2),
 				new ManualWinchCommand(winch, 0.1).withTimeout(2),
-				new ManualWinchCommand(winch, -0.1).withTimeout(2),
-				drivetrain.makeTestAuton());
+				new ManualWinchCommand(winch, -0.1).withTimeout(2));
 
 		return commands;
 	}
@@ -322,10 +325,13 @@ public class SubsystemManager extends SubsystemBase {
 			driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
 		}
 
-		eventMarkers.put("Subwoofer", makeElevatorCommand(ElevatorPresets.SUBWOOFER).andThen(makeShootAfterRevCommand(ShooterConstants.minShootSpeed)));
+		SmartDashboard.putNumber("driveabase radius", driveBaseRadius);
+	
+		eventMarkers.put("Subwoofer", makeElevatorCommand(ElevatorPresets.SUBWOOFER).andThen(makeShootAfterRevCommand(ShooterConstants.minShootSpeed)).andThen(makeElevatorCommand(ElevatorPresets.STOW)));
 		eventMarkers.put("Intake", makeIntakeCommand().andThen(makeSubwooferRevvingCommand())); 
 		eventMarkers.put("IntakeThenSubwooferPreset", makeIntakeCommand().andThen(makeSubwooferRevvingCommand()));
 		eventMarkers.put("StealRings", makeStealRingCommand());
+		eventMarkers.put("Stow", makeElevatorCommand(ElevatorPresets.STOW));
 		
 		eventMarkers.put("ShootAnywhere", makeAutonEverythingCommand());
 

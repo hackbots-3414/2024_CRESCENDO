@@ -12,12 +12,14 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -25,11 +27,12 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants.AimConstants;
+import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.util.VisionHelpers;
 import frc.robot.util.VisionHelpers.TimestampedVisionUpdate;
-import frc.robot.Constants.DebugConstants;
 
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.002; // 5 ms
@@ -80,10 +83,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public double getRotationalRobotSpeed() {
         return getCurrentRobotChassisSpeeds().omegaRadiansPerSecond;
-    }
-
-    public Command makeTestAuton() {
-        return AutoBuilder.buildAuto("Test Auton");
     }
 
     private void startSimThread() {
@@ -157,7 +156,19 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             dashboardPose = VisionHelpers.flipAlliance(dashboardPose);
         }
         field.setRobotPose(dashboardPose);
-        if (DebugConstants.debugMode) SmartDashboard.putData(field);
+        SmartDashboard.putData(field);
+
+        Pose2d speakerPose = DriverStation.getAlliance().get() == Alliance.Blue ? AimConstants.blueSpeakerPos : AimConstants.redSpeakerPos;
+        double robotDistance = speakerPose.relativeTo(getPose()).getTranslation().getNorm();
+        if (DebugConstants.debugMode) SmartDashboard.putNumber("DISTANCE FROM TARGET", robotDistance);
+
+        if (DebugConstants.debugMode) {
+            for (int i = 0; i < Modules.length; i++) {
+                SmartDashboard.putNumber("SWERVE MODULE MOVEMENT RADS" + i, (Modules[i].getDriveMotor().getPosition().getValueAsDouble() / 6.122448979591837) * Math.PI * 2.0);
+            }
+
+            SmartDashboard.putNumber("GYRO_RADS", Units.degreesToRadians(m_pigeon2.getAngle()));
+        }
     }
 
     public boolean isInRange() {

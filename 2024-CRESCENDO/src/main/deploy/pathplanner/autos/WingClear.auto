@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 1.3829526758152613,
+      "y": 5.537577201280529
+    },
+    "rotation": 177.37516005160768
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -9,6 +15,12 @@
           "type": "named",
           "data": {
             "name": "Subwoofer"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stow"
           }
         },
         {
@@ -39,18 +51,6 @@
           "type": "path",
           "data": {
             "pathName": "3PieceEnd"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Subwoofer"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "CenterRush"
           }
         },
         {

@@ -19,6 +19,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+import ch.qos.logback.core.property.CanonicalHostNamePropertyDefiner;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -132,6 +133,7 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
     cancoderPosition = cancoder.getAbsolutePosition().getValueAsDouble();
     if (DebugConstants.debugMode) {
       SmartDashboard.putNumber("CANCODERPOS", cancoderPosition);
+      SmartDashboard.putNumber("CANCODER SETPOINT", pivotMotor.getClosedLoopReference().getValueAsDouble());
       SmartDashboard.putBoolean("SHOOTER PIVOT SETPOINT", isAtSetpoint());
     }
   }

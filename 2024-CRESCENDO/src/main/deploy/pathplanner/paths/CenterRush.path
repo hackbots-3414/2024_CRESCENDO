@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.355218566292987,
-        "y": 5.509843091758257
+        "x": 2.0946267347080147,
+        "y": 6.119657330223752
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.897106703304316,
-        "y": 4.058004479645323
+        "x": 7.9717366707460675,
+        "y": 7.42568176045443
       },
       "prevControl": {
-        "x": 7.122820791096127,
-        "y": 4.058004479645323
+        "x": 7.71955392897872,
+        "y": 7.533760078354717
       },
       "nextControl": {
-        "x": 8.883824496274592,
-        "y": 4.058004479645323
+        "x": 8.037037892257603,
+        "y": 7.397695522663773
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 5.509843091758257
       },
       "prevControl": {
-        "x": 2.5610640312189714,
-        "y": 5.102824023829866
+        "x": 2.197242939940425,
+        "y": 6.194287297665506
       },
       "nextControl": null,
       "isLocked": false,
@@ -77,7 +77,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "4PieceWingClear",
   "previewStartingState": {
     "rotation": 179.14490260373333,
     "velocity": 0

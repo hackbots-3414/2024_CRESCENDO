@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7233010829658023,
-      "y": 4.393839333133212
+      "x": 0.7046435911053639,
+      "y": 4.449811808714527
     },
-    "rotation": 120.25643716352927
+    "rotation": 120.59997869320895
   },
   "command": {
     "type": "sequential",
@@ -20,19 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "StealCenterRings"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Subwoofer"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AmpSide2Piece"
+            "pathName": "SourceSide2Piece"
           }
         },
         {

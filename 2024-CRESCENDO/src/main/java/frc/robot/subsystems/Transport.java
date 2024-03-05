@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.CurrentLimits;
+import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.TransportConstants;
 
 public class Transport extends SubsystemBase implements AutoCloseable {
@@ -33,9 +33,15 @@ public class Transport extends SubsystemBase implements AutoCloseable {
 
     transportMotor.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
 
+    // TalonFXConfiguration configuration = new TalonFXConfiguration()
+    //   	.withCurrentLimits(new CurrentLimitsConfigs()
+		// 	.withStatorCurrentLimit(CurrentLimits.transportStatorLimit)
+		// 	.withStatorCurrentLimitEnable(true));
+
+    //   transportMotor.getConfigurator().apply(configuration, 0.2);
+
     transportMotor.setInverted(TransportConstants.transportMotorInvert);
     transportMotor.setNeutralMode(NeutralModeValue.Brake);
-    setCurrentLimit(CurrentLimits.transportSupplyLimit);
   }
 
   public void setMotor(double speed) {
@@ -66,6 +72,7 @@ public class Transport extends SubsystemBase implements AutoCloseable {
   public void periodic() {
     irValue = !irSensor.get();
     if (DebugConstants.debugMode) SmartDashboard.putBoolean("IR SENSOR", irValue);
+    SmartDashboard.putNumber("INTAKE SPEED", transportMotor.getVelocity().getValueAsDouble());
   }
 
   @Override

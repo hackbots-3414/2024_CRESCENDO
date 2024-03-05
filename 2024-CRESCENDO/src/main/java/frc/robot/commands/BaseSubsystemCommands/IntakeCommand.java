@@ -2,6 +2,9 @@ package frc.robot.commands.BaseSubsystemCommands;
 
 import java.util.function.Consumer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.PositionConstants;
 import frc.robot.subsystems.Elevator;
@@ -17,6 +20,8 @@ public class IntakeCommand extends Command {
   double intakeSpeed;
   double transportSpeed;
   Consumer<Boolean> setNoteIsOnBoard;
+  boolean alreadyStarted = false;
+  Logger log = LoggerFactory.getLogger(IntakeCommand.class);
 
   public IntakeCommand(Transport transport, Intake intake, Elevator elevator, ShooterPivot pivot, double intakeSpeed, double transportSpeed, Consumer<Boolean> setNoteIsOnBoard) {
     addRequirements(intake, transport);
@@ -33,23 +38,25 @@ public class IntakeCommand extends Command {
   public void initialize() {
     elevator.setElevatorPosition(PositionConstants.StowPresets.elevator);
     pivot.setPivotPosition(PositionConstants.StowPresets.shooter);
+    // log.debug("INITIALIZE OF INTAKE COMMAND");
+    alreadyStarted = false;
   }
 
   @Override
   public void execute() {
-      if (elevator.isAtSetpoint() && pivot.isAtSetpoint()) {
+      if (elevator.isAtSetpoint() && pivot.isAtSetpoint() && !alreadyStarted) {
         intake.setMotor(intakeSpeed);
         transport.setMotor(transportSpeed);
-      } else {
-        intake.stopMotor();
-        transport.stopMotor();
+        alreadyStarted = true;
       }
+      // log.debug("EXECUTE OF INTAKE COMMAND");
   }
 
   @Override
   public void end(boolean interrupted) {
     intake.stopMotor();
     transport.stopMotor();
+    // log.debug("END OF INTAKE COMMAND");
   }
 
   @Override
@@ -57,6 +64,7 @@ public class IntakeCommand extends Command {
     if (transport.getIR()) {
       setNoteIsOnBoard.accept(true);
     }
+    // log.debug("ISFINISHED OF INTAKE COMMAND");
     return transport.getIR();
   }
 }
