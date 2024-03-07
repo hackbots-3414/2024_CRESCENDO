@@ -124,7 +124,7 @@ public class Constants {
 
         public static final double minShootSpeed = 50; // measured for AutoAim
         public static final double maxShootSpeed = 90; // measured for AutoAim
-        public static final double spitOutSpeed = 20;
+        public static final double spitOutSpeed = 20.0;
 
         public static final double shooterBackupSpeed = -0.1;
 
