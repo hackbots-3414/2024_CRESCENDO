@@ -61,10 +61,10 @@ public class IntakeCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    if (transport.getIR()) {
+    if (intake.getIntakeIr()) {
       setNoteIsOnBoard.accept(true);
     }
     // log.debug("ISFINISHED OF INTAKE COMMAND");
-    return transport.getIR();
+    return intake.getIntakeIr() ;
   }
 }

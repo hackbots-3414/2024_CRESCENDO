@@ -19,7 +19,7 @@ public class RevShooterCommand extends Command {
 
     @Override
     public void execute() {
-        if (transport.getIR() == true) {
+        if (transport.getFlyWheelIR() == true) {
             transport.stopMotor();
             shooter.setVelocity(velocity);
         } else {
