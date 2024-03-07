@@ -11,6 +11,9 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 public class WheelRadiusCharacterization extends Command {
   CommandSwerveDrivetrain drivetrain;
   FieldCentric driveRequest = new SwerveRequest.FieldCentric();
+   double driveBaseRadius = 0;
+  double gyroStartingPosition;
+  double gyroEndingPosition;
 
   public WheelRadiusCharacterization(CommandSwerveDrivetrain drivetrain) {
 
@@ -21,12 +24,13 @@ public class WheelRadiusCharacterization extends Command {
 
   @Override
   public void initialize() {
-    double driveBaseRadius = 0;
     for (var moduleLocation : drivetrain.moduleLocations()) {
       driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
     }
     SmartDashboard.putNumber("drivebase radius", driveBaseRadius);
     SmartDashboard.putNumber("Starting Gyro Position", Units.degreesToRadians(drivetrain.getPigeon2().getAngle()));
+
+    gyroStartingPosition = Units.degreesToRadians(drivetrain.getPigeon2().getAngle());
   }
 
   public double getGyroPositionRadians() {
@@ -52,6 +56,10 @@ public class WheelRadiusCharacterization extends Command {
   @Override
   public void end(boolean interrupted) {
     SmartDashboard.putNumber("Ending Gyro Position", Units.degreesToRadians(drivetrain.getPigeon2().getAngle()));
+    gyroEndingPosition = Units.degreesToRadians(drivetrain.getPigeon2().getAngle());
+    double gyroPositionChange = gyroEndingPosition - gyroStartingPosition;
+    double wheelRadius = (gyroPositionChange * driveBaseRadius) / getWheelRotationRadAvg();
+    SmartDashboard.putNumber("Wheel Radius", wheelRadius);
   }
 
   @Override
