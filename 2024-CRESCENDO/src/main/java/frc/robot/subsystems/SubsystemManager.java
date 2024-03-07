@@ -48,8 +48,10 @@ import frc.robot.commands.ComboCommands.AmpScoreCommand;
 import frc.robot.commands.ComboCommands.ResetElevatorCommand;
 import frc.robot.commands.ComboCommands.StealRingCommand;
 import frc.robot.commands.ComboCommands.TrapScoreCommand;
+import frc.robot.commands.ManualCommands.ManualIntakeEjectCommand;
 import frc.robot.commands.ManualCommands.ManualElevatorCommand;
 import frc.robot.commands.ManualCommands.ManualPivotCommand;
+import frc.robot.commands.ManualCommands.ManualShootCommand;
 import frc.robot.commands.ManualCommands.ManualWinchCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AimHelper.AimOutputContainer;
@@ -236,6 +238,9 @@ public class SubsystemManager extends SubsystemBase {
 	public Command makeShootCommand() {
 		return new ShooterCommand(shooter, transport, ShooterConstants.shootVelo, this::setNoteOnBoard);
 	}
+	public Command makeManualShootCommand() {
+		return new ManualShootCommand(shooter,transport);
+	}
 
 
 	// INTAKE COMMANDS
@@ -244,6 +249,9 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public Command makeEjectCommand() {
 		return new IntakeCommand(transport, intake, elevator, shooterPivot, Constants.IntakeConstants.ejectSpeed, Constants.TransportConstants.ejectSpeed, this::setNoteOnBoard);
+	}
+	public Command makeManualIntakeEjectCommand() {
+		return new ManualIntakeEjectCommand(intake, transport);
 	}
 
 
