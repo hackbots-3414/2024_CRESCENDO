@@ -184,7 +184,7 @@ public class Constants {
 
         public static final double expoPower = 2.0;
 
-        public static final JoystickChoice operatorController = JoystickChoice.XBOX;
+        public static final JoystickChoice operatorController = JoystickChoice.PS5;
     }
 
     public static final class TransportConstants {
