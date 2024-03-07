@@ -24,9 +24,20 @@ public class WheelRadiusCharacterization extends Command {
     SmartDashboard.putNumber("drivebase radius", driveBaseRadius);
     SmartDashboard.putNumber("Starting Gyro Position", Units.degreesToRadians(drivetrain.getPigeon2().getAngle()));
   }
-  
+
   public double getGyroPositionRadians() {
     return Units.degreesToRadians(drivetrain.getPigeon2().getAngle());
+  }
+
+  public double getWheelRotationRadAvg() {
+    double sum = 0;
+    for (int i = 0; i < 4; i++) {
+      SmartDashboard.putNumber("SWERVE MODULE MOVEMENT RADS" + i,
+          (drivetrain.getModule(i).getDriveMotor().getPosition().getValueAsDouble() / 6.122448979591837) * Math.PI
+              * 2.0);
+              sum += (drivetrain.getModule(i).getDriveMotor().getPosition().getValueAsDouble() / 6.122448979591837) * Math.PI * 2.0;
+    }
+    return sum / 4;
   }
 
   @Override
@@ -35,7 +46,7 @@ public class WheelRadiusCharacterization extends Command {
 
   @Override
   public void end(boolean interrupted) {
-        SmartDashboard.putNumber("Ending Gyro Position", Units.degreesToRadians(drivetrain.getPigeon2().getAngle()));
+    SmartDashboard.putNumber("Ending Gyro Position", Units.degreesToRadians(drivetrain.getPigeon2().getAngle()));
   }
 
   @Override
