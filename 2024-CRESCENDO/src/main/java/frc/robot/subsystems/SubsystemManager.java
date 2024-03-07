@@ -309,7 +309,7 @@ public class SubsystemManager extends SubsystemBase {
 
 	// Debug Commands
 	public Command makeWheelRadiusCharacterizationCommand() {
-		return new WheelRadiusCharacterization();
+		return new WheelRadiusCharacterization(drivetrain);
 	}
 
 

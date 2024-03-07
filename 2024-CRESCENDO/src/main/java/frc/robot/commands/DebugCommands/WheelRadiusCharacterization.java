@@ -1,9 +1,17 @@
 package frc.robot.commands.DebugCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class WheelRadiusCharacterization extends Command {
-  public WheelRadiusCharacterization() {
+  CommandSwerveDrivetrain drivetrain;
+
+
+  public WheelRadiusCharacterization(CommandSwerveDrivetrain drivetrain) {
+
+    addRequirements(drivetrain);
+    this.drivetrain = drivetrain;
+    
   }
 
   @Override
