@@ -1,5 +1,8 @@
 package frc.robot.commands.DebugCommands;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
+
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -7,6 +10,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class WheelRadiusCharacterization extends Command {
   CommandSwerveDrivetrain drivetrain;
+  FieldCentric driveRequest = new SwerveRequest.FieldCentric();
 
   public WheelRadiusCharacterization(CommandSwerveDrivetrain drivetrain) {
 
@@ -42,6 +46,7 @@ public class WheelRadiusCharacterization extends Command {
 
   @Override
   public void execute() {
+    drivetrain.applyRequest(() -> driveRequest.withVelocityX(0).withVelocityY(0).withRotationalRate(1.0));
   }
 
   @Override
