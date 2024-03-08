@@ -31,8 +31,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.Robot;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Robot;
 
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
      private static final Logger LOGGER = LoggerFactory.getLogger(CommandSwerveDrivetrain.class);
@@ -140,7 +140,13 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         field.setRobotPose(estimatedPose);
     }
 
-     public Command makeDriveToPoseCommand(Pose2d goalPose, boolean isReversed) {
+    /**
+     * This method returns a command that is runanble in order to drive to a given pose on the field.
+     * @param goalPose The goal pose (field relative)
+     * @param isReversed
+     * @return The pathplanner-generated command to get to that pose
+     */
+    public Command makeDriveToPoseCommand(Pose2d goalPose, boolean isReversed) {
         GoalEndState goal = DriverStation.getAlliance().get() == Alliance.Blue
                 ? new GoalEndState(0.0, goalPose.getRotation())
                 : new GoalEndState(0, new Rotation2d(Math.PI - goalPose.getRotation().getRadians()));

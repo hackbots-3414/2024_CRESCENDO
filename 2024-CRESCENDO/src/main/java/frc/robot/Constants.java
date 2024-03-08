@@ -8,12 +8,19 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import frc.robot.generated.TunerConstants;
+import frc.robot.util.FieldConstants;
 
 public class Constants {
     public enum AprilTags {
@@ -76,13 +83,55 @@ public class Constants {
          * A note about these transforms: They appear to follow the normal cordinate
          * system (x is right when pos. and so on).
          */
-        public static final Transform3d leftTransform = new Transform3d(-0.282, 0.293, 0.646, 
-                                                        new Rotation3d(0, 0, Units.degreesToRadians(-40)));
-        public static final Transform3d rightTransform = new Transform3d(-0.282, -0.293, 0.646, 
-                                                        new Rotation3d(0, 0, Units.degreesToRadians(40)));
-        public static final String leftCameraName = "Cam2";
-        public static final String rightCameraName = "Cam1";
+        public static final Transform3d leftTransform = new Transform3d(-0.281, 0.291, 0.636,
+                new Rotation3d(Units.degreesToRadians(-2.5), Units.degreesToRadians(-30), Units.degreesToRadians(-10)));
+        public static final Transform3d rightTransform = new Transform3d(-0.281, -0.291, 0.636,
+                new Rotation3d(Units.degreesToRadians(2.5), Units.degreesToRadians(-30), Units.degreesToRadians(10)));
+
+        public static final String leftCameraName = "LeftCam";
+        public static final String rightCameraName = "RightCam";
         public static final String noteCameraName = "NoteCam";
+        public static final double allowedAngleDiff = Units.degreesToRadians(5.0); // this is the max deviation that we will allow for turning towards the note
+        public static final double maxNoteAmbiguity = 0.3;
+
+        /** Minimum target ambiguity. Targets with higher ambiguity will be discarded */
+        public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
+
+        public static final double POSE_AMBIGUITY_SHIFTER = 0.2;
+        public static final double POSE_AMBIGUITY_MULTIPLIER = 4;
+        public static final double NOISY_DISTANCE_METERS = 2.5;
+        public static final double DISTANCE_WEIGHT = 7;
+        public static final int TAG_PRESENCE_WEIGHT = 10;
+
+        /**
+         * Standard deviations of model states. Increase these numbers to trust your
+         * model's state estimates less. This
+         * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then
+         * meters.
+         */
+        public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(), 
+                        // if these numbers are less than one, multiplying will do bad things
+                        1, // x
+                        1, // y
+                        1 * Math.PI // theta
+                );
+                
+        /**
+         * Standard deviations of the vision measurements. Increase these numbers to
+         * trust global measurements from vision
+         * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and
+         * radians.
+         */
+        public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(), 
+                        // if these numbers are less than one, multiplying will do bad things
+                        .1, // x
+                        .1, // y
+                        .1);
+
+        // Pose on the opposite side of the field. Use with `relativeTo` to flip a pose
+        // to the opposite alliance
+        public static final Pose2d FLIPPING_POSE = new Pose2d(
+                new Translation2d(FieldConstants.fieldLength, FieldConstants.fieldWidth), new Rotation2d(Math.PI));
     }
 
     public static final class ShooterConstants {

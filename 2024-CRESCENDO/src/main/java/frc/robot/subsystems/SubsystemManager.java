@@ -24,12 +24,12 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -55,6 +55,7 @@ import frc.robot.commands.TrapScoreCommand;
 import frc.robot.commands.WinchCommand;
 import frc.robot.commands.AutonCommands.AutoScoreCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.noteDetection.PhotonNoteTracker;
 
 public class SubsystemManager extends SubsystemBase {
   private static SubsystemManager me = null;
@@ -71,6 +72,8 @@ public class SubsystemManager extends SubsystemBase {
   Winch winch = new Winch();
   LedSubsystem ledSubsystem = new LedSubsystem();
   PhotonVision photonVision = new PhotonVision();
+  PhotonNoteTracker noteTracker = new PhotonNoteTracker();
+
 
   CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
   FieldCentric driveRequest = new SwerveRequest.FieldCentric()
@@ -234,6 +237,12 @@ public class SubsystemManager extends SubsystemBase {
   public Command makeTransportCommand(boolean forward) {
     return new TransportCommand(transport, forward);
   }
+	// VISION INTAKE COMMANDS
+	public Command makeAutoPickupCommand() {
+		Optional<Alliance> alliance = DriverStation.getAlliance();
+		return drivetrain.makeDriveToPoseCommand(noteTracker.getGoalPose(drivetrain::getPose, alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false), true);
+	}
+
 
   public Command makeWinchCommand(boolean up) {
     return new WinchCommand(winch, up ? Constants.WinchConstants.climbHeight : WinchConstants.restHeight);

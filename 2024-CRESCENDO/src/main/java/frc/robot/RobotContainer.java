@@ -144,7 +144,9 @@ public class RobotContainer {
     SmartDashboard.putData("Brake Elevator", subsystemManager.elevatorNeutralMode(NeutralModeValue.Brake));
 
     SmartDashboard.putData("Run Tests", subsystemManager.makeTestingCommand());
-  */ } 
+  */
+    SmartDashboard.putData("Get the note", subsystemManager.makeAutoPickupCommand());
+ } 
 
   public Command getAutonomousCommand() {return pathChooser.getSelected();}
   public NoteFinder getNoteFinder() {return subsystemManager.getNoteFinder();}
