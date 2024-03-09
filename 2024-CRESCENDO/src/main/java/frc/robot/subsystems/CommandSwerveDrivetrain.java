@@ -145,6 +145,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public void periodic() {
         estimatedPose = m_odometry.getEstimatedPosition();
         
+        field.setRobotPose(m_odometry.getEstimatedPosition());
+        double voltage = RobotController.getBatteryVoltage();
+        SmartDashboard.putNumber("Voltage", voltage);
+        SmartDashboard.putData("Field", field);
+
         if (DebugConstants.debugMode) {
             SmartDashboard.putString("ROBOTPOSE", estimatedPose.toString());
             SmartDashboard.putNumber("ROBOTX", estimatedPose.getX());
