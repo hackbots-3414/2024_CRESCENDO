@@ -412,4 +412,10 @@ public class Constants {
         public static final double drivetrainStatorLimit = 0;
         public static final double drivetrainSupplyLimit = 80;
     }
+    public class LEDConstants {
+        public static final int candleCanid = 5;
+        public static final int numLED = 13;
+        public static final double flashSpeed = 0.75;
+        public static final double strobeSpeed = 0.1;
+    }
 }
