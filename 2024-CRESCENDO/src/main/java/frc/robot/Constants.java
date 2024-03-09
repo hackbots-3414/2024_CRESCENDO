@@ -127,6 +127,7 @@ public class Constants {
         public static final double spitOutSpeed = 20.0;
 
         public static final double shooterBackupSpeed = -0.1;
+        public static final double shootAmpVelo = -0.1;
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
                 entry(0.0, 0.18),
@@ -346,6 +347,8 @@ public class Constants {
         public static final double speakerHeightMinusElevatorRaise = speakerHeight - elevatorHeightFromFloorAtRest;
         public static final double gravity = 9.81;
         public static final double velocity = ShooterConstants.maxShootSpeed * Units.inchesToMeters(1.5) * Math.PI + AimConstants.compressionAdder;
+
+        public static final double bumperToCenter = Units.inchesToMeters(19.5);
     }
 
     public static final class WinchConstants {
@@ -412,5 +415,9 @@ public class Constants {
 
         public static final double drivetrainStatorLimit = 0;
         public static final double drivetrainSupplyLimit = 80;
+    }
+
+    public static class AmpConstants {
+        public static final double allowedShootTime = 1.5; // seconds
     }
 }

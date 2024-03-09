@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
@@ -25,7 +26,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -47,9 +50,12 @@ import frc.robot.commands.BaseSubsystemCommands.ShooterCommand;
 import frc.robot.commands.ComboCommands.AmpScoreCommand;
 import frc.robot.commands.ComboCommands.ResetElevatorCommand;
 import frc.robot.commands.ComboCommands.StealRingCommand;
+import frc.robot.commands.ComboCommands.StowElevatorCommand;
 import frc.robot.commands.ComboCommands.TrapScoreCommand;
-import frc.robot.commands.ManualCommands.ManualIntakeEjectCommand;
+import frc.robot.commands.ComboCommands.AmpCommands.AmpSetup;
+import frc.robot.commands.ComboCommands.AmpCommands.ScoreAmpCommand;
 import frc.robot.commands.ManualCommands.ManualElevatorCommand;
+import frc.robot.commands.ManualCommands.ManualIntakeEjectCommand;
 import frc.robot.commands.ManualCommands.ManualPivotCommand;
 import frc.robot.commands.ManualCommands.ManualShootCommand;
 import frc.robot.commands.ManualCommands.ManualWinchCommand;
@@ -270,6 +276,17 @@ public class SubsystemManager extends SubsystemBase {
 		return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER),
 				makeRevShootCommand(ShooterConstants.minShootSpeed));
 	}
+	public Command makeAmpSequence() {
+		// our goal position is the position of the amp plus just enough room for our robot to be aligned with it, and we want to be facing the alliance station so we can score.
+		return new SequentialCommandGroup(
+			new ParallelCommandGroup(
+				new DeferredCommand(drivetrain::makeDriveToAmpCommand, Set.of()),
+				new AmpSetup(elevator, shooterPivot)
+			),
+			new ScoreAmpCommand(shooter).withTimeout(Constants.AmpConstants.allowedShootTime),
+			new StowElevatorCommand(elevator, shooterPivot)
+		);
+	}
 
 
 	// AIMING COMMANDS
@@ -342,6 +359,8 @@ public class SubsystemManager extends SubsystemBase {
 		eventMarkers.put("Stow", makeElevatorCommand(ElevatorPresets.STOW));
 		
 		eventMarkers.put("ShootAnywhere", makeAutonEverythingCommand());
+
+		SmartDashboard.putData("Amp Sequence", makeAmpSequence());
 
 		NamedCommands.registerCommands(eventMarkers);
 

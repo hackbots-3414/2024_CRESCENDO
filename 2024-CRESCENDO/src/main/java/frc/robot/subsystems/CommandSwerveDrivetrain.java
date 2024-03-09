@@ -38,10 +38,12 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants;
 import frc.robot.Constants.AimConstants;
 import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
+import frc.robot.util.FieldConstants;
 import frc.robot.util.VisionHelpers;
 import frc.robot.util.VisionHelpers.TimestampedVisionUpdate;
 
@@ -201,7 +203,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     /**
      * This method returns a command that is runanble in order to drive to a given pose on the field.
      * @param goalPose The goal pose (field relative)
-     * @param isReversed
+     * @param isReversed does the robot drive with the intake side as forwards.
      * @return The pathplanner-generated command to get to that pose
      */
     public Command makeDriveToPoseCommand(Pose2d goalPose, boolean isReversed) {
@@ -224,5 +226,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         LOGGER.debug("makeDriveToPoseCommand: Calculated Poses: {}", path.getPathPoses());
 
         return AutoBuilder.followPath(path);
+    }
+    public Command makeDriveToAmpCommand() {
+        Pose2d ampPose = new Pose2d(FieldConstants.ampCenter.minus(new Translation2d(0, Constants.AimConstants.bumperToCenter)), Rotation2d.fromDegrees(270));
+        return makeDriveToPoseCommand(ampPose, true);
     }
 }
