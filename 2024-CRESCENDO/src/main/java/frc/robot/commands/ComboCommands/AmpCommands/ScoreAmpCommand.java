@@ -35,6 +35,6 @@ public class ScoreAmpCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false; // this command should end by a timeout, ideally.
+    return false; // this command should end by a timeout.
   }
 }

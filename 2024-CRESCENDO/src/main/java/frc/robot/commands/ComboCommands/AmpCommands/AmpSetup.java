@@ -40,8 +40,6 @@ public class AmpSetup extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (elevator.getPosition() != elevatorGoal) return false;
-    if (pivot.getCancoderPos() != pivotGoal) return false;
-    return true;
+    return (pivot.isAtSetpoint() && elevator.isAtSetpoint());
   }
 }

@@ -19,12 +19,11 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
-import ch.qos.logback.core.property.CanonicalHostNamePropertyDefiner;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.CurrentLimits;
+import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.PivotConstants.PivotMotionMagicConstants;
 import frc.robot.Constants.PivotConstants.PivotSlot0ConfigConstants;
