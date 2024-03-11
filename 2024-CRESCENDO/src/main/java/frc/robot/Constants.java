@@ -55,7 +55,7 @@ public class Constants {
 
     public static final class VisionConstants {
 
-        public static final boolean USE_VISION = true; // Vision enabled or not
+        public static final boolean USE_VISION = false; // Vision enabled or not
 
         /*
          * A note about these transforms: They appear to follow the normal cordinate
@@ -417,5 +417,7 @@ public class Constants {
         public static final int numLED = 13;
         public static final double flashSpeed = 0.75;
         public static final double strobeSpeed = 0.1;
+        public static final double endgameWarning = 20;
+        public static final double endgameAlert = 10;
     }
 }
