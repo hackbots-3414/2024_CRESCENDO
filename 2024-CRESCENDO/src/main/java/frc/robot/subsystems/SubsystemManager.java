@@ -52,6 +52,7 @@ import frc.robot.commands.ComboCommands.ResetElevatorCommand;
 import frc.robot.commands.ComboCommands.StealRingCommand;
 import frc.robot.commands.ComboCommands.StowElevatorCommand;
 import frc.robot.commands.ComboCommands.TrapScoreCommand;
+import frc.robot.commands.ComboCommands.AmpCommands.AmpComboScheduler;
 import frc.robot.commands.ComboCommands.AmpCommands.AmpSetup;
 import frc.robot.commands.ComboCommands.AmpCommands.ScoreAmpCommand;
 import frc.robot.commands.ManualCommands.ManualElevatorCommand;
@@ -278,14 +279,7 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public Command makeAmpSequence() {
 		// our goal position is the position of the amp plus just enough room for our robot to be aligned with it, and we want to be facing the alliance station so we can score.
-		return new SequentialCommandGroup(
-			new ParallelCommandGroup(
-				new DeferredCommand(drivetrain::makeDriveToAmpCommand, Set.of()),
-				new AmpSetup(elevator, shooterPivot)
-			),
-			new ScoreAmpCommand(shooter).withTimeout(Constants.AmpConstants.allowedShootTime),
-			new StowElevatorCommand(elevator, shooterPivot)
-		);
+		return new AmpComboScheduler(drivetrain, elevator, shooterPivot, shooter);
 	}
 
 

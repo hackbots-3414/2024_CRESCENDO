@@ -211,7 +211,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 ? new GoalEndState(0.0, goalPose.getRotation())
                 : new GoalEndState(0, new Rotation2d(Math.PI - goalPose.getRotation().getRadians()));
         ArrayList<RotationTarget> rotateTargetList = new ArrayList<>();
-        rotateTargetList.add(new RotationTarget(0.1, goalPose.getRotation()));
+        rotateTargetList.add(new RotationTarget(1.0, goalPose.getRotation()));
         PathPlannerPath path = new PathPlannerPath(PathPlannerPath.bezierFromPoses(estimatedPose, goalPose),
                 rotateTargetList,
                 Collections.emptyList(),
@@ -220,9 +220,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                         SwerveConstants.maxAngleVelocity, SwerveConstants.maxAngleAcceleration),
                 goal,
                 isReversed);
-        // if (Robot.isSimulation()) {
-        //    field.getRobotObject().setPoses(path.getPathPoses());
-        // }
+        if (Robot.isSimulation()) {
+           field.getRobotObject().setPoses(path.getPathPoses());
+        }
         LOGGER.debug("makeDriveToPoseCommand: Calculated Poses: {}", path.getPathPoses());
 
         return AutoBuilder.followPath(path);
