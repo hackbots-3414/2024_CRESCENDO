@@ -21,6 +21,7 @@
       "/SmartDashboard/Brake Elevator": "Command",
       "/SmartDashboard/Coast Elevator": "Command",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Manual Shooter": "Command",
       "/SmartDashboard/Module 0": "Mechanism2d",
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",
@@ -117,6 +118,9 @@
   },
   "NetworkTables Info": {
     "Connections": {
+      "open": true
+    },
+    "Server": {
       "open": true
     },
     "visible": true

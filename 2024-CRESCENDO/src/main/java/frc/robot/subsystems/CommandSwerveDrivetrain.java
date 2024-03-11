@@ -3,8 +3,13 @@ package frc.robot.subsystems;
 import static edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide;
 import static edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition.kRedAllianceWallRightSide;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -12,9 +17,15 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.RotationTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
@@ -35,6 +46,8 @@ import frc.robot.util.VisionHelpers;
 import frc.robot.util.VisionHelpers.TimestampedVisionUpdate;
 
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommandSwerveDrivetrain.class);
+
     private static final double kSimLoopPeriod = 0.002; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -183,5 +196,33 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public void simulationPeriodic() {
         Subsystem.super.simulationPeriodic();
         field.setRobotPose(estimatedPose);
+    }
+
+    /**
+     * This method returns a command that is runanble in order to drive to a given pose on the field.
+     * @param goalPose The goal pose (field relative)
+     * @param isReversed
+     * @return The pathplanner-generated command to get to that pose
+     */
+    public Command makeDriveToPoseCommand(Pose2d goalPose, boolean isReversed) {
+        GoalEndState goal = DriverStation.getAlliance().get() == Alliance.Blue
+                ? new GoalEndState(0.0, goalPose.getRotation())
+                : new GoalEndState(0, new Rotation2d(Math.PI - goalPose.getRotation().getRadians()));
+        ArrayList<RotationTarget> rotateTargetList = new ArrayList<>();
+        rotateTargetList.add(new RotationTarget(0.1, goalPose.getRotation()));
+        PathPlannerPath path = new PathPlannerPath(PathPlannerPath.bezierFromPoses(estimatedPose, goalPose),
+                rotateTargetList,
+                Collections.emptyList(),
+                Collections.emptyList(),
+                new PathConstraints(SwerveConstants.maxDriveVelocity, SwerveConstants.maxDriveAcceleration,
+                        SwerveConstants.maxAngleVelocity, SwerveConstants.maxAngleAcceleration),
+                goal,
+                isReversed);
+        // if (Robot.isSimulation()) {
+        //    field.getRobotObject().setPoses(path.getPathPoses());
+        // }
+        LOGGER.debug("makeDriveToPoseCommand: Calculated Poses: {}", path.getPathPoses());
+
+        return AutoBuilder.followPath(path);
     }
 }
