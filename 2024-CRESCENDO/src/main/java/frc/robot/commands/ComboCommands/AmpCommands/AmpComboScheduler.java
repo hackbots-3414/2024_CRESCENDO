@@ -40,15 +40,14 @@ public class AmpComboScheduler extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // Command macro = new SequentialCommandGroup(
-		// 	new ParallelCommandGroup(
-		// 		drivetrain.makeDriveToAmpCommand()
-		// 		// new AmpSetup(elevator, pivot)
-		// 	),
-		// 	new ScoreAmpCommand(shooter).withTimeout(Constants.AmpConstants.allowedShootTime),
-		// 	new StowElevatorCommand(elevator, pivot)
-		// );
-    Command macro = drivetrain.makeDriveToAmpCommand();
+    Command macro = new SequentialCommandGroup(
+			new ParallelCommandGroup(
+				drivetrain.makeDriveToAmpCommand(),
+				new AmpSetup(elevator, pivot)
+			),
+			new ScoreAmpCommand(shooter).withTimeout(Constants.AmpConstants.allowedShootTime),
+			new StowElevatorCommand(elevator, pivot)
+		);
     macro.schedule();
   }
 
