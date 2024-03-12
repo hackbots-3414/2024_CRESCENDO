@@ -25,7 +25,7 @@ import frc.robot.util.FieldConstants;
 
 public class Constants {
 
-    public static final double irSensorThreshold = 0.0; // TODO Add appropriate threshold
+    public static final double irSensorThreshold = 1.0; // TODO Add appropriate threshold
 
     public static final class SwerveConstants {
         public static final double kPDrive = 10;
@@ -157,7 +157,7 @@ public class Constants {
         public static final double intakeSpeed = 0.8;
         public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
-        public static final int intakeIrChannel = 0; // TODO Change Channel
+        public static final int intakeIrChannel = 2; // TODO Change Channel
 
     }
 
@@ -189,7 +189,7 @@ public class Constants {
 
         public static final double expoPower = 2.0;
 
-        public static final JoystickChoice operatorController = JoystickChoice.PS5;
+        public static final JoystickChoice operatorController = JoystickChoice.XBOX;
     }
 
     public static final class TransportConstants {

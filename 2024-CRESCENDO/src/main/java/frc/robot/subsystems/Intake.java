@@ -68,7 +68,9 @@ public class Intake extends SubsystemBase implements AutoCloseable {
 
 	@Override
 	public void periodic() {
-		intakeIrValue = intakeIrSensor.getVoltage() > Constants.irSensorThreshold;
+		double voltage = intakeIrSensor.getVoltage();
+		intakeIrValue = voltage > Constants.irSensorThreshold;
+		SmartDashboard.putNumber("INTAKE IR", voltage);
 		SmartDashboard.putNumber("INTAKE SPEED", intakeMotor.getVelocity().getValueAsDouble());
 	}
 }

@@ -21,6 +21,7 @@ public class IntakeCommand extends Command {
   double transportSpeed;
   Consumer<Boolean> setNoteIsOnBoard;
   boolean alreadyStarted = false;
+  boolean slowed = false;
   Logger log = LoggerFactory.getLogger(IntakeCommand.class);
 
   public IntakeCommand(Transport transport, Intake intake, Elevator elevator, ShooterPivot pivot, double intakeSpeed, double transportSpeed, Consumer<Boolean> setNoteIsOnBoard) {
@@ -44,12 +45,17 @@ public class IntakeCommand extends Command {
 
   @Override
   public void execute() {
-      if (elevator.isAtSetpoint() && pivot.isAtSetpoint() && !alreadyStarted) {
-        intake.setMotor(intakeSpeed);
-        transport.setMotor(transportSpeed);
-        alreadyStarted = true;
-      }
-      // log.debug("EXECUTE OF INTAKE COMMAND");
+    if (elevator.isAtSetpoint() && pivot.isAtSetpoint() && !alreadyStarted) {
+      intake.setMotor(intakeSpeed);
+      transport.setMotor(transportSpeed);
+      alreadyStarted = true;
+    }
+    if (transport.getFlyWheelIR() && !slowed) {
+      intake.setMotor(intakeSpeed * 0.5);
+      transport.setMotor(transportSpeed * 0.5);
+      slowed = true;
+    }
+    // log.debug("EXECUTE OF INTAKE COMMAND");
   }
 
   @Override
@@ -61,10 +67,11 @@ public class IntakeCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    if (intake.getIntakeIr()) {
+    if (transport.getFlyWheelIR()) {
       setNoteIsOnBoard.accept(true);
+      return true;
     }
     // log.debug("ISFINISHED OF INTAKE COMMAND");
-    return intake.getIntakeIr() ;
+    return false;
   }
 }

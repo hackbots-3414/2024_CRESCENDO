@@ -75,7 +75,9 @@ public class Transport extends SubsystemBase implements AutoCloseable {
   @Override
   public void periodic() {
     transportIrValue = transportIrSensor.getVoltage() > Constants.irSensorThreshold;
-    flyWheelIrValue = flyWheelIrSensor.getVoltage() > Constants.irSensorThreshold;
+    double flywheelVoltage = flyWheelIrSensor.getVoltage();
+    flyWheelIrValue = flywheelVoltage > Constants.irSensorThreshold;
+    SmartDashboard.putNumber("FLYWHEEL VOLTAGE", flywheelVoltage);
 
     if (DebugConstants.debugMode) {
       SmartDashboard.putBoolean("TRANSPORT IR SENSOR", transportIrValue);
