@@ -173,7 +173,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         field.setRobotPose(dashboardPose);
         SmartDashboard.putData(field);
 
-        Pose2d speakerPose = DriverStation.getAlliance().get() == Alliance.Blue ? AimConstants.blueSpeakerPos : AimConstants.redSpeakerPos;
+        Pose2d speakerPose = DriverStation.getAlliance() != null ? (DriverStation.getAlliance().get() == Alliance.Blue ? AimConstants.blueSpeakerPos : AimConstants.redSpeakerPos) : AimConstants.blueSpeakerPos;
         double robotDistance = speakerPose.relativeTo(getPose()).getTranslation().getNorm();
         if (DebugConstants.debugMode) SmartDashboard.putNumber("DISTANCE FROM TARGET", robotDistance);
 
@@ -211,7 +211,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 ? new GoalEndState(0.0, goalPose.getRotation())
                 : new GoalEndState(0, new Rotation2d(Math.PI - goalPose.getRotation().getRadians()));
         ArrayList<RotationTarget> rotateTargetList = new ArrayList<>();
-        rotateTargetList.add(new RotationTarget(1.0, goalPose.getRotation()));
+        rotateTargetList.add(new RotationTarget(0.1, goalPose.getRotation()));
         PathPlannerPath path = new PathPlannerPath(PathPlannerPath.bezierFromPoses(estimatedPose, goalPose),
                 rotateTargetList,
                 Collections.emptyList(),

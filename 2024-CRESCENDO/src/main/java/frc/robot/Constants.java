@@ -176,6 +176,7 @@ public class Constants {
         public static final int leftY = 1;
         public static final int rightX = 3;
         public static final int rightY = 2;
+        public static final int ampScoreButton = 14;
 
         public static final double deadband = 0.01;// 0.06;
         public static final double leftXMax = 0.75;

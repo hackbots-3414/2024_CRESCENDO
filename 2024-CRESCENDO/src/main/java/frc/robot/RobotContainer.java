@@ -28,6 +28,7 @@ import frc.robot.subsystems.NoteFinder;
 import frc.robot.subsystems.SubsystemManager;
 
 public class RobotContainer {
+  private static RobotContainer me = null;
   public enum JoystickChoice {PS5, XBOX;}
   
   private final Joystick driver = new Joystick(InputConstants.kDriverControllerPort);
@@ -35,6 +36,7 @@ public class RobotContainer {
   private final JoystickButton autoAimButton = new JoystickButton(driver, DriverConstants.autoAimButton);
   private final JoystickButton resetAtPointButton = new JoystickButton(driver, DriverConstants.resetAtPointButton);
   private final JoystickButton shellyButton = new JoystickButton(driver, DriverConstants.shellyButton);
+  private final JoystickButton ampScoreButton = new JoystickButton(driver, DriverConstants.ampScoreButton);
 
   private final Supplier<Double> driverLeftX = () -> Math.pow(MathUtil.applyDeadband(driver.getRawAxis(DriverConstants.leftX),DriverConstants.deadband)/DriverConstants.leftXMax, DriverConstants.expoPower) * (driver.getRawAxis(DriverConstants.leftX) >= 0.0 ? 1.0 : -1.0);
   private final Supplier<Double> driverLeftY = () -> -Math.pow(MathUtil.applyDeadband(driver.getRawAxis(DriverConstants.leftY), DriverConstants.deadband)/DriverConstants.leftYMax, DriverConstants.expoPower) * (driver.getRawAxis(DriverConstants.leftY) >= 0.0 ? 1.0 : -1.0);
@@ -55,6 +57,7 @@ public class RobotContainer {
     resetAtPointButton.onTrue(subsystemManager.resetAtPose2d(new Pose2d(15.1968, 5.5, Rotation2d.fromDegrees(0))));
     autoAimButton.whileTrue(subsystemManager.makeAutoAimCommand(driverLeftY, driverLeftX, driverRightX));
     shellyButton.whileTrue(subsystemManager.makeShellyCommand(driverLeftX, driverLeftY, driverRightX));
+    ampScoreButton.onTrue(subsystemManager.makeAmpSequence());
     
     if (Utils.isSimulation()) {subsystemManager.resetAtPose2d(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));}
     subsystemManager.telemeterize();
@@ -131,7 +134,7 @@ public class RobotContainer {
     // ps5Operator.getRightY();
   }
 
-  public RobotContainer() {
+  private RobotContainer() {
     configureDriverBindings();
 
     if (DriverConstants.operatorController == JoystickChoice.PS5) {
@@ -151,6 +154,22 @@ public class RobotContainer {
     SmartDashboard.putData("Manual Intake Eject", subsystemManager.makeManualIntakeEjectCommand());
   }
 
-  public Command getAutonomousCommand() {return pathChooser.getSelected();}
-  public NoteFinder getNoteFinder() {return subsystemManager.getNoteFinder();}
+  public Command getAutonomousCommand() {
+    return pathChooser.getSelected();
+  }
+
+  public NoteFinder getNoteFinder() {
+    return subsystemManager.getNoteFinder();
+  }
+
+  public boolean getAmpButton() {
+    return ampScoreButton.getAsBoolean();
+  }
+
+  public static synchronized RobotContainer getInstance() {
+    if (me == null) {
+      me = new RobotContainer();
+    }
+    return me;
+  }
 }
