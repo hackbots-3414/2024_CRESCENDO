@@ -45,15 +45,21 @@ public class LedSubsystem extends SubsystemBase {
       LEDConstants.flashSpeed, LEDConstants.numLED);
   private static final SingleFadeAnimation YELLOW_FLASH_ANIMATION = new SingleFadeAnimation(247, 255, 3, 0,
       LEDConstants.flashSpeed, LEDConstants.numLED);
-  private static final StrobeAnimation WHITE_STROBE_ANIMATION = new StrobeAnimation(255, 255, 255, 0,
+  private static final StrobeAnimation WHITE_STROBE_ANIMATION = new StrobeAnimation(255, 0, 0, 0,
       LEDConstants.strobeSpeed, LEDConstants.numLED);
 
   private Supplier<Boolean> noteOnBoard, isInRange, noteInView;
-  private boolean noteOnBoardTest = false; 
-  private boolean isInRangeTest = false; 
+  private boolean noteOnBoardTest = false;
+  private boolean isInRangeTest = false;
   private boolean noteInViewTest = false;
 
   private static final String[] LABELS = { "In Range", "Note Onboard", "End Game 15", "End Game 30", "Target Locked" };
+
+  private static enum LED_MODE {
+    IN_RANGE, NOTE_ONBOARD, END_GAME_WARNING, END_GAME_ALERT, ALIGNED, DEFAULT, NOTE_IN_VIEW;
+  };
+
+  private static LED_MODE chosenMode = LED_MODE.DEFAULT;
 
   CANdle ledcontroller = new CANdle(LEDConstants.candleCanid);
   private int currentMode = 0;
@@ -68,9 +74,9 @@ public class LedSubsystem extends SubsystemBase {
     // ledcontroller.setLEDs(0x67, 0x2C, 0x91);
     ledcontroller.clearAnimation(0);
     ledcontroller.animate(GREEN_FLASH_ANIMATION);
-    this.noteOnBoard = noteOnBoard;
-    this.isInRange = isInRange;
-    this.noteInView = noteInView;
+    // this.noteOnBoard = noteOnBoard;
+    // this.isInRange = isInRange;
+    // this.noteInView = noteInView;
     // Hackbot Purple Code : [0x67,0x]
     // #672C91
     SmartDashboard.putBoolean("noteOnBoardTest", noteOnBoardTest);
@@ -87,16 +93,15 @@ public class LedSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
-    SmartDashboard.getBoolean("noteOnBoardTest", noteOnBoardTest);
-    SmartDashboard.getBoolean("IsInRangeTest", isInRangeTest);
-    SmartDashboard.getBoolean("noteInViewTest", noteInViewTest);
+    noteOnBoardTest = SmartDashboard.getBoolean("noteOnBoardTest", noteOnBoardTest);
+    isInRangeTest = SmartDashboard.getBoolean("IsInRangeTest", isInRangeTest);
+    noteInViewTest = SmartDashboard.getBoolean("noteInViewTest", noteInViewTest);
 
     matchTime = DriverStation.getMatchTime();
     SmartDashboard.putNumber("Countdown", matchTime);
     resetStatus();
 
     animationDone = lastledchange - matchTime >= 3.0;
-
 
     // / Note In View: Yellow
     // Note on Board : Green Medium Flash (During END Game Make sure this Overides
@@ -106,31 +111,35 @@ public class LedSubsystem extends SubsystemBase {
     // Shoot Alignment Happening : Slow Blue
     // When Aligned: Stop Strobe: Fast Flash Blue
     // InRange for shooting: Blue
-
-    if (noteOnBoard.get() && isInRange.get()) {
-      ledcontroller.setLEDs(23, 2, 250); // solid blue
-      lastledchange = matchTime;
-
-    } else if (noteOnBoard.get()) {
-      if (currentMode != 3) {
-        currentMode = 3;
+    if (noteOnBoardTest && isInRangeTest) {
+      // noteOnboardTest should be noteOnBoard.get()
+      // Do this for all test Variables
+      if (chosenMode != LED_MODE.ALIGNED) {
+        chosenMode = LED_MODE.ALIGNED;
+        ledcontroller.clearAnimation(0);
+        ledcontroller.setLEDs(23, 2, 250); // solid blue
+        lastledchange = matchTime;
+      }
+    } else if (noteOnBoardTest) {
+      if (chosenMode != LED_MODE.NOTE_ONBOARD) {
+        chosenMode = LED_MODE.NOTE_ONBOARD;
         ledcontroller.clearAnimation(0);
         ledcontroller.animate(GREEN_FLASH_ANIMATION); // flashing green
-        lastledchange = matchTime;
+        lastledchange = matchTime;// Broken when Note is On Board during ENDGAME
       } else if (matchTime <= LEDConstants.endgameWarning) {
-        if (currentMode != 1) {
-          currentMode = 1;
+        if (chosenMode != LED_MODE.END_GAME_WARNING) {
+          chosenMode = LED_MODE.END_GAME_WARNING;
           ledcontroller.clearAnimation(0);
-          ledcontroller.setLEDs(255, 255, 255);
+          ledcontroller.setLEDs(255, 0, 0);
           lastledchange = matchTime;
 
         }
       }
 
+    } else if (noteInViewTest) {
+      if (chosenMode != LED_MODE.NOTE_IN_VIEW) {
+        chosenMode = LED_MODE.NOTE_IN_VIEW;
 
-    } else if (noteInView.get()) {
-      if (currentMode != 4) {
-        currentMode = 4;
         ledcontroller.clearAnimation(0);
         ledcontroller.animate(YELLOW_FLASH_ANIMATION);
         lastledchange = matchTime;
@@ -138,8 +147,8 @@ public class LedSubsystem extends SubsystemBase {
       }
 
     } else if (matchTime < LEDConstants.endgameAlert) {
-      if (currentMode != 2) {
-        currentMode = 2;
+      if (chosenMode != LED_MODE.END_GAME_ALERT) {
+        chosenMode = LED_MODE.END_GAME_ALERT;
         ledcontroller.clearAnimation(0);
         ledcontroller.animate(WHITE_STROBE_ANIMATION);
         // ledcontroller.animate();
@@ -147,16 +156,16 @@ public class LedSubsystem extends SubsystemBase {
 
       }
     } else if (matchTime < LEDConstants.endgameWarning) {
-      if (currentMode != 1) {
-        currentMode = 1;
+      if (chosenMode != LED_MODE.END_GAME_WARNING) {
+        chosenMode = LED_MODE.END_GAME_WARNING;
         ledcontroller.clearAnimation(0);
-        ledcontroller.setLEDs(255, 255, 255);
+        ledcontroller.setLEDs(255, 0, 0);
         lastledchange = matchTime;
 
       }
     } else {
-      if (currentMode != 0) {
-        currentMode = 0;
+      if (chosenMode != LED_MODE.DEFAULT) {
+        chosenMode = LED_MODE.DEFAULT;
         ledcontroller.clearAnimation(0);
         ledcontroller.setLEDs(0x67, 0x2C, 0x91);
         // ledcontroller.animate(HACKBOTS_FIRE);
