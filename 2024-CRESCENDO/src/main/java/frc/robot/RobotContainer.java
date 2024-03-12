@@ -145,8 +145,10 @@ public class RobotContainer {
 
     SmartDashboard.putData("Coast Elevator", subsystemManager.elevatorNeutralMode(NeutralModeValue.Coast));
     SmartDashboard.putData("Brake Elevator", subsystemManager.elevatorNeutralMode(NeutralModeValue.Brake));
-
     SmartDashboard.putData("Run Tests", subsystemManager.makeTestingCommand());
+
+    SmartDashboard.putData("Manual Shooter", subsystemManager.makeManualShootCommand());
+    SmartDashboard.putData("Manual Intake Eject", subsystemManager.makeManualIntakeEjectCommand());
   }
 
   public Command getAutonomousCommand() {return pathChooser.getSelected();}
