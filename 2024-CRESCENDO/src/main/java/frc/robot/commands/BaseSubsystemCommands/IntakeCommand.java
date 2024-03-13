@@ -5,10 +5,12 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.PositionConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
 import frc.robot.subsystems.Transport;
 
@@ -17,14 +19,15 @@ public class IntakeCommand extends Command {
   Transport transport;
   Elevator elevator;
   ShooterPivot pivot;
+  Shooter shooter;
   double intakeSpeed;
   double transportSpeed;
   Consumer<Boolean> setNoteIsOnBoard;
   boolean alreadyStarted = false;
-  boolean slowed = false;
+  boolean seenNote;
   Logger log = LoggerFactory.getLogger(IntakeCommand.class);
 
-  public IntakeCommand(Transport transport, Intake intake, Elevator elevator, ShooterPivot pivot, double intakeSpeed, double transportSpeed, Consumer<Boolean> setNoteIsOnBoard) {
+  public IntakeCommand(Transport transport, Intake intake, Elevator elevator, ShooterPivot pivot, double intakeSpeed, double transportSpeed, Consumer<Boolean> setNoteIsOnBoard, Shooter shooter) {
     addRequirements(intake, transport);
     this.transport = transport;
     this.intake = intake;
@@ -33,14 +36,16 @@ public class IntakeCommand extends Command {
     this.elevator = elevator;
     this.pivot = pivot;
     this.setNoteIsOnBoard = setNoteIsOnBoard;
+    this.shooter = shooter;
   }
 
   @Override
   public void initialize() {
     elevator.setElevatorPosition(PositionConstants.StowPresets.elevator);
     pivot.setPivotPosition(PositionConstants.StowPresets.shooter);
-    // log.debug("INITIALIZE OF INTAKE COMMAND");
     alreadyStarted = false;
+    seenNote = false;
+    SmartDashboard.putString("Intake Status", "Initialized");
   }
 
   @Override
@@ -49,29 +54,28 @@ public class IntakeCommand extends Command {
       intake.setMotor(intakeSpeed);
       transport.setMotor(transportSpeed);
       alreadyStarted = true;
+      SmartDashboard.putString("Intake Status", "Started");
     }
-    if (transport.getFlyWheelIR() && !slowed) {
-      intake.setMotor(intakeSpeed * 0.5);
-      transport.setMotor(transportSpeed * 0.5);
-      slowed = true;
+    if (transport.getFlyWheelIR() && !seenNote) {
+      log.debug("we are backing up the intake now");
+      seenNote = true;
+      transport.setMotor(-0.2);
+      shooter.setMotor(-0.2);
     }
-    // log.debug("EXECUTE OF INTAKE COMMAND");
   }
 
   @Override
   public void end(boolean interrupted) {
     intake.stopMotor();
     transport.stopMotor();
-    // log.debug("END OF INTAKE COMMAND");
+    shooter.stopMotor();
   }
 
   @Override
   public boolean isFinished() {
-    if (transport.getFlyWheelIR()) {
-      setNoteIsOnBoard.accept(true);
+    if (seenNote && !transport.getFlyWheelIR()) {
       return true;
     }
-    // log.debug("ISFINISHED OF INTAKE COMMAND");
     return false;
   }
 }

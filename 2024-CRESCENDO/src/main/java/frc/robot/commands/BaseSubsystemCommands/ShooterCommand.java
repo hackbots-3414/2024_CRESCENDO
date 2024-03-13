@@ -15,7 +15,7 @@ public class ShooterCommand extends Command {
   Consumer<Boolean> setNoteIsOnBoard;
 
   public ShooterCommand(Shooter shooter, Transport transport, double velocity, Consumer<Boolean> setNoteIsOnBoard) {
-    addRequirements(shooter);
+    // addRequirements(shooter);
     this.shooter = shooter;
     this.transport = transport;
     this.velocity = velocity;
