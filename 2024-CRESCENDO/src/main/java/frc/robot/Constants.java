@@ -25,7 +25,7 @@ import frc.robot.util.FieldConstants;
 
 public class Constants {
 
-    public static final double irSensorThreshold = 1.0; // TODO Add appropriate threshold
+    public static final double irSensorThreshold = 1.0;
 
     public static final class SwerveConstants {
         public static final double kPDrive = 10;
@@ -157,7 +157,7 @@ public class Constants {
         public static final double intakeSpeed = 0.8;
         public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
-        public static final int intakeIrChannel = 2; // TODO Change Channel
+        public static final int intakeIrChannel = 2;
 
     }
 
@@ -199,7 +199,7 @@ public class Constants {
         public static final double ejectSpeed = -0.6;
         public static final double transportEjectSpeed = -0.5;
         public static final int transportIrChannel = 4;
-        public static final int flyWheelIrChannel = 0; // TODO Change Channel
+        public static final int flyWheelIrChannel = 0;
 
         public static final double transportEjectDelay = 0.3; // seconds until note leaves shooter
     }
