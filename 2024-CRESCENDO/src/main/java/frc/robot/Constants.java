@@ -24,6 +24,9 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.util.FieldConstants;
 
 public class Constants {
+
+    public static final double irSensorThreshold = 1.0;
+
     public static final class SwerveConstants {
         public static final double kPDrive = 10;
         public static final double kIDrive = 0;
@@ -154,6 +157,8 @@ public class Constants {
         public static final double intakeSpeed = 0.8;
         public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
+        public static final int intakeIrChannel = 2;
+
     }
 
     public static final class InputConstants {
@@ -184,7 +189,7 @@ public class Constants {
 
         public static final double expoPower = 2.0;
 
-        public static final JoystickChoice operatorController = JoystickChoice.PS5;
+        public static final JoystickChoice operatorController = JoystickChoice.XBOX;
     }
 
     public static final class TransportConstants {
@@ -193,7 +198,8 @@ public class Constants {
         public static final double transportSpeed = 0.83;
         public static final double ejectSpeed = -0.6;
         public static final double transportEjectSpeed = -0.5;
-        public static final int irSensorChannel = 4;
+        public static final int transportIrChannel = 4;
+        public static final int flyWheelIrChannel = 0;
 
         public static final double transportEjectDelay = 0.3; // seconds until note leaves shooter
     }
