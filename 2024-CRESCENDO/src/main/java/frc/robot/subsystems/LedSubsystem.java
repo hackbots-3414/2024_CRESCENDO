@@ -86,6 +86,8 @@ public class LedSubsystem extends SubsystemBase {
     config.brightnessScalar = 0.7; // dim the LEDs to 70% brightness
     ledcontroller.configAllSettings(config);
     ledcontroller.clearAnimation(0);
+          ledcontroller.clearAnimation(1);
+          ledcontroller.clearAnimation(2);
     ledcontroller.setLEDs(255, 0, 255);
     // ledcontroller.animate(LARSON_ANIMATION);
     // this.noteOnBoard = noteOnBoard;
@@ -136,6 +138,8 @@ public class LedSubsystem extends SubsystemBase {
         if (chosenMode != LED_MODE.IN_RANGE) {
           chosenMode = LED_MODE.IN_RANGE;
           ledcontroller.clearAnimation(0);
+          ledcontroller.clearAnimation(1);
+          ledcontroller.clearAnimation(2);
           ledcontroller.setLEDs(0, 0, 255, 0, LEDConstants.leftOffset, LEDConstants.leftNumLED);
           ledcontroller.setLEDs(0, 0, 255, 0, LEDConstants.rightOffset, LEDConstants.rightNumLED);
           ledcontroller.setLEDs(0, 0, 255, 0, LEDConstants.topOffset, LEDConstants.topNumLED); // solid blue
@@ -144,18 +148,22 @@ public class LedSubsystem extends SubsystemBase {
         if (chosenMode != LED_MODE.NOTE_ONBOARD) {
           chosenMode = LED_MODE.NOTE_ONBOARD;
           ledcontroller.clearAnimation(0);
-          ledcontroller.animate(GREEN_FLASH_ANIMATION_TOP);
-          ledcontroller.animate(GREEN_FLASH_ANIMATION_RIGHT);
-          ledcontroller.animate(GREEN_FLASH_ANIMATION_LEFT); // flashing green
+          ledcontroller.clearAnimation(1);
+          ledcontroller.clearAnimation(2);
+          ledcontroller.animate(GREEN_FLASH_ANIMATION_TOP, 0);
+          ledcontroller.animate(GREEN_FLASH_ANIMATION_RIGHT, 1);
+          ledcontroller.animate(GREEN_FLASH_ANIMATION_LEFT, 2); // flashing green
         }
       } else if (noteInViewTest) {
         if (chosenMode != LED_MODE.NOTE_IN_VIEW) {
           chosenMode = LED_MODE.NOTE_IN_VIEW;
 
           ledcontroller.clearAnimation(0);
-          ledcontroller.animate(YELLOW_FLASH_ANIMATION_LEFT);
-          ledcontroller.animate(YELLOW_FLASH_ANIMATION_RIGHT);
-          ledcontroller.animate(YELLOW_FLASH_ANIMATION_TOP);
+          ledcontroller.clearAnimation(1);
+          ledcontroller.clearAnimation(2);
+          ledcontroller.animate(YELLOW_FLASH_ANIMATION_LEFT, 0);
+          ledcontroller.animate(YELLOW_FLASH_ANIMATION_RIGHT, 1);
+          ledcontroller.animate(YELLOW_FLASH_ANIMATION_TOP, 2);
         }
       }
 
@@ -163,10 +171,11 @@ public class LedSubsystem extends SubsystemBase {
         if (chosenMode != LED_MODE.DEFAULT) {
           chosenMode = LED_MODE.DEFAULT;
           ledcontroller.clearAnimation(0);
+          ledcontroller.clearAnimation(1);
+          ledcontroller.clearAnimation(2);
           ledcontroller.setLEDs(255, 0, 255, 0, LEDConstants.leftOffset, LEDConstants.leftNumLED);
           ledcontroller.setLEDs(255, 0, 255, 0, LEDConstants.rightOffset, LEDConstants.rightNumLED);
           ledcontroller.setLEDs(255, 0, 255, 0, LEDConstants.topOffset, LEDConstants.topNumLED);
-
         }
 
       }
