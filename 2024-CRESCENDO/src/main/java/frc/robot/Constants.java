@@ -138,8 +138,8 @@ public class Constants {
                 entry(1.56, 0.12), // 4
                 entry(1.9, 0.105), // 6
                 entry(2.2, 0.093), // 8
-                entry(2.55, 0.081), // 10
-                entry(4.14, 0.0030) // 12
+                entry(2.55, 0.092), // 10
+                entry(4.14, 0.089) // 12
         );
 
         // public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
