@@ -10,10 +10,13 @@ import javax.swing.GroupLayout.Alignment;
 
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
+import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix.led.FireAnimation;
+import com.ctre.phoenix.led.LarsonAnimation;
 import com.ctre.phoenix.led.SingleFadeAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
+import com.ctre.phoenix.led.TwinkleAnimation;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
@@ -30,9 +33,7 @@ public class LedSubsystem extends SubsystemBase {
   private static final double END_GAME_15 = -0.61; // RED
   private static final double END_GAME_30 = -0.93; // WHITE
   private static final double AIM_READY = 0.69; // YELLOW
-  private static double lastledchange = 0;
   private static double matchTime = 0;
-  private static boolean animationDone = false;
 
   // private static final double NOTE_IN_VIEW = 0.65;
   /// private static final double CLIMBER_ACTIVATED = -0.95;
@@ -41,18 +42,33 @@ public class LedSubsystem extends SubsystemBase {
   private static final StrobeAnimation HACKBOTS_STROBE = new StrobeAnimation(255, 255, 255, 0,
       LEDConstants.strobeSpeed,
       LEDConstants.numLED);
-  private static final SingleFadeAnimation GREEN_FLASH_ANIMATION = new SingleFadeAnimation(52, 143, 21, 0,
-      LEDConstants.flashSpeed, LEDConstants.numLED);
-  private static final SingleFadeAnimation YELLOW_FLASH_ANIMATION = new SingleFadeAnimation(247, 255, 3, 0,
-      LEDConstants.flashSpeed, LEDConstants.numLED);
-  private static final StrobeAnimation WHITE_STROBE_ANIMATION = new StrobeAnimation(255, 0, 0, 0,
-      LEDConstants.strobeSpeed, LEDConstants.numLED);
-
+  private static final SingleFadeAnimation GREEN_FLASH_ANIMATION_LEFT = new SingleFadeAnimation(0, 255, 0, 0,
+      LEDConstants.flashSpeed, LEDConstants.leftNumLED, LEDConstants.leftOffset);
+  private static final SingleFadeAnimation GREEN_FLASH_ANIMATION_RIGHT = new SingleFadeAnimation(0, 255, 0, 0,
+      LEDConstants.flashSpeed, LEDConstants.rightNumLED, LEDConstants.rightOffset);
+  private static final SingleFadeAnimation GREEN_FLASH_ANIMATION_TOP = new SingleFadeAnimation(0, 255, 0, 0,
+      LEDConstants.flashSpeed, LEDConstants.topNumLED, LEDConstants.topOffset);
+  private static final SingleFadeAnimation YELLOW_FLASH_ANIMATION_LEFT = new SingleFadeAnimation(250, 120, 0, 0,
+      LEDConstants.flashSpeed, LEDConstants.leftNumLED, LEDConstants.leftOffset);
+  private static final SingleFadeAnimation YELLOW_FLASH_ANIMATION_RIGHT = new SingleFadeAnimation(250, 120, 0, 0,
+      LEDConstants.flashSpeed, LEDConstants.rightNumLED, LEDConstants.rightOffset);
+  private static final SingleFadeAnimation YELLOW_FLASH_ANIMATION_TOP = new SingleFadeAnimation(250, 120, 0, 0,
+      LEDConstants.flashSpeed, LEDConstants.topNumLED, LEDConstants.topOffset);
+  private static final StrobeAnimation RED_STROBE_ANIMATION_LEFT = new StrobeAnimation(255, 0, 0, 0,
+      LEDConstants.strobeSpeed, LEDConstants.leftNumLED, LEDConstants.leftOffset);
+  private static final StrobeAnimation RED_STROBE_ANIMATION_RIGHT = new StrobeAnimation(255, 0, 0, 0,
+      LEDConstants.strobeSpeed, LEDConstants.rightNumLED, LEDConstants.rightOffset);
+  private static final TwinkleAnimation TWINKLE_ANIMATION = new TwinkleAnimation(255, 0, 255, 0, 0.5,
+      LEDConstants.numLED, TwinklePercent.Percent42);
+  private static final LarsonAnimation LARSON_ANIMATION = new LarsonAnimation(255, 0, 255, 0, 0.1, LEDConstants.numLED,
+      LarsonAnimation.BounceMode.Back, 1);
   private Supplier<Boolean> noteOnBoard, isInRange, noteInView;
   private boolean noteOnBoardTest = false;
   private boolean isInRangeTest = false;
   private boolean noteInViewTest = false;
-
+  // private int r = 0;
+  // private int g = 0;
+  // private int b = 0;
   private static final String[] LABELS = { "In Range", "Note Onboard", "End Game 15", "End Game 30", "Target Locked" };
 
   private static enum LED_MODE {
@@ -67,21 +83,22 @@ public class LedSubsystem extends SubsystemBase {
   public LedSubsystem(Supplier<Boolean> noteOnBoard, Supplier<Boolean> isInRange, Supplier<Boolean> noteInView) {
     CANdleConfiguration config = new CANdleConfiguration();
     config.stripType = LEDStripType.RGB; // set the strip type to RGB
-    // config.brightnessScalar = 0.5; // dim the LEDs to half brightness
+    config.brightnessScalar = 0.7; // dim the LEDs to 70% brightness
     ledcontroller.configAllSettings(config);
     ledcontroller.clearAnimation(0);
-    // ledcontroller.animate(HACKBOTS_STROBE);
-    // ledcontroller.setLEDs(0x67, 0x2C, 0x91);
-    ledcontroller.clearAnimation(0);
-    ledcontroller.animate(GREEN_FLASH_ANIMATION);
+    ledcontroller.setLEDs(255, 0, 255);
+    // ledcontroller.animate(LARSON_ANIMATION);
     // this.noteOnBoard = noteOnBoard;
     // this.isInRange = isInRange;
     // this.noteInView = noteInView;
-    // Hackbot Purple Code : [0x67,0x]
+    // Hackbot Purple Code : [0x67, 0x2C, 0x91]
     // #672C91
     SmartDashboard.putBoolean("noteOnBoardTest", noteOnBoardTest);
     SmartDashboard.putBoolean("IsInRangeTest", isInRangeTest);
     SmartDashboard.putBoolean("noteInViewTest", noteInViewTest);
+    // SmartDashboard.putNumber("r", r);
+    // SmartDashboard.putNumber("g", g);
+    // SmartDashboard.putNumber("b", b);
   }
 
   private void resetStatus() {
@@ -96,12 +113,13 @@ public class LedSubsystem extends SubsystemBase {
     noteOnBoardTest = SmartDashboard.getBoolean("noteOnBoardTest", noteOnBoardTest);
     isInRangeTest = SmartDashboard.getBoolean("IsInRangeTest", isInRangeTest);
     noteInViewTest = SmartDashboard.getBoolean("noteInViewTest", noteInViewTest);
-
+    // r = (int)SmartDashboard.getNumber("r", r);
+    // g = (int)SmartDashboard.getNumber("g", g);
+    // b = (int)SmartDashboard.getNumber("b", b);
+    // ledcontroller.setLEDs(r, g, b);
     matchTime = DriverStation.getMatchTime();
     SmartDashboard.putNumber("Countdown", matchTime);
     resetStatus();
-
-    animationDone = lastledchange - matchTime >= 3.0;
 
     // / Note In View: Yellow
     // Note on Board : Green Medium Flash (During END Game Make sure this Overides
@@ -111,70 +129,68 @@ public class LedSubsystem extends SubsystemBase {
     // Shoot Alignment Happening : Slow Blue
     // When Aligned: Stop Strobe: Fast Flash Blue
     // InRange for shooting: Blue
-    if (noteOnBoardTest && isInRangeTest) {
-      // noteOnboardTest should be noteOnBoard.get()
-      // Do this for all test Variables
-      if (chosenMode != LED_MODE.ALIGNED) {
-        chosenMode = LED_MODE.ALIGNED;
-        ledcontroller.clearAnimation(0);
-        ledcontroller.setLEDs(23, 2, 250); // solid blue
-        lastledchange = matchTime;
-      }
-    } else if (noteOnBoardTest) {
-      if (chosenMode != LED_MODE.NOTE_ONBOARD) {
-        chosenMode = LED_MODE.NOTE_ONBOARD;
-        ledcontroller.clearAnimation(0);
-        ledcontroller.animate(GREEN_FLASH_ANIMATION); // flashing green
-        lastledchange = matchTime;// Broken when Note is On Board during ENDGAME
-      } else if (matchTime <= LEDConstants.endgameWarning) {
-        if (chosenMode != LED_MODE.END_GAME_WARNING) {
-          chosenMode = LED_MODE.END_GAME_WARNING;
+    if (matchTime > LEDConstants.endgameWarning) {
+      if (noteOnBoardTest && isInRangeTest) {
+        // noteOnboardTest should be noteOnBoard.get()
+        // Do this for all test Variables
+        if (chosenMode != LED_MODE.IN_RANGE) {
+          chosenMode = LED_MODE.IN_RANGE;
           ledcontroller.clearAnimation(0);
-          ledcontroller.setLEDs(255, 0, 0);
-          lastledchange = matchTime;
+          ledcontroller.setLEDs(0, 0, 255, 0, LEDConstants.leftOffset, LEDConstants.leftNumLED);
+          ledcontroller.setLEDs(0, 0, 255, 0, LEDConstants.rightOffset, LEDConstants.rightNumLED);
+          ledcontroller.setLEDs(0, 0, 255, 0, LEDConstants.topOffset, LEDConstants.topNumLED); // solid blue
+        }
+      } else if (noteOnBoardTest) {
+        if (chosenMode != LED_MODE.NOTE_ONBOARD) {
+          chosenMode = LED_MODE.NOTE_ONBOARD;
+          ledcontroller.clearAnimation(0);
+          ledcontroller.animate(GREEN_FLASH_ANIMATION_TOP);
+          ledcontroller.animate(GREEN_FLASH_ANIMATION_RIGHT);
+          ledcontroller.animate(GREEN_FLASH_ANIMATION_LEFT); // flashing green
+        }
+      } else if (noteInViewTest) {
+        if (chosenMode != LED_MODE.NOTE_IN_VIEW) {
+          chosenMode = LED_MODE.NOTE_IN_VIEW;
 
+          ledcontroller.clearAnimation(0);
+          ledcontroller.animate(YELLOW_FLASH_ANIMATION_LEFT);
+          ledcontroller.animate(YELLOW_FLASH_ANIMATION_RIGHT);
+          ledcontroller.animate(YELLOW_FLASH_ANIMATION_TOP);
         }
       }
 
-    } else if (noteInViewTest) {
-      if (chosenMode != LED_MODE.NOTE_IN_VIEW) {
-        chosenMode = LED_MODE.NOTE_IN_VIEW;
+      else {
+        if (chosenMode != LED_MODE.DEFAULT) {
+          chosenMode = LED_MODE.DEFAULT;
+          ledcontroller.clearAnimation(0);
+          ledcontroller.setLEDs(255, 0, 255, 0, LEDConstants.leftOffset, LEDConstants.leftNumLED);
+          ledcontroller.setLEDs(255, 0, 255, 0, LEDConstants.rightOffset, LEDConstants.rightNumLED);
+          ledcontroller.setLEDs(255, 0, 255, 0, LEDConstants.topOffset, LEDConstants.topNumLED);
 
-        ledcontroller.clearAnimation(0);
-        ledcontroller.animate(YELLOW_FLASH_ANIMATION);
-        lastledchange = matchTime;
-
-      }
-
-    } else if (matchTime < LEDConstants.endgameAlert) {
-      if (chosenMode != LED_MODE.END_GAME_ALERT) {
-        chosenMode = LED_MODE.END_GAME_ALERT;
-        ledcontroller.clearAnimation(0);
-        ledcontroller.animate(WHITE_STROBE_ANIMATION);
-        // ledcontroller.animate();
-        lastledchange = matchTime;
-
-      }
-    } else if (matchTime < LEDConstants.endgameWarning) {
-      if (chosenMode != LED_MODE.END_GAME_WARNING) {
-        chosenMode = LED_MODE.END_GAME_WARNING;
-        ledcontroller.clearAnimation(0);
-        ledcontroller.setLEDs(255, 0, 0);
-        lastledchange = matchTime;
-
-      }
-    } else {
-      if (chosenMode != LED_MODE.DEFAULT) {
-        chosenMode = LED_MODE.DEFAULT;
-        ledcontroller.clearAnimation(0);
-        ledcontroller.setLEDs(0x67, 0x2C, 0x91);
-        // ledcontroller.animate(HACKBOTS_FIRE);
-        ledcontroller.setLEDs(0x67, 0x2C, 0x91);
-        lastledchange = matchTime;
+        }
 
       }
     }
   }
+  /*
+   * if (matchTime <= LEDConstants.endgameWarning) {
+   * if (chosenMode != LED_MODE.END_GAME_WARNING) {
+   * chosenMode = LED_MODE.END_GAME_WARNING;
+   * ledcontroller.clearAnimation(0);
+   * ledcontroller.setLEDs(255, 0, 0);
+   * else if (matchTime < LEDConstants.endgameAlert) {
+   * if (chosenMode != LED_MODE.END_GAME_ALERT) {
+   * chosenMode = LED_MODE.END_GAME_ALERT;
+   * ledcontroller.clearAnimation(0);
+   * ledcontroller.animate(WHITE_STROBE_ANIMATION);
+   * // ledcontroller.animate();
+   * else if (matchTime < LEDConstants.endgameWarning) {
+   * if (chosenMode != LED_MODE.END_GAME_WARNING) {
+   * chosenMode = LED_MODE.END_GAME_WARNING;
+   * ledcontroller.clearAnimation(0);
+   * ledcontroller.setLEDs(255, 0, 0); // red
+   * }
+   */
 
   public void setColor(double color) {
     // ledcontroller.set(color);
