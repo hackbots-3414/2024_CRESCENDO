@@ -25,8 +25,11 @@ public class Transport extends SubsystemBase implements AutoCloseable {
   private boolean transportIrValue;
   private boolean flyWheelIrValue;
 
+  private boolean noteOnBoard;
+
   public Transport() {
     configMotor();
+    noteOnBoard = true; // this is to capture the note preload on auton
   }
 
   private void configMotor() {
@@ -103,5 +106,13 @@ public class Transport extends SubsystemBase implements AutoCloseable {
 
   public void setControl(DutyCycleOut out) {
     transportMotor.setControl(out);
+  }
+
+  public void setNoteOnBoard(boolean value) {
+    noteOnBoard = value;
+  }
+
+  public boolean getNoteOnBoard() {
+    return noteOnBoard;
   }
 }

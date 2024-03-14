@@ -95,9 +95,7 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
             
         .withCurrentLimits(new CurrentLimitsConfigs()
             .withSupplyCurrentLimit(CurrentLimits.shooterPivotSupplyLimit)
-            .withSupplyCurrentLimitEnable(true)
-            .withSupplyCurrentThreshold(0.0)
-            .withSupplyTimeThreshold(0.0));
+            .withSupplyCurrentLimitEnable(true));
 
     pivotMotor.getConfigurator().apply(configuration, 0.2);
   }
