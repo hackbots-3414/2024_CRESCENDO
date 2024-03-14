@@ -301,7 +301,7 @@ public class Constants {
         public static final double pivotManualUpSpeed = 0.3;
         public static final double pivotManualDownSpeed = -0.3;
 
-        public static final double pivotTolerance = 0.004;
+        public static final double pivotTolerance = 0.0285; // was 0.004
 
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
@@ -313,7 +313,8 @@ public class Constants {
             public static final double kS = 0.0; // output to overcome static friction (output)
             public static final double kV = 12.0; // output per unit of target velocity (output/rps)
             public static final double kA = 0.0; // output per unit of target acceleration (output/(rps/s))
-            public static final double kG = 0.15; // feedforward Constant
+            // public static final double kG = 0.15; // feedforward Constant
+            public static final double kG = 0.0;
         }
 
         public static final class PivotMotionMagicConstants {
