@@ -274,7 +274,7 @@ public class SubsystemManager extends SubsystemBase {
 
 	// AIMING COMMANDS
 	public Command makeAutoAimCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
-		return new AimCommand(elevator, shooterPivot, drivetrain, x, y, turn, allianceSupplier, this::setAimReady);
+		return new AimCommand(elevator, shooterPivot, drivetrain, x, y, turn, allianceSupplier, this::setAimReady).alongWith(new RevShooterCommand(shooter, transport, Constants.ShooterConstants.shootVelo));
 	}
 	public AimOutputContainer getAimOutputContainer() {
         return AimHelper.getAimOutputs(drivetrain, allianceSupplier.get() == Alliance.Blue, AimStrategies.LOOKUP); // BASIC MATH
