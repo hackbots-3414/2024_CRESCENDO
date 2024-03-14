@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.Constants.CurrentLimits;
 import frc.robot.Constants.DebugConstants;
 
 public class Shooter extends SubsystemBase implements AutoCloseable {
@@ -48,17 +49,29 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
     rightMotor.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
     leftMotor.getConfigurator().apply(new TalonFXConfiguration(), 0.050);
 
+    CurrentLimitsConfigs currentLimitsConfig = new CurrentLimitsConfigs()
+      .withSupplyCurrentLimit(CurrentLimits.shooterSupplyLimit)
+      .withSupplyCurrentLimitEnable(true);
+
     TalonFXConfiguration configuration = new TalonFXConfiguration()
         .withSlot0(new Slot0Configs()
             .withKP(Constants.ShooterConstants.kP)
             .withKI(Constants.ShooterConstants.kI)
             .withKD(Constants.ShooterConstants.kD)
-            .withKS(Constants.ShooterConstants.kS));
+            .withKV(Constants.ShooterConstants.kV))
+        .withCurrentLimits(currentLimitsConfig);
 
     rightMotor.getConfigurator().apply(configuration, 0.2);
 
+
+    configuration = new TalonFXConfiguration()
+      .withCurrentLimits(currentLimitsConfig);
+
+    leftMotor.getConfigurator().apply(configuration, 0.2);
+
     rightMotor.setInverted(Constants.ShooterConstants.shooterMotorInvert);
     leftMotor.setControl(new Follower(rightMotor.getDeviceID(), true));
+
   }
 
   @Override

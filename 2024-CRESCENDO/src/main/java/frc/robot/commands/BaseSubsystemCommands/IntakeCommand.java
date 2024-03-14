@@ -22,12 +22,11 @@ public class IntakeCommand extends Command {
   Shooter shooter;
   double intakeSpeed;
   double transportSpeed;
-  Consumer<Boolean> setNoteIsOnBoard;
   boolean alreadyStarted = false;
   boolean seenNote;
   Logger log = LoggerFactory.getLogger(IntakeCommand.class);
 
-  public IntakeCommand(Transport transport, Intake intake, Elevator elevator, ShooterPivot pivot, double intakeSpeed, double transportSpeed, Consumer<Boolean> setNoteIsOnBoard, Shooter shooter) {
+  public IntakeCommand(Transport transport, Intake intake, Elevator elevator, ShooterPivot pivot, double intakeSpeed, double transportSpeed, Shooter shooter) {
     addRequirements(intake, transport);
     this.transport = transport;
     this.intake = intake;
@@ -35,7 +34,6 @@ public class IntakeCommand extends Command {
     this.transportSpeed = transportSpeed;
     this.elevator = elevator;
     this.pivot = pivot;
-    this.setNoteIsOnBoard = setNoteIsOnBoard;
     this.shooter = shooter;
   }
 
@@ -69,6 +67,9 @@ public class IntakeCommand extends Command {
     intake.stopMotor();
     transport.stopMotor();
     shooter.stopMotor();
+    if (!interrupted) {
+      transport.setNoteOnBoard(true);
+    }
   }
 
   @Override

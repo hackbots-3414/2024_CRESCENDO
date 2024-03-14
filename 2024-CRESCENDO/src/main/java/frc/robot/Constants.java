@@ -117,16 +117,17 @@ public class Constants {
         public static final int rightMotorID = 58;
         public static final boolean shooterMotorInvert = true;
 
-        public static final double kP = 0.8;
+        public static final double kP = 2.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
-        public static final double kS = 8;
+        public static final double kS = 0;
+        public static final double kV = 0.12;
 
-        public static final double shootVelo = 92.0; // Rotations per second
+        public static final double shootVelo = 80.0; // Rotations per second
         public static final double shooterTolerance = 3.0;
 
-        public static final double minShootSpeed = 50; // measured for AutoAim
-        public static final double maxShootSpeed = 90; // measured for AutoAim
+        public static final double minShootSpeed = 80; // measured for AutoAim
+        public static final double maxShootSpeed = 80; // measured for AutoAim
         public static final double spitOutSpeed = 20.0;
 
         public static final double shooterBackupSpeed = -0.1;
@@ -399,24 +400,24 @@ public class Constants {
 
     public class CurrentLimits {
         public static final double intakeStatorLimit = 35;
-        public static final double intakeSupplyLimit = 0;
+        // public static final double intakeSupplyLimit = 0;
         
         public static final double transportStatorLimit = 20;
-        public static final double transportSupplyLimit = 0;
+        // public static final double transportSupplyLimit = 0;
 
-        public static final double winchStatorLimit = 0;
-        public static final double winchSupplyLimit = 0;
+        // public static final double winchStatorLimit = 0;
+        // public static final double winchSupplyLimit = 0;
 
-        public static final double shooterStatorLimit = 0;
-        public static final double shooterSupplyLimit = 0;
+        // public static final double shooterStatorLimit = 0;
+        public static final double shooterSupplyLimit = 80;
 
-        public static final double shooterPivotStatorLimit = 0;
-        public static final double shooterPivotSupplyLimit = 0;
+        // public static final double shooterPivotStatorLimit = 0;
+        public static final double shooterPivotSupplyLimit = 10;
 
-        public static final double elevatorStatorLimit = 0;
+        // public static final double elevatorStatorLimit = 0;
         public static final double elevatorSupplyLimit = 20;
 
-        public static final double drivetrainStatorLimit = 0;
+        // public static final double drivetrainStatorLimit = 0;
         public static final double drivetrainSupplyLimit = 80;
     }
 }
