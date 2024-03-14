@@ -306,14 +306,14 @@ public class Constants {
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         public static final class PivotSlot0ConfigConstants {
-            public static final double kP = 150.0; // output per unit of error in position (output/rotation)
+            public static final double kP = 1.0; // output per unit of error in position (output/rotation)
             public static final double kI = 0.0; // output per unit of integrated error in position
                                                  // (output/(rotation*s))
             public static final double kD = 0.0; // output per unit of error in velocity (output/rps)
             public static final double kS = 0.0; // output to overcome static friction (output)
-            public static final double kV = 50.0; // output per unit of target velocity (output/rps)
+            public static final double kV = 12.0; // output per unit of target velocity (output/rps)
             public static final double kA = 0.0; // output per unit of target acceleration (output/(rps/s))
-            public static final double kG = 0.0; // feedforward Constant
+            public static final double kG = 0.15; // feedforward Constant
         }
 
         public static final class PivotMotionMagicConstants {
