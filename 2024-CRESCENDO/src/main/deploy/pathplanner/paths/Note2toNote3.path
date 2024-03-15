@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.286735129437642,
-        "y": 6.740830798192361
+        "x": 2.9062276306370793,
+        "y": 5.531946336619947
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5380920739602786,
-        "y": 6.857313284678461
+        "x": 2.197242939940425,
+        "y": 5.1867827372022095
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "note2"
     },
     {
       "anchor": {
-        "x": 2.893670190602057,
-        "y": 7.016710371448912
+        "x": 2.458447825986561,
+        "y": 4.337866857551897
       },
       "prevControl": {
-        "x": 2.7526650753820414,
-        "y": 6.930881170880207
+        "x": 1.6095319463366202,
+        "y": 4.897591613365044
       },
       "nextControl": null,
       "isLocked": false,
@@ -35,13 +35,19 @@
       "name": "New Event Marker",
       "waypointRelativePos": 0,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
                 "name": "Intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Rev Shooter"
               }
             }
           ]
@@ -57,13 +63,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -153.72334796197492,
+    "rotation": 146.30993247402026,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "7Piece",
+  "folder": "AmpSide5Piece",
   "previewStartingState": {
-    "rotation": -145.64061970241056,
+    "rotation": 178.7126710584664,
     "velocity": 0
   },
   "useDefaultConstraints": true

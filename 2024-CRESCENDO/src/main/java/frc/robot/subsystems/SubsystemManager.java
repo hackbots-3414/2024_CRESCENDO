@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.PivotConstants;
@@ -240,7 +241,7 @@ public class SubsystemManager extends SubsystemBase {
 		return new RevShooterCommand(shooter, transport, velocity);
 	}
 	public Command makeShootAfterRevCommand(double velocity) {
-		return new ShooterCommand(shooter, transport, velocity).withTimeout(0.35);
+		return new ShooterCommand(shooter, transport, velocity).withTimeout(0.35); // TODO fix this timeout
 	}
 	public Command makeShootCommand() {
 		return new ShooterCommand(shooter, transport, ShooterConstants.shootVelo);
@@ -340,13 +341,16 @@ public class SubsystemManager extends SubsystemBase {
 
 		SmartDashboard.putNumber("driveabase radius", driveBaseRadius);
 	
-		eventMarkers.put("Subwoofer", makeElevatorCommand(ElevatorPresets.SUBWOOFER).andThen(makeShootAfterRevCommand(ShooterConstants.minShootSpeed)).andThen(makeElevatorCommand(ElevatorPresets.STOW)));
-		eventMarkers.put("Intake", makeIntakeCommand().andThen(makeSubwooferRevvingCommand())); 
-		eventMarkers.put("IntakeThenSubwooferPreset", makeIntakeCommand().andThen(makeSubwooferRevvingCommand()));
+		// eventMarkers.put("Subwoofer", makeElevatorCommand(ElevatorPresets.SUBWOOFER).andThen(makeShootAfterRevCommand(ShooterConstants.minShootSpeed)).andThen(makeElevatorCommand(ElevatorPresets.STOW)));
+		eventMarkers.put("Subwoofer", makeSubwooferShootCommand().andThen(makeElevatorCommand(ElevatorPresets.STOW)));
+		eventMarkers.put("Intake", makeIntakeCommand().andThen(new WaitCommand(2)).andThen(makeSubwooferRevvingCommand())); 
+		eventMarkers.put("IntakeThenSubwooferPreset", makeIntakeCommand().andThen(new WaitCommand(2.0)).andThen(makeSubwooferRevvingCommand()));
 		eventMarkers.put("StealRings", makeStealRingCommand());
 		eventMarkers.put("Stow", makeElevatorCommand(ElevatorPresets.STOW));
 		
 		eventMarkers.put("ShootAnywhere", makeAutonEverythingCommand());
+		eventMarkers.put("Rev Shooter", makeRevShootCommand(Constants.ShooterConstants.minShootSpeed));
+		eventMarkers.put("Shoot", makeShootCommand());
 
 		SmartDashboard.putData("Amp Sequence", makeAmpSequence());
 

@@ -13,6 +13,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.units.Angle;
@@ -62,12 +63,14 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
         .withCurrentLimits(currentLimitsConfig);
 
     rightMotor.getConfigurator().apply(configuration, 0.2);
+    rightMotor.setNeutralMode(NeutralModeValue.Brake); // we want one on brake and the other on coast
 
 
     configuration = new TalonFXConfiguration()
       .withCurrentLimits(currentLimitsConfig);
 
     leftMotor.getConfigurator().apply(configuration, 0.2);
+    leftMotor.setNeutralMode(NeutralModeValue.Coast);
 
     rightMotor.setInverted(Constants.ShooterConstants.shooterMotorInvert);
     leftMotor.setControl(new Follower(rightMotor.getDeviceID(), true));
