@@ -419,21 +419,21 @@ public class Constants {
         public static final double strobeSpeed = 0.1;
         public static final double endgameWarning = 20;
         public static final double endgameAlert = 10;
-        public static final int leftOffset = 8;
-        public static final int insideOffset = 9;
-        public static final int topOffset = 11;
-        public static final int rightOffset = 12;
-        public static final int leftNumLED = 1;
-        public static final int insideNumLED = 2;
-        public static final int topNumLED = 1;
-        public static final int rightNumLED = 1;
-        //  public static final int leftOffset = 8;
-        // public static final int insideOffset = 23;
-        // public static final int topOffset = 50;
-        // public static final int rightOffset = 102;
-        // public static final int leftNumLED = 14;
-        // public static final int insideNumLED = 26;
-        // public static final int topNumLED = 52;
-        // public static final int rightNumLED = 14;
+        // public static final int leftOffset = 8;
+        // public static final int insideOffset = 9;
+        // public static final int topOffset = 11;
+        // public static final int rightOffset = 12;
+        // public static final int leftNumLED = 1;
+        // public static final int insideNumLED = 2;
+        // public static final int topNumLED = 1;
+        // public static final int rightNumLED = 1;
+         public static final int leftOffset = 8;
+        public static final int insideOffset = 23;
+        public static final int topOffset = 50;
+        public static final int rightOffset = 102;
+        public static final int leftNumLED = 14;
+        public static final int insideNumLED = 26;
+        public static final int topNumLED = 52;
+        public static final int rightNumLED = 14;
     }
 }
