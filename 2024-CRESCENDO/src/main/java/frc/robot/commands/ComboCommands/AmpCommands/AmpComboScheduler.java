@@ -6,6 +6,7 @@ package frc.robot.commands.ComboCommands.AmpCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -44,8 +45,10 @@ public class AmpComboScheduler extends Command {
     Command macro = new SequentialCommandGroup(
 			new ParallelCommandGroup(
 				drivetrain.makeDriveToAmpCommand(),
-				new AmpSetup(elevator, pivot)
+				new AmpSetup(elevator, pivot),
+        new PrintCommand("FLAG\nFLAG\nFLAG\nFLAG\nFLAG\nAmp combo has ran!")
 			),
+      new PrintCommand("FLAG\nFLAG\nFLAG\nFLAG\nFLAG\nFLAG\nFLAG\nFLAG\nFLAG\nFLAG\nwe should be at the amp right now!"),
 			new ScoreAmpCommand(shooter).withTimeout(Constants.AmpConstants.allowedShootTime),
 			new StowElevatorCommand(elevator, pivot)
 		).onlyWhile(RobotContainer.getInstance()::getAmpButton);
