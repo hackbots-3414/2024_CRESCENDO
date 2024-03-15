@@ -15,19 +15,22 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
+import frc.robot.subsystems.Transport;
 
 public class AmpComboScheduler extends Command {
   private CommandSwerveDrivetrain drivetrain;
   private Elevator elevator;
   private ShooterPivot pivot;
   private Shooter shooter;
+  private Transport transport;
   /** Creates a new AmpComboSceduler. */
-  public AmpComboScheduler(CommandSwerveDrivetrain drivetrain, Elevator elevator, ShooterPivot pivot, Shooter shooter) {
+  public AmpComboScheduler(CommandSwerveDrivetrain drivetrain, Elevator elevator, ShooterPivot pivot, Shooter shooter, Transport transport) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.elevator = elevator;
     this.pivot = pivot;
     this.shooter = shooter;
+    this.transport = transport;
   }
 
   // Called when the command is initially scheduled.
@@ -45,11 +48,9 @@ public class AmpComboScheduler extends Command {
     Command macro = new SequentialCommandGroup(
 			new ParallelCommandGroup(
 				drivetrain.makeDriveToAmpCommand(),
-				new AmpSetup(elevator, pivot),
-        new PrintCommand("FLAG\nFLAG\nFLAG\nFLAG\nFLAG\nAmp combo has ran!")
+				new AmpSetup(elevator, pivot)
 			),
-      new PrintCommand("FLAG\nFLAG\nFLAG\nFLAG\nFLAG\nFLAG\nFLAG\nFLAG\nFLAG\nFLAG\nwe should be at the amp right now!"),
-			new ScoreAmpCommand(shooter).withTimeout(Constants.AmpConstants.allowedShootTime),
+			new ScoreAmpCommand(shooter, transport).withTimeout(Constants.AmpConstants.allowedShootTime),
 			new StowElevatorCommand(elevator, pivot)
 		).onlyWhile(RobotContainer.getInstance()::getAmpButton);
     macro.schedule();

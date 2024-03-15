@@ -279,7 +279,7 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public Command makeAmpSequence() {
 		// our goal position is the position of the amp plus just enough room for our robot to be aligned with it, and we want to be facing the alliance station so we can score.
-		return new AmpComboScheduler(drivetrain, elevator, shooterPivot, shooter);
+		return new AmpComboScheduler(drivetrain, elevator, shooterPivot, shooter, transport);
 	}
 
 

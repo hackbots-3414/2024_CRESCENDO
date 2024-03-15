@@ -26,6 +26,11 @@ public class AmpScoreCommand extends Command {
   }
 
   @Override
+  public void initialize() {
+    alreadyRan = false;
+  }
+
+  @Override
   public void execute() {
     if (alreadyRan) return;
     elevator.setElevatorPosition(AmpPresets.elevator);
@@ -37,6 +42,7 @@ public class AmpScoreCommand extends Command {
   public void end(boolean interrupted) {
     shooter.setMotor(-0.1);
     transport.eject();
+    transport.setNoteOnBoard(false);
     shooter.stopMotor();
     transport.stopMotor();
     stowElevator.schedule();
