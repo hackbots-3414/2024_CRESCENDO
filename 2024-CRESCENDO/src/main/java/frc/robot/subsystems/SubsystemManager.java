@@ -41,7 +41,6 @@ import frc.robot.Robot;
 import frc.robot.Telemetry;
 import frc.robot.commands.AutonCommands.AutoScoreCommand;
 import frc.robot.commands.AutonCommands.RevShooterCommand;
-import frc.robot.commands.AutonCommands.ShootAfterRevCommand;
 import frc.robot.commands.BaseSubsystemCommands.AimCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
@@ -116,7 +115,7 @@ public class SubsystemManager extends SubsystemBase {
 	Transport transport = new Transport();
 	NoteFinder noteFinder = new NoteFinder();
 	Winch winch = new Winch();
-	LedSubsystem ledSubsystem = new LedSubsystem(this::getNoteOnBoard, this::getIsInRange, this::getAimIsReady);
+	// LedSubsystem ledSubsystem = new LedSubsystem(this::getIsInRange, this::getAimIsReady);
 
 	public Intake getIntake() {return intake;}
 	public Shooter getShooter() {return shooter;}
@@ -125,7 +124,7 @@ public class SubsystemManager extends SubsystemBase {
 	public Elevator getElevator() {return elevator;}
 	public NoteFinder getNoteFinder() {return noteFinder;}
 	public Winch getWinch() {return winch;}
-	public LedSubsystem getLedSubsystem() {return ledSubsystem;}
+	// public LedSubsystem getLedSubsystem() {return ledSubsystem;}
 	public AprilTagVision getAprilTagVision() {return aprilTagVision;}
 
 	private SubsystemManager() {
@@ -151,6 +150,7 @@ public class SubsystemManager extends SubsystemBase {
 
   @Override
 	public void periodic() {
+
 		// elevatorCurrent = pdp.getCurrent(PDPConstants.elevator);
 		// intakeCurrent = pdp.getCurrent(PDPConstants.intake);
 		// shooterPivotCurrent = pdp.getCurrent(PDPConstants.pivot);
@@ -240,10 +240,10 @@ public class SubsystemManager extends SubsystemBase {
 		return new RevShooterCommand(shooter, transport, velocity);
 	}
 	public Command makeShootAfterRevCommand(double velocity) {
-		return new ShootAfterRevCommand(shooter, transport, velocity, this::setNoteOnBoard).withTimeout(0.35);
+		return new ShooterCommand(shooter, transport, velocity).withTimeout(0.35);
 	}
 	public Command makeShootCommand() {
-		return new ShooterCommand(shooter, transport, ShooterConstants.shootVelo, this::setNoteOnBoard);
+		return new ShooterCommand(shooter, transport, ShooterConstants.shootVelo);
 	}
 	public Command makeManualShootCommand() {
 		return new ManualShootCommand(shooter,transport);
@@ -252,10 +252,10 @@ public class SubsystemManager extends SubsystemBase {
 
 	// INTAKE COMMANDS
 	public Command makeIntakeCommand() {
-		return new IntakeCommand(transport, intake, elevator, shooterPivot, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed, this::setNoteOnBoard);
+		return new IntakeCommand(transport, intake, elevator, shooterPivot, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed, shooter);
 	}
 	public Command makeEjectCommand() {
-		return new IntakeCommand(transport, intake, elevator, shooterPivot, Constants.IntakeConstants.ejectSpeed, Constants.TransportConstants.ejectSpeed, this::setNoteOnBoard);
+		return new IntakeCommand(transport, intake, elevator, shooterPivot, Constants.IntakeConstants.ejectSpeed, Constants.TransportConstants.ejectSpeed, shooter);
 	}
 	public Command makeManualIntakeEjectCommand() {
 		return new ManualIntakeEjectCommand(intake, transport);
@@ -271,7 +271,7 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public Command makeSubwooferShootCommand() {
 		return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER),
-				new ShooterCommand(shooter, transport, ShooterConstants.minShootSpeed, this::setNoteOnBoard));
+				new ShooterCommand(shooter, transport, ShooterConstants.minShootSpeed));
 	}
 	public Command makeSubwooferRevvingCommand() {
 		return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER),
@@ -285,7 +285,7 @@ public class SubsystemManager extends SubsystemBase {
 
 	// AIMING COMMANDS
 	public Command makeAutoAimCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
-		return new AimCommand(elevator, shooterPivot, drivetrain, x, y, turn, allianceSupplier, this::setAimReady);
+		return new AimCommand(elevator, shooterPivot, drivetrain, x, y, turn, allianceSupplier, this::setAimReady).alongWith(new RevShooterCommand(shooter, transport, Constants.ShooterConstants.shootVelo));
 	}
 	public AimOutputContainer getAimOutputContainer() {
         return AimHelper.getAimOutputs(drivetrain, allianceSupplier.get() == Alliance.Blue, AimStrategies.LOOKUP); // BASIC MATH
@@ -302,12 +302,6 @@ public class SubsystemManager extends SubsystemBase {
 	public boolean getIsInRange() {
 		return drivetrain.isInRange();
 	}
-	public boolean getNoteOnBoard() {
-		return noteOnBoard;
-	}
-	public void setNoteOnBoard(boolean noteOnBoard) {
-		this.noteOnBoard = noteOnBoard;
-	}
 
 
 	// AUTON COMMANDS
@@ -322,7 +316,7 @@ public class SubsystemManager extends SubsystemBase {
 		}
 	}
 	public Command makeAutonEverythingCommand() {
-		return /*makeIntakeCommand().andThen(*/new AutoScoreCommand(elevator, shooterPivot, shooter, transport, this::getAimOutputContainer, this::setNoteOnBoard).withTimeout(1.5);
+		return /*makeIntakeCommand().andThen(*/new AutoScoreCommand(elevator, shooterPivot, shooter, transport, this::getAimOutputContainer).withTimeout(1.5);
 	}
 
 
