@@ -13,6 +13,7 @@ public class AmpScoreCommand extends Command {
   private ShooterPivot shooterPivot;
   private Command stowElevator;
   private Shooter shooter;
+  private boolean alreadyRan;
 
   public AmpScoreCommand(Transport transport, Elevator elevator, Shooter shooter, ShooterPivot shooterPivot) {
     addRequirements(transport, elevator, shooterPivot);
@@ -21,18 +22,27 @@ public class AmpScoreCommand extends Command {
     this.shooterPivot = shooterPivot;
     this.shooter = shooter;
     stowElevator = new StowElevatorCommand(elevator, shooterPivot);
+    alreadyRan = false;
+  }
+
+  @Override
+  public void initialize() {
+    alreadyRan = false;
   }
 
   @Override
   public void execute() {
+    if (alreadyRan) return;
     elevator.setElevatorPosition(AmpPresets.elevator);
     shooterPivot.setPivotPosition(AmpPresets.shooter);
+    alreadyRan = true;
   }
 
   @Override
   public void end(boolean interrupted) {
     shooter.setMotor(-0.1);
     transport.eject();
+    transport.setNoteOnBoard(false);
     shooter.stopMotor();
     transport.stopMotor();
     stowElevator.schedule();

@@ -38,10 +38,13 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants;
 import frc.robot.Constants.AimConstants;
+import frc.robot.Constants.AmpConstants;
 import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
+import frc.robot.util.FieldConstants;
 import frc.robot.util.VisionHelpers;
 import frc.robot.util.VisionHelpers.TimestampedVisionUpdate;
 
@@ -171,7 +174,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         field.setRobotPose(dashboardPose);
         SmartDashboard.putData(field);
 
-        Pose2d speakerPose = DriverStation.getAlliance().get() == Alliance.Blue ? AimConstants.blueSpeakerPos : AimConstants.redSpeakerPos;
+        Pose2d speakerPose = DriverStation.getAlliance() != null ? (DriverStation.getAlliance().get() == Alliance.Blue ? AimConstants.blueSpeakerPos : AimConstants.redSpeakerPos) : AimConstants.blueSpeakerPos;
         double robotDistance = speakerPose.relativeTo(getPose()).getTranslation().getNorm();
         if (DebugConstants.debugMode) SmartDashboard.putNumber("DISTANCE FROM TARGET", robotDistance);
 
@@ -201,7 +204,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     /**
      * This method returns a command that is runanble in order to drive to a given pose on the field.
      * @param goalPose The goal pose (field relative)
-     * @param isReversed
+     * @param isReversed does the robot drive with the intake side as forwards.
      * @return The pathplanner-generated command to get to that pose
      */
     public Command makeDriveToPoseCommand(Pose2d goalPose, boolean isReversed) {
@@ -214,15 +217,19 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 rotateTargetList,
                 Collections.emptyList(),
                 Collections.emptyList(),
-                new PathConstraints(SwerveConstants.maxDriveVelocity, SwerveConstants.maxDriveAcceleration,
+                new PathConstraints(SwerveConstants.maxDriveVelocity * 0.1, SwerveConstants.maxDriveAcceleration,
                         SwerveConstants.maxAngleVelocity, SwerveConstants.maxAngleAcceleration),
                 goal,
                 isReversed);
-        // if (Robot.isSimulation()) {
-        //    field.getRobotObject().setPoses(path.getPathPoses());
-        // }
+        if (Robot.isSimulation()) {
+           field.getRobotObject().setPoses(path.getPathPoses());
+        }
         LOGGER.debug("makeDriveToPoseCommand: Calculated Poses: {}", path.getPathPoses());
 
         return AutoBuilder.followPath(path);
+    }
+    public Command makeDriveToAmpCommand() {
+        Pose2d ampPose = new Pose2d(FieldConstants.ampCenter.minus(new Translation2d(0, Constants.AimConstants.bumperToCenter)), Rotation2d.fromDegrees(270));
+        return makeDriveToPoseCommand(ampPose, true);
     }
 }

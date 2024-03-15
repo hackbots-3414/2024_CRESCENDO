@@ -181,6 +181,7 @@ public class Constants {
         public static final int leftY = 1;
         public static final int rightX = 3;
         public static final int rightY = 2;
+        public static final int ampScoreButton = 14;
 
         public static final double deadband = 0.01;// 0.06;
         public static final double leftXMax = 0.75;
@@ -354,6 +355,8 @@ public class Constants {
         public static final double speakerHeightMinusElevatorRaise = speakerHeight - elevatorHeightFromFloorAtRest;
         public static final double gravity = 9.81;
         public static final double velocity = ShooterConstants.maxShootSpeed * Units.inchesToMeters(1.5) * Math.PI + AimConstants.compressionAdder;
+
+        public static final double bumperToCenter = Units.inchesToMeters(19.0);
     }
 
     public static final class WinchConstants {
@@ -420,5 +423,9 @@ public class Constants {
 
         // public static final double drivetrainStatorLimit = 0;
         public static final double drivetrainSupplyLimit = 80;
+    }
+
+    public static class AmpConstants {
+        public static final double allowedShootTime = 1.5; // seconds
     }
 }
