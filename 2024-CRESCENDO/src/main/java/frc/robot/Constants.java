@@ -200,7 +200,7 @@ public class Constants {
         public static final double transportSpeed = 0.83;
         public static final double ejectSpeed = -0.6;
         public static final double transportEjectSpeed = -0.5;
-        public static final int transportIrChannel = 4;
+        public static final int transportIrChannel = 1;
         public static final int flyWheelIrChannel = 0;
 
         public static final double transportEjectDelay = 0.3; // seconds until note leaves shooter
@@ -431,7 +431,7 @@ public class Constants {
 
     public class LEDConstants {
         public static final int candleCanid = 5;
-        public static final int numLED = 112;
+        public static final int numLED = 117;
         public static final double flashSpeed = 0.75;
         public static final double strobeSpeed = 0.1;
         public static final double endgameWarning = 20;
@@ -446,11 +446,11 @@ public class Constants {
         // public static final int rightNumLED = 1;
          public static final int leftOffset = 8;
         public static final int insideOffset = 22;
-        public static final int topOffset = 48;
-        public static final int rightOffset = 99;
+        public static final int topOffset = 49;
+        public static final int rightOffset = 104;
         public static final int leftNumLED = 14;
-        public static final int insideNumLED = 26;
-        public static final int topNumLED = 51;
+        public static final int insideNumLED = 27;
+        public static final int topNumLED = 55;
         public static final int rightNumLED = 13;
     }
 }

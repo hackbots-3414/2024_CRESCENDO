@@ -91,7 +91,7 @@ public class LedSubsystem extends SubsystemBase {
   private boolean endgameWarningStarted = false;
   private boolean endgameAlertStarted = false;
   private boolean inTeleop = false;
-  private Transport transport = new Transport();
+  private Transport transport;
 
 //  private static final String[] LABELS = { "In Range", "Note Onboard", "End Game 15", "End Game 30", "Target Locked" };
 
@@ -119,7 +119,9 @@ public class LedSubsystem extends SubsystemBase {
     ledcontroller.animate(
         new LarsonAnimation(255, 0, 255, 0, 0.50, LEDConstants.numLED, LarsonAnimation.BounceMode.Back, 7), 1);
     setColor("DEFAULT", 3, 3, "FLASH");
-    // ledcontroller.setLEDs(255, 0, 0, 0, LEDConstants.leftOffset,
+
+    //uncomment to test LED strips
+    // ledcontroller.setLEDs(255, 0, 0, 0, LEDConstants.leftOffset, 
     // LEDConstants.leftNumLED);
     // ledcontroller.setLEDs(0, 0, 255, 0, LEDConstants.topOffset,
     // LEDConstants.topNumLED);
@@ -127,12 +129,11 @@ public class LedSubsystem extends SubsystemBase {
     // LEDConstants.insideNumLED);
     // ledcontroller.setLEDs(255, 0,255, 0, LEDConstants.rightOffset,
     // LEDConstants.rightNumLED);
-
-    // ledcontroller.setLEDs(255, 0, 255);
-    // ledcontroller.animate(LARSON_ANIMATION);
+    //end of test pattern
+    
     // this.noteOnBoard = noteOnBoard;
-    // this.isInRange = isInRange;
-    // this.noteInView = noteInView;
+    this.isInRange = isInRange;
+    this.noteInView = noteInView;
     // Hackbot Purple Code : [0x67, 0x2C, 0x91]
     // #672C91
     SmartDashboard.putBoolean("noteOnBoardTest", noteOnBoardTest);
@@ -179,7 +180,7 @@ public class LedSubsystem extends SubsystemBase {
         ledStripEndIndex = 0;
         ledStripStartIndex = 0;
 
-        if (matchTime > LEDConstants.endgameAlert && endgameWarningStarted == false) {
+        if (matchTime > LEDConstants.endgameWarning && endgameWarningStarted == false) {
           endgameWarningStarted = true;
           setColor("RED", 1, 2, "SOLID");
         }
@@ -200,19 +201,19 @@ public class LedSubsystem extends SubsystemBase {
       // Shoot Alignment Happening : Slow Blue
       // When Aligned: Stop Strobe: Fast Flash Blue
       // InRange for shooting: Blue
-      if (noteOnBoardTest && isInRangeTest) {
+      if (noteOnBoard && isInRange.get()) {
         // noteOnboardTest should be noteOnBoard.get()
         // Do this for all test Variables
         if (chosenMode != LED_MODE.IN_RANGE) {
           chosenMode = LED_MODE.IN_RANGE;
           setColor("BLUE", ledStripStartIndex, ledStripEndIndex, "SOLID");
         }
-      } else if (noteOnBoardTest) {
+      } else if (noteOnBoard) {
         if (chosenMode != LED_MODE.NOTE_ONBOARD) {
           chosenMode = LED_MODE.NOTE_ONBOARD;
           setColor("GREEN", ledStripStartIndex, ledStripEndIndex, "FLASH");
         }
-      } else if (noteInViewTest) {
+      } else if (noteInView.get()) {
         if (chosenMode != LED_MODE.NOTE_IN_VIEW) {
           chosenMode = LED_MODE.NOTE_IN_VIEW;
           setColor("YELLOW", ledStripStartIndex, ledStripEndIndex, "FLASH");

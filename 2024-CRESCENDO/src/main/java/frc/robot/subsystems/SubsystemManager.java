@@ -117,7 +117,7 @@ public class SubsystemManager extends SubsystemBase {
 	Transport transport = new Transport();
 	NoteFinder noteFinder = new NoteFinder();
 	Winch winch = new Winch();
-	// LedSubsystem ledSubsystem = new LedSubsystem(this::getIsInRange, this::getAimIsReady);
+	LedSubsystem ledSubsystem = new LedSubsystem(transport, this::getIsInRange, this::getAimIsReady);
 
 	public Intake getIntake() {return intake;}
 	public Shooter getShooter() {return shooter;}
@@ -126,7 +126,7 @@ public class SubsystemManager extends SubsystemBase {
 	public Elevator getElevator() {return elevator;}
 	public NoteFinder getNoteFinder() {return noteFinder;}
 	public Winch getWinch() {return winch;}
-	// public LedSubsystem getLedSubsystem() {return ledSubsystem;}
+	public LedSubsystem getLedSubsystem() {return ledSubsystem;}
 	public AprilTagVision getAprilTagVision() {return aprilTagVision;}
 
 	private SubsystemManager() {
