@@ -153,6 +153,7 @@ public class RobotContainer {
     SmartDashboard.putData("Manual Shooter", subsystemManager.makeManualShootCommand());
     SmartDashboard.putData("Manual Intake Eject", subsystemManager.makeManualIntakeEjectCommand());
     SmartDashboard.putData("Amp Score", subsystemManager.makeAmpScoreCommand());
+    SmartDashboard.putData("Wheel Radius Characterization", subsystemManager.makeWheelRadiusCharacterizationCommand());
   }
 
   public Command getAutonomousCommand() {
