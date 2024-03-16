@@ -1,11 +1,11 @@
 package frc.robot.commands.AutonCommands;
 
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.BaseSubsystemCommands.ShooterCommand;
 import frc.robot.subsystems.AimHelper.AimOutputContainer;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
@@ -13,31 +13,29 @@ import frc.robot.subsystems.ShooterPivot;
 import frc.robot.subsystems.Transport;
 
 public class AutoScoreCommand extends Command {
-    Elevator elevator;
-    ShooterPivot shooterPivot;
-    Shooter shooter;
-    Transport transport;
+    private Elevator elevator;
+    private ShooterPivot shooterPivot;
+    private Shooter shooter;
+    private Transport transport;
 
-    Supplier<AimOutputContainer> aimSupplier;
-    Supplier<Pose2d> poseSupplier;
-    Supplier<ChassisSpeeds> chassisSpeedsSupplier;
-    Consumer<Boolean> setNoteIsOnBoard;
+    private Supplier<AimOutputContainer> aimSupplier;
+    private Supplier<Pose2d> poseSupplier;
+    private Supplier<ChassisSpeeds> chassisSpeedsSupplier;
 
-    Command revShooterCommand;
-    Command elevatorCommand;
-    Command shootAfterRevCommand;
+    private Command revShooterCommand;
+    private Command elevatorCommand;
+    private Command shootAfterRevCommand;
 
-    double shootWaitSeconds = 0.5;
-    double shootWaitTicks = shootWaitSeconds/0.02;
-    double ticks = shootWaitTicks + 5;
+    private double shootWaitSeconds = 0.5;
+    private double shootWaitTicks = shootWaitSeconds/0.02;
+    private double ticks = shootWaitTicks + 5;
 
-    public AutoScoreCommand(Elevator elevator, ShooterPivot shooterPivot, Shooter shooter, Transport transport, Supplier<AimOutputContainer> aimSupplier, Consumer<Boolean> setNoteIsOnBoard) {
+    public AutoScoreCommand(Elevator elevator, ShooterPivot shooterPivot, Shooter shooter, Transport transport, Supplier<AimOutputContainer> aimSupplier) {
         this.elevator = elevator;
         this.shooterPivot = shooterPivot;
         this.shooter = shooter;
         this.aimSupplier = aimSupplier;
         this.transport = transport;
-        this.setNoteIsOnBoard = setNoteIsOnBoard;
     }
 
     @Override
@@ -46,7 +44,7 @@ public class AutoScoreCommand extends Command {
 
         elevatorCommand = new AutoElevatorCommand(elevator, shooterPivot, output.getElevatorHeight(), output.getPivotAngle());
         revShooterCommand = new RevShooterCommand(shooter, transport, output.getShooterVelocity());
-        shootAfterRevCommand = new ShootAfterRevCommand(shooter, transport, output.getShooterVelocity(), setNoteIsOnBoard);
+        shootAfterRevCommand = new ShooterCommand(shooter, transport, output.getShooterVelocity()).withTimeout(shootWaitSeconds);
             
         if (!elevatorCommand.isFinished()) {elevatorCommand.execute();}
         if (!revShooterCommand.isFinished()) {revShooterCommand.execute();}

@@ -18,15 +18,10 @@ public class RevShooterCommand extends Command {
     }
 
     @Override
-    public void execute() {
-        if (transport.getIR() == true) {
-            transport.stopMotor();
-            shooter.setVelocity(velocity);
-        } else {
-            transport.setMotor(TransportConstants.transportEjectSpeed);
-            shooter.setMotor(ShooterConstants.shooterBackupSpeed);
-        }
+    public void initialize() {
+        shooter.setVelocity(velocity);
     }
+    
     @Override
     public boolean isFinished() {
         return shooter.shooterAtSpeed();
