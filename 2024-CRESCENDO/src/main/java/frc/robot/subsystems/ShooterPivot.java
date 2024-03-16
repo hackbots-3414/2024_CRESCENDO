@@ -22,8 +22,8 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.CurrentLimits;
+import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.PivotConstants.PivotMotionMagicConstants;
 import frc.robot.Constants.PivotConstants.PivotSlot0ConfigConstants;
@@ -94,9 +94,7 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
             
         .withCurrentLimits(new CurrentLimitsConfigs()
             .withSupplyCurrentLimit(CurrentLimits.shooterPivotSupplyLimit)
-            .withSupplyCurrentLimitEnable(true)
-            .withSupplyCurrentThreshold(0.0)
-            .withSupplyTimeThreshold(0.0));
+            .withSupplyCurrentLimitEnable(true));
 
     pivotMotor.getConfigurator().apply(configuration, 0.2);
   }
@@ -132,6 +130,7 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
     cancoderPosition = cancoder.getAbsolutePosition().getValueAsDouble();
     if (DebugConstants.debugMode) {
       SmartDashboard.putNumber("CANCODERPOS", cancoderPosition);
+      SmartDashboard.putNumber("CANCODER SETPOINT", pivotMotor.getClosedLoopReference().getValueAsDouble());
       SmartDashboard.putBoolean("SHOOTER PIVOT SETPOINT", isAtSetpoint());
     }
   }

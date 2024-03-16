@@ -5,7 +5,7 @@
       "x": 1.3829526758152613,
       "y": 5.537577201280529
     },
-    "rotation": 180.0
+    "rotation": 177.37516005160768
   },
   "command": {
     "type": "sequential",
@@ -27,6 +27,30 @@
           "type": "path",
           "data": {
             "pathName": "2PieceCenter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Subwoofer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3PieceStart"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Subwoofer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3PieceEnd"
           }
         },
         {

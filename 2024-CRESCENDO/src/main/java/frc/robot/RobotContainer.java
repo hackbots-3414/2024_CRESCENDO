@@ -28,6 +28,7 @@ import frc.robot.subsystems.NoteFinder;
 import frc.robot.subsystems.SubsystemManager;
 
 public class RobotContainer {
+  private static RobotContainer me = null;
   public enum JoystickChoice {PS5, XBOX;}
   
   private final Joystick driver = new Joystick(InputConstants.kDriverControllerPort);
@@ -35,6 +36,7 @@ public class RobotContainer {
   private final JoystickButton autoAimButton = new JoystickButton(driver, DriverConstants.autoAimButton);
   private final JoystickButton resetAtPointButton = new JoystickButton(driver, DriverConstants.resetAtPointButton);
   private final JoystickButton shellyButton = new JoystickButton(driver, DriverConstants.shellyButton);
+  private final JoystickButton ampScoreButton = new JoystickButton(driver, DriverConstants.ampScoreButton);
 
   private final Supplier<Double> driverLeftX = () -> Math.pow(MathUtil.applyDeadband(driver.getRawAxis(DriverConstants.leftX),DriverConstants.deadband)/DriverConstants.leftXMax, DriverConstants.expoPower) * (driver.getRawAxis(DriverConstants.leftX) >= 0.0 ? 1.0 : -1.0);
   private final Supplier<Double> driverLeftY = () -> -Math.pow(MathUtil.applyDeadband(driver.getRawAxis(DriverConstants.leftY), DriverConstants.deadband)/DriverConstants.leftYMax, DriverConstants.expoPower) * (driver.getRawAxis(DriverConstants.leftY) >= 0.0 ? 1.0 : -1.0);
@@ -55,6 +57,7 @@ public class RobotContainer {
     resetAtPointButton.onTrue(subsystemManager.resetAtPose2d(new Pose2d(15.1968, 5.5, Rotation2d.fromDegrees(0))));
     autoAimButton.whileTrue(subsystemManager.makeAutoAimCommand(driverLeftY, driverLeftX, driverRightX));
     shellyButton.whileTrue(subsystemManager.makeShellyCommand(driverLeftX, driverLeftY, driverRightX));
+    ampScoreButton.onTrue(subsystemManager.makeAmpSequence());
     
     if (Utils.isSimulation()) {subsystemManager.resetAtPose2d(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));}
     subsystemManager.telemeterize();
@@ -92,21 +95,22 @@ public class RobotContainer {
   }
 
   private void configurePS5OperatorBindings() {
-    ps5Operator.R1().whileTrue(subsystemManager.makeAmpScoreCommand()); // x
+    ps5Operator.square().whileTrue(subsystemManager.makeAmpScoreCommand()); // x
     ps5Operator.triangle().whileTrue(subsystemManager.makeSubwooferShootCommand()); // y
     ps5Operator.circle().onTrue(subsystemManager.makeResetElevatorCommand()); // b
     ps5Operator.cross().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW)); // a
     
-    ps5Operator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
-    ps5Operator.povDown().whileTrue(subsystemManager.makeManualElevatorCommand(false));
+    // ps5Operator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
+    // ps5Operator.povDown().whileTrue(subsystemManager.makeManualElevatorCommand(false));
     ps5Operator.povRight().whileTrue(subsystemManager.makeManualPivotCommand(true));
     ps5Operator.povLeft().whileTrue(subsystemManager.makeManualPivotCommand(false));
 
     ps5Operator.create().whileTrue(subsystemManager.makeManualWinchCommand(false)); // back
     ps5Operator.options().whileTrue(subsystemManager.makeManualWinchCommand(true)); // start
-    ps5Operator.square().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.TRAP));
+    // ps5Operator.square().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.TRAP));
 
     ps5Operator.L2().whileTrue(subsystemManager.makeIntakeCommand());
+    ps5Operator.L1().whileTrue(subsystemManager.makeEjectCommand());
     ps5Operator.R2().whileTrue(subsystemManager.makeShootCommand());
 
 
@@ -130,7 +134,7 @@ public class RobotContainer {
     // ps5Operator.getRightY();
   }
 
-  public RobotContainer() {
+  private RobotContainer() {
     configureDriverBindings();
 
     if (DriverConstants.operatorController == JoystickChoice.PS5) {
@@ -144,10 +148,30 @@ public class RobotContainer {
 
     SmartDashboard.putData("Coast Elevator", subsystemManager.elevatorNeutralMode(NeutralModeValue.Coast));
     SmartDashboard.putData("Brake Elevator", subsystemManager.elevatorNeutralMode(NeutralModeValue.Brake));
-
     SmartDashboard.putData("Run Tests", subsystemManager.makeTestingCommand());
+
+    SmartDashboard.putData("Manual Shooter", subsystemManager.makeManualShootCommand());
+    SmartDashboard.putData("Manual Intake Eject", subsystemManager.makeManualIntakeEjectCommand());
+    SmartDashboard.putData("Amp Score", subsystemManager.makeAmpScoreCommand());
+    SmartDashboard.putData("Wheel Radius Characterization", subsystemManager.makeWheelRadiusCharacterizationCommand());
   }
 
-  public Command getAutonomousCommand() {return pathChooser.getSelected();}
-  public NoteFinder getNoteFinder() {return subsystemManager.getNoteFinder();}
+  public Command getAutonomousCommand() {
+    return pathChooser.getSelected();
+  }
+
+  public NoteFinder getNoteFinder() {
+    return subsystemManager.getNoteFinder();
+  }
+
+  public boolean getAmpButton() {
+    return ampScoreButton.getAsBoolean();
+  }
+
+  public static synchronized RobotContainer getInstance() {
+    if (me == null) {
+      me = new RobotContainer();
+    }
+    return me;
+  }
 }

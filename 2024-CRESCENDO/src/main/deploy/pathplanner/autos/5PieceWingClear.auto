@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7289985049768751,
-      "y": 4.407675929445818
+      "x": 1.3829526758152613,
+      "y": 5.537577201280529
     },
-    "rotation": 118.82832251222587
+    "rotation": 178.10263261160438
   },
   "command": {
     "type": "sequential",
@@ -18,9 +18,15 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Stow"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "4PieceCenterFirst"
+            "pathName": "2PieceCenter"
           }
         },
         {
@@ -32,7 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4PieceCenterSecond"
+            "pathName": "3PieceStart"
           }
         },
         {
@@ -44,7 +50,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4PieceCenterThird"
+            "pathName": "3PieceEnd"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Subwoofer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterRush"
           }
         },
         {

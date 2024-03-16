@@ -5,17 +5,12 @@
   "pathFolders": [
     "4PieceCenter",
     "4PieceWingClear",
-    "Goals",
     "7Piece",
-    "Test"
+    "AmpSide5Piece"
   ],
-  "autoFolders": [
-    "Goals",
-    "Test",
-    "Week1Ready"
-  ],
+  "autoFolders": [],
   "defaultMaxVel": 5.21,
-  "defaultMaxAccel": 4.0,
+  "defaultMaxAccel": 3.5,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "maxModuleSpeed": 5.21

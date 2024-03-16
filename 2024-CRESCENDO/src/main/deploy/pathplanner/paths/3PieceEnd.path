@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 2.436848837661639,
-        "y": 4.160116428340965
+        "x": 2.7009952201722585,
+        "y": 4.30988061976124
       },
       "prevControl": {
-        "x": 2.6885402602666835,
-        "y": 4.020287860227053
+        "x": 2.7870156804951183,
+        "y": 4.2473202849809795
       },
       "nextControl": {
-        "x": 2.270444180528001,
-        "y": 4.252563460081874
+        "x": 2.598379014939848,
+        "y": 4.384510587202993
       },
       "isLocked": false,
       "linkedName": null
@@ -46,8 +46,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 145.7812904817478,
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 132.39743779750023,
       "rotateFast": false
     }
   ],
@@ -73,7 +73,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 5.21,
-    "maxAcceleration": 4.0,
+    "maxAcceleration": 3.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -83,7 +83,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "4PieceWingClear",
   "previewStartingState": {
     "rotation": -178.45184230102205,
     "velocity": 0

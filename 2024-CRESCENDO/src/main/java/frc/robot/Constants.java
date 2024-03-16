@@ -24,6 +24,9 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.util.FieldConstants;
 
 public class Constants {
+
+    public static final double irSensorThreshold = 1.0;
+
     public static final class SwerveConstants {
         public static final double kPDrive = 10;
         public static final double kIDrive = 0;
@@ -114,46 +117,49 @@ public class Constants {
         public static final int rightMotorID = 58;
         public static final boolean shooterMotorInvert = true;
 
-        public static final double kP = 0.8;
+        public static final double kP = 2.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
-        public static final double kS = 8;
+        public static final double kS = 0;
+        public static final double kV = 0.12;
 
-        public static final double shootVelo = 92.0; // Rotations per second
+        public static final double shootVelo = 80.0; // Rotations per second
         public static final double shooterTolerance = 3.0;
 
-        public static final double minShootSpeed = 50; // measured for AutoAim
-        public static final double maxShootSpeed = 90; // measured for AutoAim
-        public static final double spitOutSpeed = 20;
+        public static final double minShootSpeed = 80; // measured for AutoAim
+        public static final double maxShootSpeed = 80; // measured for AutoAim
+        public static final double spitOutSpeed = 20.0;
 
         public static final double shooterBackupSpeed = -0.1;
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
-                entry(0.0, 0.0780),
-                entry(1.41, 0.0780), // lined up
-                entry(1.70, 0.0610), // 4
-                entry(2.31, 0.0385), // 6
-                entry(2.92, 0.0227), // 8
-                entry(3.54, 0.0130), // 10
-                entry(4.14, 0.0030) // 12
+                entry(0.0, 0.18),
+                entry(1.41, 0.18), // lined up
+                entry(1.56, 0.12), // 4
+                entry(1.9, 0.105), // 6
+                entry(2.2, 0.093), // 8
+                entry(2.55, 0.092), // 10
+                entry(4.14, 0.089) // 12
         );
 
-        public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
-                entry(0.0, 50.0),
-                entry(1.41, 50.0),
-                entry(1.70, 50.0),
-                entry(2.31, 50.0),
-                entry(2.92, 60.0),
-                entry(3.54, 70.0),
-                entry(4.14, 92.0),
-                entry(50.0, 92.0));
+        // public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
+        //         entry(0.0, 50.0),
+        //         entry(1.41, 50.0),
+        //         entry(1.70, 50.0),
+        //         entry(2.31, 50.0),
+        //         entry(2.92, 60.0),
+        //         entry(3.54, 70.0),
+        //         entry(4.14, 92.0),
+        //         entry(50.0, 92.0));
     }
 
     public static final class IntakeConstants {
         public static final int intakeMotorID = 60;
-        public static final double intakeSpeed = 1;
+        public static final double intakeSpeed = 0.8;
         public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
+        public static final int intakeIrChannel = 2;
+
     }
 
     public static final class InputConstants {
@@ -175,6 +181,7 @@ public class Constants {
         public static final int leftY = 1;
         public static final int rightX = 3;
         public static final int rightY = 2;
+        public static final int ampScoreButton = 14;
 
         public static final double deadband = 0.01;// 0.06;
         public static final double leftXMax = 0.75;
@@ -184,15 +191,17 @@ public class Constants {
 
         public static final double expoPower = 2.0;
 
-        public static final JoystickChoice operatorController = JoystickChoice.PS5;
+        public static final JoystickChoice operatorController = JoystickChoice.XBOX;
     }
 
     public static final class TransportConstants {
         public static final int transportMotorID = 56;
         public static final boolean transportMotorInvert = true;
-        public static final double transportSpeed = 0.60;
-        public static final double transportEjectSpeed = -1;
-        public static final int irSensorChannel = 4;
+        public static final double transportSpeed = 0.83;
+        public static final double ejectSpeed = -0.6;
+        public static final double transportEjectSpeed = -0.5;
+        public static final int transportIrChannel = 4;
+        public static final int flyWheelIrChannel = 0;
 
         public static final double transportEjectDelay = 0.3; // seconds until note leaves shooter
     }
@@ -210,7 +219,7 @@ public class Constants {
 
         public static final class TrapPresets {
             public static final double elevator = 2.34;
-            public static final double shooter = 0.088379;
+            public static final double shooter = 0.135;
         }
 
         public static final class TestPresets {
@@ -225,7 +234,7 @@ public class Constants {
 
         public static final class SubwooferPresets {
             public static final double elevator = 0.0;
-            public static final double shooter = 0.076;
+            public static final double shooter = 0.135;
         }
     }
 
@@ -284,28 +293,29 @@ public class Constants {
         public static final InvertedValue motorInvert = InvertedValue.CounterClockwise_Positive;
         public static final SensorDirectionValue cancoderInvert = SensorDirectionValue.Clockwise_Positive;
 
-        public static final double forwardSoftLimitThreshold = 0.088379;
+        public static final double forwardSoftLimitThreshold = 0.135;
         public static final double reverseSoftLimitThreshold = 0;
 
         public static final double radiansAtZero = Math.toRadians(30);
         public static final double radiansAtMax = Math.toRadians(58);
 
-        public static final double pivotManualUpSpeed = 0.2;
-        public static final double pivotManualDownSpeed = -0.2;
+        public static final double pivotManualUpSpeed = 0.3;
+        public static final double pivotManualDownSpeed = -0.3;
 
-        public static final double pivotTolerance = 0.004;
+        public static final double pivotTolerance = 0.0285; // was 0.004
 
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         public static final class PivotSlot0ConfigConstants {
-            public static final double kP = 150.0; // output per unit of error in position (output/rotation)
+            public static final double kP = 1.0; // output per unit of error in position (output/rotation)
             public static final double kI = 0.0; // output per unit of integrated error in position
                                                  // (output/(rotation*s))
             public static final double kD = 0.0; // output per unit of error in velocity (output/rps)
             public static final double kS = 0.0; // output to overcome static friction (output)
-            public static final double kV = 50.0; // output per unit of target velocity (output/rps)
+            public static final double kV = 12.0; // output per unit of target velocity (output/rps)
             public static final double kA = 0.0; // output per unit of target acceleration (output/(rps/s))
-            public static final double kG = 0.0; // feedforward Constant
+            public static final double kG = 0.15; // feedforward Constant
+            // public static final double kG = 0.0;
         }
 
         public static final class PivotMotionMagicConstants {
@@ -324,7 +334,7 @@ public class Constants {
 
         public static final double compressionAdder = 3;
 
-        public static final double maxRange = 3;
+        public static final double maxRange = 2.5;
 
         public static final double aprilTagToHoodGoal = Units.inchesToMeters(8);
 
@@ -345,6 +355,8 @@ public class Constants {
         public static final double speakerHeightMinusElevatorRaise = speakerHeight - elevatorHeightFromFloorAtRest;
         public static final double gravity = 9.81;
         public static final double velocity = ShooterConstants.maxShootSpeed * Units.inchesToMeters(1.5) * Math.PI + AimConstants.compressionAdder;
+
+        public static final double bumperToCenter = Units.inchesToMeters(19.0);
     }
 
     public static final class WinchConstants {
@@ -366,10 +378,10 @@ public class Constants {
     }
 
     public static final class DebugConstants {
-        public static final boolean debugMode = false; // setting this to true will increase your network table traffic.
+        public static final boolean debugMode = true; // setting this to true will increase your network table traffic.
     }
 
-    public class PDPConstants {
+    private class PDPConstants {
         public static final int pdp = 1;
         public static final int winchLeft = 3;
         public static final int winchRight = 13;
@@ -380,36 +392,36 @@ public class Constants {
         public static final int intake = 18;
         public static final int transport = 2;
 
-        public static final int frontLeftDrive = 4;
-        public static final int frontLeftSteer = 6;
-        public static final int backLeftDrive = 7;
-        public static final int backLeftSteer = 9;
-        public static final int frontRightDrive = 13;
-        public static final int frontRightSteer = 15;
-        public static final int backRightDrive = 10;
-        public static final int backRightSteer = 12;
+        public static final int frontLeftDrive = 6;
+        public static final int frontLeftSteer = 4;
+        public static final int backLeftDrive = 9;
+        public static final int backLeftSteer = 7;
+        public static final int frontRightDrive = 15;
+        public static final int frontRightSteer = 13;
+        public static final int backRightDrive = 12;
+        public static final int backRightSteer = 10;
     }
 
     public class CurrentLimits {
-        public static final double intakeStatorLimit = 0;
-        public static final double intakeSupplyLimit = 0;
+        public static final double intakeStatorLimit = 35;
+        // public static final double intakeSupplyLimit = 0;
         
-        public static final double transportStatorLimit = 0;
-        public static final double transportSupplyLimit = 0;
+        public static final double transportStatorLimit = 20;
+        // public static final double transportSupplyLimit = 0;
 
-        public static final double winchStatorLimit = 0;
-        public static final double winchSupplyLimit = 0;
+        // public static final double winchStatorLimit = 0;
+        // public static final double winchSupplyLimit = 0;
 
-        public static final double shooterStatorLimit = 0;
-        public static final double shooterSupplyLimit = 0;
+        // public static final double shooterStatorLimit = 0;
+        public static final double shooterSupplyLimit = 80;
 
-        public static final double shooterPivotStatorLimit = 0;
-        public static final double shooterPivotSupplyLimit = 0;
+        // public static final double shooterPivotStatorLimit = 0;
+        public static final double shooterPivotSupplyLimit = 10;
 
-        public static final double elevatorStatorLimit = 0;
+        // public static final double elevatorStatorLimit = 0;
         public static final double elevatorSupplyLimit = 20;
 
-        public static final double drivetrainStatorLimit = 0;
+        // public static final double drivetrainStatorLimit = 0;
         public static final double drivetrainSupplyLimit = 80;
     }
     public class LEDConstants {

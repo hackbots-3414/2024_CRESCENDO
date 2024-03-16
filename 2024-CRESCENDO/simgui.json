@@ -16,11 +16,14 @@
       "/FMSInfo": "FMSInfo",
       "/Pose": "Field2d",
       "/Shuffleboard/Vision/Field": "Field2d",
+      "/SmartDashboard/Amp Sequence": "Command",
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Auton Mode": "String Chooser",
       "/SmartDashboard/Brake Elevator": "Command",
       "/SmartDashboard/Coast Elevator": "Command",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Manual Intake Eject": "Command",
+      "/SmartDashboard/Manual Shooter": "Command",
       "/SmartDashboard/Module 0": "Mechanism2d",
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",
@@ -62,26 +65,6 @@
           "visible": true
         }
       },
-      "/SmartDashboard/Module 0": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Module 1": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Module 2": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Module 3": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/VisionSystemSim-main/Sim Field": {
         "bottom": 1476,
         "height": 8.210550308227539,
@@ -113,7 +96,11 @@
   "NetworkTables Info": {
     "Connections": {
       "open": true
-    }
+    },
+    "Server": {
+      "open": true
+    },
+    "visible": true
   },
   "NetworkTables View": {
     "visible": false

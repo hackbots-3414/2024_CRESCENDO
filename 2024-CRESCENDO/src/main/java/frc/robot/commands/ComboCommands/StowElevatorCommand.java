@@ -16,7 +16,7 @@ public class StowElevatorCommand extends Command {
   }
 
   @Override
-  public void execute() {
+  public void initialize() {
     elevator.setElevatorPosition(StowPresets.elevator);
     shooterPivot.setPivotPosition(StowPresets.shooter);
   }

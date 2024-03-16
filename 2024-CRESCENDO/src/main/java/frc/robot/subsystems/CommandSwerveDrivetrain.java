@@ -3,8 +3,13 @@ package frc.robot.subsystems;
 import static edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide;
 import static edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition.kRedAllianceWallRightSide;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -13,11 +18,19 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.RotationTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -25,13 +38,19 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants;
+import frc.robot.Constants.AimConstants;
+import frc.robot.Constants.AmpConstants;
+import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
+import frc.robot.util.FieldConstants;
 import frc.robot.util.VisionHelpers;
 import frc.robot.util.VisionHelpers.TimestampedVisionUpdate;
-import frc.robot.Constants.DebugConstants;
 
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommandSwerveDrivetrain.class);
+
     private static final double kSimLoopPeriod = 0.002; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -80,10 +99,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public double getRotationalRobotSpeed() {
         return getCurrentRobotChassisSpeeds().omegaRadiansPerSecond;
-    }
-
-    public Command makeTestAuton() {
-        return AutoBuilder.buildAuto("Test Auton");
     }
 
     private void startSimThread() {
@@ -162,7 +177,19 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             dashboardPose = VisionHelpers.flipAlliance(dashboardPose);
         }
         field.setRobotPose(dashboardPose);
-        if (DebugConstants.debugMode) SmartDashboard.putData(field);
+        SmartDashboard.putData(field);
+
+        Pose2d speakerPose = DriverStation.getAlliance() != null ? (DriverStation.getAlliance().get() == Alliance.Blue ? AimConstants.blueSpeakerPos : AimConstants.redSpeakerPos) : AimConstants.blueSpeakerPos;
+        double robotDistance = speakerPose.relativeTo(getPose()).getTranslation().getNorm();
+        if (DebugConstants.debugMode) SmartDashboard.putNumber("DISTANCE FROM TARGET", robotDistance);
+
+        if (DebugConstants.debugMode) {
+            for (int i = 0; i < Modules.length; i++) {
+                SmartDashboard.putNumber("SWERVE MODULE MOVEMENT RADS" + i, (Modules[i].getDriveMotor().getPosition().getValueAsDouble() / 6.122448979591837) * Math.PI * 2.0);
+            }
+
+            SmartDashboard.putNumber("GYRO_RADS", Units.degreesToRadians(m_pigeon2.getAngle()));
+        }
     }
 
     public boolean isInRange() {
@@ -177,5 +204,37 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public void simulationPeriodic() {
         Subsystem.super.simulationPeriodic();
         field.setRobotPose(estimatedPose);
+    }
+
+    /**
+     * This method returns a command that is runanble in order to drive to a given pose on the field.
+     * @param goalPose The goal pose (field relative)
+     * @param isReversed does the robot drive with the intake side as forwards.
+     * @return The pathplanner-generated command to get to that pose
+     */
+    public Command makeDriveToPoseCommand(Pose2d goalPose, boolean isReversed) {
+        GoalEndState goal = DriverStation.getAlliance().get() == Alliance.Blue
+                ? new GoalEndState(0.0, goalPose.getRotation())
+                : new GoalEndState(0, new Rotation2d(Math.PI - goalPose.getRotation().getRadians()));
+        ArrayList<RotationTarget> rotateTargetList = new ArrayList<>();
+        rotateTargetList.add(new RotationTarget(0.1, goalPose.getRotation()));
+        PathPlannerPath path = new PathPlannerPath(PathPlannerPath.bezierFromPoses(estimatedPose, goalPose),
+                rotateTargetList,
+                Collections.emptyList(),
+                Collections.emptyList(),
+                new PathConstraints(SwerveConstants.maxDriveVelocity * 0.1, SwerveConstants.maxDriveAcceleration,
+                        SwerveConstants.maxAngleVelocity, SwerveConstants.maxAngleAcceleration),
+                goal,
+                isReversed);
+        if (Robot.isSimulation()) {
+           field.getRobotObject().setPoses(path.getPathPoses());
+        }
+        LOGGER.debug("makeDriveToPoseCommand: Calculated Poses: {}", path.getPathPoses());
+
+        return AutoBuilder.followPath(path);
+    }
+    public Command makeDriveToAmpCommand() {
+        Pose2d ampPose = new Pose2d(FieldConstants.ampCenter.minus(new Translation2d(0, Constants.AimConstants.bumperToCenter)), Rotation2d.fromDegrees(270));
+        return makeDriveToPoseCommand(ampPose, true);
     }
 }
