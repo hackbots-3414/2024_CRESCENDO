@@ -160,6 +160,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public void periodic() {
         estimatedPose = m_odometry.getEstimatedPosition();
         
+        field.setRobotPose(m_odometry.getEstimatedPosition());
+        double voltage = RobotController.getBatteryVoltage();
+        SmartDashboard.putNumber("Voltage", voltage);
+        SmartDashboard.putData("Field", field);
+
         if (DebugConstants.debugMode) {
             SmartDashboard.putString("ROBOTPOSE", estimatedPose.toString());
             SmartDashboard.putNumber("ROBOTX", estimatedPose.getX());
@@ -174,7 +179,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         field.setRobotPose(dashboardPose);
         SmartDashboard.putData(field);
 
-        Pose2d speakerPose = DriverStation.getAlliance() != null ? (DriverStation.getAlliance().get() == Alliance.Blue ? AimConstants.blueSpeakerPos : AimConstants.redSpeakerPos) : AimConstants.blueSpeakerPos;
+        Pose2d speakerPose = DriverStation.getAlliance() != null && DriverStation.getAlliance().isPresent() ? (DriverStation.getAlliance().get() == Alliance.Blue ? AimConstants.blueSpeakerPos : AimConstants.redSpeakerPos) : AimConstants.blueSpeakerPos;
         double robotDistance = speakerPose.relativeTo(getPose()).getTranslation().getNorm();
         if (DebugConstants.debugMode) SmartDashboard.putNumber("DISTANCE FROM TARGET", robotDistance);
 
