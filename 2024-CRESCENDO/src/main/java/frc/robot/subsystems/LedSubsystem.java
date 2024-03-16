@@ -76,7 +76,8 @@ public class LedSubsystem extends SubsystemBase {
   // private static final LarsonAnimation LARSON_ANIMATION = new
   // LarsonAnimation(255, 0, 255, 0, 0.1, LEDConstants.nbrLED,
   // LarsonAnimation.BounceMode.Back, 1);
-  private Supplier<Boolean> noteOnBoard, isInRange, noteInView;
+  private Supplier<Boolean> isInRange, noteInView;
+  private boolean noteOnBoard = false;
   private boolean noteOnBoardTest = false;
   private boolean isInRangeTest = false;
   private boolean noteInViewTest = false;
@@ -90,7 +91,9 @@ public class LedSubsystem extends SubsystemBase {
   private boolean endgameWarningStarted = false;
   private boolean endgameAlertStarted = false;
   private boolean inTeleop = false;
-  private static final String[] LABELS = { "In Range", "Note Onboard", "End Game 15", "End Game 30", "Target Locked" };
+  private Transport transport = new Transport();
+
+//  private static final String[] LABELS = { "In Range", "Note Onboard", "End Game 15", "End Game 30", "Target Locked" };
 
   private static enum LED_MODE {
     IN_RANGE, NOTE_ONBOARD, END_GAME_WARNING, END_GAME_ALERT, ALIGNED, DEFAULT, NOTE_IN_VIEW;
@@ -99,9 +102,10 @@ public class LedSubsystem extends SubsystemBase {
   private static LED_MODE chosenMode = null;
 
   CANdle ledcontroller = new CANdle(LEDConstants.candleCanid);
-  private int currentMode = 0;
+ // private int currentMode = 0;
 
-  public LedSubsystem(Supplier<Boolean> noteOnBoard, Supplier<Boolean> isInRange, Supplier<Boolean> noteInView) {
+  public LedSubsystem(Transport transport, Supplier<Boolean> isInRange, Supplier<Boolean> noteInView) {
+    this.transport = transport;
     CANdleConfiguration config = new CANdleConfiguration();
     config.stripType = LEDStripType.RGB; // set the strip type to RGB
     config.brightnessScalar = 0.7; // dim the LEDs to 70% brightness
@@ -134,20 +138,19 @@ public class LedSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("noteOnBoardTest", noteOnBoardTest);
     SmartDashboard.putBoolean("IsInRangeTest", isInRangeTest);
     SmartDashboard.putBoolean("noteInViewTest", noteInViewTest);
-    SmartDashboard.putNumber("r new", r);
-    SmartDashboard.putNumber("b new", b);
-    SmartDashboard.putNumber("g new", g);
-    SmartDashboard.putNumber("MaxAnimation", ledcontroller.getMaxSimultaneousAnimationCount());
+    //SmartDashboard.putNumber("r new", r);
+    //SmartDashboard.putNumber("b new", b);
+    //SmartDashboard.putNumber("g new", g);
     // SmartDashboard.putNumber("r", r);
     // SmartDashboard.putNumber("g", g);
     // SmartDashboard.putNumber("b", b);
   }
 
-  private void resetStatus() {
-    for (String element : LABELS) {
-      SmartDashboard.putBoolean(element, false);
-    }
-  }
+  // private void resetStatus() {
+  //   for (String element : LABELS) {
+  //     SmartDashboard.putBoolean(element, false);
+  //   }
+  // }
 
   @Override
   public void periodic() {
@@ -160,6 +163,7 @@ public class LedSubsystem extends SubsystemBase {
     // b = (int)SmartDashboard.getNumber("b", b);
     // ledcontroller.setLEDs(r, g, b);
 
+    noteOnBoard = transport.getNoteOnBoard();
     matchTime = DriverStation.getMatchTime();
     if (inTeleop == false && matchTime > 60) {
       inTeleop = true;

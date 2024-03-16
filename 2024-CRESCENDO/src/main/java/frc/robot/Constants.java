@@ -424,6 +424,11 @@ public class Constants {
         // public static final double drivetrainStatorLimit = 0;
         public static final double drivetrainSupplyLimit = 80;
     }
+    
+    public static class AmpConstants {
+        public static final double allowedShootTime = 1.5; // seconds
+    }
+
     public class LEDConstants {
         public static final int candleCanid = 5;
         public static final int numLED = 112;
