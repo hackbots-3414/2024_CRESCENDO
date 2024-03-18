@@ -20,11 +20,11 @@
         {
             "groupId": "com.pathplanner.lib",
             "artifactId": "PathplannerLib-cpp",
-<<<<<<< HEAD
             "version": "2024.2.7",
-=======
-            "version": "2024.2.6",
             "libName": "PathplannerLib",
+            "headerClassifier": "headers",
+            "sharedLibrary": false,
+            "skipInvalidPlatforms": true,
             "binaryPlatforms": [
                 "windowsx86-64",
                 "linuxx86-64",
