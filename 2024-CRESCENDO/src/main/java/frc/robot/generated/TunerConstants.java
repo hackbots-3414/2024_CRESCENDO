@@ -47,7 +47,7 @@ public class TunerConstants {
 
     private static final double kDriveGearRatio = 6.122448979591837;
     private static final double kSteerGearRatio = 21.428571428571427;
-    private static final double kWheelRadiusInches = 3.952 / 2.0;
+    private static final double kWheelRadiusInches = 3.974 / 2.0;
 
     private static final boolean kSteerMotorReversed = true; // FIXES IDLE SPIN ERROR
     private static final boolean kInvertLeftSide = false;

@@ -88,9 +88,7 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
             
         .withCurrentLimits(new CurrentLimitsConfigs()
             .withSupplyCurrentLimitEnable(true)
-            .withSupplyCurrentLimit(CurrentLimits.elevatorSupplyLimit)
-            .withSupplyCurrentThreshold(0)
-            .withSupplyTimeThreshold(0))
+            .withSupplyCurrentLimit(CurrentLimits.elevatorSupplyLimit))
             
         .withHardwareLimitSwitch(new HardwareLimitSwitchConfigs()
             .withForwardLimitEnable(true)
@@ -144,15 +142,6 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
 
   public void setNeutralMode(NeutralModeValue value) {
     elevatorMotor.setNeutralMode(value);
-  }
-
-  public void setCurrentLimit(double limit) {
-    CurrentLimitsConfigs configs = new CurrentLimitsConfigs()
-            .withSupplyCurrentLimitEnable(true)
-            .withSupplyCurrentLimit(limit)
-            .withSupplyCurrentThreshold(0)
-            .withSupplyTimeThreshold(0);
-    elevatorMotor.getConfigurator().apply(configs, 0.01);
   }
 
   @Override
