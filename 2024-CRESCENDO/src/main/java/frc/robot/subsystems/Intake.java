@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 
 public class Intake extends SubsystemBase implements AutoCloseable {
 
@@ -43,6 +44,14 @@ public class Intake extends SubsystemBase implements AutoCloseable {
 
 	public void stopMotor() {
 		intakeMotor.setControl(new DutyCycleOut(0.0));
+	}
+
+	public void setFast() {
+		setMotor(IntakeConstants.fastIntakeSpeed);
+	}
+
+	public void setSlow() {
+		setMotor(IntakeConstants.slowIntakeSpeed);
 	}
 
 	public TalonFXSimState getSimState() {

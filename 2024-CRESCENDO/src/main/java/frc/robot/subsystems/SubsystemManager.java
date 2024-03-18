@@ -255,10 +255,10 @@ public class SubsystemManager extends SubsystemBase {
 
 	// INTAKE COMMANDS
 	public Command makeIntakeCommand() {
-		return new IntakeCommand(transport, intake, elevator, shooterPivot, Constants.IntakeConstants.intakeSpeed, Constants.TransportConstants.transportSpeed, shooter);
+		return new IntakeCommand(transport, intake, elevator, shooterPivot);
 	}
 	public Command makeEjectCommand() {
-		return new IntakeCommand(transport, intake, elevator, shooterPivot, Constants.IntakeConstants.ejectSpeed, Constants.TransportConstants.ejectSpeed, shooter);
+		return new IntakeCommand(transport, intake, elevator, shooterPivot);
 	}
 	public Command makeManualIntakeEjectCommand() {
 		return new ManualIntakeEjectCommand(intake, transport);

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DebugConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.TransportConstants;
 
 public class Transport extends SubsystemBase implements AutoCloseable {
@@ -61,6 +62,14 @@ public class Transport extends SubsystemBase implements AutoCloseable {
     transportMotor.set(0);
   }
 
+  public void setFast() {
+		setMotor(TransportConstants.fastTransportSpeed);
+	}
+
+	public void setSlow() {
+		setMotor(TransportConstants.slowTransportSpeed);
+	}
+
   public boolean getTransportIR() {
     return transportIrValue;
   }
@@ -82,10 +91,10 @@ public class Transport extends SubsystemBase implements AutoCloseable {
     flyWheelIrValue = flywheelVoltage > Constants.irSensorThreshold;
     SmartDashboard.putNumber("FLYWHEEL VOLTAGE", flywheelVoltage);
 
-    if (DebugConstants.debugMode) {
+    // if (DebugConstants.debugMode) {
       SmartDashboard.putBoolean("TRANSPORT IR SENSOR", transportIrValue);
       SmartDashboard.putBoolean("FLYWHEEL IR SENSOR", flyWheelIrValue);
-    }
+    // }
     SmartDashboard.putNumber("INTAKE SPEED", transportMotor.getVelocity().getValueAsDouble());
   }
 

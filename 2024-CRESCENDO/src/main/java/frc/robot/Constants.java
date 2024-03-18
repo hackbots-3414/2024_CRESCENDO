@@ -155,7 +155,8 @@ public class Constants {
 
     public static final class IntakeConstants {
         public static final int intakeMotorID = 60;
-        public static final double intakeSpeed = 0.8;
+        public static final double fastIntakeSpeed = 1;
+        public static final double slowIntakeSpeed = 0.3;
         public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
         public static final int intakeIrChannel = 2;
@@ -197,7 +198,8 @@ public class Constants {
     public static final class TransportConstants {
         public static final int transportMotorID = 56;
         public static final boolean transportMotorInvert = true;
-        public static final double transportSpeed = 0.83;
+        public static final double fastTransportSpeed = 1;
+        public static final double slowTransportSpeed = 0.3;
         public static final double ejectSpeed = -0.6;
         public static final double transportEjectSpeed = -0.5;
         public static final int transportIrChannel = 1;
@@ -285,7 +287,7 @@ public class Constants {
     public static final class PivotConstants {
         public static final int pivotMotorID = 59;
         public static final int EncoderID = 51;
-        public static final double encoderOffset = -0.085693;
+        public static final double encoderOffset = -0.326904;
 
         public static final double rotorToSensorRatio = 125;
         public static final double sensorToMechanismRatio = 1.0;

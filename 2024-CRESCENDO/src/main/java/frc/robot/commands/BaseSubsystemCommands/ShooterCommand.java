@@ -36,7 +36,7 @@ public class ShooterCommand extends Command {
     if (previousValue == false && transport.getFlyWheelIR() == true) sawNote = true; // if our value has went from false to true, then we increment the counter
 
     if (shooter.shooterAtSpeed() && !alreadyRan) { // Note in position and shooter at Speed
-      transport.setMotor(TransportConstants.transportSpeed);
+      transport.setFast();
       alreadyRan = true;
     }
 
