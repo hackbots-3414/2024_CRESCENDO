@@ -367,7 +367,7 @@ public class Constants {
     }
 
     public static final class DebugConstants {
-        public static final boolean debugMode = true; // setting this to true will increase your network table traffic.
+        public static final boolean debugMode = false; // setting this to true will increase your network table traffic.
     }
 
     private class PDPConstants {

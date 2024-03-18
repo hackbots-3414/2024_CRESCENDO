@@ -177,7 +177,8 @@ public class SubsystemManager extends SubsystemBase {
 		return drivetrain.applyRequest(() -> pointRequest.withModuleDirection(new Rotation2d(-x, -y)));
 	}
 	public Command makeResetCommand() {
-		return drivetrain.runOnce(() -> drivetrain.seedFieldRelative());
+		return new SequentialCommandGroup(drivetrain.runOnce(() -> drivetrain.setOperatorPerspectiveForward(Rotation2d.fromDegrees(0))), drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+		// return drivetrain.runOnce(() -> drivetrain.seedFieldRelative());
 	}
 	public Command resetAfterAuton() {
 		return drivetrain.runOnce(() -> drivetrain.setOperatorPerspectiveForward(allianceSupplier.get() == Alliance.Blue ? Rotation2d.fromDegrees(0) : Rotation2d.fromDegrees(180)));
