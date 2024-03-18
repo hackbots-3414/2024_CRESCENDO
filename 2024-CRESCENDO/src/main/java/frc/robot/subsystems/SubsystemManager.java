@@ -117,7 +117,7 @@ public class SubsystemManager extends SubsystemBase {
 	Transport transport = new Transport();
 	NoteFinder noteFinder = new NoteFinder();
 	Winch winch = new Winch();
-	LedSubsystem ledSubsystem = new LedSubsystem(transport, this::getIsInRange, this::getAimIsReady);
+	LedSubsystem ledSubsystem = new LedSubsystem(transport, intake, this::getIsInRange, this::getAimIsReady);
 
 	public Intake getIntake() {return intake;}
 	public Shooter getShooter() {return shooter;}

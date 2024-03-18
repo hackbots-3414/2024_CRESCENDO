@@ -85,22 +85,26 @@ public class LedSubsystem extends SubsystemBase {
   private int ledStripStartIndex = 0;
   private boolean endgameWarningStarted = false;
   private boolean endgameAlertStarted = false;
-  private boolean inTeleop = false;
+  // private boolean inTeleop = false;
+  private boolean inAuton = false;
   private Transport transport;
+  private Intake intake;
 
-//  private static final String[] LABELS = { "In Range", "Note Onboard", "End Game 15", "End Game 30", "Target Locked" };
+  // private static final String[] LABELS = { "In Range", "Note Onboard", "End
+  // Game 15", "End Game 30", "Target Locked" };
 
   private static enum LED_MODE {
-    IN_RANGE, NOTE_ONBOARD, END_GAME_WARNING, END_GAME_ALERT, ALIGNED, DEFAULT, NOTE_IN_VIEW;
+    IN_RANGE, NOTE_ONBOARD, END_GAME_WARNING, END_GAME_ALERT, ALIGNED, DEFAULT, NOTE_IN_VIEW, INTAKE;
   };
 
   private static LED_MODE chosenMode = null;
 
   CANdle ledcontroller = new CANdle(LEDConstants.candleCanid);
- // private int currentMode = 0;
+  // private int currentMode = 0;
 
-  public LedSubsystem(Transport transport, Supplier<Boolean> isInRange, Supplier<Boolean> noteInView) {
+  public LedSubsystem(Transport transport, Intake intake, Supplier<Boolean> isInRange, Supplier<Boolean> noteInView) {
     this.transport = transport;
+    this.intake = intake;
     CANdleConfiguration config = new CANdleConfiguration();
     config.stripType = LEDStripType.RGB; // set the strip type to RGB
     config.brightnessScalar = 0.7; // dim the LEDs to 70% brightness
@@ -115,8 +119,8 @@ public class LedSubsystem extends SubsystemBase {
         new LarsonAnimation(255, 0, 255, 0, 0.50, LEDConstants.numLED, LarsonAnimation.BounceMode.Back, 7), 1);
     setColor("DEFAULT", 3, 3, "FLASH");
 
-    //uncomment to test LED strips
-    // ledcontroller.setLEDs(255, 0, 0, 0, LEDConstants.leftOffset, 
+    // uncomment to test LED strips
+    // ledcontroller.setLEDs(255, 0, 0, 0, LEDConstants.leftOffset,
     // LEDConstants.leftNumLED);
     // ledcontroller.setLEDs(0, 0, 255, 0, LEDConstants.topOffset,
     // LEDConstants.topNumLED);
@@ -124,8 +128,8 @@ public class LedSubsystem extends SubsystemBase {
     // LEDConstants.insideNumLED);
     // ledcontroller.setLEDs(255, 0,255, 0, LEDConstants.rightOffset,
     // LEDConstants.rightNumLED);
-    //end of test pattern
-    
+    // end of test pattern
+
     // this.noteOnBoard = noteOnBoard;
     this.isInRange = isInRange;
     this.noteInView = noteInView;
@@ -134,18 +138,18 @@ public class LedSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("noteOnBoardTest", noteOnBoardTest);
     SmartDashboard.putBoolean("IsInRangeTest", isInRangeTest);
     SmartDashboard.putBoolean("noteInViewTest", noteInViewTest);
-    //SmartDashboard.putNumber("r new", r);
-    //SmartDashboard.putNumber("b new", b);
-    //SmartDashboard.putNumber("g new", g);
+    // SmartDashboard.putNumber("r new", r);
+    // SmartDashboard.putNumber("b new", b);
+    // SmartDashboard.putNumber("g new", g);
     // SmartDashboard.putNumber("r", r);
     // SmartDashboard.putNumber("g", g);
     // SmartDashboard.putNumber("b", b);
   }
 
   // private void resetStatus() {
-  //   for (String element : LABELS) {
-  //     SmartDashboard.putBoolean(element, false);
-  //   }
+  // for (String element : LABELS) {
+  // SmartDashboard.putBoolean(element, false);
+  // }
   // }
 
   @Override
@@ -159,91 +163,81 @@ public class LedSubsystem extends SubsystemBase {
     // b = (int)SmartDashboard.getNumber("b", b);
     // ledcontroller.setLEDs(r, g, b);
 
-    noteOnBoard = transport.getNoteOnBoard();
+    // noteOnBoard = transport.getFlyWheelIR() || transport.getTransportIR();
+    noteOnBoard = noteOnBoardTest;
     matchTime = DriverStation.getMatchTime();
-    if (inTeleop == false && matchTime > 60) {
-      inTeleop = true;
-    }
+    // if (inTeleop == false && matchTime > 60) {
+    // inTeleop = true;
+    // }
 
-    if (inTeleop == false && endgameWarningStarted == false && matchTime > 0) {
-      setColor("DEFAULT", 0, 2, "SOLID");
-    }
+    inAuton = DriverStation.isAutonomousEnabled();
+
+    // if (inTeleop == false && endgameWarningStarted == false && matchTime > 0) {
+    // setColor("DEFAULT", 0, 2, "SOLID");
+    // }
 
     SmartDashboard.putNumber("matchtime", matchTime);
-    if (inTeleop) {
-      if (matchTime <= LEDConstants.endgameWarning && matchTime > 0) {
-        ledStripEndIndex = 0;
-        ledStripStartIndex = 0;
+    // if (inTeleop) {
+    if (matchTime <= LEDConstants.endgameWarning && matchTime > 0 && !inAuton) {
+      ledStripEndIndex = 0;
+      ledStripStartIndex = 0;
 
-        if (matchTime > LEDConstants.endgameWarning && endgameWarningStarted == false) {
-          endgameWarningStarted = true;
-          setColor("RED", 1, 2, "SOLID");
-        }
-
-        else if (matchTime <= LEDConstants.endgameAlert && endgameAlertStarted == false) {
-          endgameAlertStarted = true;
-          setColor("RED", 1, 2, "STROBE");
-        }
-      } else {
-        ledStripStartIndex = 0;
-        ledStripEndIndex = 2;
-      }
-      // / Note In View: Yellow
-      // Note on Board : Green Medium Flash (During END Game Make sure this Overides
-      // the End Game Alert or Warning 3 sec timer)
-      // End Game Warning (20): White
-      // End Game Alert (10): Strobe White
-      // Shoot Alignment Happening : Slow Blue
-      // When Aligned: Stop Strobe: Fast Flash Blue
-      // InRange for shooting: Blue
-      if (noteOnBoard && isInRange.get()) {
-        // noteOnboardTest should be noteOnBoard.get()
-        // Do this for all test Variables
-        if (chosenMode != LED_MODE.IN_RANGE) {
-          chosenMode = LED_MODE.IN_RANGE;
-          setColor("BLUE", ledStripStartIndex, ledStripEndIndex, "SOLID");
-        }
-      } else if (noteOnBoard) {
-        if (chosenMode != LED_MODE.NOTE_ONBOARD) {
-          chosenMode = LED_MODE.NOTE_ONBOARD;
-          setColor("GREEN", ledStripStartIndex, ledStripEndIndex, "FLASH");
-        }
-      } else if (noteInView.get()) {
-        if (chosenMode != LED_MODE.NOTE_IN_VIEW) {
-          chosenMode = LED_MODE.NOTE_IN_VIEW;
-          setColor("YELLOW", ledStripStartIndex, ledStripEndIndex, "FLASH");
-
-        }
+      if (matchTime > LEDConstants.endgameAlert && endgameWarningStarted == false && !inAuton) {
+        endgameWarningStarted = true;
+        setColor("RED", 1, 2, "SOLID");
       }
 
-      else {
-        if (chosenMode != LED_MODE.DEFAULT) {
-          chosenMode = LED_MODE.DEFAULT;
-          setColor("DEFAULT", ledStripStartIndex, ledStripEndIndex, "SOLID");
-
-        }
+      else if (matchTime <= LEDConstants.endgameAlert && endgameAlertStarted == false && !inAuton) {
+        endgameAlertStarted = true;
+        setColor("RED", 1, 2, "STROBE");
+      }
+    } else {
+      ledStripStartIndex = 0;
+      ledStripEndIndex = 2;
+    }
+    // / Note In View: Yellow
+    // Note on Board : Green Medium Flash (During END Game Make sure this Overides
+    // the End Game Alert or Warning 3 sec timer)
+    // End Game Warning (20): White
+    // End Game Alert (10): Strobe White
+    // Shoot Alignment Happening : Slow Blue
+    // When Aligned: Stop Strobe: Fast Flash Blue
+    // InRange for shooting: Blue
+    if (noteOnBoard && isInRange.get()) {
+      // noteOnboardTest should be noteOnBoard.get()
+      // Do this for all test Variables
+      if (chosenMode != LED_MODE.IN_RANGE) {
+        chosenMode = LED_MODE.IN_RANGE;
+        setColor("BLUE", ledStripStartIndex, ledStripEndIndex, "SOLID");
+      }
+    } else if (noteOnBoard) {
+      if (chosenMode != LED_MODE.NOTE_ONBOARD) {
+        chosenMode = LED_MODE.NOTE_ONBOARD;
+        setColor("GREEN", ledStripStartIndex, ledStripEndIndex, "FLASH");
+      }
+    // } else if (intake.getIntakeIr() == true) {
+        } else if (noteInViewTest == true) {
+      if (chosenMode != LED_MODE.INTAKE) {
+        chosenMode = LED_MODE.INTAKE;
+        setColor("GREEN", ledStripStartIndex, ledStripEndIndex, "STROBE");
+      }
+    } else if (noteInView.get()) {
+      if (chosenMode != LED_MODE.NOTE_IN_VIEW) {
+        chosenMode = LED_MODE.NOTE_IN_VIEW;
+        setColor("YELLOW", ledStripStartIndex, ledStripEndIndex, "FLASH");
 
       }
     }
-    /*
-     * if (matchTime <= LEDConstants.endgameWarning) {
-     * if (chosenMode != LED_MODE.END_GAME_WARNING) {
-     * chosenMode = LED_MODE.END_GAME_WARNING;
-     * ledcontroller.clearAnimation(0);
-     * ledcontroller.setLEDs(255, 0, 0);
-     * else if (matchTime < LEDConstants.endgameAlert) {
-     * if (chosenMode != LED_MODE.END_GAME_ALERT) {
-     * chosenMode = LED_MODE.END_GAME_ALERT;
-     * ledcontroller.clearAnimation(0);
-     * ledcontroller.animate(WHITE_STROBE_ANIMATION);
-     * // ledcontroller.animate();
-     * else if (matchTime < LEDConstants.endgameWarning) {
-     * if (chosenMode != LED_MODE.END_GAME_WARNING) {
-     * chosenMode = LED_MODE.END_GAME_WARNING;
-     * ledcontroller.clearAnimation(0);
-     * ledcontroller.setLEDs(255, 0, 0); // red
-     * }
-     */
+
+    else {
+      if (chosenMode != LED_MODE.DEFAULT) {
+        chosenMode = LED_MODE.DEFAULT;
+        setColor("DEFAULT", ledStripStartIndex, ledStripEndIndex, "SOLID");
+
+      }
+
+    }
+  
   }
 
   public void setColor(String color, int LedStripStart, int LedStripEnd, String pattern) {
