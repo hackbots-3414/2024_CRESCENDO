@@ -7,53 +7,50 @@ import frc.robot.subsystems.Transport;
 public class ShooterCommand extends Command {
   Shooter shooter;
   Transport transport;
-  double velocity;
-  boolean alreadyRan;
-  boolean sawNote;
-  boolean previousValue; // this is the previous value for "do we see a note with the IR sensor?"
+  boolean alreadyRanFeed;
+  boolean alreadyRanShooter;
+  double ticks = 0;
 
-  public ShooterCommand(Shooter shooter, Transport transport, double velocity) {
-    // addRequirements(shooter);
+  public ShooterCommand(Shooter shooter, Transport transport) {
     this.shooter = shooter;
     this.transport = transport;
   }
 
   @Override
   public void initialize() {
-    alreadyRan = false;
-    previousValue = false;
+    alreadyRanFeed = false;
+    alreadyRanShooter = false;
+    ticks = 0;
   }
 
   @Override
   public void execute() {
-    // if (previousValue == false && transport.getFlyWheelIR() == true) sawNote = true; // if our value has went from false to true, then we increment the counter
-
     if(transport.getFlyWheelIR() && transport.getTransportIR()) {
-      shooter.setMaxSpeed();
-      if(shooter.shooterAtSpeed()){
-        transport.setSlow();
-        alreadyRan = true;
+      if(!alreadyRanShooter){
+        shooter.setMaxSpeed();
+        alreadyRanShooter = true;
+      }
+      if(shooter.shooterAtSpeed() && !alreadyRanFeed){
+        transport.setFast();
+        alreadyRanFeed = true;
       }
     }
-
-    if (shooter.shooterAtSpeed() && !alreadyRan) { // Note in position and shooter at Speed
-      transport.setFast();
-      alreadyRan = true;
-    }
-
-    previousValue = transport.getFlyWheelIR();
-
   }
 
   @Override
   public void end(boolean interrupted) {
+    // shooter.setWarmUpSpeed();
     shooter.stopMotor();
     transport.stopMotor();
-    transport.setNoteOnBoard(false);
   }
 
   @Override
   public boolean isFinished() {
-      return !transport.getFlyWheelIR() && sawNote;
+    if (transport.getFlyWheelIR()) {
+      ticks = 0;
+    } else {
+      ticks++;
+    }
+    return ticks > 15;
   }
 }

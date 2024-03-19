@@ -237,10 +237,10 @@ public class SubsystemManager extends SubsystemBase {
 		return new RevShooterCommand(shooter, transport, velocity);
 	}
 	public Command makeShootAfterRevCommand(double velocity) {
-		return new ShooterCommand(shooter, transport, velocity).withTimeout(0.35); // TODO fix this timeout
+		return new ShooterCommand(shooter, transport);
 	}
 	public Command makeShootCommand() {
-		return new ShooterCommand(shooter, transport, ShooterConstants.maxSpeed);
+		return new ShooterCommand(shooter, transport);
 	}
 	public Command makeManualShootCommand() {
 		return new ManualShootCommand(shooter,transport);
@@ -268,7 +268,7 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public Command makeSubwooferShootCommand() {
 		return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER),
-				new ShooterCommand(shooter, transport, ShooterConstants.warmUpSpeed));
+				new ShooterCommand(shooter, transport));
 	}
 	public Command makeSubwooferRevvingCommand() {
 		return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER),

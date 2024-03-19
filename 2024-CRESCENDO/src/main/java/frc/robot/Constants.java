@@ -117,13 +117,13 @@ public class Constants {
         public static final int rightMotorID = 58;
         public static final boolean shooterMotorInvert = true;
 
-        public static final double kP = 2.0;
+        public static final double kP = 1.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
-        public static final double kS = 0;
-        public static final double kV = 0.12;
+        public static final double kS = 9.0;
+        public static final double kV = 0.0;
 
-        public static final double shooterTolerance = 3.0;
+        public static final double shooterTolerance = 1.0;
 
         public static final double warmUpSpeed = 20; // rps
         public static final double maxSpeed = 80; // rps
@@ -152,7 +152,7 @@ public class Constants {
     public static final class IntakeConstants {
         public static final int intakeMotorID = 60;
         public static final double fastIntakeSpeed = 1;
-        public static final double slowIntakeSpeed = 0.2;
+        public static final double slowIntakeSpeed = 0.15;
         public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
         public static final int intakeIrChannel = 2;
@@ -195,7 +195,7 @@ public class Constants {
         public static final int transportMotorID = 56;
         public static final boolean transportMotorInvert = true;
         public static final double fastTransportSpeed = 1;
-        public static final double slowTransportSpeed = 0.2;
+        public static final double slowTransportSpeed = 0.15;
         public static final double ejectSpeed = -0.6;
         public static final double transportEjectSpeed = -0.5;
         public static final int transportIrChannel = 1;
