@@ -67,7 +67,7 @@ public class RobotContainer {
     xboxOperator.y().whileTrue(subsystemManager.makeSubwooferShootCommand());
     xboxOperator.b().onTrue(subsystemManager.makeResetElevatorCommand());
     xboxOperator.x().whileTrue(subsystemManager.makeAmpScoreCommand()); // auto amp (will do everything)
-    xboxOperator.a().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));
+    xboxOperator.a().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.SUBWOOFER));
 
     xboxOperator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
     xboxOperator.povDown().whileTrue(subsystemManager.makeManualElevatorCommand(false));

@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.CurrentLimits;
 import frc.robot.Constants.DebugConstants;
+import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase implements AutoCloseable {
 
@@ -95,6 +96,14 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
 
   public void setMotor(double speed) {
     rightMotor.setControl(new DutyCycleOut(speed));
+  }
+
+  public void setWarmUpSpeed() {
+    setVelocity(ShooterConstants.warmUpSpeed);
+  }
+
+  public void setMaxSpeed() {
+    setVelocity(ShooterConstants.maxSpeed);
   }
 
   public void stopMotor() {

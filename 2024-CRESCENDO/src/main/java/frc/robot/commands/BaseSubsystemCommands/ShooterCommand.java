@@ -1,10 +1,6 @@
 package frc.robot.commands.BaseSubsystemCommands;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.TransportConstants;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transport;
 
@@ -20,20 +16,25 @@ public class ShooterCommand extends Command {
     // addRequirements(shooter);
     this.shooter = shooter;
     this.transport = transport;
-    this.velocity = velocity;
   }
 
   @Override
   public void initialize() {
-        shooter.setVelocity(velocity);
-        alreadyRan = false;
-        sawNote = false;
-        previousValue = false;
+    alreadyRan = false;
+    previousValue = false;
   }
 
   @Override
   public void execute() {
-    if (previousValue == false && transport.getFlyWheelIR() == true) sawNote = true; // if our value has went from false to true, then we increment the counter
+    // if (previousValue == false && transport.getFlyWheelIR() == true) sawNote = true; // if our value has went from false to true, then we increment the counter
+
+    if(transport.getFlyWheelIR() && transport.getTransportIR()) {
+      shooter.setMaxSpeed();
+      if(shooter.shooterAtSpeed()){
+        transport.setSlow();
+        alreadyRan = true;
+      }
+    }
 
     if (shooter.shooterAtSpeed() && !alreadyRan) { // Note in position and shooter at Speed
       transport.setFast();

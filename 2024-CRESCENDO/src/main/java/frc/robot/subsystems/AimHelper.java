@@ -68,7 +68,7 @@ public class AimHelper {
             } 
         }
 
-        output.setShooterVelocity(ShooterConstants.maxShootSpeed);
+        output.setShooterVelocity(ShooterConstants.maxSpeed);
 
         return output;
     }
@@ -76,7 +76,7 @@ public class AimHelper {
     private static AimOutputContainer useMath(double distanceToTarget) {
         AimOutputContainer output = new AimOutputContainer();    
         output.setPivotAngleFromRadFromFloor(Math.atan2(AimConstants.speakerHeightMinusElevatorRaise, distanceToTarget));
-        output.setShooterVelocity(ShooterConstants.maxShootSpeed);
+        output.setShooterVelocity(ShooterConstants.maxSpeed);
         return output;
     }
 
@@ -88,7 +88,7 @@ public class AimHelper {
         
         output.setPivotAngleFromRadFromFloor(theta * pivotDragGain);
         output.setPivotAngle(MathUtil.clamp(output.getPivotAngle(), 0.0, 0.072));
-        output.setShooterVelocity(ShooterConstants.maxShootSpeed);
+        output.setShooterVelocity(ShooterConstants.maxSpeed);
 
         return output;
     }
@@ -160,10 +160,6 @@ public class AimHelper {
 
         public void setShooterVelocity(double revolutionsPerSecond) {
             this.shooterVelocity = revolutionsPerSecond;
-        }
-
-        public void setShooterVelocityFromPercentMax(double percentOfMax) {
-            this.shooterVelocity = (percentOfMax * (ShooterConstants.maxShootSpeed - ShooterConstants.minShootSpeed)) + ShooterConstants.minShootSpeed;
         }
 
         public boolean getIsInRange() {
