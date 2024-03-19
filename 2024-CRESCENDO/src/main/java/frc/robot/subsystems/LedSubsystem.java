@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.sql.Driver;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix.led.CANdle;
@@ -18,6 +19,8 @@ import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer.JoystickChoice;
+import frc.robot.Constants.DriverConstants;
 // import org.slf4j.Logger;
 // import org.slf4j.LoggerFactory;
 import frc.robot.Constants.LEDConstants;
@@ -94,7 +97,7 @@ public class LedSubsystem extends SubsystemBase {
   // Game 15", "End Game 30", "Target Locked" };
 
   private static enum LED_MODE {
-    IN_RANGE, NOTE_ONBOARD, END_GAME_WARNING, END_GAME_ALERT, ALIGNED, DEFAULT, NOTE_IN_VIEW, INTAKE;
+    IN_RANGE, NOTE_ONBOARD, END_GAME_WARNING, END_GAME_ALERT, ALIGNED, DEFAULT, NOTE_IN_VIEW, INTAKE, BADCONTROLLER;
   };
 
   private static LED_MODE chosenMode = null;
@@ -187,7 +190,7 @@ public class LedSubsystem extends SubsystemBase {
         setColor("RED", 1, 2, "SOLID");
       }
 
-      else if (matchTime <= LEDConstants.endgameAlert && endgameAlertStarted == false && !inAuton) {
+      else if (matchTime <= LEDConstants.endgameAlert && endgameAlertStarted == false && !inAuton && matchTime > 0) {
         endgameAlertStarted = true;
         setColor("RED", 1, 2, "STROBE");
       }
@@ -203,6 +206,14 @@ public class LedSubsystem extends SubsystemBase {
     // Shoot Alignment Happening : Slow Blue
     // When Aligned: Stop Strobe: Fast Flash Blue
     // InRange for shooting: Blue
+
+    // TODO
+    // if (badController() == true) {
+    //         if (chosenMode != LED_MODE.BADCONTROLLER) {
+    //     chosenMode = LED_MODE.BADCONTROLLER;
+    //     setColor("RED", ledStripStartIndex, ledStripEndIndex, "STROBE");
+    //   }
+    // }
     if (noteOnBoard && isInRange.get()) {
       // noteOnboardTest should be noteOnBoard.get()
       // Do this for all test Variables
@@ -238,6 +249,21 @@ public class LedSubsystem extends SubsystemBase {
 
     }
   
+  }
+
+  private boolean badController() {
+    if (!DriverStation.isJoystickConnected(0) || !DriverStation.isJoystickConnected(1)) {
+      return true;
+    }
+
+    String joystick1Name = DriverStation.getJoystickName(1).toLowerCase();
+
+    return !DriverStation.getJoystickName(0).contains("InterLinkDX") &&
+     !((DriverConstants.operatorController == JoystickChoice.XBOX &&
+      (joystick1Name.contains("xbox")) || 
+      (joystick1Name.contains("gamepad"))) ||
+     (DriverConstants.operatorController == JoystickChoice.PS5 && 
+     joystick1Name.contains("dualsense")));
   }
 
   public void setColor(String color, int LedStripStart, int LedStripEnd, String pattern) {
