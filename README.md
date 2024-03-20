@@ -67,11 +67,21 @@ Hackbots code for the 2024 FRC Crescendo game.
 |Event|Color Pattern|
 |-----|-------------|
 ----------------------------------------------------
-|Note In View| Yellow| 
-|Note On Board| Green Medium Flash|
-|End Game Warning (30)| White|
-|End Game Alert (15) | Strobe White|
-|Shoot Alignment Happening| Slow Blue |
-|When Aligned| Flash Blue |
+|Note In View| Yellow Flash (not implemented)| 
+|Note On Board| Green Flash|
+|Note In Intake| Green Strobe|
+|In Range To Shoot| Solid Blue|
+|End Game Warning| Solid Red|
+|End Game Alert | Red Strobe|
+|Shoot Alignment Happening| Blue Flash (not implemented)|
+|When Aligned| Blue Strobe (not implemented)|
 |In Range (Shooting)|Blue|
+
+## IR Sensors:
+|Name|Channel|
+|----|-------|
+--------------------------------------------------------
+|Intake IR| 2|
+|Transport IR|1|
+|Flywheel IR|0|
 
