@@ -1,5 +1,6 @@
 package frc.robot.commands.BaseSubsystemCommands;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -9,7 +10,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -18,70 +18,85 @@ import frc.robot.subsystems.AimHelper;
 import frc.robot.subsystems.AimHelper.AimOutputContainer;
 import frc.robot.subsystems.AimHelper.AimStrategies;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
+import frc.robot.subsystems.Transport;
 
 public class AimCommand extends Command {
-    Elevator elevator;
     ShooterPivot shooterPivot;
     CommandSwerveDrivetrain drivetrain;
+    Shooter shooter;
+    Transport transport;
+
+    boolean drivetrainAtGoal;
   
     Supplier<Double> xSupplier;
     Supplier<Double> ySupplier;
     Supplier<Double> rSupplier;
     Supplier<Alliance> aSupplier;
+    Consumer<Double> setShootVelo;
+
     boolean blueSide = false;
+    boolean hasNote = false;
     
     Consumer<Boolean> setDone;
 
     Command currentDriveCommand;
+    Command shooterCommand;
 
     FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.2).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-
     PIDController thetaController = new PIDController(1, 0, 0);
 
 
-    public AimCommand(Elevator elevator, ShooterPivot shooterPivot, CommandSwerveDrivetrain drivetrain, Supplier<Double> xSupplier, Supplier<Double> ySupplier, Supplier<Double> rSupplier, Supplier<Alliance> aSupplier, Consumer<Boolean> setDone) {
-        addRequirements(elevator);
-        this.elevator = elevator;
+    public AimCommand(ShooterPivot shooterPivot, Shooter shooter, Transport transport, CommandSwerveDrivetrain drivetrain, Supplier<Double> xSupplier, Supplier<Double> ySupplier, Supplier<Double> rSupplier, Supplier<Alliance> aSupplier) {
         this.shooterPivot = shooterPivot;
         this.drivetrain = drivetrain;
+        this.shooter = shooter;
+        this.transport = transport;
         this.xSupplier = xSupplier;
         this.ySupplier = ySupplier;
         this.rSupplier = rSupplier;
         this.aSupplier = aSupplier;
-        this.setDone = setDone;
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        thetaController.setTolerance(SwerveConstants.pidTurnTolerance);
+        shooterCommand = new ShooterCommand(shooter, transport, Optional.of(this::getShooterFeedSupplier));
+    }
+
+    @Override 
+    public void initialize() {
+        blueSide = aSupplier.get() == Alliance.Blue;
+        shooterCommand.initialize();
     }
 
     @Override
-    public void execute() {
-        blueSide = aSupplier.get() == Alliance.Blue;
-        
+    public void execute() {        
         Pose2d robotPosition = drivetrain.getPose();
         AimOutputContainer output = AimHelper.getAimOutputs(drivetrain, blueSide, AimStrategies.LOOKUP);
-
-        elevator.setElevatorPosition(output.getElevatorHeight());
         shooterPivot.setPivotPosition(output.getPivotAngle());
         drivetrain.setInRange(output.getIsInRange());
-
-        Rotation2d drivetrainRotation = output.getDrivetrainRotation();
-
-        double compensate = blueSide ? -Math.PI * 2 : 0;
-
-        double measurement = robotPosition.getRotation().getRadians() > 0 ? robotPosition.getRotation().getRadians() + compensate : robotPosition.getRotation().getRadians();
-        double setpoint = drivetrainRotation.getRadians() > 0 ? drivetrainRotation.getRadians() + compensate : drivetrainRotation.getRadians();
-
 
         currentDriveCommand = drivetrain.applyRequest(() -> driveRequest.withVelocityX(xSupplier.get() * SwerveConstants.maxDriveVelocity)
                                 .withVelocityY(ySupplier.get() * SwerveConstants.maxDriveVelocity)
                                 .withRotationalRate((rSupplier.get() > 0.2 || rSupplier.get() < -0.2) ? (-rSupplier.get() * SwerveConstants.maxAngleVelocity) 
-                                : (thetaController.calculate(measurement, setpoint) * Constants.SwerveConstants.maxAngleVelocity)));
+                                : (thetaController.calculate(robotPosition.getRotation().getRadians(), output.getDrivetrainRotation().getRadians()) * Constants.SwerveConstants.maxAngleVelocity)));
 
         currentDriveCommand.schedule();
 
-        setDone.accept(elevator.isAtSetpoint() && shooterPivot.isAtSetpoint() && measurement - setpoint < SwerveConstants.pidTurnTolerance);
+        shooterCommand.execute();
     }
 
     @Override
-    public void end(boolean interrupted) {currentDriveCommand.cancel();}
+    public boolean isFinished() {
+        return shooterCommand.isFinished();
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        currentDriveCommand.cancel();
+        shooterCommand.end(interrupted);
+    }
+
+    public boolean getShooterFeedSupplier() {
+        return thetaController.atSetpoint();
+    }
 }
