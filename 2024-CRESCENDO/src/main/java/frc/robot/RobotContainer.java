@@ -145,7 +145,8 @@ public class RobotContainer {
 
     pathChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", pathChooser);
-
+    SmartDashboard.putData("ManualTransportForwardCommand", subsystemManager.makeManualTransportForwardCommand());
+    SmartDashboard.putData("ManualTransportBackwardsCommand", subsystemManager.makeManualTransportBackwardsCommand());
     SmartDashboard.putData("Coast Elevator", subsystemManager.elevatorNeutralMode(NeutralModeValue.Coast));
     SmartDashboard.putData("Brake Elevator", subsystemManager.elevatorNeutralMode(NeutralModeValue.Brake));
     SmartDashboard.putData("Run Tests", subsystemManager.makeTestingCommand());
