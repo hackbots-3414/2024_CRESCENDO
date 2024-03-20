@@ -77,8 +77,8 @@ public class RobotContainer {
     xboxOperator.rightBumper().whileTrue(subsystemManager.makeShootCommand()); // shoot manually
     xboxOperator.leftBumper().whileTrue(subsystemManager.makeIntakeCommand()); // intake
 
-    xboxOperator.back().whileTrue(subsystemManager.makeManualWinchCommand(true));
-    xboxOperator.start().whileTrue(subsystemManager.makeManualWinchCommand(false));
+    xboxOperator.back().whileTrue(subsystemManager.makeManualWinchCommand(true)); // up
+    xboxOperator.start().whileTrue(subsystemManager.makeManualWinchCommand(false)); // down
 
 
     // xboxOperator.leftTrigger(InputConstants.triggerTolerance); // left trigger as button
@@ -102,8 +102,8 @@ public class RobotContainer {
     
     // ps5Operator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
     // ps5Operator.povDown().whileTrue(subsystemManager.makeManualElevatorCommand(false));
-    ps5Operator.povRight().whileTrue(subsystemManager.makeManualPivotCommand(true));
-    ps5Operator.povLeft().whileTrue(subsystemManager.makeManualPivotCommand(false));
+    ps5Operator.povRight().whileTrue(subsystemManager.makeManualPivotCommand(true)); // up
+    ps5Operator.povLeft().whileTrue(subsystemManager.makeManualPivotCommand(false)); //down
 
     ps5Operator.create().whileTrue(subsystemManager.makeManualWinchCommand(false)); // back
     ps5Operator.options().whileTrue(subsystemManager.makeManualWinchCommand(true)); // start

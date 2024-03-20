@@ -4,6 +4,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
@@ -67,7 +68,7 @@ public class Transport extends SubsystemBase implements AutoCloseable {
 	}
 
 	public void setSlow() {
-		setMotor(TransportConstants.slowTransportSpeed);
+    transportMotor.setControl(new VoltageOut(TransportConstants.slowTransportVolts));
 	}
 
   public boolean getTransportIR() {

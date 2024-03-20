@@ -4,6 +4,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
@@ -12,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.TransportConstants;
 
 public class Intake extends SubsystemBase implements AutoCloseable {
 
@@ -51,7 +53,7 @@ public class Intake extends SubsystemBase implements AutoCloseable {
 	}
 
 	public void setSlow() {
-		setMotor(IntakeConstants.slowIntakeSpeed);
+		intakeMotor.setControl(new VoltageOut(IntakeConstants.slowIntakeVolts));
 	}
 
 	public TalonFXSimState getSimState() {

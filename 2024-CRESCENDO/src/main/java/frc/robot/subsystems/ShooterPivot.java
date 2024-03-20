@@ -123,7 +123,11 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
   }
 
   public void set(double speed) {
-    pivotMotor.setControl(new DutyCycleOut(speed));
+    if ((speed > 0 && getCancoderPos() < PivotConstants.forwardSoftLimitThreshold) || (speed < 0 && getCancoderPos() > PivotConstants.reverseSoftLimitThreshold)) {
+      pivotMotor.setControl(new DutyCycleOut(speed));
+    } else {
+      pivotMotor.setControl(new DutyCycleOut(0.0));
+    }
   }
 
   public boolean isAtSetpoint() {
