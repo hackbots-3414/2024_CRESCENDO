@@ -66,7 +66,6 @@ Hackbots code for the 2024 FRC Crescendo game.
 ## LED codes:
 |Event|Color Pattern|
 |-----|-------------|
-----------------------------------------------------
 |Note In View| Yellow Flash (not implemented)| 
 |Note On Board| Green Flash|
 |Note In Intake| Green Strobe|
@@ -80,7 +79,6 @@ Hackbots code for the 2024 FRC Crescendo game.
 ## IR Sensors:
 |Name|Channel|
 |----|-------|
---------------------------------------------------------
 |Intake IR| 2|
 |Transport IR|1|
 |Flywheel IR|0|
