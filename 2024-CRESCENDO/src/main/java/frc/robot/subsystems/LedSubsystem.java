@@ -212,13 +212,12 @@ public class LedSubsystem extends SubsystemBase {
       } else if (noteOnBoard) {
         if (chosenMode != LED_MODE.NOTE_ONBOARD) {
           chosenMode = LED_MODE.NOTE_ONBOARD;
-          setColor("GREEN", ledStripStartIndex, ledStripEndIndex, "FLASH");
+          setColor("GREEN", ledStripStartIndex, ledStripEndIndex, "STROBE");
         }
-        // } else if (intake.getIntakeIr() == true) {
-      } else if (noteInViewTest == true) {
+        } else if (intake.getIntakeIr() == true) {
         if (chosenMode != LED_MODE.INTAKE) {
           chosenMode = LED_MODE.INTAKE;
-          setColor("GREEN", ledStripStartIndex, ledStripEndIndex, "STROBE");
+          setColor("GREEN", ledStripStartIndex, ledStripEndIndex, "FLASH");
         }
       } else if (noteInView.get()) {
         if (chosenMode != LED_MODE.NOTE_IN_VIEW) {
