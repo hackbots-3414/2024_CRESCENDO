@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.CurrentLimits;
 import frc.robot.Constants.DebugConstants;
+import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase implements AutoCloseable {
 
@@ -59,11 +60,12 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
             .withKP(Constants.ShooterConstants.kP)
             .withKI(Constants.ShooterConstants.kI)
             .withKD(Constants.ShooterConstants.kD)
-            .withKV(Constants.ShooterConstants.kV))
+            .withKV(Constants.ShooterConstants.kV)
+            .withKS(Constants.ShooterConstants.kS))
         .withCurrentLimits(currentLimitsConfig);
 
     rightMotor.getConfigurator().apply(configuration, 0.2);
-    rightMotor.setNeutralMode(NeutralModeValue.Brake); // we want one on brake and the other on coast
+    rightMotor.setNeutralMode(NeutralModeValue.Coast); // we want one on brake and the other on coast
 
 
     configuration = new TalonFXConfiguration()
@@ -95,6 +97,14 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
 
   public void setMotor(double speed) {
     rightMotor.setControl(new DutyCycleOut(speed));
+  }
+
+  public void setWarmUpSpeed() {
+    setVelocity(ShooterConstants.warmUpSpeed);
+  }
+
+  public void setMaxSpeed() {
+    setVelocity(ShooterConstants.maxSpeed);
   }
 
   public void stopMotor() {

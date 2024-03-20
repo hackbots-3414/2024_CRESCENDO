@@ -44,7 +44,7 @@ public class AutoScoreCommand extends Command {
 
         elevatorCommand = new AutoElevatorCommand(elevator, shooterPivot, output.getElevatorHeight(), output.getPivotAngle());
         revShooterCommand = new RevShooterCommand(shooter, transport, output.getShooterVelocity());
-        shootAfterRevCommand = new ShooterCommand(shooter, transport, output.getShooterVelocity()).withTimeout(shootWaitSeconds);
+        shootAfterRevCommand = new ShooterCommand(shooter, transport).withTimeout(shootWaitSeconds);
             
         if (!elevatorCommand.isFinished()) {elevatorCommand.execute();}
         if (!revShooterCommand.isFinished()) {revShooterCommand.execute();}

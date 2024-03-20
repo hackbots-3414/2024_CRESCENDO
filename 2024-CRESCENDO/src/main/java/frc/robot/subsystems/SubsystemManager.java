@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
@@ -26,9 +25,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -49,12 +46,9 @@ import frc.robot.commands.BaseSubsystemCommands.IntakeCommand;
 import frc.robot.commands.BaseSubsystemCommands.ShooterCommand;
 import frc.robot.commands.ComboCommands.AmpScoreCommand;
 import frc.robot.commands.ComboCommands.ResetElevatorCommand;
-import frc.robot.commands.ComboCommands.StealRingCommand;
-import frc.robot.commands.ComboCommands.StowElevatorCommand;
+import frc.robot.commands.ComboCommands.SpitOutCommand;
 import frc.robot.commands.ComboCommands.TrapScoreCommand;
 import frc.robot.commands.ComboCommands.AmpCommands.AmpComboScheduler;
-import frc.robot.commands.ComboCommands.AmpCommands.AmpSetup;
-import frc.robot.commands.ComboCommands.AmpCommands.ScoreAmpCommand;
 import frc.robot.commands.DebugCommands.WheelRadiusCharacterization;
 import frc.robot.commands.ManualCommands.ManualElevatorCommand;
 import frc.robot.commands.ManualCommands.ManualIntakeEjectCommand;
@@ -243,10 +237,10 @@ public class SubsystemManager extends SubsystemBase {
 		return new RevShooterCommand(shooter, transport, velocity);
 	}
 	public Command makeShootAfterRevCommand(double velocity) {
-		return new ShooterCommand(shooter, transport, velocity).withTimeout(0.35); // TODO fix this timeout
+		return new ShooterCommand(shooter, transport);
 	}
 	public Command makeShootCommand() {
-		return new ShooterCommand(shooter, transport, ShooterConstants.shootVelo);
+		return new ShooterCommand(shooter, transport);
 	}
 	public Command makeManualShootCommand() {
 		return new ManualShootCommand(shooter,transport);
@@ -274,11 +268,11 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public Command makeSubwooferShootCommand() {
 		return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER),
-				new ShooterCommand(shooter, transport, ShooterConstants.minShootSpeed));
+				new ShooterCommand(shooter, transport));
 	}
 	public Command makeSubwooferRevvingCommand() {
 		return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER),
-				makeRevShootCommand(ShooterConstants.minShootSpeed));
+				makeRevShootCommand(ShooterConstants.warmUpSpeed));
 	}
 	public Command makeAmpSequence() {
 		// our goal position is the position of the amp plus just enough room for our robot to be aligned with it, and we want to be facing the alliance station so we can score.
@@ -288,7 +282,7 @@ public class SubsystemManager extends SubsystemBase {
 
 	// AIMING COMMANDS
 	public Command makeAutoAimCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
-		return new AimCommand(elevator, shooterPivot, drivetrain, x, y, turn, allianceSupplier, this::setAimReady).alongWith(new RevShooterCommand(shooter, transport, Constants.ShooterConstants.shootVelo));
+		return new AimCommand(elevator, shooterPivot, drivetrain, x, y, turn, allianceSupplier, this::setAimReady).alongWith(new RevShooterCommand(shooter, transport, Constants.ShooterConstants.maxSpeed));
 	}
 	public AimOutputContainer getAimOutputContainer() {
         return AimHelper.getAimOutputs(drivetrain, allianceSupplier.get() == Alliance.Blue, AimStrategies.LOOKUP); // BASIC MATH
@@ -309,7 +303,7 @@ public class SubsystemManager extends SubsystemBase {
 
 	// AUTON COMMANDS
 	public Command makeStealRingCommand() {
-		return new StealRingCommand(shooter, makeIntakeCommand(), elevator, shooterPivot);
+		return new SpitOutCommand(shooter, transport);
 	}
 	public Optional<Rotation2d> getRotationTargetOverride() {
 		if (noteOnBoard) {
@@ -356,7 +350,7 @@ public class SubsystemManager extends SubsystemBase {
 		eventMarkers.put("Stow", makeElevatorCommand(ElevatorPresets.STOW));
 		
 		eventMarkers.put("ShootAnywhere", makeAutonEverythingCommand());
-		eventMarkers.put("Rev Shooter", makeRevShootCommand(Constants.ShooterConstants.minShootSpeed));
+		eventMarkers.put("Rev Shooter", makeRevShootCommand(Constants.ShooterConstants.warmUpSpeed));
 		eventMarkers.put("Shoot", makeShootCommand());
 
 		SmartDashboard.putData("Amp Sequence", makeAmpSequence());

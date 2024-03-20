@@ -49,16 +49,13 @@ public class IntakeCommand extends Command {
         transport.setFast();
         alreadyStarted = true;
         // SmartDashboard.putString("INTAKE FAST", "FAST");
-
       }  
       if (!alreadyStartedSlowed && transport.getTransportIR()) {
         intake.setSlow();
         transport.setSlow();
         alreadyStartedSlowed= true;
         // SmartDashboard.putString("INTAKE FAST", "SLOW");
-
       }  
-
     }
   }
 
