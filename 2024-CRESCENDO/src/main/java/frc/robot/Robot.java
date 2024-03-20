@@ -45,7 +45,7 @@ public class Robot extends LoggedRobot {
       m_SysIdRoutineBot.configureBindings();
     } else {
       m_robotContainer = RobotContainer.getInstance();
-      // CameraServer.startAutomaticCapture();
+       CameraServer.startAutomaticCapture();
       // addPeriodic(m_robotContainer.getNoteFinder()::dataReceiver,
       // NoteFinderConstants.CYCLE_TIME, 0);
     }
