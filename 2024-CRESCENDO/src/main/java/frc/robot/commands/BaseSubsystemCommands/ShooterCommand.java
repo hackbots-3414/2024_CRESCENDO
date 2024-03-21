@@ -10,8 +10,7 @@ import frc.robot.subsystems.Transport;
 public class ShooterCommand extends Command {
   Shooter shooter;
   Transport transport;
-  boolean alreadyRanFeed;
-  boolean alreadyRanShooter;
+  boolean seenNote;
   double ticks = 0;
 
   Optional<Supplier<Boolean>> waitToFeed;
@@ -25,8 +24,7 @@ public class ShooterCommand extends Command {
 
   @Override
   public void initialize() {
-    alreadyRanFeed = false;
-    alreadyRanShooter = false;
+    seenNote = false;
     feed = false;
     ticks = 0;
   }
@@ -39,17 +37,11 @@ public class ShooterCommand extends Command {
       feed = waitToFeed.get().get();
     }
 
-    if(transport.getFlyWheelIR() && transport.getTransportIR()) {
-      if(!alreadyRanShooter){
-        shooter.setMaxSpeed();
-        alreadyRanShooter = true;
-      }
-      if(shooter.shooterAtSpeed() && !alreadyRanFeed && feed){
-        transport.setFast();
-        alreadyRanFeed = true;
-      }
-    } else {
-      transport.setSlow();
+    if (transport.getFlyWheelIR() && !seenNote) {
+      // too far forward, back up
+      shooter.setBackup();
+      transport.setBackup();
+      seenNote = true;
     }
   }
 
@@ -62,11 +54,6 @@ public class ShooterCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    if (transport.getFlyWheelIR() && transport.getTransportIR()) {
-      ticks = 0;
-    } else {
-      ticks++;
-    }
-    return ticks > 15;
+    return (seenNote && !transport.getFlyWheelIR());
   }
 }
