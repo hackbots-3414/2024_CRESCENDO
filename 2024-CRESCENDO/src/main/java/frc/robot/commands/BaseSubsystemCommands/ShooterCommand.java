@@ -44,7 +44,7 @@ public class ShooterCommand extends Command {
       alreadyRanShooter = true;
     }
 
-    if(shooter.shooterAtSpeed() && !alreadyRanFeed && feed && transport.getTransportIR()){
+    if(shooter.shooterAtSpeed() && !alreadyRanFeed && feed){
       transport.setFast();
       alreadyRanFeed = true;
     }
