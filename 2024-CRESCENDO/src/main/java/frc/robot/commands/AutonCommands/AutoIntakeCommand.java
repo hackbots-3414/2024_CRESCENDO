@@ -20,6 +20,7 @@ public class AutoIntakeCommand extends Command {
   private Shooter shooter;
   private Logger log = LoggerFactory.getLogger(AutoIntakeCommand.class);
   private boolean seenNote;
+  private boolean ready;
 
 
   public AutoIntakeCommand(Transport transport, Intake intake, Elevator elevator, ShooterPivot pivot, Shooter shooter) {
@@ -39,13 +40,15 @@ public class AutoIntakeCommand extends Command {
     pivot.setPivotPosition(PositionConstants.StowPresets.shooter);
     shooter.stopMotor();
     seenNote = false;
+    ready = false;
 
   }
 
 
   @Override
   public void execute() {
-    if (transport.getFlyWheelIR() && !seenNote) {
+    if (pivot.isAtSetpoint() && elevator.isAtSetpoint()) ready = true;
+    if (transport.getFlyWheelIR() && !seenNote && ready) {
       transport.setBackup();
       shooter.setBackup();
       seenNote = true;

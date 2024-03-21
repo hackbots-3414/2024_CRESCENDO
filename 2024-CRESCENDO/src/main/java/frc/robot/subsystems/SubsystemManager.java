@@ -36,6 +36,7 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.WinchConstants;
 import frc.robot.Robot;
 import frc.robot.Telemetry;
+import frc.robot.commands.AutonCommands.AutoIntakeCommand;
 import frc.robot.commands.BaseSubsystemCommands.AimCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
@@ -293,6 +294,9 @@ public class SubsystemManager extends SubsystemBase {
 	public AimOutputContainer getAimOutputContainer() {
         return AimHelper.getAimOutputs(drivetrain, allianceSupplier.get() == Alliance.Blue, AimStrategies.LOOKUP); // BASIC MATH
 	}
+	public Command makeAutoIntakeCommand() {
+		return new AutoIntakeCommand(transport, intake, elevator, shooterPivot, shooter);
+	}
 
 
 	// LED GETTERS
@@ -344,7 +348,7 @@ public class SubsystemManager extends SubsystemBase {
 	
 		// eventMarkers.put("Subwoofer", makeElevatorCommand(ElevatorPresets.SUBWOOFER).andThen(makeShootAfterRevCommand(ShooterConstants.minShootSpeed)).andThen(makeElevatorCommand(ElevatorPresets.STOW)));
 		eventMarkers.put("Subwoofer", makeSubwooferShootCommand().andThen(makeElevatorCommand(ElevatorPresets.STOW)));
-		eventMarkers.put("Intake", makeIntakeCommand().andThen(new WaitCommand(2)).andThen(makeSubwooferRevvingCommand())); 
+		eventMarkers.put("Intake", makeAutoIntakeCommand()); 
 		eventMarkers.put("IntakeThenSubwooferPreset", makeIntakeCommand().andThen(new WaitCommand(2.0)).andThen(makeSubwooferRevvingCommand()));
 		eventMarkers.put("StealRings", makeStealRingCommand());
 		eventMarkers.put("Stow", makeElevatorCommand(ElevatorPresets.STOW));
