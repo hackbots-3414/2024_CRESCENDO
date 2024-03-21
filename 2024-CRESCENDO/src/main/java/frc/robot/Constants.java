@@ -132,11 +132,12 @@ public class Constants {
                 entry(0.0, 0.088),
                 entry(1.387, 0.070),
                 entry(1.69, 0.064),
-                entry(1.9, 0.058),
-                entry(2.0, 0.054),
-                entry(2.1, 0.050),
-                entry(2.26, 0.042),
+                entry(1.9, 0.056),
+                entry(2.0, 0.050),
+                entry(2.1, 0.045),
+                entry(2.26, 0.039),
                 entry(2.62, 0.034),
+                entry(2.8, 0.027),
                 entry(3.0, 0.029),
                 entry(3.27, 0.018),
                 entry(3.66, 0.015),
@@ -157,7 +158,7 @@ public class Constants {
     public static final class IntakeConstants {
         public static final int intakeMotorID = 60;
         public static final double fastIntakeSpeed = 1;
-        public static final double slowIntakeVolts = 0.05 * 12;
+        public static final double slowIntakeVolts = 0.070 * 12;
         public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
         public static final int intakeIrChannel = 2;
@@ -200,7 +201,7 @@ public class Constants {
         public static final int transportMotorID = 56;
         public static final boolean transportMotorInvert = true;
         public static final double fastTransportSpeed = 1;
-        public static final double slowTransportVolts = 0.05 * 12;
+        public static final double slowTransportVolts = 0.070 * 12;
         public static final double ejectSpeed = -0.6;
         public static final double transportEjectSpeed = -0.5;
         public static final int transportIrChannel = 1;

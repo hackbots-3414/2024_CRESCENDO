@@ -65,7 +65,7 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
         .withCurrentLimits(currentLimitsConfig);
 
     rightMotor.getConfigurator().apply(configuration, 0.2);
-    rightMotor.setNeutralMode(NeutralModeValue.Coast); // we want one on brake and the other on coast
+    rightMotor.setNeutralMode(NeutralModeValue.Brake); // we want one on brake and the other on coast
 
 
     configuration = new TalonFXConfiguration()

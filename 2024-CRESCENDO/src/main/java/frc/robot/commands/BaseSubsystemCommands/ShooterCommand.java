@@ -48,6 +48,8 @@ public class ShooterCommand extends Command {
         transport.setFast();
         alreadyRanFeed = true;
       }
+    } else {
+      transport.setSlow();
     }
   }
 
@@ -60,7 +62,7 @@ public class ShooterCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    if (transport.getFlyWheelIR()) {
+    if (transport.getFlyWheelIR() && transport.getTransportIR()) {
       ticks = 0;
     } else {
       ticks++;
