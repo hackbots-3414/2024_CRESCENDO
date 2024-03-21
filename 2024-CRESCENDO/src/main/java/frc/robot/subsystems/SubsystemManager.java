@@ -41,11 +41,13 @@ import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.BaseSubsystemCommands.IntakeCommand;
 import frc.robot.commands.BaseSubsystemCommands.ShooterCommand;
-import frc.robot.commands.ComboCommands.AmpScoreCommand;
 import frc.robot.commands.ComboCommands.ResetElevatorCommand;
 import frc.robot.commands.ComboCommands.SpitOutCommand;
+import frc.robot.commands.ComboCommands.StowElevatorCommand;
 import frc.robot.commands.ComboCommands.TrapScoreCommand;
 import frc.robot.commands.ComboCommands.AmpCommands.AmpComboScheduler;
+import frc.robot.commands.ComboCommands.AmpCommands.AmpSetupCommand;
+import frc.robot.commands.ComboCommands.AmpCommands.ScoreAmpCommand;
 import frc.robot.commands.DebugCommands.WheelRadiusCharacterization;
 import frc.robot.commands.ManualCommands.ManualElevatorCommand;
 import frc.robot.commands.ManualCommands.ManualIntakeEjectCommand;
@@ -251,8 +253,14 @@ public class SubsystemManager extends SubsystemBase {
 
 
 	// PRESETS COMMANDS
-	public Command makeAmpScoreCommand() {
-		return new AmpScoreCommand(transport, elevator, shooter, shooterPivot);
+	public Command makeAmpSetupCommand() {
+		return new AmpSetupCommand(elevator);
+	}
+	public Command makeAmpFinishCommand() {
+		return new SequentialCommandGroup(
+			new ScoreAmpCommand(shooter, transport, elevator),
+			new StowElevatorCommand(elevator, shooterPivot)
+		);
 	}
 	public Command makeTrapScoreCommand() {
 		return new TrapScoreCommand(transport, elevator, shooter, shooterPivot);
