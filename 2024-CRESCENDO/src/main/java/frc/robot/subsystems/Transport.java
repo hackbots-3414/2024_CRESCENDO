@@ -60,6 +60,10 @@ public class Transport extends SubsystemBase implements AutoCloseable {
 		setMotor(TransportConstants.fastTransportSpeed);
 	}
 
+  public void setMedium() {
+    transportMotor.setControl(new VoltageOut(TransportConstants.mediumTransportVolts));
+	}
+
 	public void setSlow() {
     transportMotor.setControl(new VoltageOut(TransportConstants.slowTransportVolts));
 	}

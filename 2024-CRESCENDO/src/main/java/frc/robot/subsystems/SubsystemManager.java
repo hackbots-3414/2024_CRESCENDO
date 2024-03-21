@@ -231,6 +231,9 @@ public class SubsystemManager extends SubsystemBase {
 	public Command makeManualShootCommand() {
 		return new ManualShootCommand(shooter,transport);
 	}
+	public Command stopShootFlywheel() {
+		return new InstantCommand(() -> shooter.stopMotor());
+	}
 
 	//TRANSPORT COMMANDS
 		public Command makeManualTransportBackwardsCommand() {
@@ -323,7 +326,7 @@ public class SubsystemManager extends SubsystemBase {
 		}
 
 		eventMarkers.put("Subwoofer", makeSubwooferShootCommand());
-		eventMarkers.put("Intake", makeIntakeCommand().andThen(makeElevatorCommand(ElevatorPresets.SUBWOOFER)));
+		eventMarkers.put("Intake", makeIntakeCommand());
 		eventMarkers.put("ShootAnywhere", makeAutoAimCommand(() -> 0.0, () -> 0.0, () -> 0.0));
 
 		SmartDashboard.putData("Amp Sequence", makeAmpSequence());

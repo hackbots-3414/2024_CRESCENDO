@@ -112,28 +112,31 @@ public class RobotContainer {
       configureXboxOperatorBindings();
     }
 
-    switch (DriverConstants.autonView) {
-      case AMP:
-        pathChooser.addOption("Wing Clear", AutoBuilder.buildAuto("WingClear"));
-        break;
+    // switch (DriverConstants.autonView) {
+    //   case AMP:
+    //     pathChooser.addOption("Wing Clear", AutoBuilder.buildAuto("WingClear"));
+    //     break;
 
-      case SOURCE:
+    //   case SOURCE:
         
-        break;
+    //     break;
 
-      case CENTER:
+    //   case CENTER:
         
-        break;
+    //     break;
 
-      case DEBUG:
-        pathChooser = AutoBuilder.buildAutoChooser();
-        break;
-    }
+    //   case DEBUG:
+    //     pathChooser = AutoBuilder.buildAutoChooser();
+    //     break;
+    // }
+
+    pathChooser = AutoBuilder.buildAutoChooser();
 
     SmartDashboard.putData("Auto Chooser", pathChooser);
     SmartDashboard.putData("ManualTransportForwardCommand", subsystemManager.makeManualTransportForwardCommand());
     SmartDashboard.putData("ManualTransportBackwardsCommand", subsystemManager.makeManualTransportBackwardsCommand());
 
+    SmartDashboard.putData("STOP Shooter", subsystemManager.stopShootFlywheel());
     SmartDashboard.putData("Manual Shooter", subsystemManager.makeManualShootCommand());
     SmartDashboard.putData("Manual Intake Eject", subsystemManager.makeManualIntakeEjectCommand());
     // SmartDashboard.putData("Amp Score", subsystemManager.makeAmpScoreCommand());

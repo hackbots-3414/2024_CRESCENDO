@@ -19,6 +19,8 @@ public class Robot extends LoggedRobot {
   private RobotContainer m_robotContainer;
   private SysIdRoutineBot m_SysIdRoutineBot;
 
+  private SubsystemManager subsystemManager;
+
   @Override
   public void robotInit() {
    // Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
@@ -48,6 +50,8 @@ public class Robot extends LoggedRobot {
       // addPeriodic(m_robotContainer.getNoteFinder()::dataReceiver,
       // NoteFinderConstants.CYCLE_TIME, 0);
     }
+
+    subsystemManager = SubsystemManager.getInstance();
   }
 
   @Override
@@ -86,7 +90,7 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
     CommandScheduler.getInstance().cancelAll();
-    SubsystemManager.getInstance().resetAfterAuton().schedule();
+    subsystemManager.resetAfterAuton().schedule();
   }
 
   @Override

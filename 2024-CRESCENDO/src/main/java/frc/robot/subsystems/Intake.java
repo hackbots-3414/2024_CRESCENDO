@@ -51,6 +51,10 @@ public class Intake extends SubsystemBase implements AutoCloseable {
 		setMotor(IntakeConstants.fastIntakeSpeed);
 	}
 
+	public void setMedium() {
+		intakeMotor.setControl(new VoltageOut(IntakeConstants.mediumIntakeVolts));
+	}
+
 	public void setSlow() {
 		intakeMotor.setControl(new VoltageOut(IntakeConstants.slowIntakeVolts));
 	}
@@ -71,7 +75,7 @@ public class Intake extends SubsystemBase implements AutoCloseable {
 		intakeMotor.setControl(request);
 	}
 
-	public boolean getIntakeIr() {
+	public boolean getIntakeIR() {
 		return intakeIrValue;
 	}
 

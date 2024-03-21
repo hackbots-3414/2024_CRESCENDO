@@ -1,5 +1,8 @@
 package frc.robot.commands.BaseSubsystemCommands;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.PositionConstants;
 import frc.robot.subsystems.Elevator;
@@ -13,7 +16,10 @@ public class IntakeCommand extends Command {
   Elevator elevator;
   ShooterPivot pivot;
   boolean alreadyStarted = false;
-  boolean alreadyStartedSlowed;
+  boolean alreadyStartedMedium = false;
+  boolean alreadyStartedSlowed = false;
+
+  Logger logger = LoggerFactory.getLogger(IntakeCommand.class);
 
 
   public IntakeCommand(Transport transport, Intake intake, Elevator elevator, ShooterPivot pivot) {
@@ -30,6 +36,8 @@ public class IntakeCommand extends Command {
     pivot.setPivotPosition(PositionConstants.StowPresets.shooter);
     alreadyStarted = false;
     alreadyStartedSlowed = false;
+    alreadyStartedMedium = false;
+    logger.debug("INTAKE INITIALIZE");
   }
 
   @Override
@@ -39,17 +47,26 @@ public class IntakeCommand extends Command {
         intake.setFast();
         transport.setFast();
         alreadyStarted = true;
-      }  
+        logger.debug("INTAKE FAST");
+      }
+      if (!alreadyStartedMedium && intake.getIntakeIR()) {
+        intake.setMedium();
+        transport.setMedium();
+        alreadyStartedMedium = true;
+        logger.debug("INTAKE MEDIUM");
+      }
       if (!alreadyStartedSlowed && transport.getTransportIR()) {
         intake.setSlow();
         transport.setSlow();
-        alreadyStartedSlowed= true;
-      }  
+        alreadyStartedSlowed = true;
+        logger.debug("INTAKE SLOW");
+      }
     }
   }
 
   @Override
   public void end(boolean interrupted) {
+    logger.debug("INTAKE END");
     intake.stopMotor();
     transport.stopMotor();
   }
