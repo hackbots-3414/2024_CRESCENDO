@@ -54,6 +54,8 @@ import frc.robot.commands.ManualCommands.ManualIntakeEjectCommand;
 import frc.robot.commands.ManualCommands.ManualPivotCommand;
 import frc.robot.commands.ManualCommands.ManualShootCommand;
 import frc.robot.commands.ManualCommands.ManualWinchCommand;
+import frc.robot.commands.ManualCommands.ManualTransportBackwardsCommand;
+import frc.robot.commands.ManualCommands.ManualTransportForwardCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AimHelper.AimOutputContainer;
 import frc.robot.subsystems.AimHelper.AimStrategies;
@@ -239,7 +241,13 @@ public class SubsystemManager extends SubsystemBase {
 		return new ManualShootCommand(shooter,transport);
 	}
 
-
+	//TRANSPORT COMMANDS
+		public Command makeManualTransportBackwardsCommand() {
+		return new ManualTransportBackwardsCommand(transport);
+	}
+		public Command makeManualTransportForwardCommand() {
+		return new ManualTransportForwardCommand(transport);
+	}
 	// INTAKE COMMANDS
 	public Command makeIntakeCommand() {
 		return new IntakeCommand(transport, intake, elevator, shooterPivot);
