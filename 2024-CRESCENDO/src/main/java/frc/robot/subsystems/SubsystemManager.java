@@ -32,6 +32,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.Telemetry;
+import frc.robot.commands.AutonCommands.AutoIntakeCommand;
 import frc.robot.commands.BaseSubsystemCommands.AimCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
@@ -278,6 +279,9 @@ public class SubsystemManager extends SubsystemBase {
 	public AimOutputContainer getAimOutputContainer() {
         return AimHelper.getAimOutputs(drivetrain, allianceSupplier.get() == Alliance.Blue, AimStrategies.LOOKUP); // BASIC MATH
 	}
+	public Command makeAutoIntakeCommand() {
+		return new AutoIntakeCommand(transport, intake, elevator, shooterPivot, shooter);
+	}
 
 
 	// LED GETTERS
@@ -326,7 +330,7 @@ public class SubsystemManager extends SubsystemBase {
 		}
 
 		eventMarkers.put("Subwoofer", makeSubwooferShootCommand());
-		eventMarkers.put("Intake", makeIntakeCommand());
+		eventMarkers.put("Intake", makeAutoIntakeCommand());
 		eventMarkers.put("ShootAnywhere", makeAutoAimCommand(() -> 0.0, () -> 0.0, () -> 0.0));
 
 		SmartDashboard.putData("Amp Sequence", makeAmpSequence());
