@@ -27,7 +27,7 @@ public class ManualShootCommand extends Command {
   public void initialize() {
     // shooter.setVelocity(Constants.ShooterConstants.spitOutSpeed);
     shooter.setMotor(0.3);
-    transport.setMotor(Constants.TransportConstants.transportSpeed);
+    transport.setFast();
     
   }
 

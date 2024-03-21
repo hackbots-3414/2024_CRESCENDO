@@ -117,20 +117,16 @@ public class Constants {
         public static final int rightMotorID = 58;
         public static final boolean shooterMotorInvert = true;
 
-        public static final double kP = 2.0;
+        public static final double kP = 1.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
-        public static final double kS = 0;
-        public static final double kV = 0.12;
+        public static final double kS = 9.0;
+        public static final double kV = 0.0;
 
-        public static final double shootVelo = 80.0; // Rotations per second
-        public static final double shooterTolerance = 3.0;
+        public static final double shooterTolerance = 1.0;
 
-        public static final double minShootSpeed = 80; // measured for AutoAim
-        public static final double maxShootSpeed = 80; // measured for AutoAim
-        public static final double spitOutSpeed = 20.0;
-
-        public static final double shooterBackupSpeed = -0.1;
+        public static final double warmUpSpeed = 20; // rps
+        public static final double maxSpeed = 80; // rps
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
                 entry(0.0, 0.18),
@@ -155,7 +151,8 @@ public class Constants {
 
     public static final class IntakeConstants {
         public static final int intakeMotorID = 60;
-        public static final double intakeSpeed = 0.8;
+        public static final double fastIntakeSpeed = 1;
+        public static final double slowIntakeSpeed = 0.15;
         public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
         public static final int intakeIrChannel = 2;
@@ -197,7 +194,8 @@ public class Constants {
     public static final class TransportConstants {
         public static final int transportMotorID = 56;
         public static final boolean transportMotorInvert = true;
-        public static final double transportSpeed = 0.83;
+        public static final double fastTransportSpeed = 1;
+        public static final double slowTransportSpeed = 0.15;
         public static final double ejectSpeed = -0.6;
         public static final double transportEjectSpeed = -0.5;
         public static final int transportIrChannel = 1;
@@ -219,7 +217,7 @@ public class Constants {
 
         public static final class TrapPresets {
             public static final double elevator = 2.34;
-            public static final double shooter = 0.135;
+            public static final double shooter = 0.085693;
         }
 
         public static final class TestPresets {
@@ -234,7 +232,7 @@ public class Constants {
 
         public static final class SubwooferPresets {
             public static final double elevator = 0.0;
-            public static final double shooter = 0.135;
+            public static final double shooter = 0.085693;
         }
     }
 
@@ -285,42 +283,54 @@ public class Constants {
     public static final class PivotConstants {
         public static final int pivotMotorID = 59;
         public static final int EncoderID = 51;
-        public static final double encoderOffset = -0.085693;
+        public static final double encoderOffset = 0.324707; 
 
         public static final double rotorToSensorRatio = 125;
         public static final double sensorToMechanismRatio = 1.0;
 
-        public static final InvertedValue motorInvert = InvertedValue.CounterClockwise_Positive;
-        public static final SensorDirectionValue cancoderInvert = SensorDirectionValue.Clockwise_Positive;
+        public static final InvertedValue motorInvert = InvertedValue.Clockwise_Positive;
+        public static final SensorDirectionValue cancoderInvert = SensorDirectionValue.CounterClockwise_Positive;
 
-        public static final double forwardSoftLimitThreshold = 0.135;
+        public static final double forwardSoftLimitThreshold = 0.085693;
         public static final double reverseSoftLimitThreshold = 0;
 
         public static final double radiansAtZero = Math.toRadians(30);
         public static final double radiansAtMax = Math.toRadians(58);
 
         public static final double pivotManualUpSpeed = 0.3;
-        public static final double pivotManualDownSpeed = -0.3;
+        public static final double pivotManualDownSpeed = -0.1;
 
         public static final double pivotTolerance = 0.0285; // was 0.004
 
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         public static final class PivotSlot0ConfigConstants {
-            public static final double kP = 1.0; // output per unit of error in position (output/rotation)
+            public static final double kP = 2.0; // output per unit of error in position (output/rotation)
             public static final double kI = 0.0; // output per unit of integrated error in position
                                                  // (output/(rotation*s))
             public static final double kD = 0.0; // output per unit of error in velocity (output/rps)
             public static final double kS = 0.0; // output to overcome static friction (output)
-            public static final double kV = 12.0; // output per unit of target velocity (output/rps)
+            public static final double kV = 20.0; // output per unit of target velocity (output/rps)
             public static final double kA = 0.0; // output per unit of target acceleration (output/(rps/s))
-            public static final double kG = 0.15; // feedforward Constant
+            public static final double kG = 0.0; // feedforward Constant
+            // public static final double kG = 0.0;
+        }
+
+        public static final class PivotSlot1ConfigConstants {
+            public static final double kP = 2.0; // output per unit of error in position (output/rotation)
+            public static final double kI = 0.0; // output per unit of integrated error in position
+                                                 // (output/(rotation*s))
+            public static final double kD = 0.0; // output per unit of error in velocity (output/rps)
+            public static final double kS = 0.0; // output to overcome static friction (output)
+            public static final double kV = 15.0; // output per unit of target velocity (output/rps)
+            public static final double kA = 0.0; // output per unit of target acceleration (output/(rps/s))
+            public static final double kG = 0.0; // feedforward Constant
             // public static final double kG = 0.0;
         }
 
         public static final class PivotMotionMagicConstants {
-            public static final double cruiseVelocity = 0.088379 * 50; // Target cruise velocity
-            public static final double acceleration = (0.088379 * 20) * 2; // Target acceleration
+            public static final double cruiseVelocity = 0.085693 * 50; // Target cruise velocity
+            public static final double acceleration = cruiseVelocity * 0.5; // Target acceleration
             public static final double jerk = acceleration * 10; // Target Jerk
         }
     }
@@ -354,7 +364,7 @@ public class Constants {
 
         public static final double speakerHeightMinusElevatorRaise = speakerHeight - elevatorHeightFromFloorAtRest;
         public static final double gravity = 9.81;
-        public static final double velocity = ShooterConstants.maxShootSpeed * Units.inchesToMeters(1.5) * Math.PI + AimConstants.compressionAdder;
+        public static final double velocity = ShooterConstants.maxSpeed * Units.inchesToMeters(1.5) * Math.PI + AimConstants.compressionAdder;
 
         public static final double bumperToCenter = Units.inchesToMeters(19.0);
     }
@@ -378,7 +388,7 @@ public class Constants {
     }
 
     public static final class DebugConstants {
-        public static final boolean debugMode = true; // setting this to true will increase your network table traffic.
+        public static final boolean debugMode = false; // setting this to true will increase your network table traffic.
     }
 
     private class PDPConstants {

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 
 public class Intake extends SubsystemBase implements AutoCloseable {
 
@@ -45,6 +46,14 @@ public class Intake extends SubsystemBase implements AutoCloseable {
 		intakeMotor.setControl(new DutyCycleOut(0.0));
 	}
 
+	public void setFast() {
+		setMotor(IntakeConstants.fastIntakeSpeed);
+	}
+
+	public void setSlow() {
+		setMotor(IntakeConstants.slowIntakeSpeed);
+	}
+
 	public TalonFXSimState getSimState() {
 		return intakeMotor.getSimState();
 	}
@@ -70,7 +79,7 @@ public class Intake extends SubsystemBase implements AutoCloseable {
 	public void periodic() {
 		double voltage = intakeIrSensor.getVoltage();
 		intakeIrValue = voltage > Constants.irSensorThreshold;
-		SmartDashboard.putNumber("INTAKE IR", voltage);
+		SmartDashboard.putBoolean("INTAKE IR", intakeIrValue);
 		SmartDashboard.putNumber("INTAKE SPEED", intakeMotor.getVelocity().getValueAsDouble());
 	}
 }
