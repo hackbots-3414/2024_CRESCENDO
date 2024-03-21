@@ -7,7 +7,6 @@ package frc.robot;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
@@ -30,6 +29,7 @@ import frc.robot.subsystems.SubsystemManager;
 public class RobotContainer {
   private static RobotContainer me = null;
   public enum JoystickChoice {PS5, XBOX;}
+  public enum AutonViews {SOURCE, AMP, CENTER, DEBUG}
   
   private final Joystick driver = new Joystick(InputConstants.kDriverControllerPort);
   private final JoystickButton resetGyroButton = new JoystickButton(driver, DriverConstants.resetGyroButton);
@@ -64,10 +64,10 @@ public class RobotContainer {
   }
 
   private void configureXboxOperatorBindings() {
+    xboxOperator.x().onTrue(subsystemManager.makeAmpSetupCommand());
+    xboxOperator.x().onFalse(subsystemManager.makeAmpFinishCommand());
     xboxOperator.y().whileTrue(subsystemManager.makeSubwooferShootCommand());
     xboxOperator.b().onTrue(subsystemManager.makeResetElevatorCommand());
-    xboxOperator.x().onTrue(subsystemManager.makeAmpSetupCommand()); // auto amp (will do everything)
-    xboxOperator.x().onFalse(subsystemManager.makeAmpFinishCommand());
     xboxOperator.a().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));
 
     xboxOperator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
@@ -75,24 +75,12 @@ public class RobotContainer {
     xboxOperator.povRight().whileTrue(subsystemManager.makeManualPivotCommand(true));
     xboxOperator.povLeft().whileTrue(subsystemManager.makeManualPivotCommand(false));
 
-    xboxOperator.rightBumper().whileTrue(subsystemManager.makeShootCommand()); // shoot manually
-    xboxOperator.leftBumper().whileTrue(subsystemManager.makeIntakeCommand()); // intake
+    xboxOperator.back().whileTrue(subsystemManager.makeManualWinchCommand(true)); // create
+    xboxOperator.start().whileTrue(subsystemManager.makeManualWinchCommand(false)); // options
 
-    xboxOperator.back().whileTrue(subsystemManager.makeManualWinchCommand(true)); // up
-    xboxOperator.start().whileTrue(subsystemManager.makeManualWinchCommand(false)); // down
-
-
-    // xboxOperator.leftTrigger(InputConstants.triggerTolerance); // left trigger as button
-    // xboxOperator.leftStick(); // left thumbstick button
-    // xboxOperator.getLeftX();
-    // xboxOperator.getLeftY();
-    // xboxOperator.getLeftTriggerAxis();
-
-    // xboxOperator.rightTrigger(InputConstants.triggerTolerance); // left trigger as button
-    // xboxOperator.rightStick(); // right thumbstick button
-    // xboxOperator.getRightX();
-    // xboxOperator.getRightY();
-    // xboxOperator.getRightTriggerAxis();
+    xboxOperator.leftTrigger(0.1).whileTrue(subsystemManager.makeIntakeCommand()); // left trigger
+    xboxOperator.rightBumper().whileTrue(subsystemManager.makeManualIntakeEjectCommand()); // right bumper
+    xboxOperator.rightTrigger(0.1).whileTrue(subsystemManager.makeShootCommand()); // right trigger
   }
 
   private void configurePS5OperatorBindings() {
@@ -102,38 +90,17 @@ public class RobotContainer {
     ps5Operator.circle().onTrue(subsystemManager.makeResetElevatorCommand()); // b
     ps5Operator.cross().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW)); // a
     
-    // ps5Operator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
-    // ps5Operator.povDown().whileTrue(subsystemManager.makeManualElevatorCommand(false));
-    ps5Operator.povRight().whileTrue(subsystemManager.makeManualPivotCommand(true)); // up
-    ps5Operator.povLeft().whileTrue(subsystemManager.makeManualPivotCommand(false)); //down
+    ps5Operator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
+    ps5Operator.povDown().whileTrue(subsystemManager.makeManualElevatorCommand(false));
+    ps5Operator.povRight().whileTrue(subsystemManager.makeManualPivotCommand(true));
+    ps5Operator.povLeft().whileTrue(subsystemManager.makeManualPivotCommand(false));
 
-    ps5Operator.create().whileTrue(subsystemManager.makeManualWinchCommand(false)); // back
+    ps5Operator.create().whileTrue(subsystemManager.makeManualWinchCommand(false)); // back 
     ps5Operator.options().whileTrue(subsystemManager.makeManualWinchCommand(true)); // start
-    // ps5Operator.square().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.TRAP));
 
-    ps5Operator.L2().whileTrue(subsystemManager.makeIntakeCommand());
-    ps5Operator.L1().whileTrue(subsystemManager.makeEjectCommand());
-    ps5Operator.R2().whileTrue(subsystemManager.makeShootCommand());
-
-
-    // ps5Operator.L1(); // left bumper button
-    // ps5Operator.L2(); // left trigger as button
-    // ps5Operator.L3(); // left thumbstick button
-
-    // ps5Operator.R1(); // right bumper button
-    // ps5Operator.R2(); // right trigger as button
-    // ps5Operator.R3(); // right thumbstick button
-
-    // ps5Operator.PS(); // Logo as button
-
-    // ps5Operator.getL2Axis(); // left trigger axis
-    // ps5Operator.getR2Axis(); // right trigger axis
-
-    // ps5Operator.getLeftX();
-    // ps5Operator.getLeftY();
-
-    // ps5Operator.getRightX();
-    // ps5Operator.getRightY();
+    ps5Operator.L2().whileTrue(subsystemManager.makeIntakeCommand()); // left trigger
+    ps5Operator.L1().whileTrue(subsystemManager.makeManualIntakeEjectCommand()); // left bumper
+    ps5Operator.R2().whileTrue(subsystemManager.makeShootCommand()); // right trigger
   }
 
   private RobotContainer() {
@@ -145,13 +112,27 @@ public class RobotContainer {
       configureXboxOperatorBindings();
     }
 
-    pathChooser = AutoBuilder.buildAutoChooser();
+    switch (DriverConstants.autonView) {
+      case AMP:
+        pathChooser.addOption("Wing Clear", AutoBuilder.buildAuto("WingClear"));
+        break;
+
+      case SOURCE:
+        
+        break;
+
+      case CENTER:
+        
+        break;
+
+      case DEBUG:
+        pathChooser = AutoBuilder.buildAutoChooser();
+        break;
+    }
+
     SmartDashboard.putData("Auto Chooser", pathChooser);
     SmartDashboard.putData("ManualTransportForwardCommand", subsystemManager.makeManualTransportForwardCommand());
     SmartDashboard.putData("ManualTransportBackwardsCommand", subsystemManager.makeManualTransportBackwardsCommand());
-    SmartDashboard.putData("Coast Elevator", subsystemManager.elevatorNeutralMode(NeutralModeValue.Coast));
-    SmartDashboard.putData("Brake Elevator", subsystemManager.elevatorNeutralMode(NeutralModeValue.Brake));
-    SmartDashboard.putData("Run Tests", subsystemManager.makeTestingCommand());
 
     SmartDashboard.putData("Manual Shooter", subsystemManager.makeManualShootCommand());
     SmartDashboard.putData("Manual Intake Eject", subsystemManager.makeManualIntakeEjectCommand());

@@ -24,12 +24,15 @@
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Manual Intake Eject": "Command",
       "/SmartDashboard/Manual Shooter": "Command",
+      "/SmartDashboard/ManualTransportBackwardsCommand": "Command",
+      "/SmartDashboard/ManualTransportForwardCommand": "Command",
       "/SmartDashboard/Module 0": "Mechanism2d",
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",
       "/SmartDashboard/Module 3": "Mechanism2d",
       "/SmartDashboard/Run Tests": "Command",
-      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d",
+      "/SmartDashboard/Wheel Radius Characterization": "Command"
     },
     "windows": {
       "/Pose": {
@@ -50,6 +53,11 @@
         "right": 2961,
         "top": 79,
         "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Auto Chooser": {
         "window": {
           "visible": true
         }

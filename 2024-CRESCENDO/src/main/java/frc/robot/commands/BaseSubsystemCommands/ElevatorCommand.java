@@ -6,7 +6,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ShooterPivot;
 
 public class ElevatorCommand extends Command {
-    public enum ElevatorPresets {STOW, AMP, TRAP, RESET, TEST, SUBWOOFER;}
+    public enum ElevatorPresets {STOW, AMP, SUBWOOFER;}
 
     Elevator elevator;
     ShooterPivot shooterPivot;
@@ -23,23 +23,13 @@ public class ElevatorCommand extends Command {
     public void execute() {
         switch (selector) {
             case STOW:
-                elevator.setElevatorPosition(PositionConstants.StowPresets.elevator);
-                shooterPivot.setPivotPosition(PositionConstants.StowPresets.shooter);
+                elevator.stow();
+                shooterPivot.stow();
                 break;
             case AMP:
                 elevator.setElevatorPosition(PositionConstants.AmpPresets.elevator);
                 shooterPivot.setPivotPosition(PositionConstants.AmpPresets.shooter);
                 break;
-            case TRAP:
-                elevator.setElevatorPosition(PositionConstants.TrapPresets.elevator);
-                shooterPivot.setPivotPosition(PositionConstants.TrapPresets.shooter);
-                break;
-            case TEST:
-                elevator.setElevatorPosition(PositionConstants.TestPresets.elevator);
-                shooterPivot.setPivotPosition(PositionConstants.TestPresets.shooter);
-            case RESET:
-                elevator.setElevatorPosition(PositionConstants.ResetPresets.elevator);
-                shooterPivot.setPivotPosition(PositionConstants.ResetPresets.shooter);
             case SUBWOOFER:
                 elevator.setElevatorPosition(PositionConstants.SubwooferPresets.elevator);
                 shooterPivot.setPivotPosition(PositionConstants.SubwooferPresets.shooter);

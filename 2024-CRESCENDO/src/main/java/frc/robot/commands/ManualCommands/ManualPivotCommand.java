@@ -5,17 +5,21 @@ import frc.robot.subsystems.ShooterPivot;
 
 public class ManualPivotCommand extends Command {
     ShooterPivot pivot;
-    double speed;
+    boolean goingUp;
 
-    public ManualPivotCommand(ShooterPivot pivot, double speed) {
+    public ManualPivotCommand(ShooterPivot pivot, boolean goingUp) {
         addRequirements(pivot);
         this.pivot = pivot;
-        this.speed = speed;
+        this.goingUp = goingUp;
     }
 
     @Override
     public void execute() {
-        pivot.set(speed);
+        if (goingUp) {
+            pivot.setPivotUpSpeed();
+        } else {
+            pivot.setPivotDownSpeed();
+        }
     }
 
     @Override

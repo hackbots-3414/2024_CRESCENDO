@@ -159,7 +159,7 @@ public class LedSubsystem extends SubsystemBase {
     // b = (int)SmartDashboard.getNumber("b", b);
     // ledcontroller.setLEDs(r, g, b);
 
-    noteOnBoard = transport.getNoteOnBoard();
+    noteOnBoard = transport.getFlyWheelIR() && transport.getTransportIR();
     matchTime = DriverStation.getMatchTime();
     if (inTeleop == false && matchTime > 60) {
       inTeleop = true;

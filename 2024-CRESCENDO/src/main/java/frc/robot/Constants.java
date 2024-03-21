@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import frc.robot.RobotContainer.AutonViews;
 import frc.robot.RobotContainer.JoystickChoice;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.FieldConstants;
@@ -195,6 +196,7 @@ public class Constants {
         public static final double expoPower = 2.0;
 
         public static final JoystickChoice operatorController = JoystickChoice.XBOX;
+        public static final AutonViews autonView = AutonViews.AMP;
     }
 
     public static final class TransportConstants {
@@ -256,6 +258,7 @@ public class Constants {
 
         public static final double elevatorManualUpSpeed = 0.1;
         public static final double elevatorManualDownSpeed = -0.1;
+        public static final double resetElevatorSpeed = -0.2;
 
         public static final double elevatorTolerance = 0.05;
 
@@ -396,26 +399,25 @@ public class Constants {
         public static final boolean debugMode = false; // setting this to true will increase your network table traffic.
     }
 
-    private class PDPConstants {
-        public static final int pdp = 1;
-        public static final int winchLeft = 3;
-        public static final int winchRight = 13;
-        public static final int shooterLeft = 0;
-        public static final int shooterRight = 1;
-        public static final int elevator = 17;
-        public static final int pivot = 5;
-        public static final int intake = 18;
-        public static final int transport = 2;
-
-        public static final int frontLeftDrive = 6;
-        public static final int frontLeftSteer = 4;
-        public static final int backLeftDrive = 9;
-        public static final int backLeftSteer = 7;
-        public static final int frontRightDrive = 15;
-        public static final int frontRightSteer = 13;
-        public static final int backRightDrive = 12;
-        public static final int backRightSteer = 10;
-    }
+    /*
+        pdp - 1
+        winchLeft - 3
+        winchRight - 3
+        shooterLeft - 0
+        shooterRight - 1
+        elevator - 7
+        pivot - 5
+        intake - 8
+        transport - 2
+        frontLeftDrive - 6
+        frontLeftSteer - 4
+        backLeftDrive - 9
+        backLeftSteer - 7
+        frontRightDrive - 5
+        frontRightSteer - 3
+        backRightDrive - 2
+        backRightSteer - 0
+    */
 
     public class CurrentLimits {
         public static final double intakeStatorLimit = 35;

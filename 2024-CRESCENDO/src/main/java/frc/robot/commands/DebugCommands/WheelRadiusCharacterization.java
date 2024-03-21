@@ -15,16 +15,14 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 public class WheelRadiusCharacterization extends Command {
   CommandSwerveDrivetrain drivetrain;
   FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-   double driveBaseRadius = 37.3; //centemeters
+  double driveBaseRadius = 37.3; //centemeters
   double gyroStartingPosition;
   double gyroEndingPosition;
   Logger log = LoggerFactory.getLogger(WheelRadiusCharacterization.class);
 
   public WheelRadiusCharacterization(CommandSwerveDrivetrain drivetrain) {
-
-    this.drivetrain = drivetrain;
     addRequirements(drivetrain);
-
+    this.drivetrain = drivetrain;
   }
 
   @Override

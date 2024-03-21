@@ -56,6 +56,14 @@ public class Winch extends SubsystemBase implements AutoCloseable {
     rightWinchMotor.set(speed);
   }
 
+  public void setClimbUpSpeed() {
+    setMotor(WinchConstants.winchManualUpSpeed);
+  }
+
+  public void setClimbDownSpeed() {
+    setMotor(WinchConstants.winchManualDownSpeed);
+  }
+
   public void stopMotor() {
     rightWinchMotor.set(0);
   }

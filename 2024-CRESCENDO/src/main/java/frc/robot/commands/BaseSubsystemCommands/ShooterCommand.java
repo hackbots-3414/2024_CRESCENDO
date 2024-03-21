@@ -39,7 +39,7 @@ public class ShooterCommand extends Command {
       feed = waitToFeed.get().get();
     }
 
-    if(transport.getFlyWheelIR() && transport.getTransportIR()) {
+    if(transport.getNoteInPosition()) {
       if(!alreadyRanShooter){
         shooter.setMaxSpeed();
         alreadyRanShooter = true;
@@ -55,7 +55,6 @@ public class ShooterCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    // shooter.setWarmUpSpeed();
     shooter.stopMotor();
     transport.stopMotor();
   }

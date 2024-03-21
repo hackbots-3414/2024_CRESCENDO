@@ -7,9 +7,11 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -34,19 +36,18 @@ public class AimCommand extends Command {
     Supplier<Double> ySupplier;
     Supplier<Double> rSupplier;
     Supplier<Alliance> aSupplier;
-    Consumer<Double> setShootVelo;
 
     boolean blueSide = false;
-    boolean hasNote = false;
     
     Consumer<Boolean> setDone;
 
     Command currentDriveCommand;
     Command shooterCommand;
 
+    AimOutputContainer output;
+
     FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.2).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     PIDController thetaController = new PIDController(1, 0, 0);
-
 
     public AimCommand(ShooterPivot shooterPivot, Shooter shooter, Transport transport, CommandSwerveDrivetrain drivetrain, Supplier<Double> xSupplier, Supplier<Double> ySupplier, Supplier<Double> rSupplier, Supplier<Alliance> aSupplier) {
         this.shooterPivot = shooterPivot;
@@ -69,18 +70,22 @@ public class AimCommand extends Command {
     }
 
     @Override
-    public void execute() {        
+    public void execute() {
         Pose2d robotPosition = drivetrain.getPose();
-        AimOutputContainer output = AimHelper.getAimOutputs(drivetrain, blueSide, AimStrategies.LOOKUP);
+        output = AimHelper.getAimOutputs(drivetrain, blueSide, AimStrategies.LOOKUP);
         shooterPivot.setPivotPosition(output.getPivotAngle());
         drivetrain.setInRange(output.getIsInRange());
 
-        currentDriveCommand = drivetrain.applyRequest(() -> driveRequest.withVelocityX(xSupplier.get() * SwerveConstants.maxDriveVelocity)
+        if (DriverStation.isTeleop()) {
+            currentDriveCommand = drivetrain.applyRequest(() -> driveRequest.withVelocityX(xSupplier.get() * SwerveConstants.maxDriveVelocity)
                                 .withVelocityY(ySupplier.get() * SwerveConstants.maxDriveVelocity)
                                 .withRotationalRate((rSupplier.get() > 0.2 || rSupplier.get() < -0.2) ? (-rSupplier.get() * SwerveConstants.maxAngleVelocity) 
                                 : (thetaController.calculate(robotPosition.getRotation().getRadians(), output.getDrivetrainRotation().getRadians()) * Constants.SwerveConstants.maxAngleVelocity)));
 
-        currentDriveCommand.schedule();
+            currentDriveCommand.execute();
+        } else if (DriverStation.isAutonomous()) {
+            PPHolonomicDriveController.setRotationTargetOverride(() -> Optional.of(output.getDrivetrainRotation()));
+        }       
 
         shooterCommand.execute();
     }
@@ -88,11 +93,13 @@ public class AimCommand extends Command {
     @Override
     public boolean isFinished() {
         return shooterCommand.isFinished();
+        // return true;
     }
 
     @Override
     public void end(boolean interrupted) {
-        currentDriveCommand.cancel();
+        PPHolonomicDriveController.setRotationTargetOverride(() -> Optional.empty());
+        currentDriveCommand.end(interrupted);
         shooterCommand.end(interrupted);
     }
 

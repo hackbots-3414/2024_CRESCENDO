@@ -1,9 +1,5 @@
 package frc.robot.commands.BaseSubsystemCommands;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.PositionConstants;
 import frc.robot.subsystems.Elevator;
@@ -18,7 +14,6 @@ public class IntakeCommand extends Command {
   ShooterPivot pivot;
   boolean alreadyStarted = false;
   boolean alreadyStartedSlowed;
-  Logger log = LoggerFactory.getLogger(IntakeCommand.class);
 
 
   public IntakeCommand(Transport transport, Intake intake, Elevator elevator, ShooterPivot pivot) {
@@ -27,8 +22,6 @@ public class IntakeCommand extends Command {
     this.intake = intake;
     this.elevator = elevator;
     this.pivot = pivot;
-  // SmartDashboard.putString("INTAKE FAST", "Initialized");
-
   }
 
   @Override
@@ -37,9 +30,7 @@ public class IntakeCommand extends Command {
     pivot.setPivotPosition(PositionConstants.StowPresets.shooter);
     alreadyStarted = false;
     alreadyStartedSlowed = false;
-
   }
-
 
   @Override
   public void execute() {
@@ -48,13 +39,11 @@ public class IntakeCommand extends Command {
         intake.setFast();
         transport.setFast();
         alreadyStarted = true;
-        // SmartDashboard.putString("INTAKE FAST", "FAST");
       }  
       if (!alreadyStartedSlowed && transport.getTransportIR()) {
         intake.setSlow();
         transport.setSlow();
         alreadyStartedSlowed= true;
-        // SmartDashboard.putString("INTAKE FAST", "SLOW");
       }  
     }
   }
@@ -63,11 +52,10 @@ public class IntakeCommand extends Command {
   public void end(boolean interrupted) {
     intake.stopMotor();
     transport.stopMotor();
-    
   }
 
   @Override
   public boolean isFinished() {
-    return transport.getFlyWheelIR() && transport.getTransportIR();
+    return transport.getNoteInPosition();
   }
 }
