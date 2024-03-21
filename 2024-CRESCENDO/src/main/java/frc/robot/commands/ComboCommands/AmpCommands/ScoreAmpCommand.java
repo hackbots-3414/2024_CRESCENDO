@@ -5,41 +5,37 @@
 package frc.robot.commands.ComboCommands.AmpCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transport;
 
 public class ScoreAmpCommand extends Command {
   private Transport transport;
   private Shooter shooter;
-  /** Creates a new ScoreAmpCommand. */
-  public ScoreAmpCommand(Shooter shooter, Transport transport) {
+  private Elevator elevator;
+  public ScoreAmpCommand(Shooter shooter, Transport transport, Elevator elevator) {
     addRequirements(transport, shooter);
     this.transport = transport;
     this.shooter = shooter;
+    this.elevator = elevator;
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    transport.eject();
-    shooter.setMotor(-0.1);
+    if (elevator.isAtSetpoint()) {
+      transport.eject();
+      shooter.setMotor(-0.2);
+    }
   }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
-
-  // Called once the command ends or is interrupted.
+  
   @Override
   public void end(boolean interrupted) {
     shooter.stopMotor();
-    transport.setNoteOnBoard(false);
     transport.stopMotor();
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false; // this command should end by a timeout.
+    return true;
   }
 }

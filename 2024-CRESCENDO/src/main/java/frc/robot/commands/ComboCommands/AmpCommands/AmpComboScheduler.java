@@ -25,38 +25,24 @@ public class AmpComboScheduler extends Command {
   private Transport transport;
   /** Creates a new AmpComboSceduler. */
   public AmpComboScheduler(CommandSwerveDrivetrain drivetrain, Elevator elevator, ShooterPivot pivot, Shooter shooter, Transport transport) {
-    // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.elevator = elevator;
     this.pivot = pivot;
     this.shooter = shooter;
     this.transport = transport;
   }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
-
-  // Called once the command ends or is interrupted.
+  
   @Override
   public void end(boolean interrupted) {
     Command macro = new SequentialCommandGroup(
-			new ParallelCommandGroup(
-				drivetrain.makeDriveToAmpCommand(),
-				new AmpSetup(elevator, pivot)
-			),
-			new ScoreAmpCommand(shooter, transport).withTimeout(Constants.AmpConstants.allowedShootTime),
+			drivetrain.makeDriveToAmpCommand(),
+			new AmpSetupCommand(elevator),
+			new ScoreAmpCommand(shooter, transport, elevator).withTimeout(Constants.AmpConstants.allowedShootTime),
 			new StowElevatorCommand(elevator, pivot)
 		).onlyWhile(RobotContainer.getInstance()::getAmpButton);
     macro.schedule();
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return true;

@@ -129,13 +129,19 @@ public class Constants {
         public static final double maxSpeed = 80; // rps
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
-                entry(0.0, 0.18),
-                entry(1.41, 0.18), // lined up
-                entry(1.56, 0.12), // 4
-                entry(1.9, 0.105), // 6
-                entry(2.2, 0.093), // 8
-                entry(2.55, 0.092), // 10
-                entry(4.14, 0.089) // 12
+                entry(0.0, 0.088),
+                entry(1.387, 0.070),
+                entry(1.69, 0.064),
+                entry(1.9, 0.056),
+                entry(2.0, 0.050),
+                entry(2.1, 0.045),
+                entry(2.26, 0.039),
+                entry(2.62, 0.034),
+                entry(2.8, 0.027),
+                entry(3.0, 0.029),
+                entry(3.27, 0.018),
+                entry(3.66, 0.015),
+                entry(6.0, 0.0) // max range
         );
 
         // public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
@@ -152,7 +158,7 @@ public class Constants {
     public static final class IntakeConstants {
         public static final int intakeMotorID = 60;
         public static final double fastIntakeSpeed = 1;
-        public static final double slowIntakeSpeed = 0.15;
+        public static final double slowIntakeVolts = 0.070 * 12;
         public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
         public static final int intakeIrChannel = 2;
@@ -195,7 +201,7 @@ public class Constants {
         public static final int transportMotorID = 56;
         public static final boolean transportMotorInvert = true;
         public static final double fastTransportSpeed = 1;
-        public static final double slowTransportSpeed = 0.15;
+        public static final double slowTransportVolts = 0.070 * 12;
         public static final double ejectSpeed = -0.6;
         public static final double transportEjectSpeed = -0.5;
         public static final int transportIrChannel = 1;
@@ -300,7 +306,7 @@ public class Constants {
         public static final double pivotManualUpSpeed = 0.3;
         public static final double pivotManualDownSpeed = -0.1;
 
-        public static final double pivotTolerance = 0.0285; // was 0.004
+        public static final double pivotTolerance = 0.004; 
 
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
@@ -308,11 +314,11 @@ public class Constants {
             public static final double kP = 2.0; // output per unit of error in position (output/rotation)
             public static final double kI = 0.0; // output per unit of integrated error in position
                                                  // (output/(rotation*s))
-            public static final double kD = 0.0; // output per unit of error in velocity (output/rps)
+            public static final double kD = 0.05; // output per unit of error in velocity (output/rps)
             public static final double kS = 0.0; // output to overcome static friction (output)
             public static final double kV = 20.0; // output per unit of target velocity (output/rps)
             public static final double kA = 0.0; // output per unit of target acceleration (output/(rps/s))
-            public static final double kG = 0.0; // feedforward Constant
+            public static final double kG = 0.1; // feedforward Constant
             // public static final double kG = 0.0;
         }
 
@@ -336,7 +342,6 @@ public class Constants {
     }
 
     public static final class AimConstants {
-        public static final double minimumDistanceToNotBreakRobot = 3; // meters from speaker
         public static final double clearanceHeight = 1.9;
         public static final double elevatorHeightFromFloorAtRest = 0.19; // ONLY Y DIRECTION
 
@@ -344,7 +349,7 @@ public class Constants {
 
         public static final double compressionAdder = 3;
 
-        public static final double maxRange = 2.5;
+        public static final double maxRange = 5;
 
         public static final double aprilTagToHoodGoal = Units.inchesToMeters(8);
 

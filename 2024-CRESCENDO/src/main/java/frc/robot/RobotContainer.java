@@ -66,7 +66,8 @@ public class RobotContainer {
   private void configureXboxOperatorBindings() {
     xboxOperator.y().whileTrue(subsystemManager.makeSubwooferShootCommand());
     xboxOperator.b().onTrue(subsystemManager.makeResetElevatorCommand());
-    xboxOperator.x().whileTrue(subsystemManager.makeAmpScoreCommand()); // auto amp (will do everything)
+    xboxOperator.x().onTrue(subsystemManager.makeAmpSetupCommand()); // auto amp (will do everything)
+    xboxOperator.x().onFalse(subsystemManager.makeAmpFinishCommand());
     xboxOperator.a().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));
 
     xboxOperator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
@@ -77,8 +78,8 @@ public class RobotContainer {
     xboxOperator.rightBumper().whileTrue(subsystemManager.makeShootCommand()); // shoot manually
     xboxOperator.leftBumper().whileTrue(subsystemManager.makeIntakeCommand()); // intake
 
-    xboxOperator.back().whileTrue(subsystemManager.makeManualWinchCommand(true));
-    xboxOperator.start().whileTrue(subsystemManager.makeManualWinchCommand(false));
+    xboxOperator.back().whileTrue(subsystemManager.makeManualWinchCommand(true)); // up
+    xboxOperator.start().whileTrue(subsystemManager.makeManualWinchCommand(false)); // down
 
 
     // xboxOperator.leftTrigger(InputConstants.triggerTolerance); // left trigger as button
@@ -95,15 +96,16 @@ public class RobotContainer {
   }
 
   private void configurePS5OperatorBindings() {
-    ps5Operator.square().whileTrue(subsystemManager.makeAmpScoreCommand()); // x
+    ps5Operator.square().onTrue(subsystemManager.makeAmpSetupCommand()); // x
+    ps5Operator.square().onFalse(subsystemManager.makeAmpFinishCommand());
     ps5Operator.triangle().whileTrue(subsystemManager.makeSubwooferShootCommand()); // y
     ps5Operator.circle().onTrue(subsystemManager.makeResetElevatorCommand()); // b
     ps5Operator.cross().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW)); // a
     
     // ps5Operator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
     // ps5Operator.povDown().whileTrue(subsystemManager.makeManualElevatorCommand(false));
-    ps5Operator.povRight().whileTrue(subsystemManager.makeManualPivotCommand(true));
-    ps5Operator.povLeft().whileTrue(subsystemManager.makeManualPivotCommand(false));
+    ps5Operator.povRight().whileTrue(subsystemManager.makeManualPivotCommand(true)); // up
+    ps5Operator.povLeft().whileTrue(subsystemManager.makeManualPivotCommand(false)); //down
 
     ps5Operator.create().whileTrue(subsystemManager.makeManualWinchCommand(false)); // back
     ps5Operator.options().whileTrue(subsystemManager.makeManualWinchCommand(true)); // start
@@ -153,7 +155,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Manual Shooter", subsystemManager.makeManualShootCommand());
     SmartDashboard.putData("Manual Intake Eject", subsystemManager.makeManualIntakeEjectCommand());
-    SmartDashboard.putData("Amp Score", subsystemManager.makeAmpScoreCommand());
+    // SmartDashboard.putData("Amp Score", subsystemManager.makeAmpScoreCommand());
     SmartDashboard.putData("Wheel Radius Characterization", subsystemManager.makeWheelRadiusCharacterizationCommand());
   }
 

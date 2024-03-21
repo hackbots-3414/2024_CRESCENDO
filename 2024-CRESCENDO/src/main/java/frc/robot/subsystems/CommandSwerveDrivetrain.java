@@ -179,11 +179,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         field.setRobotPose(dashboardPose);
         SmartDashboard.putData(field);
 
-        if (DebugConstants.debugMode) {
-            Pose2d speakerPose = DriverStation.getAlliance().get() == Alliance.Blue ? AimConstants.blueSpeakerPos : AimConstants.redSpeakerPos;
-            double robotDistance = speakerPose.relativeTo(getPose()).getTranslation().getNorm();
-            SmartDashboard.putNumber("DISTANCE FROM TARGET", robotDistance);
-        }
+        Pose2d speakerPose = 
+        AimConstants.redSpeakerPos;
+        double robotDistance = speakerPose.relativeTo(getPose()).getTranslation().getNorm();
+        SmartDashboard.putNumber("DISTANCE FROM TARGET", robotDistance);
 
         if (DebugConstants.debugMode) {
             for (int i = 0; i < Modules.length; i++) {
@@ -219,12 +218,12 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 ? new GoalEndState(0.0, goalPose.getRotation())
                 : new GoalEndState(0, new Rotation2d(Math.PI - goalPose.getRotation().getRadians()));
         ArrayList<RotationTarget> rotateTargetList = new ArrayList<>();
-        rotateTargetList.add(new RotationTarget(0.1, goalPose.getRotation()));
+        rotateTargetList.add(new RotationTarget(0.0, goalPose.getRotation()));
         PathPlannerPath path = new PathPlannerPath(PathPlannerPath.bezierFromPoses(estimatedPose, goalPose),
                 rotateTargetList,
                 Collections.emptyList(),
                 Collections.emptyList(),
-                new PathConstraints(SwerveConstants.maxDriveVelocity * 0.1, SwerveConstants.maxDriveAcceleration,
+                new PathConstraints(SwerveConstants.maxDriveVelocity * 0.25, SwerveConstants.maxDriveAcceleration,
                         SwerveConstants.maxAngleVelocity, SwerveConstants.maxAngleAcceleration),
                 goal,
                 isReversed);

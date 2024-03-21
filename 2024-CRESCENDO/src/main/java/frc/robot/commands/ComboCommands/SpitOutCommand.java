@@ -18,7 +18,7 @@ public class SpitOutCommand extends Command {
     @Override
     public void execute() {
         shooter.setVelocity(ShooterConstants.warmUpSpeed);
-        shooter.setVelocity(TransportConstants.slowTransportSpeed);
+        transport.setSlow();
     }
     
     @Override
