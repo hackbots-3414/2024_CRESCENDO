@@ -12,6 +12,8 @@ public class ElevatorCommand extends Command {
     ShooterPivot shooterPivot;
     ElevatorPresets selector;
 
+    double pivotWait = 0;
+
     public ElevatorCommand(Elevator elevator, ShooterPivot shooterPivot, ElevatorPresets selector) {
         addRequirements(elevator, shooterPivot);
         this.elevator = elevator;
@@ -33,11 +35,12 @@ public class ElevatorCommand extends Command {
             case SUBWOOFER:
                 elevator.setElevatorPosition(PositionConstants.SubwooferPresets.elevator);
                 shooterPivot.setPivotPosition(PositionConstants.SubwooferPresets.shooter);
+                pivotWait++;
         }
     }
 
     @Override
     public boolean isFinished() {
-        return elevator.isAtSetpoint() && shooterPivot.isAtSetpoint();
+        return elevator.isAtSetpoint() && shooterPivot.isAtSetpoint() && (pivotWait > 15 || selector != ElevatorPresets.SUBWOOFER);
     }
 }

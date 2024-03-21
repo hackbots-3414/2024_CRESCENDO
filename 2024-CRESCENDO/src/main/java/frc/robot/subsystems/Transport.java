@@ -84,6 +84,10 @@ public class Transport extends SubsystemBase implements AutoCloseable {
     return getTransportIR() && getFlyWheelIR();
   }
 
+  public boolean getNoteOnBoard() {
+    return getTransportIR() || getFlyWheelIR();
+  }
+
   public void setCurrentLimit(double limit) {
     CurrentLimitsConfigs configs = new CurrentLimitsConfigs().withSupplyCurrentLimitEnable(true)
         .withSupplyCurrentLimit(limit);

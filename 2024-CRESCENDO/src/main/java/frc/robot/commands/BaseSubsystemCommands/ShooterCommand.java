@@ -58,7 +58,7 @@ public class ShooterCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    if (transport.getNoteInPosition()) {
+    if (transport.getNoteOnBoard()) {
       ticks = 0;
     } else {
       ticks++;

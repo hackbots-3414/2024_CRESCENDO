@@ -126,7 +126,7 @@ public class Constants {
 
         public static final double shooterTolerance = 1.0;
 
-        public static final double warmUpSpeed = 20; // rps
+        public static final double warmUpSpeed = 40; // rps
         public static final double maxSpeed = 80; // rps
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
@@ -245,7 +245,7 @@ public class Constants {
 
         public static final class SubwooferPresets {
             public static final double elevator = 0.0;
-            public static final double shooter = 0.085693;
+            public static final double shooter = 0.074;
         }
     }
 

@@ -3,7 +3,6 @@ package frc.robot.commands.AutonCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.PositionConstants;
 import frc.robot.subsystems.Elevator;
@@ -20,7 +19,8 @@ public class AutoIntakeCommand extends Command {
   private Shooter shooter;
   private Logger log = LoggerFactory.getLogger(AutoIntakeCommand.class);
   private boolean seenNote;
-  private boolean ready;
+
+  private boolean alreadyStarted;
 
 
   public AutoIntakeCommand(Transport transport, Intake intake, Elevator elevator, ShooterPivot pivot, Shooter shooter) {
@@ -40,18 +40,23 @@ public class AutoIntakeCommand extends Command {
     pivot.setPivotPosition(PositionConstants.StowPresets.shooter);
     shooter.stopMotor();
     seenNote = false;
-    ready = false;
-
+    alreadyStarted = false;
   }
 
 
   @Override
   public void execute() {
-    if (pivot.isAtSetpoint() && elevator.isAtSetpoint()) ready = true;
-    if (transport.getFlyWheelIR() && !seenNote && ready) {
-      transport.setBackup();
-      shooter.setBackup();
-      seenNote = true;
+    if (elevator.isAtSetpoint() && pivot.isAtSetpoint()) {
+      if (!alreadyStarted) {
+        intake.setFast();
+        transport.setFast();
+        alreadyStarted = true;
+      }
+      if (transport.getFlyWheelIR() && !seenNote) {
+        transport.setBackup();
+        shooter.setBackup();
+        seenNote = true;
+      }
     }
   }
 
@@ -64,6 +69,6 @@ public class AutoIntakeCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return transport.getFlyWheelIR() && transport.getTransportIR();
+    return transport.getTransportIR() && seenNote && !transport.getFlyWheelIR();
   }
 }
