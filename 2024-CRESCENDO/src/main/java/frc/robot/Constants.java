@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import frc.robot.RobotContainer.AutonViews;
 import frc.robot.RobotContainer.JoystickChoice;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.FieldConstants;
@@ -125,22 +126,25 @@ public class Constants {
 
         public static final double shooterTolerance = 1.0;
 
-        public static final double warmUpSpeed = 20; // rps
+        public static final double warmUpSpeed = 0.2; // duty cycle (0-1)
         public static final double maxSpeed = 80; // rps
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
                 entry(0.0, 0.088),
-                entry(1.387, 0.070),
-                entry(1.69, 0.064),
-                entry(1.9, 0.056),
-                entry(2.0, 0.050),
-                entry(2.1, 0.045),
+                entry(1.387, 0.068),
+                entry(1.69, 0.062),
+                entry(1.9, 0.054),
+                entry(2.0, 0.048),
+                entry(2.1, 0.044),
                 entry(2.26, 0.039),
                 entry(2.62, 0.034),
                 entry(2.8, 0.027),
                 entry(3.0, 0.029),
-                entry(3.27, 0.018),
+                entry(3.27, 0.020),
                 entry(3.66, 0.015),
+                entry(4.0, 0.012),
+                entry(4.3, 0.0095),
+                entry(4.6, 0.0065),
                 entry(6.0, 0.0) // max range
         );
 
@@ -158,7 +162,8 @@ public class Constants {
     public static final class IntakeConstants {
         public static final int intakeMotorID = 60;
         public static final double fastIntakeSpeed = 1;
-        public static final double slowIntakeVolts = 0.070 * 12;
+        public static final double mediumIntakeVolts = 0.5 * 12;
+        public static final double slowIntakeVolts = 0.2 * 12;
         public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
         public static final int intakeIrChannel = 2;
@@ -195,13 +200,15 @@ public class Constants {
         public static final double expoPower = 2.0;
 
         public static final JoystickChoice operatorController = JoystickChoice.XBOX;
+        public static final AutonViews autonView = AutonViews.AMP;
     }
 
     public static final class TransportConstants {
         public static final int transportMotorID = 56;
         public static final boolean transportMotorInvert = true;
         public static final double fastTransportSpeed = 1;
-        public static final double slowTransportVolts = 0.070 * 12;
+        public static final double mediumTransportVolts = 0.5 * 12;
+        public static final double slowTransportVolts = 0.2 * 12;
         public static final double ejectSpeed = -0.6;
         public static final double transportEjectSpeed = -0.5;
         public static final int transportIrChannel = 1;
@@ -238,7 +245,7 @@ public class Constants {
 
         public static final class SubwooferPresets {
             public static final double elevator = 0.0;
-            public static final double shooter = 0.085693;
+            public static final double shooter = 0.074;
         }
     }
 
@@ -256,6 +263,7 @@ public class Constants {
 
         public static final double elevatorManualUpSpeed = 0.1;
         public static final double elevatorManualDownSpeed = -0.1;
+        public static final double resetElevatorSpeed = -0.2;
 
         public static final double elevatorTolerance = 0.05;
 
@@ -349,7 +357,7 @@ public class Constants {
 
         public static final double compressionAdder = 3;
 
-        public static final double maxRange = 5;
+        public static final double maxRange = 4.0;
 
         public static final double aprilTagToHoodGoal = Units.inchesToMeters(8);
 
@@ -396,26 +404,25 @@ public class Constants {
         public static final boolean debugMode = false; // setting this to true will increase your network table traffic.
     }
 
-    private class PDPConstants {
-        public static final int pdp = 1;
-        public static final int winchLeft = 3;
-        public static final int winchRight = 13;
-        public static final int shooterLeft = 0;
-        public static final int shooterRight = 1;
-        public static final int elevator = 17;
-        public static final int pivot = 5;
-        public static final int intake = 18;
-        public static final int transport = 2;
-
-        public static final int frontLeftDrive = 6;
-        public static final int frontLeftSteer = 4;
-        public static final int backLeftDrive = 9;
-        public static final int backLeftSteer = 7;
-        public static final int frontRightDrive = 15;
-        public static final int frontRightSteer = 13;
-        public static final int backRightDrive = 12;
-        public static final int backRightSteer = 10;
-    }
+    /*
+        pdp - 1
+        winchLeft - 3
+        winchRight - 3
+        shooterLeft - 0
+        shooterRight - 1
+        elevator - 7
+        pivot - 5
+        intake - 8
+        transport - 2
+        frontLeftDrive - 6
+        frontLeftSteer - 4
+        backLeftDrive - 9
+        backLeftSteer - 7
+        frontRightDrive - 5
+        frontRightSteer - 3
+        backRightDrive - 2
+        backRightSteer - 0
+    */
 
     public class CurrentLimits {
         public static final double intakeStatorLimit = 35;

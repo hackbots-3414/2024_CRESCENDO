@@ -28,14 +28,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
-import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.Constants.WinchConstants;
 import frc.robot.Robot;
 import frc.robot.Telemetry;
+import frc.robot.commands.AutonCommands.AutoIntakeCommand;
 import frc.robot.commands.BaseSubsystemCommands.AimCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
@@ -43,8 +40,6 @@ import frc.robot.commands.BaseSubsystemCommands.IntakeCommand;
 import frc.robot.commands.BaseSubsystemCommands.ShooterCommand;
 import frc.robot.commands.ComboCommands.ResetElevatorCommand;
 import frc.robot.commands.ComboCommands.SpitOutCommand;
-import frc.robot.commands.ComboCommands.StowElevatorCommand;
-import frc.robot.commands.ComboCommands.TrapScoreCommand;
 import frc.robot.commands.ComboCommands.AmpCommands.AmpComboScheduler;
 import frc.robot.commands.ComboCommands.AmpCommands.AmpSetupCommand;
 import frc.robot.commands.ComboCommands.AmpCommands.ScoreAmpCommand;
@@ -53,9 +48,9 @@ import frc.robot.commands.ManualCommands.ManualElevatorCommand;
 import frc.robot.commands.ManualCommands.ManualIntakeEjectCommand;
 import frc.robot.commands.ManualCommands.ManualPivotCommand;
 import frc.robot.commands.ManualCommands.ManualShootCommand;
-import frc.robot.commands.ManualCommands.ManualWinchCommand;
 import frc.robot.commands.ManualCommands.ManualTransportBackwardsCommand;
 import frc.robot.commands.ManualCommands.ManualTransportForwardCommand;
+import frc.robot.commands.ManualCommands.ManualWinchCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AimHelper.AimOutputContainer;
 import frc.robot.subsystems.AimHelper.AimStrategies;
@@ -112,7 +107,7 @@ public class SubsystemManager extends SubsystemBase {
 	Transport transport = new Transport();
 	NoteFinder noteFinder = new NoteFinder();
 	Winch winch = new Winch();
-	LedSubsystem ledSubsystem = new LedSubsystem(transport, this::getIsInRange, this::getAimIsReady);
+	LedSubsystem ledSubsystem = new LedSubsystem(transport, intake, this::getIsInRange, this::getAimIsReady);
 
 	public Intake getIntake() {return intake;}
 	public Shooter getShooter() {return shooter;}
@@ -210,9 +205,8 @@ public class SubsystemManager extends SubsystemBase {
 	public Command makeResetElevatorCommand() {
 		return new ResetElevatorCommand(elevator, shooterPivot);
 	}
-	public Command makeManualElevatorCommand(boolean isUp) {
-		return new ManualElevatorCommand(elevator,
-				isUp ? ElevatorConstants.elevatorManualUpSpeed : ElevatorConstants.elevatorManualDownSpeed);
+	public Command makeManualElevatorCommand(boolean goingUp) {
+		return new ManualElevatorCommand(elevator, goingUp);
 	}
 	public Command elevatorNeutralMode(NeutralModeValue neutralMode) {
 		return new InstantCommand(() -> elevator.setNeutralMode(neutralMode));
@@ -220,16 +214,14 @@ public class SubsystemManager extends SubsystemBase {
 
 
 	// WINCH COMMANDS
-	public Command makeManualWinchCommand(boolean isUp) {
-		return new ManualWinchCommand(winch,
-				isUp ? WinchConstants.winchManualUpSpeed : WinchConstants.winchManualDownSpeed);
+	public Command makeManualWinchCommand(boolean goingUp) {
+		return new ManualWinchCommand(winch, goingUp);
 	}
 
 
 	// PIVOT COMMANDS
-	public Command makeManualPivotCommand(boolean isUp) {
-		return new ManualPivotCommand(shooterPivot,
-				isUp ? PivotConstants.pivotManualUpSpeed : PivotConstants.pivotManualDownSpeed);
+	public Command makeManualPivotCommand(boolean goingUp) {
+		return new ManualPivotCommand(shooterPivot, goingUp);
 	}
 
 
@@ -239,6 +231,9 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public Command makeManualShootCommand() {
 		return new ManualShootCommand(shooter,transport);
+	}
+	public Command stopShootFlywheel() {
+		return new InstantCommand(() -> shooter.stopMotor());
 	}
 
 	//TRANSPORT COMMANDS
@@ -250,9 +245,6 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	// INTAKE COMMANDS
 	public Command makeIntakeCommand() {
-		return new IntakeCommand(transport, intake, elevator, shooterPivot);
-	}
-	public Command makeEjectCommand() {
 		return new IntakeCommand(transport, intake, elevator, shooterPivot);
 	}
 	public Command makeManualIntakeEjectCommand() {
@@ -267,18 +259,12 @@ public class SubsystemManager extends SubsystemBase {
 	public Command makeAmpFinishCommand() {
 		return new SequentialCommandGroup(
 			new ScoreAmpCommand(shooter, transport, elevator),
-			new StowElevatorCommand(elevator, shooterPivot)
+			makeElevatorCommand(ElevatorPresets.STOW)
 		);
-	}
-	public Command makeTrapScoreCommand() {
-		return new TrapScoreCommand(transport, elevator, shooter, shooterPivot);
 	}
 	public Command makeSubwooferShootCommand() {
 		return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER),
 				makeShootCommand());
-	}
-	public Command makeSubwooferRevvingCommand() {
-		return makeElevatorCommand(ElevatorPresets.SUBWOOFER);
 	}
 	public Command makeAmpSequence() {
 		// our goal position is the position of the amp plus just enough room for our robot to be aligned with it, and we want to be facing the alliance station so we can score.
@@ -293,6 +279,9 @@ public class SubsystemManager extends SubsystemBase {
 	public AimOutputContainer getAimOutputContainer() {
         return AimHelper.getAimOutputs(drivetrain, allianceSupplier.get() == Alliance.Blue, AimStrategies.LOOKUP); // BASIC MATH
 	}
+	public Command makeAutoIntakeCommand() {
+		return new AutoIntakeCommand(transport, intake, elevator, shooterPivot, shooter);
+	}
 
 
 	// LED GETTERS
@@ -305,8 +294,8 @@ public class SubsystemManager extends SubsystemBase {
 
 
 	// AUTON COMMANDS
-	public Command makeStealRingCommand() {
-		return new SpitOutCommand(shooter, transport);
+	public Command makeSpitOutCommand() {
+		return new SpitOutCommand(shooter, transport, intake);
 	}
 	public Optional<Rotation2d> getRotationTargetOverride() {
 		if (noteOnBoard) {
@@ -328,8 +317,8 @@ public class SubsystemManager extends SubsystemBase {
 				makeElevatorCommand(ElevatorPresets.STOW).withTimeout(2),
 				makeIntakeCommand().withTimeout(2),
 				makeShootCommand().withTimeout(2),
-				new ManualWinchCommand(winch, 0.1).withTimeout(2),
-				new ManualWinchCommand(winch, -0.1).withTimeout(2));
+				new ManualWinchCommand(winch, true).withTimeout(2),
+				new ManualWinchCommand(winch, false).withTimeout(2));
 
 		return commands;
 	}
@@ -340,17 +329,9 @@ public class SubsystemManager extends SubsystemBase {
 			driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
 		}
 
-		SmartDashboard.putNumber("driveabase radius", driveBaseRadius);
-	
-		// eventMarkers.put("Subwoofer", makeElevatorCommand(ElevatorPresets.SUBWOOFER).andThen(makeShootAfterRevCommand(ShooterConstants.minShootSpeed)).andThen(makeElevatorCommand(ElevatorPresets.STOW)));
-		eventMarkers.put("Subwoofer", makeSubwooferShootCommand().andThen(makeElevatorCommand(ElevatorPresets.STOW)));
-		eventMarkers.put("Intake", makeIntakeCommand().andThen(new WaitCommand(2)).andThen(makeSubwooferRevvingCommand())); 
-		eventMarkers.put("IntakeThenSubwooferPreset", makeIntakeCommand().andThen(new WaitCommand(2.0)).andThen(makeSubwooferRevvingCommand()));
-		eventMarkers.put("StealRings", makeStealRingCommand());
-		eventMarkers.put("Stow", makeElevatorCommand(ElevatorPresets.STOW));
-		
+		eventMarkers.put("Subwoofer", makeSubwooferShootCommand());
+		eventMarkers.put("Intake", makeAutoIntakeCommand());
 		eventMarkers.put("ShootAnywhere", makeAutoAimCommand(() -> 0.0, () -> 0.0, () -> 0.0));
-		eventMarkers.put("Shoot", makeShootCommand());
 
 		SmartDashboard.putData("Amp Sequence", makeAmpSequence());
 
@@ -372,7 +353,5 @@ public class SubsystemManager extends SubsystemBase {
 					return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
 				},
 				drivetrain); // Subsystem for requirements
-
-		// PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
 	}
 }

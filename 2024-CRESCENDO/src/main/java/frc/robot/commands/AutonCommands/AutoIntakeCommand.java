@@ -1,4 +1,4 @@
-package frc.robot.commands.BaseSubsystemCommands;
+package frc.robot.commands.AutonCommands;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,38 +7,42 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.PositionConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
 import frc.robot.subsystems.Transport;
 
-public class IntakeCommand extends Command {
-  Intake intake;
-  Transport transport;
-  Elevator elevator;
-  ShooterPivot pivot;
-  boolean alreadyStarted = false;
-  boolean alreadyStartedMedium = false;
-  boolean alreadyStartedSlowed = false;
+public class AutoIntakeCommand extends Command {
+  private Intake intake;
+  private Transport transport;
+  private Elevator elevator;
+  private ShooterPivot pivot;
+  private Shooter shooter;
+  private Logger log = LoggerFactory.getLogger(AutoIntakeCommand.class);
+  private boolean seenNote;
 
-  Logger logger = LoggerFactory.getLogger(IntakeCommand.class);
+  private boolean alreadyStarted;
 
 
-  public IntakeCommand(Transport transport, Intake intake, Elevator elevator, ShooterPivot pivot) {
+  public AutoIntakeCommand(Transport transport, Intake intake, Elevator elevator, ShooterPivot pivot, Shooter shooter) {
     addRequirements(intake, transport);
     this.transport = transport;
     this.intake = intake;
     this.elevator = elevator;
     this.pivot = pivot;
+    this.shooter = shooter;
+  // SmartDashboard.putString("INTAKE FAST", "Initialized");
+
   }
 
   @Override
   public void initialize() {
     elevator.setElevatorPosition(PositionConstants.StowPresets.elevator);
     pivot.setPivotPosition(PositionConstants.StowPresets.shooter);
+    shooter.stopMotor();
+    seenNote = false;
     alreadyStarted = false;
-    alreadyStartedSlowed = false;
-    alreadyStartedMedium = false;
-    logger.debug("INTAKE INITIALIZE");
   }
+
 
   @Override
   public void execute() {
@@ -47,32 +51,24 @@ public class IntakeCommand extends Command {
         intake.setFast();
         transport.setFast();
         alreadyStarted = true;
-        logger.debug("INTAKE FAST");
       }
-      if (!alreadyStartedMedium && intake.getIntakeIR()) {
-        intake.setMedium();
-        transport.setMedium();
-        alreadyStartedMedium = true;
-        logger.debug("INTAKE MEDIUM");
-      }
-      if (!alreadyStartedSlowed && transport.getTransportIR()) {
-        intake.setSlow();
-        transport.setSlow();
-        alreadyStartedSlowed = true;
-        logger.debug("INTAKE SLOW");
+      if (transport.getFlyWheelIR() && !seenNote) {
+        transport.setBackup();
+        shooter.setBackup();
+        seenNote = true;
       }
     }
   }
 
   @Override
   public void end(boolean interrupted) {
-    logger.debug("INTAKE END");
     intake.stopMotor();
     transport.stopMotor();
+    shooter.setWarmUpSpeed(); // to prepare us for the next shoot
   }
 
   @Override
   public boolean isFinished() {
-    return transport.getNoteInPosition();
+    return transport.getTransportIR() && seenNote && !transport.getFlyWheelIR();
   }
 }

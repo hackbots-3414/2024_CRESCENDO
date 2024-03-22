@@ -5,17 +5,21 @@ import frc.robot.subsystems.Winch;
 
 public class ManualWinchCommand extends Command {
     Winch winch;
-    double speed;
+    boolean goingUp;
 
-    public ManualWinchCommand(Winch winch, double speed) {
+    public ManualWinchCommand(Winch winch, boolean goingUp) {
         addRequirements(winch);
         this.winch = winch;
-        this.speed = speed;
+        this.goingUp = goingUp;
     }
 
     @Override
     public void execute() {
-        winch.setMotor(speed);
+        if (goingUp) {
+            winch.setClimbUpSpeed();
+        } else {
+            winch.setClimbDownSpeed();
+        }
     }
 
     @Override

@@ -34,9 +34,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
-import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.CurrentLimits;
+import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.PositionConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorMotionMagicConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorSlot0ConfigConstants;
 
@@ -114,10 +115,32 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
     elevatorMotor.setControl(config);
   }
 
+  public void stow() {
+    setElevatorPosition(PositionConstants.StowPresets.elevator);
+  }
+
   public void set(double speed) {
-    elevatorMotor.setControl(new DutyCycleOut(speed)
+    if ((speed > 0 && !getForwardLimit()) || (speed < 0 && getReverseLimit())) {
+      elevatorMotor.setControl(new DutyCycleOut(speed)
         .withLimitForwardMotion(getForwardLimit())
         .withLimitReverseMotion(getReverseLimit()));
+    } else {
+      elevatorMotor.stopMotor();
+    }
+  }
+
+  public void setResetElevatorSpeed() {
+    elevatorMotor.setControl(new DutyCycleOut(ElevatorConstants.resetElevatorSpeed)
+        .withLimitForwardMotion(getForwardLimit())
+        .withLimitReverseMotion(getReverseLimit()));
+  }
+
+  public void setElevatorUpSpeed() {
+    set(ElevatorConstants.elevatorManualUpSpeed);
+  }
+
+  public void setElevatorDownSpeed() {
+    set(ElevatorConstants.elevatorManualDownSpeed);
   }
 
   public boolean isAtSetpoint() {

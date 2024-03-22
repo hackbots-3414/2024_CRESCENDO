@@ -10,12 +10,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.DebugConstants;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.TransportConstants;
 
 public class Transport extends SubsystemBase implements AutoCloseable {
@@ -27,11 +24,8 @@ public class Transport extends SubsystemBase implements AutoCloseable {
   private boolean transportIrValue;
   private boolean flyWheelIrValue;
 
-  private boolean noteOnBoard;
-
   public Transport() {
     configMotor();
-    noteOnBoard = true; // this is to capture the note preload on auton
   }
 
   private void configMotor() {
@@ -54,9 +48,8 @@ public class Transport extends SubsystemBase implements AutoCloseable {
     transportMotor.set(speed);
   }
 
-  public void eject() {
+  public void setEject() {
     setMotor(TransportConstants.transportEjectSpeed);
-    Timer.delay(TransportConstants.transportEjectDelay);
   }
 
   public void stopMotor() {
@@ -66,6 +59,14 @@ public class Transport extends SubsystemBase implements AutoCloseable {
   public void setFast() {
 		setMotor(TransportConstants.fastTransportSpeed);
 	}
+
+  public void setMedium() {
+    transportMotor.setControl(new VoltageOut(TransportConstants.mediumTransportVolts));
+	}
+  
+  public void setBackup() {
+    setMotor(-0.2);
+  }
 
 	public void setSlow() {
     transportMotor.setControl(new VoltageOut(TransportConstants.slowTransportVolts));
@@ -77,6 +78,14 @@ public class Transport extends SubsystemBase implements AutoCloseable {
 
   public boolean getFlyWheelIR() {
     return flyWheelIrValue;
+  }
+
+  public boolean getNoteInPosition() {
+    return getTransportIR() && getFlyWheelIR();
+  }
+
+  public boolean getNoteOnBoard() {
+    return getTransportIR() || getFlyWheelIR();
   }
 
   public void setCurrentLimit(double limit) {
@@ -116,13 +125,5 @@ public class Transport extends SubsystemBase implements AutoCloseable {
 
   public void setControl(DutyCycleOut out) {
     transportMotor.setControl(out);
-  }
-
-  public void setNoteOnBoard(boolean value) {
-    noteOnBoard = value;
-  }
-
-  public boolean getNoteOnBoard() {
-    return noteOnBoard;
   }
 }

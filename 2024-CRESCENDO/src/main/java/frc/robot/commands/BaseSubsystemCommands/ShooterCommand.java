@@ -39,34 +39,31 @@ public class ShooterCommand extends Command {
       feed = waitToFeed.get().get();
     }
 
-    if(transport.getFlyWheelIR() && transport.getTransportIR()) {
-      if(!alreadyRanShooter){
-        shooter.setMaxSpeed();
-        alreadyRanShooter = true;
-      }
-      if(shooter.shooterAtSpeed() && !alreadyRanFeed && feed){
-        transport.setFast();
-        alreadyRanFeed = true;
-      }
-    } else {
-      transport.setSlow();
+    if(!alreadyRanShooter){
+      shooter.setMaxSpeed();
+      alreadyRanShooter = true;
+    }
+
+    if(shooter.shooterAtSpeed() && !alreadyRanFeed && feed){
+      transport.setFast();
+      alreadyRanFeed = true;
     }
   }
 
   @Override
   public void end(boolean interrupted) {
-    // shooter.setWarmUpSpeed();
-    shooter.stopMotor();
+    shooter.setWarmUpSpeed();
     transport.stopMotor();
   }
 
   @Override
   public boolean isFinished() {
-    if (transport.getFlyWheelIR() && transport.getTransportIR()) {
+    if (transport.getNoteOnBoard()) {
       ticks = 0;
     } else {
       ticks++;
     }
-    return ticks > 15;
+
+    return ticks > 15;    
   }
 }

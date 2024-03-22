@@ -5,17 +5,21 @@ import frc.robot.subsystems.Elevator;
 
 public class ManualElevatorCommand extends Command {
     Elevator elevator;
-    double speed;
+    boolean goingUp;
 
-    public ManualElevatorCommand(Elevator elevator, double speed) {
+    public ManualElevatorCommand(Elevator elevator, boolean goingUp) {
         addRequirements(elevator);
         this.elevator = elevator;
-        this.speed = speed;
+        this.goingUp = goingUp;
     }
 
     @Override
     public void execute() {
-        elevator.set(speed);
+        if (goingUp) {
+            elevator.setElevatorUpSpeed();
+        } else {
+            elevator.setElevatorDownSpeed();
+        }
     }
 
     @Override

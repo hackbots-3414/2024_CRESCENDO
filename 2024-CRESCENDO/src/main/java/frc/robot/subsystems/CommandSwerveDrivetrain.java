@@ -40,7 +40,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.AimConstants;
-import frc.robot.Constants.AmpConstants;
 import frc.robot.Constants.DebugConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
@@ -183,6 +182,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         AimConstants.redSpeakerPos;
         double robotDistance = speakerPose.relativeTo(getPose()).getTranslation().getNorm();
         SmartDashboard.putNumber("DISTANCE FROM TARGET", robotDistance);
+
+        isInRange = robotDistance < AimConstants.maxRange;
 
         if (DebugConstants.debugMode) {
             for (int i = 0; i < Modules.length; i++) {

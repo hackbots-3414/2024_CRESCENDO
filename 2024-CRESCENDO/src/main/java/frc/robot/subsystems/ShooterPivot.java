@@ -29,6 +29,7 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.PivotConstants.PivotMotionMagicConstants;
 import frc.robot.Constants.PivotConstants.PivotSlot0ConfigConstants;
 import frc.robot.Constants.PivotConstants.PivotSlot1ConfigConstants;
+import frc.robot.Constants.PositionConstants;
 
 public class ShooterPivot extends SubsystemBase implements AutoCloseable {
 
@@ -117,9 +118,8 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
     pivotMotor.setControl(new MotionMagicVoltage(position).withSlot(goingDown ? 1 : 0));
   }
 
-  public void setPivotPositionFromRad(double radians) {
-    double goal = (radians / (Math.PI * 2)) - (PivotConstants.radiansAtZero / (Math.PI * 2));
-    setPivotPosition(goal > 0.0 ? goal : 0.0);
+  public void stow() {
+    setPivotPosition(PositionConstants.StowPresets.shooter);
   }
 
   public void set(double speed) {
@@ -128,6 +128,14 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
     } else {
       pivotMotor.setControl(new DutyCycleOut(0.0));
     }
+  }
+
+  public void setPivotUpSpeed() {
+    set(PivotConstants.pivotManualUpSpeed);
+  }
+
+  public void setPivotDownSpeed() {
+    set(PivotConstants.pivotManualDownSpeed);
   }
 
   public boolean isAtSetpoint() {
