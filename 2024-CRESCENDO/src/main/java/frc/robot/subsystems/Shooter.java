@@ -100,7 +100,7 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
   }
 
   public void setWarmUpSpeed() {
-    setMotor(0.25);
+    setMotor(ShooterConstants.warmUpSpeed);
   }
 
   public void setMaxSpeed() {

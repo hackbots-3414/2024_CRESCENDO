@@ -81,6 +81,7 @@ public class RobotContainer {
     xboxOperator.leftTrigger(0.1).whileTrue(subsystemManager.makeIntakeCommand()); // left trigger
     xboxOperator.rightBumper().whileTrue(subsystemManager.makeManualIntakeEjectCommand()); // right bumper
     xboxOperator.rightTrigger(0.1).whileTrue(subsystemManager.makeShootCommand()); // right trigger
+    xboxOperator.leftBumper().whileTrue(subsystemManager.stopShootFlywheel());
   }
 
   private void configurePS5OperatorBindings() {
@@ -99,8 +100,10 @@ public class RobotContainer {
     ps5Operator.options().whileTrue(subsystemManager.makeManualWinchCommand(true)); // start
 
     ps5Operator.L2().whileTrue(subsystemManager.makeIntakeCommand()); // left trigger
-    ps5Operator.L1().whileTrue(subsystemManager.makeManualIntakeEjectCommand()); // left bumper
+    ps5Operator.R1().whileTrue(subsystemManager.makeManualIntakeEjectCommand()); // left bumper
     ps5Operator.R2().whileTrue(subsystemManager.makeShootCommand()); // right trigger
+    ps5Operator.L1().whileTrue(subsystemManager.stopShootFlywheel()); // left bumper
+
   }
 
   private RobotContainer() {

@@ -104,6 +104,7 @@ public class AimCommand extends Command {
         PPHolonomicDriveController.setRotationTargetOverride(() -> Optional.empty());
         currentDriveCommand.end(interrupted);
         shooterCommand.end(interrupted);
+        drivetrain.setInRange(false);
     }
 
     public boolean getShooterFeedSupplier() {

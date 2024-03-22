@@ -91,6 +91,7 @@ public class Robot extends LoggedRobot {
     }
     CommandScheduler.getInstance().cancelAll();
     subsystemManager.resetAfterAuton().schedule();
+    subsystemManager.stopShootFlywheel();
   }
 
   @Override
