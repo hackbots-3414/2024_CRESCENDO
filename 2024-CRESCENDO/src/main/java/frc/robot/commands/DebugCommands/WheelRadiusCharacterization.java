@@ -15,7 +15,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 public class WheelRadiusCharacterization extends Command {
   CommandSwerveDrivetrain drivetrain;
   FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-  double driveBaseRadius = 37.3; //centemeters
+  double driveBaseRadius = 37.268; //centemeters
   double gyroStartingPosition;
   double gyroEndingPosition;
   Logger log = LoggerFactory.getLogger(WheelRadiusCharacterization.class);
@@ -66,7 +66,7 @@ public class WheelRadiusCharacterization extends Command {
     SmartDashboard.putNumber("Ending Gyro Position", Units.degreesToRadians(drivetrain.getPigeon2().getAngle()));
     gyroEndingPosition = Units.degreesToRadians(drivetrain.getPigeon2().getAngle());
     double gyroPositionChange = gyroEndingPosition - gyroStartingPosition;
-    double wheelRadius = (gyroPositionChange * driveBaseRadius) / getWheelRotationRadAvg();
+    double wheelRadius = ((gyroPositionChange * driveBaseRadius) / getWheelRotationRadAvg())/2.0;
     SmartDashboard.putNumber("Wheel Radius", wheelRadius);
   }
 
