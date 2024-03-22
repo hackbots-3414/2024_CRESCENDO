@@ -66,7 +66,6 @@ Hackbots code for the 2024 FRC Crescendo game.
 ## LED codes:
 |Event|Color Pattern|
 |-----|-------------|
-----------------------------------------------------
 |Note In View| Yellow| 
 |Note On Board| Green Medium Flash|
 |End Game Warning (30)| White|
