@@ -2,25 +2,19 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7046435911053639,
-      "y": 6.632738356385804
+      "x": 1.459019830791339,
+      "y": 6.997185537995237
     },
-    "rotation": -119.248826336547
+    "rotation": -178.85423716182493
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Subwoofer"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "AmpSideToNote1"
+            "pathName": "AutoAimAmpSide4PieceNote1"
           }
         },
         {
@@ -32,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Note1ToNote4"
+            "pathName": "AutoAimAmpSide4PieceNote1To2"
           }
         },
         {
@@ -44,7 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ShootNote4ToNote2"
+            "pathName": "AutoAimAmpSide4PieceNote2To3"
           }
         },
         {
@@ -56,7 +50,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Note2toNote3"
+            "pathName": "AutoAimAmpSide4PieceNote3To4"
           }
         },
         {

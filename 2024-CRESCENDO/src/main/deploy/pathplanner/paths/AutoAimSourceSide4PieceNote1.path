@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.4314718562323023,
+        "y": 4.097761215656659
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.693177614543148,
+        "y": 4.111535202936178
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.7344995763817026,
+        "y": 4.097761215656659
+      },
+      "prevControl": {
+        "x": 1.5829857163070022,
+        "y": 4.0908742220169
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.21,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 138.92830722539767,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "AutoAimSourceSide4Piece",
+  "previewStartingState": {
+    "rotation": 179.1930705448976,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

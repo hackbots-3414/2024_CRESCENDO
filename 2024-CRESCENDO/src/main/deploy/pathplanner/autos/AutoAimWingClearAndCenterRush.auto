@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7046435911053639,
-      "y": 6.632738356385804
+      "x": 1.45213283715158,
+      "y": 5.564690860925347
     },
-    "rotation": -119.248826336547
+    "rotation": -178.85423716182493
   },
   "command": {
     "type": "sequential",
@@ -14,13 +14,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Subwoofer"
+            "name": "ShootAnywhere"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "AmpSideToNote1"
+            "pathName": "AutoAimWingClearAndCenterRushNote1To2"
           }
         },
         {
@@ -32,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Note1ToNote4"
+            "pathName": "AutoAimWingClearAndCenterRushNote2To3"
           }
         },
         {
@@ -44,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ShootNote4ToNote2"
+            "pathName": "AutoAimWingClearAndCenterRushNote3To4"
           }
         },
         {
@@ -56,7 +56,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Note2toNote3"
+            "pathName": "AutoAimWingClearAndCenterRushRush"
           }
         },
         {
