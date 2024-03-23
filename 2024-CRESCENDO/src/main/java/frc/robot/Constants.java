@@ -247,7 +247,7 @@ public class Constants {
 
         public static final class SubwooferPresets {
             public static final double elevator = 0.0;
-            public static final double shooter = 0.074;
+            public static final double shooter = 0.068;
         }
     }
 
