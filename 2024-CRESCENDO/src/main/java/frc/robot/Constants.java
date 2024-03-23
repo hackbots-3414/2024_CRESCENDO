@@ -124,7 +124,7 @@ public class Constants {
         public static final double kS = 9.0;
         public static final double kV = 0.0;
 
-        public static final double shooterTolerance = 1.0;
+        public static final double shooterTolerance = 3.0; // was 1.0
 
         public static final double warmUpSpeed = 0.5; // duty cycle (0-1)
 
