@@ -211,6 +211,7 @@ public class SubsystemManager extends SubsystemBase {
 	public Command elevatorNeutralMode(NeutralModeValue neutralMode) {
 		return new InstantCommand(() -> elevator.setNeutralMode(neutralMode));
 	}
+	
 
 
 	// WINCH COMMANDS
@@ -234,6 +235,9 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public Command stopShootFlywheel() {
 		return new InstantCommand(() -> shooter.stopMotor());
+	}
+	public Command makeShooterRevCommand() {
+		return new InstantCommand(() -> shooter.setWarmUpSpeed());
 	}
 
 	//TRANSPORT COMMANDS

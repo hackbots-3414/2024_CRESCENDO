@@ -64,7 +64,8 @@ public class AutoIntakeCommand extends Command {
   public void end(boolean interrupted) {
     intake.stopMotor();
     transport.stopMotor();
-    shooter.setWarmUpSpeed(); // to prepare us for the next shoot
+    shooter.stopMotor();
+    // shooter.setWarmUpSpeed(); // to prepare us for the next shoot
   }
 
   @Override
