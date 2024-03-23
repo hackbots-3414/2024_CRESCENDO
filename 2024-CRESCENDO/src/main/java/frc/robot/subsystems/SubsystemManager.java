@@ -267,7 +267,7 @@ public class SubsystemManager extends SubsystemBase {
 	public Command makeAmpFinishCommand() {
 		return new SequentialCommandGroup(
 			new ScoreAmpCommand(shooter, transport, elevator),
-			makeElevatorCommand(ElevatorPresets.STOW)
+			new InstantCommand(this::stow)
 		);
 	}
 	public Command makeSubwooferShootCommand() {
@@ -303,7 +303,7 @@ public class SubsystemManager extends SubsystemBase {
 
 	// AUTON COMMANDS
 	public Command makeSpitOutCommand() {
-		return new SpitOutCommand(shooter, transport, intake);
+		return new SpitOutCommand(shooter, transport);
 	}
 	public Optional<Rotation2d> getRotationTargetOverride() {
 		if (noteOnBoard) {

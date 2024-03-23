@@ -47,7 +47,7 @@ public class TunerConstants {
 
     private static final double kDriveGearRatio = 6.122448979591837;
     private static final double kSteerGearRatio = 21.428571428571427;
-    private static final double kWheelRadiusInches = 3.78 / 2.0; // 3.974
+    private static final double kWheelRadiusInches = 1.985; // 3.78 / 2.0; // 3.974 // new wheels radius is 1.985" (3.97" diameter)
 
     private static final boolean kSteerMotorReversed = true; // FIXES IDLE SPIN ERROR
     private static final boolean kInvertLeftSide = false;

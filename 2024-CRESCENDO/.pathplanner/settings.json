@@ -9,7 +9,8 @@
     "AmpSide5Piece",
     "AutoAimAmpSide4Piece",
     "AutoAimSourceSide4Piece",
-    "AutoAimWingClearAndCenterRush"
+    "AutoAimWingClearAndCenterRush",
+    "AutoAimCenterPieceCenterRush"
   ],
   "autoFolders": [],
   "defaultMaxVel": 5.21,
