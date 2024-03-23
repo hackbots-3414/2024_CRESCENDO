@@ -392,8 +392,8 @@ public class Constants {
 
         public static final double sensorToMechanismRatio = 25.0;
 
-        public static final double winchManualUpSpeed = 0.75;
-        public static final double winchManualDownSpeed = -0.5;
+        public static final double winchManualUpSpeed = 1.0;
+        public static final double winchManualDownSpeed = -0.7;
     }
 
     public class NoteFinderConstants {
