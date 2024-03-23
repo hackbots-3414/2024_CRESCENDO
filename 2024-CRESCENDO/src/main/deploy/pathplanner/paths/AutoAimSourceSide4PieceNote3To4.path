@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.9314505474648525,
-        "y": 4.965522414266305
+        "x": 2.51,
+        "y": 2.9
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.031983607591376,
-        "y": 3.8429424509855723
+        "x": 6.535109797492321,
+        "y": -0.05597247558131472
       },
       "isLocked": false,
       "linkedName": null
@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 3.9314505474648525,
-        "y": 4.965522414266305
+        "x": 2.51,
+        "y": 2.9
       },
       "prevControl": {
-        "x": 6.045757594870894,
-        "y": 3.8291684637060555
+        "x": 6.572424781213199,
+        "y": -0.05597247558131472
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,7 +47,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.85,
-      "rotationDegrees": -173.6577103558192,
+      "rotationDegrees": -113.91720906642693,
       "rotateFast": false
     }
   ],
@@ -79,13 +79,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 172.07674071662134,
+    "rotation": 131.75027045596136,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "AutoAimSourceSide4Piece",
+  "folder": null,
   "previewStartingState": {
-    "rotation": 170.40686573726958,
+    "rotation": 132.60602386316182,
     "velocity": 0
   },
   "useDefaultConstraints": true

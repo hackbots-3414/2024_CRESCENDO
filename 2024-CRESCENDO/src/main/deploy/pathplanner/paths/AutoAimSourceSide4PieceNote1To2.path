@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.981045425178098,
-        "y": 2.5068656848723094
+        "x": 2.36516036668437,
+        "y": 1.8844066779042652
       },
       "isLocked": false,
       "linkedName": null
@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 1.7344995763817026,
-        "y": 3.918699381022923
+        "x": 2.51,
+        "y": 2.9
       },
       "prevControl": {
-        "x": 4.186269312135944,
-        "y": 0.7920042685722968
+        "x": 3.7441115254041293,
+        "y": 1.3261611445688943
       },
       "nextControl": null,
       "isLocked": false,
@@ -79,11 +79,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 135.11390796029312,
+    "rotation": 132.41796874104992,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "AutoAimSourceSide4Piece",
+  "folder": null,
   "previewStartingState": {
     "rotation": 139.27946353024527,
     "velocity": 0

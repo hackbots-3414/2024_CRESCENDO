@@ -2,25 +2,31 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3110120765696076,
-      "y": 5.485302606968851
+      "x": 0.7139723370355832,
+      "y": 4.431154316854089
     },
-    "rotation": 179.0036521034951
+    "rotation": 118.50401152181144
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "AutoAimShootBackup"
+            "name": "Subwoofer"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "ShootAnywhere"
+            "pathName": "GetOutOfTheWay"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClearCenterRings"
           }
         }
       ]

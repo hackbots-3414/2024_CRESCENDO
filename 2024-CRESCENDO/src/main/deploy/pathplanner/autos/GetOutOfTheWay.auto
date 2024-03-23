@@ -2,19 +2,25 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2.0,
-      "y": 7.0
+      "x": 0.7139723370355832,
+      "y": 4.431154316854089
     },
-    "rotation": 0
+    "rotation": 118.7261306653044
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Subwoofer"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Test"
+            "pathName": "GetOutOfTheWay"
           }
         }
       ]
