@@ -59,7 +59,8 @@ public class RobotContainer {
     autoAimButton.whileTrue(subsystemManager.makeAutoAimCommand(driverLeftY, driverLeftX, driverRightX));
     shellyButton.whileTrue(subsystemManager.makeShellyCommand(driverLeftX, driverLeftY, driverRightX));
     ampScoreButton.onTrue(subsystemManager.makeAmpSequence());
-    ampScoreButton.onFalse(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));
+    ampScoreButton.onFalse(new InstantCommand(() -> subsystemManager.stow()));
+    // ampScoreButton.onFalse(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));
     
     if (Utils.isSimulation()) {subsystemManager.resetAtPose2d(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));}
     subsystemManager.telemeterize();

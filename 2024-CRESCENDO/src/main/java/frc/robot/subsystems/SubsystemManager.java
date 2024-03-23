@@ -211,6 +211,10 @@ public class SubsystemManager extends SubsystemBase {
 	public Command elevatorNeutralMode(NeutralModeValue neutralMode) {
 		return new InstantCommand(() -> elevator.setNeutralMode(neutralMode));
 	}
+	public void stow() {
+		elevator.stow();
+		shooterPivot.stow();
+	}
 	
 
 
