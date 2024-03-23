@@ -36,7 +36,7 @@ public class Constants {
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
 
-        public static final double driveSupplyCurrentLimit = 80;
+        public static final double driveSupplyCurrentLimit = 75.0; // was 80.0, changed experimentally to prevent brownouts on 3/23
 
         public static final double maxDriveAcceleration = 4;
         public static final double maxAngleAcceleration = 2 * Math.PI;
