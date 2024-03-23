@@ -94,7 +94,6 @@ public class AimCommand extends Command {
     @Override
     public boolean isFinished() {
         return shooterCommand.isFinished();
-        // return true;
     }
 
     @Override
@@ -105,6 +104,6 @@ public class AimCommand extends Command {
     }
 
     public boolean getShooterFeedSupplier() {
-        return thetaController.atSetpoint();
+        return true;
     }
 }
