@@ -170,7 +170,7 @@ public class LedSubsystem extends SubsystemBase {
     // }
     // SmartDashboard.putBoolean("In Auton", inAuton);
     // SmartDashboard.putBoolean("In Teleop", inTeleop);
-    // SmartDashboard.putNumber("matchtime", matchTime);
+    SmartDashboard.putNumber("Countdown", matchTime);
     // SmartDashboard.putBoolean("badController", badController());
     if (inTeleop || inAuton) {
       if (matchTime <= LEDConstants.endgameWarning && matchTime > 0 && !inAuton) {
