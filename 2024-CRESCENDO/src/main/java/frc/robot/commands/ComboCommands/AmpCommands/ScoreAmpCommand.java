@@ -11,6 +11,7 @@ public class ScoreAmpCommand extends Command {
   private Transport transport;
   private Shooter shooter;
   private Elevator elevator;
+  
   public ScoreAmpCommand(Shooter shooter, Transport transport, Elevator elevator) {
     addRequirements(transport, shooter);
     this.transport = transport;

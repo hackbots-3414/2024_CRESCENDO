@@ -198,10 +198,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return isInRange;
     }
 
-    public void setInRange(boolean isInRange) {
-        this.isInRange = isInRange;
-    }
-
     @Override
     public void simulationPeriodic() {
         Subsystem.super.simulationPeriodic();

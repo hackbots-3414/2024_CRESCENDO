@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.PositionConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ShooterPivot;
@@ -32,8 +31,8 @@ public class IntakeCommand extends Command {
 
   @Override
   public void initialize() {
-    elevator.setElevatorPosition(PositionConstants.StowPresets.elevator);
-    pivot.setPivotPosition(PositionConstants.StowPresets.shooter);
+    elevator.stow();
+    pivot.stow();
     alreadyStarted = false;
     alreadyStartedSlowed = false;
     alreadyStartedMedium = false;

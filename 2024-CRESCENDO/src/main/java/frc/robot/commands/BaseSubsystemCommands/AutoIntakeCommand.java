@@ -1,11 +1,10 @@
-package frc.robot.commands.AutonCommands;
+package frc.robot.commands.BaseSubsystemCommands;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.PositionConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -18,7 +17,7 @@ public class AutoIntakeCommand extends Command {
   private Elevator elevator;
   private ShooterPivot pivot;
   private Shooter shooter;
-  private Logger log = LoggerFactory.getLogger(AutoIntakeCommand.class);
+  // private Logger log = LoggerFactory.getLogger(AutoIntakeCommand.class);
   private boolean seenNote;
 
   private boolean alreadyStarted;
@@ -31,13 +30,12 @@ public class AutoIntakeCommand extends Command {
     this.elevator = elevator;
     this.pivot = pivot;
     this.shooter = shooter;
-
   }
 
   @Override
   public void initialize() {
-    elevator.setElevatorPosition(PositionConstants.StowPresets.elevator);
-    pivot.setPivotPosition(PositionConstants.StowPresets.shooter);
+    elevator.stow();
+    pivot.stow();
     shooter.stopMotor();
     seenNote = false;
     alreadyStarted = false;
