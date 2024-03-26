@@ -5,24 +5,23 @@ import java.util.function.Supplier;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AimHelper.AimOutputContainer;
-import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
+import frc.robot.subsystems.Transport;
 
 public class AimPresetCommand extends Command {
     ShooterPivot shooterPivot;
-    Shooter shooter;
+    Transport transport;
     Supplier<Alliance> aSupplier;
     Supplier<AimOutputContainer> aimSupplier;
-    Supplier<Boolean> hasNote;
 
     boolean blueSide = false;
     AimOutputContainer output;
 
-    public AimPresetCommand(ShooterPivot shooterPivot, Shooter shooter, Supplier<Alliance> aSupplier, Supplier<AimOutputContainer> aimSupplier, Supplier<Boolean> hasNote) {
+    public AimPresetCommand(ShooterPivot shooterPivot, Transport transport, Supplier<Alliance> aSupplier, Supplier<AimOutputContainer> aimSupplier) {
         this.shooterPivot = shooterPivot;
+        this.transport = transport;
         this.aSupplier = aSupplier;
         this.aimSupplier = aimSupplier;
-        this.hasNote = hasNote;
     }
 
     @Override 
@@ -32,19 +31,9 @@ public class AimPresetCommand extends Command {
 
     @Override
     public void execute() {
-        output = aimSupplier.get();
-        shooterPivot.setPivotPosition(output.getPivotAngle());
-        shooter.setMaxSpeed();
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        shooter.stopMotor();
-        shooterPivot.stow();
-    }
-
-    @Override
-    public boolean isFinished() {
-        return !hasNote.get();
+        if (transport.getNoteOnBoard()) {
+            output = aimSupplier.get();
+            shooterPivot.setPivotPosition(output.getPivotAngle());
+        }
     }
 }

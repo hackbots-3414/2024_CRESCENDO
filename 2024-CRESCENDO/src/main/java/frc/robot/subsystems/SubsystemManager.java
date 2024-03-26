@@ -39,6 +39,7 @@ import frc.robot.commands.BaseSubsystemCommands.AimPresetCommand;
 import frc.robot.commands.BaseSubsystemCommands.AutoIntakeCommand;
 import frc.robot.commands.BaseSubsystemCommands.IntakeCommand;
 import frc.robot.commands.BaseSubsystemCommands.ShooterCommand;
+import frc.robot.commands.BaseSubsystemCommands.ShooterFlywheelCommand;
 import frc.robot.commands.BaseSubsystemCommands.SpitOutCommand;
 import frc.robot.commands.ComboCommands.ResetElevatorCommand;
 import frc.robot.commands.ComboCommands.AmpCommands.AmpComboScheduler;
@@ -132,6 +133,9 @@ public class SubsystemManager extends SubsystemBase {
 			}
             aprilTagVision.setDataInterfaces(drivetrain::addVisionData);
         }
+
+		shooter.setDefaultCommand(new ShooterFlywheelCommand(shooter, transport));
+		shooterPivot.setDefaultCommand(new AimPresetCommand(shooterPivot, transport, allianceSupplier, this::getAimOutputContainer));
 	}
 
 	public static synchronized SubsystemManager getInstance() {
@@ -286,9 +290,6 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public AimOutputContainer getAimOutputContainer() {
         return AimHelper.getAimOutputs(drivetrain, allianceSupplier.get() == Alliance.Blue, AimStrategies.LOOKUP);
-	}
-	public Command makeAimPresetCommand() {
-		return new AimPresetCommand(shooterPivot, shooter, allianceSupplier, this::getAimOutputContainer, () -> transport.getNoteOnBoard());
 	}
 	public Command makeAutoIntakeCommand() {
 		return new AutoIntakeCommand(transport, intake, elevator, shooterPivot, shooter);

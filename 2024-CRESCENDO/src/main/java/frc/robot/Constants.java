@@ -164,7 +164,7 @@ public class Constants {
     public static final class IntakeConstants {
         public static final int intakeMotorID = 60;
         public static final double fastIntakeSpeed = 1;
-        public static final double mediumIntakeVolts = 0.5 * 12;
+        public static final double mediumIntakeVolts = 0.4 * 12;
         public static final double slowIntakeVolts = 0.2 * 12;
         public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
@@ -209,7 +209,7 @@ public class Constants {
         public static final int transportMotorID = 56;
         public static final boolean transportMotorInvert = true;
         public static final double fastTransportSpeed = 1;
-        public static final double mediumTransportVolts = 0.5 * 12;
+        public static final double mediumTransportVolts = 0.4 * 12;
         public static final double slowTransportVolts = 0.2 * 12;
         public static final double ejectSpeed = -0.6;
         public static final double transportEjectSpeed = -0.5;
