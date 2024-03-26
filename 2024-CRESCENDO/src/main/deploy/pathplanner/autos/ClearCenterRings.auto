@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7139723370355832,
+      "y": 4.431154316854089
+    },
+    "rotation": 118.50401152181144
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Subwoofer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GetOutOfTheWay"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClearCenterRings"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

@@ -3,6 +3,7 @@ package frc.robot.commands.AutonCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.PositionConstants;
 import frc.robot.subsystems.Elevator;
@@ -30,7 +31,6 @@ public class AutoIntakeCommand extends Command {
     this.elevator = elevator;
     this.pivot = pivot;
     this.shooter = shooter;
-  // SmartDashboard.putString("INTAKE FAST", "Initialized");
 
   }
 
@@ -64,7 +64,11 @@ public class AutoIntakeCommand extends Command {
   public void end(boolean interrupted) {
     intake.stopMotor();
     transport.stopMotor();
-    shooter.setWarmUpSpeed(); // to prepare us for the next shoot
+    if (DriverStation.isAutonomous()) {
+      shooter.setWarmUpSpeed();
+    } else {
+      shooter.stopMotor();
+    }
   }
 
   @Override

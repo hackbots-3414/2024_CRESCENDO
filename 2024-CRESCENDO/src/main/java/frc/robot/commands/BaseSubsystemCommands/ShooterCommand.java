@@ -52,7 +52,7 @@ public class ShooterCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    shooter.setWarmUpSpeed();
+    shooter.stopMotor();
     transport.stopMotor();
   }
 

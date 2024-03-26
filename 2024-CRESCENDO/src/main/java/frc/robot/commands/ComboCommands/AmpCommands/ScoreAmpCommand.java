@@ -22,8 +22,8 @@ public class ScoreAmpCommand extends Command {
   public void initialize() {
     if (elevator.isAtSetpoint()) {
       transport.setEject();
-      Timer.delay(TransportConstants.transportEjectDelay);
       shooter.setMotor(-0.2);
+      Timer.delay(TransportConstants.transportEjectDelay);
     }
   }
   

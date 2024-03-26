@@ -79,16 +79,14 @@ public class AimCommand extends Command {
         shooterPivot.setPivotPosition(output.getPivotAngle());
         drivetrain.setInRange(output.getIsInRange());
 
-        if (DriverStation.isTeleop()) {
+        if (!DriverStation.isAutonomous()) {
             currentDriveCommand = drivetrain.applyRequest(() -> driveRequest.withVelocityX(xSupplier.get() * SwerveConstants.maxDriveVelocity)
                                 .withVelocityY(ySupplier.get() * SwerveConstants.maxDriveVelocity)
                                 .withRotationalRate((rSupplier.get() > 0.2 || rSupplier.get() < -0.2) ? (-rSupplier.get() * SwerveConstants.maxAngleVelocity) 
                                 : (thetaController.calculate(robotPosition.getRotation().getRadians(), output.getDrivetrainRotation().getRadians()) * Constants.SwerveConstants.maxAngleVelocity)));
 
             currentDriveCommand.execute();
-        } else if (DriverStation.isAutonomous()) {
-            PPHolonomicDriveController.setRotationTargetOverride(() -> Optional.of(output.getDrivetrainRotation()));
-        }       
+        }
 
         shooterCommand.execute();
     }
@@ -96,18 +94,16 @@ public class AimCommand extends Command {
     @Override
     public boolean isFinished() {
         return shooterCommand.isFinished();
-        // return true;
     }
 
     @Override
     public void end(boolean interrupted) {
-        PPHolonomicDriveController.setRotationTargetOverride(() -> Optional.empty());
-        currentDriveCommand.end(interrupted);
+        if (!DriverStation.isAutonomous()) currentDriveCommand.end(interrupted);
         shooterCommand.end(interrupted);
         drivetrain.setInRange(false);
     }
 
     public boolean getShooterFeedSupplier() {
-        return thetaController.atSetpoint();
+        return true;
     }
 }

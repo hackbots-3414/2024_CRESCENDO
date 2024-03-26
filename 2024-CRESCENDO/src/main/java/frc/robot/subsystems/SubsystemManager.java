@@ -211,6 +211,11 @@ public class SubsystemManager extends SubsystemBase {
 	public Command elevatorNeutralMode(NeutralModeValue neutralMode) {
 		return new InstantCommand(() -> elevator.setNeutralMode(neutralMode));
 	}
+	public void stow() {
+		elevator.stow();
+		shooterPivot.stow();
+	}
+	
 
 
 	// WINCH COMMANDS
@@ -234,6 +239,9 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public Command stopShootFlywheel() {
 		return new InstantCommand(() -> shooter.stopMotor());
+	}
+	public Command makeShooterRevCommand() {
+		return new InstantCommand(() -> shooter.setWarmUpSpeed());
 	}
 
 	//TRANSPORT COMMANDS
@@ -259,7 +267,7 @@ public class SubsystemManager extends SubsystemBase {
 	public Command makeAmpFinishCommand() {
 		return new SequentialCommandGroup(
 			new ScoreAmpCommand(shooter, transport, elevator),
-			makeElevatorCommand(ElevatorPresets.STOW)
+			new InstantCommand(this::stow)
 		);
 	}
 	public Command makeSubwooferShootCommand() {
@@ -295,7 +303,7 @@ public class SubsystemManager extends SubsystemBase {
 
 	// AUTON COMMANDS
 	public Command makeSpitOutCommand() {
-		return new SpitOutCommand(shooter, transport, intake);
+		return new SpitOutCommand(shooter, transport);
 	}
 	public Optional<Rotation2d> getRotationTargetOverride() {
 		if (noteOnBoard) {

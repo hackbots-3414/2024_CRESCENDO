@@ -36,7 +36,7 @@ public class Constants {
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
 
-        public static final double driveSupplyCurrentLimit = 80;
+        public static final double driveSupplyCurrentLimit = 75.0; // was 80.0, changed experimentally to prevent brownouts on 3/23
 
         public static final double maxDriveAcceleration = 4;
         public static final double maxAngleAcceleration = 2 * Math.PI;
@@ -124,9 +124,11 @@ public class Constants {
         public static final double kS = 9.0;
         public static final double kV = 0.0;
 
-        public static final double shooterTolerance = 1.0;
+        public static final double shooterTolerance = 3.0; // was 1.0
 
-        public static final double warmUpSpeed = 0.2; // duty cycle (0-1)
+        public static final double warmUpSpeed = 0.5; // duty cycle (0-1)
+
+        public static final double spitOutSpeed = 50;
         public static final double maxSpeed = 80; // rps
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
@@ -199,7 +201,7 @@ public class Constants {
 
         public static final double expoPower = 2.0;
 
-        public static final JoystickChoice operatorController = JoystickChoice.XBOX;
+        public static final JoystickChoice operatorController = JoystickChoice.PS5;
         public static final AutonViews autonView = AutonViews.AMP;
     }
 
@@ -245,7 +247,7 @@ public class Constants {
 
         public static final class SubwooferPresets {
             public static final double elevator = 0.0;
-            public static final double shooter = 0.074;
+            public static final double shooter = 0.068;
         }
     }
 
@@ -390,8 +392,8 @@ public class Constants {
 
         public static final double sensorToMechanismRatio = 25.0;
 
-        public static final double winchManualUpSpeed = 0.5;
-        public static final double winchManualDownSpeed = -0.5;
+        public static final double winchManualUpSpeed = 1.0;
+        public static final double winchManualDownSpeed = -0.7;
     }
 
     public class NoteFinderConstants {

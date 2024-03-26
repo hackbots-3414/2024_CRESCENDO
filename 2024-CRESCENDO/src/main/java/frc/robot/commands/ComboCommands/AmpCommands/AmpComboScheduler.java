@@ -1,6 +1,7 @@
 package frc.robot.commands.ComboCommands.AmpCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -10,6 +11,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
+import frc.robot.subsystems.SubsystemManager;
 import frc.robot.subsystems.Transport;
 
 public class AmpComboScheduler extends Command {
@@ -33,7 +35,7 @@ public class AmpComboScheduler extends Command {
 			drivetrain.makeDriveToAmpCommand(),
 			new AmpSetupCommand(elevator),
 			new ScoreAmpCommand(shooter, transport, elevator).withTimeout(Constants.AmpConstants.allowedShootTime),
-      new ElevatorCommand(elevator, pivot, ElevatorPresets.STOW)
+      new InstantCommand(() -> SubsystemManager.getInstance().stow())
 		).onlyWhile(RobotContainer.getInstance()::getAmpButton);
     macro.schedule();
   }

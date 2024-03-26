@@ -6,11 +6,15 @@
     "4PieceCenter",
     "4PieceWingClear",
     "7Piece",
-    "AmpSide5Piece"
+    "AmpSide5Piece",
+    "AutoAimAmpSide4Piece",
+    "AutoAimSourceSide4Piece",
+    "AutoAimWingClearAndCenterRush",
+    "AutoAimCenterPieceCenterRush"
   ],
   "autoFolders": [],
   "defaultMaxVel": 5.21,
-  "defaultMaxAccel": 3.5,
+  "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "maxModuleSpeed": 5.21
