@@ -18,6 +18,7 @@ public class AimPresetCommand extends Command {
     AimOutputContainer output;
 
     public AimPresetCommand(ShooterPivot shooterPivot, Transport transport, Supplier<Alliance> aSupplier, Supplier<AimOutputContainer> aimSupplier) {
+        addRequirements(shooterPivot);
         this.shooterPivot = shooterPivot;
         this.transport = transport;
         this.aSupplier = aSupplier;
