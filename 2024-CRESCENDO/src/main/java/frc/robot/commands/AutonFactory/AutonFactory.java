@@ -4,8 +4,15 @@
 
 package frc.robot.commands.AutonFactory;
 
+import java.util.ArrayList;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
+import frc.robot.commands.BaseSubsystemCommands.IntakeCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -20,6 +27,7 @@ public class AutonFactory extends Command {
   private ShooterPivot pivot;
   private Shooter shooter;
   private Elevator elevator;
+  private ArrayList<Pose2d> poses;
 
   /** Creates a new AutonFactory. */
   public AutonFactory(CommandSwerveDrivetrain drivetrain, Intake intake, Transport transport, ShooterPivot pivot, Shooter shooter, Elevator elevator) {
@@ -38,21 +46,37 @@ public class AutonFactory extends Command {
   public void initialize() {
     // get the "encoded" path string from smartDashboard
     String pathAsString = SmartDashboard.getString("Auton Path", "");
-    int len = pathAsString.length();
-    
+    poses = new ArrayList<Pose2d>(pathAsString.length());
+    for (int i = 0;i < pathAsString.length();i ++) {
+      char c = pathAsString.charAt(i);
+      Pose2d receivedPose = Constants.AutonFactoryConstants.poses.get(c);
+      if (receivedPose != null) {
+        poses.add(receivedPose);
+      }
+    }
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    SequentialCommandGroup sequence = new SequentialCommandGroup();
+    for (Pose2d targetPose : poses) {
+      sequence.addCommands(
+        new ParallelRaceGroup(
+          drivetrain.makeDriveToPoseCommand(targetPose, false),
+          new IntakeCommand(transport, intake, elevator, pivot)
+        ),
+        new ShootMaybeCommand(drivetrain, transport)
+      );
+    }
+
+    sequence.schedule();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

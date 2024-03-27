@@ -214,7 +214,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
      * @param isReversed does the robot drive with the intake side as forwards.
      * @return The pathplanner-generated command to get to that pose
      */
-    public Command makeDriveToPoseCommand(Pose2d goalPose, boolean isReversed) {
+    public Command makeDriveToPoseCommand(Pose2d goalPose, boolean isReversed, double speedMultiplier) {
         GoalEndState goal = DriverStation.getAlliance().get() == Alliance.Blue
                 ? new GoalEndState(0.0, goalPose.getRotation())
                 : new GoalEndState(0, new Rotation2d(Math.PI - goalPose.getRotation().getRadians()));
@@ -235,6 +235,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
         return AutoBuilder.followPath(path);
     }
+
+    public Command makeDriveToPoseCommand(Pose2d goalPose, boolean isReversed) {
+        return makeDriveToPoseCommand(estimatedPose, isReversed, Constants.SwerveConstants.driveToPoseSpeedMultiplier);
+    }
+
     public Command makeDriveToAmpCommand() {
         Pose2d ampPose = new Pose2d(FieldConstants.ampCenter.minus(new Translation2d(0, Constants.AimConstants.bumperToCenter)), Rotation2d.fromDegrees(270));
         return makeDriveToPoseCommand(ampPose, true);

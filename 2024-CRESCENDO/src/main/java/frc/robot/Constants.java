@@ -44,6 +44,7 @@ public class Constants {
         public static final double maxAngleVelocity = 1.5 * Math.PI;
         public static final double shellyDriveVelocity = maxDriveVelocity * 0.25;
         public static final double shellyAngleVelocity = maxAngleVelocity * 0.50;
+        public static final double driveToPoseSpeedMultiplier = 0.25;
 
         // Need to change below Constants.
         // If using TunerX estimator,which uses default values for standard deviations
@@ -478,7 +479,8 @@ public class Constants {
         public static final int rightNumLED = 13;
     }
 
-    public static class AutoFactoryConstants {
+    public static class AutonFactoryConstants {
         public static Map<Character, Pose2d> poses = Map.ofEntries();
+        public static double speedMultiplier = 0.5; // this is slightly faster than normal because we want our autons to be fast.
     }
 }
