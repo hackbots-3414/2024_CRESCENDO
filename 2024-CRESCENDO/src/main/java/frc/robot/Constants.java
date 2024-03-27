@@ -150,6 +150,25 @@ public class Constants {
                 entry(6.0, 0.0) // max range
         );
 
+        public static final Map<Double, Double> feederLookupTable = Map.ofEntries(
+                entry(0.0, 0.088),
+                entry(1.387, 0.068),
+                entry(1.69, 0.062),
+                entry(1.9, 0.054),
+                entry(2.0, 0.048),
+                entry(2.1, 0.044),
+                entry(2.26, 0.039),
+                entry(2.62, 0.034),
+                entry(2.8, 0.027),
+                entry(3.0, 0.029),
+                entry(3.27, 0.020),
+                entry(3.66, 0.015),
+                entry(4.0, 0.012),
+                entry(4.3, 0.0095),
+                entry(4.6, 0.0065),
+                entry(6.0, 0.0) // max range
+        );
+
         // public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
         //         entry(0.0, 50.0),
         //         entry(1.41, 50.0),

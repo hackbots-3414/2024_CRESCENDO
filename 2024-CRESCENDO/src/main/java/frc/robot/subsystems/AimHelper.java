@@ -37,6 +37,40 @@ public class AimHelper {
         return output;
     }
 
+    public static AimOutputContainer getFeedAimOutputs(CommandSwerveDrivetrain drivetrain, boolean isBlueSide, AimStrategies strategy) {
+        Pose2d speakerPose = isBlueSide ? AimConstants.blueSpeakerPos : AimConstants.redSpeakerPos;
+        Pose2d drivetrainPose = drivetrain.getPose();
+
+        double robotDistance = speakerPose.relativeTo(drivetrainPose).getTranslation().getNorm();
+
+        AimOutputContainer output = new AimOutputContainer();
+
+        Double lowerDistance = null, higherDistance = null;
+
+        Map<Double, Double> rotationMap = ShooterConstants.feederLookupTable;
+        for (Double key : rotationMap.keySet()) {
+            lowerDistance = (key <= robotDistance && (lowerDistance == null || key > lowerDistance)) ? key : lowerDistance;
+            higherDistance = (key >= robotDistance && (higherDistance == null || key < higherDistance)) ? key : higherDistance;
+        }
+
+        // If exact distance is found, return the corresponding value
+        if (lowerDistance != null && lowerDistance == robotDistance) {
+            output.setPivotAngle(rotationMap.get(lowerDistance));
+        } else {
+            // If no lower or higher distance is found, return 0
+            if (lowerDistance == null || higherDistance == null) {
+                output.setPivotAngle(0);
+            } else {
+                double location = (robotDistance - lowerDistance) / (higherDistance - lowerDistance);
+                output.setPivotAngle(MathUtil.interpolate(rotationMap.get(lowerDistance), rotationMap.get(higherDistance), location));
+            } 
+        }
+
+        output.setDrivetrainRotation(speakerPose.getTranslation().minus(drivetrainPose.getTranslation()).getAngle());
+
+        return output;
+    }
+
     private static AimOutputContainer useLookupTable(double distanceToTarget) {
         AimOutputContainer output = new AimOutputContainer();
 

@@ -2,16 +2,17 @@ package frc.robot.subsystems.vision;
 
 import static frc.robot.Constants.VisionConstants.APRILTAG_AMBIGUITY_THRESHOLD;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj.RobotState;
-import frc.robot.util.FieldConstants;
 import java.util.concurrent.atomic.AtomicReference;
+
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Transform3d;
+import frc.robot.util.FieldConstants;
 
 /**
  * Runnable that gets AprilTag data from PhotonVision.

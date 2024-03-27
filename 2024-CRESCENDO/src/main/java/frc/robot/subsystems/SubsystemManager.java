@@ -34,6 +34,7 @@ import frc.robot.Robot;
 import frc.robot.Telemetry;
 import frc.robot.commands.BaseSubsystemCommands.AimCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand;
+import frc.robot.commands.BaseSubsystemCommands.FeederCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.BaseSubsystemCommands.AimPresetCommand;
 import frc.robot.commands.BaseSubsystemCommands.AutoIntakeCommand;
@@ -242,6 +243,9 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public Command makeShooterRevCommand() {
 		return new InstantCommand(() -> shooter.setWarmUpSpeed());
+	}
+	public Command makeFeederCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
+		return new FeederCommand(shooterPivot, shooter, transport, drivetrain, x, y, turn, allianceSupplier);
 	}
 
 	//TRANSPORT COMMANDS
