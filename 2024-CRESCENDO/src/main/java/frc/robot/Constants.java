@@ -477,4 +477,8 @@ public class Constants {
         public static final int topNumLED = 55;
         public static final int rightNumLED = 13;
     }
+
+    public static class AutoFactoryConstants {
+        public static Map<Character, Pose2d> poses = Map.ofEntries();
+    }
 }
