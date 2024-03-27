@@ -491,6 +491,7 @@ public class Constants {
     public static class AutonFactoryConstants {
         // NOTE all poses should be on the blue side, paths will be automatically flipped if they are on the red side.
         public static Map<Character, Pose2d> notePoses = Map.ofEntries();
+        public static Map<Character, Pose2d> startingPoses = Map.ofEntries();
         public static List<Pose2d> shootPoses = List.of();
     }
 }

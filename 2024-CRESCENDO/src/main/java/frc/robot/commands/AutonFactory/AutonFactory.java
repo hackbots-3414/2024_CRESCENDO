@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
@@ -28,6 +29,7 @@ public class AutonFactory extends Command {
   private Shooter shooter;
   private Elevator elevator;
   private ArrayList<Pose2d> poses;
+  private Pose2d startingPose;
 
   /** Creates a new AutonFactory. */
   public AutonFactory(CommandSwerveDrivetrain drivetrain, Intake intake, Transport transport, ShooterPivot pivot, Shooter shooter, Elevator elevator) {
@@ -46,12 +48,17 @@ public class AutonFactory extends Command {
   public void initialize() {
     // get the "encoded" path string from smartDashboard
     String pathAsString = SmartDashboard.getString("Auton Path", "");
+    startingPose = null;
     poses = new ArrayList<Pose2d>(pathAsString.length());
     for (int i = 0;i < pathAsString.length();i ++) {
-      char c = pathAsString.charAt(i);
+      char c = pathAsString.toLowerCase().charAt(i);
       Pose2d receivedPose = Constants.AutonFactoryConstants.notePoses.getOrDefault(c, null);
       if (receivedPose != null) {
         poses.add(receivedPose);
+      }
+      receivedPose = Constants.AutonFactoryConstants.startingPoses.getOrDefault(c, null);
+      if (receivedPose != null && startingPose == null) {
+        startingPose = receivedPose;
       }
     }
   }
@@ -61,6 +68,9 @@ public class AutonFactory extends Command {
   @Override
   public void end(boolean interrupted) {
     SequentialCommandGroup sequence = new SequentialCommandGroup();
+    sequence.addCommands(new InstantCommand(() -> {
+      if (startingPose != null) drivetrain.seedFieldRelative(startingPose);
+    }));
     for (Pose2d targetPose : poses) {
       sequence.addCommands(
         new ParallelRaceGroup(
@@ -70,7 +80,7 @@ public class AutonFactory extends Command {
         new ShootMaybeCommand(drivetrain, transport, pivot, shooter)
       );
     }
-
+    
     sequence.schedule();
   }
 
