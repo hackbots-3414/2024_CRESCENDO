@@ -224,7 +224,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 rotateTargetList,
                 Collections.emptyList(),
                 Collections.emptyList(),
-                new PathConstraints(SwerveConstants.maxDriveVelocity * 0.25, SwerveConstants.maxDriveAcceleration,
+                new PathConstraints(SwerveConstants.maxDriveVelocity * speedMultiplier, SwerveConstants.maxDriveAcceleration,
                         SwerveConstants.maxAngleVelocity, SwerveConstants.maxAngleAcceleration),
                 goal,
                 isReversed);
@@ -237,7 +237,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     public Command makeDriveToPoseCommand(Pose2d goalPose, boolean isReversed) {
-        return makeDriveToPoseCommand(estimatedPose, isReversed, Constants.SwerveConstants.driveToPoseSpeedMultiplier);
+        return makeDriveToPoseCommand(estimatedPose, isReversed, Constants.SwerveConstants.driveToPoseSpeedMultiplier); // with "default" speed
     }
 
     public Command makeDriveToAmpCommand() {
