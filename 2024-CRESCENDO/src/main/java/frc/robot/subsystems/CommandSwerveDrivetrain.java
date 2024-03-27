@@ -236,6 +236,27 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return AutoBuilder.followPath(path);
     }
 
+
+    /**
+     * Returns a command that is powered by PathPlanner to drive to a given goal pose while avoiding any obstacles on the field.
+     * This path is nice because it will constantly be updating and optimizing the path in the background
+     * @param goalPose The goal pose, on the blue side (PathPlanner will automatically flip the path if we're on the red side)
+     * @return a runnable commamnd to drive to the goal pose
+     */
+    public Command makeDriveToPoseCommandV2(Pose2d goalPose) {
+        double goalEndVelocity = 0.0; // Goal end velocity in meters/sec
+        double rotationDelay = 0.0; // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
+        
+        Command pathFindingCommand = AutoBuilder.pathfindToPose(
+            goalPose,
+            Constants.SwerveConstants.driveToPosePathConstraints,
+            goalEndVelocity,
+            rotationDelay
+        );
+        
+        return pathFindingCommand;
+    }
+
     public Command makeDriveToPoseCommand(Pose2d goalPose, boolean isReversed) {
         return makeDriveToPoseCommand(estimatedPose, isReversed, Constants.SwerveConstants.driveToPoseSpeedMultiplier); // with "default" speed
     }

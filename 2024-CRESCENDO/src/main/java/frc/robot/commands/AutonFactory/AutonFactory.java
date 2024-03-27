@@ -49,7 +49,7 @@ public class AutonFactory extends Command {
     poses = new ArrayList<Pose2d>(pathAsString.length());
     for (int i = 0;i < pathAsString.length();i ++) {
       char c = pathAsString.charAt(i);
-      Pose2d receivedPose = Constants.AutonFactoryConstants.poses.get(c);
+      Pose2d receivedPose = Constants.AutonFactoryConstants.notePoses.getOrDefault(c, null);
       if (receivedPose != null) {
         poses.add(receivedPose);
       }
@@ -64,10 +64,10 @@ public class AutonFactory extends Command {
     for (Pose2d targetPose : poses) {
       sequence.addCommands(
         new ParallelRaceGroup(
-          drivetrain.makeDriveToPoseCommand(targetPose, false),
+          drivetrain.makeDriveToPoseCommandV2(targetPose),
           new IntakeCommand(transport, intake, elevator, pivot)
         ),
-        new ShootMaybeCommand(drivetrain, transport)
+        new ShootMaybeCommand(drivetrain, transport, pivot, shooter)
       );
     }
 
