@@ -502,10 +502,10 @@ public class Constants {
             entry('8', new Translation2d(Units.inchesToMeters(324.6), Units.inchesToMeters(29.62)))
         );
         public static Map<Character, Pose2d> startingPoses = Map.ofEntries(
-            entry('c', new Pose2d(1.38, 5.54, Rotation2d.fromDegrees(180.0)), // c for center
+            entry('c', new Pose2d(1.38, 5.54, Rotation2d.fromDegrees(180.0))), // c for center
             entry('a', new Pose2d(0.73, 6.66, Rotation2d.fromDegrees(-118.0))), // a for amp side
             entry('s', new Pose2d(0.7, 4.45, Rotation2d.fromDegrees(120.6))), // s for source side
-            entry('l', new Pose2d(1.46, 7.0, Rotation2d.fromDegrees(180.0)) // l for line (amp side)
+            entry('l', new Pose2d(1.46, 7.0, Rotation2d.fromDegrees(180.0))) // l for line (amp side)
         );
         public static List<Pose2d> shootPoses = List.of();
         public static boolean presetStartingPose = true;
