@@ -6,6 +6,9 @@ package frc.robot.commands.AutonFactory;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,6 +33,7 @@ public class AutonFactory extends Command {
   private Elevator elevator;
   private ArrayList<Pose2d> poses;
   private Pose2d startingPose;
+  private Logger logger = LoggerFactory.getLogger(AutonFactory.class);
 
   /** Creates a new AutonFactory. */
   public AutonFactory(CommandSwerveDrivetrain drivetrain, Intake intake, Transport transport, ShooterPivot pivot, Shooter shooter, Elevator elevator) {
@@ -48,6 +52,7 @@ public class AutonFactory extends Command {
   public void initialize() {
     // get the "encoded" path string from smartDashboard
     String pathAsString = SmartDashboard.getString("Auton Path", "");
+    logger.info("Auton Path received: " + pathAsString);
     startingPose = null;
     poses = new ArrayList<Pose2d>(pathAsString.length());
     for (int i = 0;i < pathAsString.length();i ++) {
@@ -55,10 +60,12 @@ public class AutonFactory extends Command {
       Pose2d receivedPose = Constants.AutonFactoryConstants.notePoses.getOrDefault(c, null);
       if (receivedPose != null) {
         poses.add(receivedPose);
+        logger.debug("Found a pose: " + receivedPose.toString());
       }
       receivedPose = Constants.AutonFactoryConstants.startingPoses.getOrDefault(c, null);
       if (receivedPose != null && startingPose == null) {
         startingPose = receivedPose;
+        logger.debug("Found a starting pose: " + startingPose.toString());
       }
     }
   }
@@ -69,7 +76,10 @@ public class AutonFactory extends Command {
   public void end(boolean interrupted) {
     SequentialCommandGroup sequence = new SequentialCommandGroup();
     sequence.addCommands(new InstantCommand(() -> {
-      if (startingPose != null && Constants.AutonFactoryConstants.presetStartingPose) drivetrain.seedFieldRelative(startingPose);
+      if (startingPose != null && Constants.AutonFactoryConstants.presetStartingPose) {
+        drivetrain.seedFieldRelative(startingPose);
+        logger.debug("Set starting pose at " + startingPose.toString());
+      }
     }));
     for (Pose2d targetPose : poses) {
       sequence.addCommands(

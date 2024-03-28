@@ -6,6 +6,9 @@ package frc.robot.commands.AutonFactory;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,6 +27,7 @@ public class ShootMaybeCommand extends Command {
   private ShooterPivot pivot;
   private Shooter shooter;
   private Command macro;
+  private Logger logger = LoggerFactory.getLogger(ShootMaybeCommand.class);
 
   /** Creates a new ShootMaybe. */
   public ShootMaybeCommand(CommandSwerveDrivetrain drivetrain, Transport transport, ShooterPivot pivot, Shooter shooter) {
@@ -50,7 +54,16 @@ public class ShootMaybeCommand extends Command {
       }
     }
 
+    logger.debug("Found best shooting position at: " + targetPose.toString());
+
     if (!transport.getNoteInPosition()) {
+      logger.warn("No note detected, not shooting");
+      macro = null;
+      return;
+    }
+
+    if (targetPose == null) {
+      logger.error("There was an error and there was no selected starting pose, exiting");
       macro = null;
       return;
     }
@@ -61,6 +74,7 @@ public class ShootMaybeCommand extends Command {
     );
 
     macro.schedule();
+    logger.debug("Created and sceduled drive and shoot commands");
   }
 
   // Returns true when the command should end.
