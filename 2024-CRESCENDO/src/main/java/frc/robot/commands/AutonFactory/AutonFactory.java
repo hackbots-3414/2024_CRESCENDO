@@ -97,12 +97,18 @@ public class AutonFactory extends Command {
   @Override
   public void end(boolean interrupted) {
     SequentialCommandGroup sequence = new SequentialCommandGroup();
+
+    if (Constants.AutonFactoryConstants.presetStartingPose && startingPose == null) {
+      logger.warn("Preset starting pose was requested but not supplied.");
+    }
+
     sequence.addCommands(new InstantCommand(() -> {
       if (startingPose != null && Constants.AutonFactoryConstants.presetStartingPose) {
         drivetrain.seedFieldRelative(startingPose);
         logger.debug("Set starting pose at " + startingPose.toString());
       }
     }));
+
     for (Pose2d targetPose : poses) {
       sequence.addCommands(
         new ParallelRaceGroup(
