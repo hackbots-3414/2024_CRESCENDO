@@ -51,12 +51,12 @@ public class AutonFactory extends Command {
   @Override
   public void initialize() {
     // get the "encoded" path string from smartDashboard
-    String pathAsString = SmartDashboard.getString("Auton Path", "");
+    String pathAsString = SmartDashboard.getString("Auton Path", "").toLowerCase();
     logger.info("Auton Path received: " + pathAsString);
     startingPose = null;
     poses = new ArrayList<Pose2d>(pathAsString.length());
     for (int i = 0;i < pathAsString.length();i ++) {
-      char c = pathAsString.toLowerCase().charAt(i);
+      char c = pathAsString.charAt(i);
       Pose2d receivedPose = Constants.AutonFactoryConstants.notePoses.getOrDefault(c, null);
       if (receivedPose != null) {
         poses.add(receivedPose);
