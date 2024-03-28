@@ -266,7 +266,7 @@ public class SubsystemManager extends SubsystemBase {
 
 	// PRESETS COMMANDS
 	public Command makeAmpSetupCommand() {
-		return new AmpSetupCommand(elevator);
+		return new AmpSetupCommand(elevator, shooter);
 	}
 	public Command makeAmpFinishCommand() {
 		return new SequentialCommandGroup(

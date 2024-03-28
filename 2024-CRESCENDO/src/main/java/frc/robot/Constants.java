@@ -212,11 +212,11 @@ public class Constants {
         public static final double mediumTransportVolts = 0.4 * 12;
         public static final double slowTransportVolts = 0.2 * 12;
         public static final double ejectSpeed = -0.6;
-        public static final double transportEjectSpeed = -0.5;
+        public static final double transportEjectSpeed = -1.0;
         public static final int transportIrChannel = 1;
         public static final int flyWheelIrChannel = 0;
 
-        public static final double transportEjectDelay = 0.3; // seconds until note leaves shooter
+        public static final double transportEjectDelay = 0.5; // seconds until note leaves shooter
     }
 
     public static final class PositionConstants {

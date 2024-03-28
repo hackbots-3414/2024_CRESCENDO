@@ -27,7 +27,7 @@ public class AmpComboScheduler extends Command {
   public void end(boolean interrupted) {
     Command macro = new SequentialCommandGroup(
 			drivetrain.makeDriveToAmpCommand(),
-			new AmpSetupCommand(elevator),
+			new AmpSetupCommand(elevator, shooter),
 			new ScoreAmpCommand(shooter, transport, elevator).withTimeout(Constants.AmpConstants.allowedShootTime),
       new InstantCommand(() -> elevator.stow())
 		).onlyWhile(RobotContainer.getInstance()::getAmpButton);
