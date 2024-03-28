@@ -32,15 +32,17 @@ import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.Telemetry;
-import frc.robot.commands.AutonCommands.AutoIntakeCommand;
 import frc.robot.commands.AutonFactory.AutonFactory;
 import frc.robot.commands.BaseSubsystemCommands.AimCommand;
+import frc.robot.commands.BaseSubsystemCommands.AimPresetCommand;
+import frc.robot.commands.BaseSubsystemCommands.AutoIntakeCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.BaseSubsystemCommands.IntakeCommand;
 import frc.robot.commands.BaseSubsystemCommands.ShooterCommand;
+import frc.robot.commands.BaseSubsystemCommands.ShooterFlywheelCommand;
+import frc.robot.commands.BaseSubsystemCommands.SpitOutCommand;
 import frc.robot.commands.ComboCommands.ResetElevatorCommand;
-import frc.robot.commands.ComboCommands.SpitOutCommand;
 import frc.robot.commands.ComboCommands.AmpCommands.AmpComboScheduler;
 import frc.robot.commands.ComboCommands.AmpCommands.AmpSetupCommand;
 import frc.robot.commands.ComboCommands.AmpCommands.ScoreAmpCommand;
@@ -136,6 +138,8 @@ public class SubsystemManager extends SubsystemBase {
 		// send out the thing for auton factory
 		SmartDashboard.putString("Auton Path", "");
 
+		shooter.setDefaultCommand(new ShooterFlywheelCommand(shooter, transport));
+		shooterPivot.setDefaultCommand(new AimPresetCommand(shooterPivot, transport, allianceSupplier, this::getAimOutputContainer));
 	}
 
 	public static synchronized SubsystemManager getInstance() {
@@ -220,7 +224,6 @@ public class SubsystemManager extends SubsystemBase {
 		elevator.stow();
 		shooterPivot.stow();
 	}
-	
 
 
 	// WINCH COMMANDS
@@ -237,7 +240,7 @@ public class SubsystemManager extends SubsystemBase {
 
 	// SHOOTER COMMANDS
 	public Command makeShootCommand() {
-		return new ShooterCommand(shooter, transport, Optional.empty());
+		return new ShooterCommand(shooter, transport);
 	}
 	public Command makeManualShootCommand() {
 		return new ManualShootCommand(shooter,transport);
@@ -267,7 +270,7 @@ public class SubsystemManager extends SubsystemBase {
 
 	// PRESETS COMMANDS
 	public Command makeAmpSetupCommand() {
-		return new AmpSetupCommand(elevator);
+		return new AmpSetupCommand(elevator, shooter);
 	}
 	public Command makeAmpFinishCommand() {
 		return new SequentialCommandGroup(
@@ -281,7 +284,7 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public Command makeAmpSequence() {
 		// our goal position is the position of the amp plus just enough room for our robot to be aligned with it, and we want to be facing the alliance station so we can score.
-		return new AmpComboScheduler(drivetrain, elevator, shooterPivot, shooter, transport);
+		return new AmpComboScheduler(drivetrain, elevator, shooter, transport);
 	}
 
 
@@ -290,7 +293,7 @@ public class SubsystemManager extends SubsystemBase {
 		return new AimCommand(shooterPivot, shooter, transport, drivetrain, x, y, turn, allianceSupplier);
 	}
 	public AimOutputContainer getAimOutputContainer() {
-        return AimHelper.getAimOutputs(drivetrain, allianceSupplier.get() == Alliance.Blue, AimStrategies.LOOKUP); // BASIC MATH
+        return AimHelper.getAimOutputs(drivetrain, allianceSupplier.get() == Alliance.Blue, AimStrategies.LOOKUP);
 	}
 	public Command makeAutoIntakeCommand() {
 		return new AutoIntakeCommand(transport, intake, elevator, shooterPivot, shooter);
@@ -328,7 +331,7 @@ public class SubsystemManager extends SubsystemBase {
 		SequentialCommandGroup commands = new SequentialCommandGroup();
 		commands.addCommands(makeElevatorCommand(ElevatorPresets.AMP).withTimeout(2),
 				makeElevatorCommand(ElevatorPresets.STOW).withTimeout(2),
-				makeIntakeCommand().withTimeout(2),
+				makeAutoIntakeCommand().withTimeout(2),
 				makeShootCommand().withTimeout(2),
 				new ManualWinchCommand(winch, true).withTimeout(2),
 				new ManualWinchCommand(winch, false).withTimeout(2));

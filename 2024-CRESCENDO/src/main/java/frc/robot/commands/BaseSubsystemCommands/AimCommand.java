@@ -3,8 +3,6 @@
 
 package frc.robot.commands.BaseSubsystemCommands;
 
-import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
@@ -40,8 +38,6 @@ public class AimCommand extends Command {
     Supplier<Alliance> aSupplier;
 
     boolean blueSide = false;
-    
-    Consumer<Boolean> setDone;
 
     Command currentDriveCommand;
     Command shooterCommand;
@@ -62,7 +58,7 @@ public class AimCommand extends Command {
         this.aSupplier = aSupplier;
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         thetaController.setTolerance(SwerveConstants.pidTurnTolerance);
-        shooterCommand = new ShooterCommand(shooter, transport, Optional.of(this::getShooterFeedSupplier));
+        shooterCommand = new ShooterCommand(shooter, transport);
     }
 
     @Override 
@@ -76,7 +72,6 @@ public class AimCommand extends Command {
         Pose2d robotPosition = drivetrain.getPose();
         output = AimHelper.getAimOutputs(drivetrain, blueSide, AimStrategies.LOOKUP);
         shooterPivot.setPivotPosition(output.getPivotAngle());
-        drivetrain.setInRange(output.getIsInRange());
 
         if (!DriverStation.isAutonomous()) {
             currentDriveCommand = drivetrain.applyRequest(() -> driveRequest.withVelocityX(xSupplier.get() * SwerveConstants.maxDriveVelocity)
@@ -99,10 +94,5 @@ public class AimCommand extends Command {
     public void end(boolean interrupted) {
         if (!DriverStation.isAutonomous()) currentDriveCommand.end(interrupted);
         shooterCommand.end(interrupted);
-        drivetrain.setInRange(false);
-    }
-
-    public boolean getShooterFeedSupplier() {
-        return true;
     }
 }

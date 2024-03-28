@@ -78,25 +78,25 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
             .withMotionMagicCruiseVelocity(ElevatorMotionMagicConstants.cruiseVelocity)
             .withMotionMagicAcceleration(ElevatorMotionMagicConstants.acceleration)
             .withMotionMagicJerk(ElevatorMotionMagicConstants.jerk))
-            
+
         .withMotorOutput(new MotorOutputConfigs()
             .withNeutralMode(NeutralModeValue.Brake)
             .withInverted(ElevatorConstants.invertMotor))
-            
+
         .withFeedback(new FeedbackConfigs()
             .withRotorToSensorRatio(ElevatorConstants.rotorToSensorRatio)
             .withSensorToMechanismRatio(ElevatorConstants.sensorToMechanismRatio))
-            
+
         .withCurrentLimits(new CurrentLimitsConfigs()
             .withSupplyCurrentLimitEnable(true)
             .withSupplyCurrentLimit(CurrentLimits.elevatorSupplyLimit))
-            
+
         .withHardwareLimitSwitch(new HardwareLimitSwitchConfigs()
             .withForwardLimitEnable(true)
             .withReverseLimitEnable(true)
             .withReverseLimitAutosetPositionEnable(true)
             .withReverseLimitAutosetPositionValue(0.0))
-            
+
         .withSoftwareLimitSwitch(new SoftwareLimitSwitchConfigs()
             .withForwardSoftLimitThreshold(ElevatorConstants.elevatorForwardSoftLimit)
             .withForwardSoftLimitEnable(true));
@@ -108,7 +108,7 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
     MotionMagicVoltage config = new MotionMagicVoltage(position);
     if (position < this.elevatorPosition) {
       config.withLimitReverseMotion(getReverseLimit());
-    } else if(position >= this.elevatorPosition){
+    } else if (position >= this.elevatorPosition) {
       config.withLimitForwardMotion(getForwardLimit());
     }
     this.setpoint = position;
@@ -122,8 +122,8 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
   public void set(double speed) {
     if ((speed > 0 && !getForwardLimit()) || (speed < 0 && getReverseLimit())) {
       elevatorMotor.setControl(new DutyCycleOut(speed)
-        .withLimitForwardMotion(getForwardLimit())
-        .withLimitReverseMotion(getReverseLimit()));
+          .withLimitForwardMotion(getForwardLimit())
+          .withLimitReverseMotion(getReverseLimit()));
     } else {
       elevatorMotor.stopMotor();
     }
@@ -179,6 +179,9 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
       SmartDashboard.putBoolean("Reverse Limit Switch", reverseLimit);
       SmartDashboard.putNumber("Elevator Position", elevatorPosition);
       SmartDashboard.putBoolean("ELEVATOR SETPOINT", isAtSetpoint());
+    } else {
+      SmartDashboard.putBoolean("ELEVATOR SETPOINT", isAtSetpoint());
+
     }
   }
 
@@ -208,7 +211,8 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
       new SysIdRoutine.Mechanism(
           // Tell SysId how to plumb the driving voltage to the motors.
           (Measure<Voltage> volts) -> {
-            elevatorMotor.setControl(new VoltageOut(volts.in(Volts)).withLimitForwardMotion(forwardLimit).withLimitReverseMotion(reverseLimit));
+            elevatorMotor.setControl(new VoltageOut(volts.in(Volts)).withLimitForwardMotion(forwardLimit)
+                .withLimitReverseMotion(reverseLimit));
           },
           // Tell SysId how to record a frame of data for each motor on the mechanism
           // being characterized.
@@ -223,7 +227,8 @@ public class Elevator extends SubsystemBase implements AutoCloseable {
                 // .angularVelocity(m_velocity.mut_replace(getCanCoderVelo(),
                 // RadiansPerSecond));
                 .angularPosition(m_distance.mut_replace(Units.rotationsToRadians(elevatorPosition), Radians))
-                .angularVelocity(m_velocity.mut_replace(Units.rotationsPerMinuteToRadiansPerSecond(elevatorMotor.getVelocity().getValueAsDouble()),
+                .angularVelocity(m_velocity.mut_replace(
+                    Units.rotationsPerMinuteToRadiansPerSecond(elevatorMotor.getVelocity().getValueAsDouble()),
                     RadiansPerSecond));
           },
 
