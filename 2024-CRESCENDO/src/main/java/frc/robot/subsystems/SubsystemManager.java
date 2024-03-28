@@ -327,7 +327,7 @@ public class SubsystemManager extends SubsystemBase {
 		SequentialCommandGroup commands = new SequentialCommandGroup();
 		commands.addCommands(makeElevatorCommand(ElevatorPresets.AMP).withTimeout(2),
 				makeElevatorCommand(ElevatorPresets.STOW).withTimeout(2),
-				makeIntakeCommand().withTimeout(2),
+				makeAutoIntakeCommand().withTimeout(2),
 				makeShootCommand().withTimeout(2),
 				new ManualWinchCommand(winch, true).withTimeout(2),
 				new ManualWinchCommand(winch, false).withTimeout(2));

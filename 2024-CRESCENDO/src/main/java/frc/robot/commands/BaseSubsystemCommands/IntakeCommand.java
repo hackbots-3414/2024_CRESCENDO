@@ -22,7 +22,7 @@ public class IntakeCommand extends Command {
 
 
   public IntakeCommand(Transport transport, Intake intake, Elevator elevator, ShooterPivot pivot) {
-    addRequirements(intake, transport);
+    addRequirements(intake, transport, pivot);
     this.transport = transport;
     this.intake = intake;
     this.elevator = elevator;
@@ -32,7 +32,7 @@ public class IntakeCommand extends Command {
   @Override
   public void initialize() {
     elevator.stow();
-    pivot.stow();
+    pivot.stow(); // NOTE this may cause problems with addRequirements, AKSHAY
     alreadyStarted = false;
     alreadyStartedSlowed = false;
     alreadyStartedMedium = false;

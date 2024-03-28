@@ -24,7 +24,7 @@ public class AutoIntakeCommand extends Command {
 
 
   public AutoIntakeCommand(Transport transport, Intake intake, Elevator elevator, ShooterPivot pivot, Shooter shooter) {
-    addRequirements(intake, transport);
+    addRequirements(intake, transport, elevator, shooter, pivot);
     this.transport = transport;
     this.intake = intake;
     this.elevator = elevator;
@@ -50,11 +50,11 @@ public class AutoIntakeCommand extends Command {
         transport.setFast();
         alreadyStarted = true;
       }
-      if (transport.getFlyWheelIR() && !seenNote) {
-        transport.setBackup();
-        shooter.setBackup();
-        seenNote = true;
-      }
+    }
+    if (transport.getFlyWheelIR() && !seenNote) {
+      transport.setBackup();
+      shooter.setBackup();
+      seenNote = true;
     }
   }
 

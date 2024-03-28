@@ -16,6 +16,11 @@ public class ShooterFlywheelCommand extends Command {
     }
 
     @Override
+    public void initialize() {
+        running = false;
+    }
+
+    @Override
     public void execute() {
         if (transport.getNoteOnBoard()) {
             if (!running) {
