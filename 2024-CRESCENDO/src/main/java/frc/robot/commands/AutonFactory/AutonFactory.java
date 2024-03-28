@@ -69,7 +69,7 @@ public class AutonFactory extends Command {
   public void end(boolean interrupted) {
     SequentialCommandGroup sequence = new SequentialCommandGroup();
     sequence.addCommands(new InstantCommand(() -> {
-      if (startingPose != null) drivetrain.seedFieldRelative(startingPose);
+      if (startingPose != null && Constants.AutonFactoryConstants.presetStartingPose) drivetrain.seedFieldRelative(startingPose);
     }));
     for (Pose2d targetPose : poses) {
       sequence.addCommands(

@@ -493,5 +493,6 @@ public class Constants {
         public static Map<Character, Pose2d> notePoses = Map.ofEntries();
         public static Map<Character, Pose2d> startingPoses = Map.ofEntries();
         public static List<Pose2d> shootPoses = List.of();
+        public static boolean presetStartingPose = true;
     }
 }
