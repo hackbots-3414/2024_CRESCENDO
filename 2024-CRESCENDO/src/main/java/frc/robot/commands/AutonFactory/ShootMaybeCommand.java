@@ -5,12 +5,16 @@
 package frc.robot.commands.AutonFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.pathplanner.lib.util.GeometryUtil;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
@@ -42,17 +46,22 @@ public class ShootMaybeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    double smallestDistance = Double.POSITIVE_INFINITY;
     Pose2d robotPose = drivetrain.getCurrentPose2d();
     List<Pose2d> availableShootingPoses = Constants.AutonFactoryConstants.shootPoses;
-    
-    for (Pose2d pose : availableShootingPoses) {
-      double thisDistance = pose.relativeTo(robotPose).getTranslation().getNorm();
-      if (thisDistance < smallestDistance) {
-        smallestDistance = thisDistance;
-        targetPose = pose;
+
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    if (alliance.isPresent()) {
+      if (alliance.get() == Alliance.Red) {
+        // we need to flip all of the poses
+        availableShootingPoses = List.of();
+        for (Pose2d shootPose : Constants.AutonFactoryConstants.shootPoses) {
+          Pose2d flippedPose = GeometryUtil.flipFieldPose(shootPose);
+          availableShootingPoses.add(flippedPose);
+        }
       }
     }
+    
+    targetPose = robotPose.nearest(availableShootingPoses);
 
     logger.debug("Found best shooting position at: " + targetPose.toString());
 
