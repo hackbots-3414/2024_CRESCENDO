@@ -34,6 +34,7 @@ import frc.robot.Robot;
 import frc.robot.Telemetry;
 import frc.robot.commands.BaseSubsystemCommands.AimCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand;
+import frc.robot.commands.BaseSubsystemCommands.IntakeBackupCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.BaseSubsystemCommands.AimPresetCommand;
 import frc.robot.commands.BaseSubsystemCommands.AutoIntakeCommand;
@@ -259,8 +260,17 @@ public class SubsystemManager extends SubsystemBase {
 	public Command makeIntakeCommand() {
 		return new IntakeCommand(transport, intake, elevator, shooterPivot);
 	}
+
 	public Command makeManualIntakeEjectCommand() {
 		return new ManualIntakeEjectCommand(intake, transport);
+	}
+	
+	public Command makeAutoIntakeCommand() {
+		return new AutoIntakeCommand(transport, intake, elevator, shooterPivot, shooter);
+	}
+
+	public Command makeIntakeBackupCommand() {
+		return new IntakeBackupCommand(transport, shooter);
 	}
 
 
@@ -290,9 +300,6 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public AimOutputContainer getAimOutputContainer() {
         return AimHelper.getAimOutputs(drivetrain, allianceSupplier.get() == Alliance.Blue, AimStrategies.LOOKUP);
-	}
-	public Command makeAutoIntakeCommand() {
-		return new AutoIntakeCommand(transport, intake, elevator, shooterPivot, shooter);
 	}
 
 
