@@ -105,7 +105,6 @@ public class RobotContainer {
     ps5Operator.L2().whileTrue(subsystemManager.makeAutoIntakeCommand()); // left trigger
     ps5Operator.R1().whileTrue(subsystemManager.makeManualIntakeEjectCommand()); // left bumper
     ps5Operator.R2().whileTrue(subsystemManager.makeShootCommand()); // right trigger
-    // ps5Operator.L1().whileTrue(subsystemManager.stopShootFlywheel()); // left bumper
   }
 
   private RobotContainer() {
@@ -117,24 +116,6 @@ public class RobotContainer {
       configureXboxOperatorBindings();
     }
 
-    // switch (DriverConstants.autonView) {
-    //   case AMP:
-    //     pathChooser.addOption("Wing Clear", AutoBuilder.buildAuto("WingClear"));
-    //     break;
-
-    //   case SOURCE:
-        
-    //     break;
-
-    //   case CENTER:
-        
-    //     break;
-
-    //   case DEBUG:
-    //     pathChooser = AutoBuilder.buildAutoChooser();
-    //     break;
-    // }
-
     pathChooser = AutoBuilder.buildAutoChooser();
 
     SmartDashboard.putData("Auto Chooser", pathChooser);
@@ -144,7 +125,6 @@ public class RobotContainer {
     SmartDashboard.putData("STOP Shooter", subsystemManager.stopShootFlywheel());
     SmartDashboard.putData("Manual Shooter", subsystemManager.makeManualShootCommand());
     SmartDashboard.putData("Manual Intake Eject", subsystemManager.makeManualIntakeEjectCommand());
-    // SmartDashboard.putData("Amp Score", subsystemManager.makeAmpScoreCommand());
     SmartDashboard.putData("Wheel Radius Characterization", subsystemManager.makeWheelRadiusCharacterizationCommand());
   }
 

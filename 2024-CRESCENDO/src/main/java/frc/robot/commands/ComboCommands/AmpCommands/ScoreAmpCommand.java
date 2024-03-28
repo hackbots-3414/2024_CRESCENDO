@@ -11,6 +11,7 @@ public class ScoreAmpCommand extends Command {
   private Transport transport;
   private Shooter shooter;
   private Elevator elevator;
+  
   public ScoreAmpCommand(Shooter shooter, Transport transport, Elevator elevator) {
     addRequirements(transport, shooter);
     this.transport = transport;
@@ -23,12 +24,12 @@ public class ScoreAmpCommand extends Command {
     if (elevator.isAtSetpoint()) {
       transport.setEject();
       shooter.setMotor(-0.2);
-      Timer.delay(TransportConstants.transportEjectDelay);
     }
   }
   
   @Override
   public void end(boolean interrupted) {
+    Timer.delay(TransportConstants.transportEjectDelay); // wait vefore we stop the motors
     shooter.stopMotor();
     transport.stopMotor();
   }

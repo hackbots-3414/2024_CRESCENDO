@@ -6,6 +6,7 @@ import static edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition.kRedAlli
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.slf4j.Logger;
@@ -178,8 +179,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         field.setRobotPose(dashboardPose);
         SmartDashboard.putData(field);
 
-        Pose2d speakerPose = 
-        AimConstants.redSpeakerPos;
+        Pose2d speakerPose = AimConstants.blueSpeakerPos;
+        Optional<Alliance> alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            if (alliance.get() == Alliance.Red) {
+                speakerPose = AimConstants.redSpeakerPos;
+            }
+        }
+
         double robotDistance = speakerPose.relativeTo(getPose()).getTranslation().getNorm();
         SmartDashboard.putNumber("DISTANCE FROM TARGET", robotDistance);
 
@@ -196,10 +203,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public boolean isInRange() {
         return isInRange;
-    }
-
-    public void setInRange(boolean isInRange) {
-        this.isInRange = isInRange;
     }
 
     @Override

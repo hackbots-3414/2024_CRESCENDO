@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.PositionConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ShooterPivot;
@@ -23,7 +22,7 @@ public class IntakeCommand extends Command {
 
 
   public IntakeCommand(Transport transport, Intake intake, Elevator elevator, ShooterPivot pivot) {
-    addRequirements(intake, transport);
+    addRequirements(intake, transport, pivot);
     this.transport = transport;
     this.intake = intake;
     this.elevator = elevator;
@@ -32,8 +31,8 @@ public class IntakeCommand extends Command {
 
   @Override
   public void initialize() {
-    elevator.setElevatorPosition(PositionConstants.StowPresets.elevator);
-    pivot.setPivotPosition(PositionConstants.StowPresets.shooter);
+    elevator.stow();
+    pivot.stow(); // NOTE this may cause problems with addRequirements, AKSHAY
     alreadyStarted = false;
     alreadyStartedSlowed = false;
     alreadyStartedMedium = false;

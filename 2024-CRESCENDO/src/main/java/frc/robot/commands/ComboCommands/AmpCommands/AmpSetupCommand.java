@@ -1,21 +1,24 @@
 package frc.robot.commands.ComboCommands.AmpCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
+import frc.robot.Constants.PositionConstants;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Shooter;
 
 public class AmpSetupCommand extends Command {
   private Elevator elevator;
-  private double elevatorGoal = Constants.PositionConstants.AmpPresets.elevator;
+  private Shooter shooter;
 
-  public AmpSetupCommand(Elevator elevator) {
-    addRequirements(elevator);
+  public AmpSetupCommand(Elevator elevator, Shooter shooter) {
+    addRequirements(elevator, shooter);
     this.elevator = elevator;
+    this.shooter = shooter;
   }
 
   @Override
   public void initialize() {
-    elevator.setElevatorPosition(elevatorGoal);
+    elevator.setElevatorPosition(PositionConstants.AmpPresets.elevator);
+    shooter.stopMotor();
   }
   
   @Override

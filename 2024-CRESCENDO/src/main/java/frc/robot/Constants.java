@@ -128,7 +128,7 @@ public class Constants {
 
         public static final double warmUpSpeed = 0.5; // duty cycle (0-1)
 
-        public static final double spitOutSpeed = 50;
+        public static final double spitOutSpeed = 30;
         public static final double maxSpeed = 80; // rps
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
@@ -164,7 +164,7 @@ public class Constants {
     public static final class IntakeConstants {
         public static final int intakeMotorID = 60;
         public static final double fastIntakeSpeed = 1;
-        public static final double mediumIntakeVolts = 0.5 * 12;
+        public static final double mediumIntakeVolts = 0.4 * 12;
         public static final double slowIntakeVolts = 0.2 * 12;
         public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
@@ -189,7 +189,7 @@ public class Constants {
         public static final int shellyButton = 2;
         public static final int leftX = 0;
         public static final int leftY = 1;
-        public static final int rightX = 3;
+        public static final int rightX = 3; 
         public static final int rightY = 2;
         public static final int ampScoreButton = 16;
 
@@ -201,7 +201,7 @@ public class Constants {
 
         public static final double expoPower = 2.0;
 
-        public static final JoystickChoice operatorController = JoystickChoice.PS5;
+        public static final JoystickChoice operatorController = JoystickChoice.XBOX;
         public static final AutonViews autonView = AutonViews.AMP;
     }
 
@@ -209,14 +209,14 @@ public class Constants {
         public static final int transportMotorID = 56;
         public static final boolean transportMotorInvert = true;
         public static final double fastTransportSpeed = 1;
-        public static final double mediumTransportVolts = 0.5 * 12;
+        public static final double mediumTransportVolts = 0.4 * 12;
         public static final double slowTransportVolts = 0.2 * 12;
         public static final double ejectSpeed = -0.6;
-        public static final double transportEjectSpeed = -0.5;
+        public static final double transportEjectSpeed = -1.0;
         public static final int transportIrChannel = 1;
         public static final int flyWheelIrChannel = 0;
 
-        public static final double transportEjectDelay = 0.3; // seconds until note leaves shooter
+        public static final double transportEjectDelay = 0.5; // seconds until note leaves shooter
     }
 
     public static final class PositionConstants {
@@ -320,7 +320,7 @@ public class Constants {
 
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
-        public static final class PivotSlot0ConfigConstants {
+        public static final class PivotSlot0ConfigConstants { // up
             public static final double kP = 2.0; // output per unit of error in position (output/rotation)
             public static final double kI = 0.0; // output per unit of integrated error in position
                                                  // (output/(rotation*s))
@@ -328,11 +328,11 @@ public class Constants {
             public static final double kS = 0.0; // output to overcome static friction (output)
             public static final double kV = 20.0; // output per unit of target velocity (output/rps)
             public static final double kA = 0.0; // output per unit of target acceleration (output/(rps/s))
-            public static final double kG = 0.1; // feedforward Constant
+            public static final double kG = 0.15; // feedforward Constant, was 0.1 but we made it 0.15 b/c it fixed the pivot going down 3/27
             // public static final double kG = 0.0;
         }
 
-        public static final class PivotSlot1ConfigConstants {
+        public static final class PivotSlot1ConfigConstants { // down
             public static final double kP = 2.0; // output per unit of error in position (output/rotation)
             public static final double kI = 0.0; // output per unit of integrated error in position
                                                  // (output/(rotation*s))
@@ -340,7 +340,7 @@ public class Constants {
             public static final double kS = 0.0; // output to overcome static friction (output)
             public static final double kV = 15.0; // output per unit of target velocity (output/rps)
             public static final double kA = 0.0; // output per unit of target acceleration (output/(rps/s))
-            public static final double kG = 0.0; // feedforward Constant
+            public static final double kG = 0.05; // feedforward Constant changed onm 3/27
             // public static final double kG = 0.0;
         }
 
