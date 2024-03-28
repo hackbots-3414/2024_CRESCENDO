@@ -33,6 +33,7 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.Telemetry;
 import frc.robot.commands.AutonCommands.AutoIntakeCommand;
+import frc.robot.commands.AutonFactory.AutonFactory;
 import frc.robot.commands.BaseSubsystemCommands.AimCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
@@ -131,6 +132,10 @@ public class SubsystemManager extends SubsystemBase {
 			}
             aprilTagVision.setDataInterfaces(drivetrain::addVisionData);
         }
+
+		// send out the thing for auton factory
+		SmartDashboard.putString("Auton Path", "");
+
 	}
 
 	public static synchronized SubsystemManager getInstance() {
@@ -361,5 +366,9 @@ public class SubsystemManager extends SubsystemBase {
 					return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
 				},
 				drivetrain); // Subsystem for requirements
+	}
+
+	public Command makeAutonFactoryCommand() {
+		return new AutonFactory(drivetrain, intake, transport, shooterPivot, shooter, elevator);
 	}
 }

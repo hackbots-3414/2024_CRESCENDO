@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriverConstants;
 import frc.robot.Constants.InputConstants;
+import frc.robot.commands.AutonFactory.AutonFactory;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
 import frc.robot.subsystems.NoteFinder;
 import frc.robot.subsystems.SubsystemManager;
@@ -149,7 +150,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return pathChooser.getSelected();
+    return subsystemManager.makeAutonFactoryCommand();
   }
 
   public NoteFinder getNoteFinder() {

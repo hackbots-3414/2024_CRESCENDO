@@ -507,7 +507,7 @@ public class Constants {
             entry('s', new Pose2d(0.7, 4.45, Rotation2d.fromDegrees(120.6))), // s for source side
             entry('l', new Pose2d(1.46, 7.0, Rotation2d.fromDegrees(180.0))) // l for line (amp side)
         );
-        public static List<Pose2d> shootPoses = List.of();
+        public static List<Pose2d> shootPoses = List.of(new Pose2d());
         public static boolean presetStartingPose = true;
     }
 }

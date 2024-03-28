@@ -4,6 +4,7 @@
 
 package frc.robot.commands.AutonFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,7 +54,7 @@ public class ShootMaybeCommand extends Command {
     if (alliance.isPresent()) {
       if (alliance.get() == Alliance.Red) {
         // we need to flip all of the poses
-        availableShootingPoses = List.of();
+        availableShootingPoses = new ArrayList<Pose2d>();
         for (Pose2d shootPose : Constants.AutonFactoryConstants.shootPoses) {
           Pose2d flippedPose = GeometryUtil.flipFieldPose(shootPose);
           availableShootingPoses.add(flippedPose);
