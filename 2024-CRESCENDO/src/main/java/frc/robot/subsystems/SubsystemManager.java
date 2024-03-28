@@ -357,7 +357,7 @@ public class SubsystemManager extends SubsystemBase {
 						driveBaseRadius,
 						new ReplanningConfig(true, true)),
 				() -> {
-					var alliance = DriverStation.getAlliance();
+					Optional<Alliance> alliance = DriverStation.getAlliance();
 					return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
 				},
 				drivetrain); // Subsystem for requirements
