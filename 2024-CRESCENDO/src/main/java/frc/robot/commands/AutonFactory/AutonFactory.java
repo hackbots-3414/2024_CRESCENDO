@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
-import frc.robot.commands.BaseSubsystemCommands.IntakeCommand;
+import frc.robot.commands.AutonCommands.AutoIntakeCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -75,7 +75,7 @@ public class AutonFactory extends Command {
       sequence.addCommands(
         new ParallelRaceGroup(
           drivetrain.makeDriveToPoseCommandV2(targetPose),
-          new IntakeCommand(transport, intake, elevator, pivot)
+          new AutoIntakeCommand(transport, intake, elevator, pivot, shooter)
         ),
         new ShootMaybeCommand(drivetrain, transport, pivot, shooter)
       );
@@ -88,5 +88,5 @@ public class AutonFactory extends Command {
   @Override
   public boolean isFinished() {
     return true;
-  }
+  } 
 }
