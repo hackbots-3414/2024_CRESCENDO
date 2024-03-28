@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -56,18 +57,36 @@ public class AutonFactory extends Command {
     logger.info("Auton Path received: " + pathAsString);
     startingPose = null;
     poses = new ArrayList<Pose2d>(pathAsString.length());
+    Pose2d lastPose = null;
     for (int i = 0;i < pathAsString.length();i ++) {
       char c = pathAsString.charAt(i);
-      Translation2d receivedPose = Constants.AutonFactoryConstants.notePoses.getOrDefault(c, null);
-      if (receivedPose != null) {
-        // find the angle to do the whole thing, please
-        Pose2d
-        poses.add(receivedPose);
-        logger.debug("Found a pose: " + receivedPose.toString());
+      
+      Translation2d noteTranslation = Constants.AutonFactoryConstants.noteTranslations.getOrDefault(c, null);
+      if (noteTranslation != null) {
+        // we have a target pose!
+        Rotation2d desiredRobotAngle = new Rotation2d();
+
+        if (lastPose != null) {
+          // recalculate desiredRobotAngle
+          double dx = noteTranslation.getX() - lastPose.getX();
+          double dy = noteTranslation.getY() - lastPose.getY();
+
+          double angleToNote = Math.atan2(dy, dx);
+          desiredRobotAngle = Rotation2d.fromRadians(angleToNote).rotateBy(Rotation2d.fromRadians(Math.PI)); // this will ensure that our robot drives towards the note with the intake facing it
+        }
+
+        Pose2d desiredRobotPose = new Pose2d(noteTranslation, desiredRobotAngle);
+        lastPose = desiredRobotPose;
+        poses.add(desiredRobotPose);
+        logger.info("Added another pose onto the path:  " + desiredRobotPose.toString());
       }
-      receivedPose = Constants.AutonFactoryConstants.startingPoses.getOrDefault(c, null);
+      
+
+      // check if this character is a starting pose?
+      Pose2d receivedPose = Constants.AutonFactoryConstants.startingPoses.getOrDefault(c, null);
       if (receivedPose != null && startingPose == null) {
         startingPose = receivedPose;
+        lastPose = startingPose;
         logger.debug("Found a starting pose: " + startingPose.toString());
       }
     }
