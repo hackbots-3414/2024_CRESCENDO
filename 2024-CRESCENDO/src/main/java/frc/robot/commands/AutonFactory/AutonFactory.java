@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -57,8 +58,10 @@ public class AutonFactory extends Command {
     poses = new ArrayList<Pose2d>(pathAsString.length());
     for (int i = 0;i < pathAsString.length();i ++) {
       char c = pathAsString.charAt(i);
-      Pose2d receivedPose = Constants.AutonFactoryConstants.notePoses.getOrDefault(c, null);
+      Translation2d receivedPose = Constants.AutonFactoryConstants.notePoses.getOrDefault(c, null);
       if (receivedPose != null) {
+        // find the angle to do the whole thing, please
+        Pose2d
         poses.add(receivedPose);
         logger.debug("Found a pose: " + receivedPose.toString());
       }
