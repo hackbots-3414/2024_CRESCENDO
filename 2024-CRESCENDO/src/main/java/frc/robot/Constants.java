@@ -50,7 +50,7 @@ public class Constants {
 
         public static final PathConstraints driveToPosePathConstraints = new PathConstraints(
             maxDriveVelocity * driveToPoseSpeedMultiplier,
-            maxDriveAcceleration,
+            maxDriveAcceleration * driveToPoseSpeedMultiplier,
             maxAngleVelocity,
             maxAngleAcceleration
         );
