@@ -59,7 +59,7 @@ public class Constants {
 
     public static final class VisionConstants {
 
-        public static final boolean USE_VISION = false; // Vision enabled or not
+        public static final boolean USE_VISION = true; // Vision enabled or not
 
         /*
          * A note about these transforms: They appear to follow the normal cordinate
