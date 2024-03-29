@@ -54,7 +54,7 @@ public class Constants {
         public static final double xyStdDevCoefficient = 0.01;
         public static final double thetaStdDevCoefficient = 1.0;
 
-        public static final double pidTurnTolerance = 0.1; // radians
+        public static final double pidTurnTolerance = 0.05; // radians
     }
 
     public static final class VisionConstants {
@@ -74,7 +74,7 @@ public class Constants {
         public static final String rightCameraName = "RightCam";
 
         /** Minimum target ambiguity. Targets with higher ambiguity will be discarded */
-        public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
+        public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.4;
 
         public static final double POSE_AMBIGUITY_SHIFTER = 0.2;
         public static final double POSE_AMBIGUITY_MULTIPLIER = 4;
@@ -147,7 +147,9 @@ public class Constants {
                 entry(4.0, 0.012),
                 entry(4.3, 0.0095),
                 entry(4.6, 0.0065),
-                entry(6.0, 0.0) // max range
+                entry(4.9, 0.0025),
+                entry(5.2, 0.0007),
+                entry(6.0, 0.000)
         );
 
         // public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
@@ -201,7 +203,7 @@ public class Constants {
 
         public static final double expoPower = 2.0;
 
-        public static final JoystickChoice operatorController = JoystickChoice.XBOX;
+        public static final JoystickChoice operatorController = JoystickChoice.PS5;
         public static final AutonViews autonView = AutonViews.AMP;
     }
 
@@ -316,7 +318,7 @@ public class Constants {
         public static final double pivotManualUpSpeed = 0.3;
         public static final double pivotManualDownSpeed = -0.1;
 
-        public static final double pivotTolerance = 0.004; 
+        public static final double pivotTolerance = 0.001; 
 
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
@@ -403,7 +405,7 @@ public class Constants {
     }
 
     public static final class DebugConstants {
-        public static final boolean debugMode = false; // setting this to true will increase your network table traffic.
+        public static final boolean debugMode = true; // setting this to true will increase your network table traffic.
     }
 
     /*

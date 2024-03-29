@@ -15,6 +15,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.SwerveDriveBrake;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.util.GeometryUtil;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -136,6 +137,8 @@ public class SubsystemManager extends SubsystemBase {
 
 		shooter.setDefaultCommand(new ShooterFlywheelCommand(shooter, transport));
 		shooterPivot.setDefaultCommand(new AimPresetCommand(shooterPivot, transport, allianceSupplier, this::getAimOutputContainer));
+
+		// SmartDashboard.putData("hehe", new InstantCommand(() -> drivetrain.seedFieldRelative(GeometryUtil.flipFieldPose(new Pose2d(5.82, 7, Rotation2d.fromDegrees(143.96))))));
 	}
 
 	public static synchronized SubsystemManager getInstance() {
