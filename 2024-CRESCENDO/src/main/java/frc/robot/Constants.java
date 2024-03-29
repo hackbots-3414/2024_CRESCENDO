@@ -46,7 +46,7 @@ public class Constants {
         public static final double maxAngleVelocity = 1.5 * Math.PI;
         public static final double shellyDriveVelocity = maxDriveVelocity * 0.25;
         public static final double shellyAngleVelocity = maxAngleVelocity * 0.50;
-        public static final double driveToPoseSpeedMultiplier = 0.4; // TODO: fine-tune this value to be best (should be OK at 1, but idk yet)
+        public static final double driveToPoseSpeedMultiplier = 0.25; // TODO: fine-tune this value to be best (should be OK at 1, but idk yet)
 
         public static final PathConstraints driveToPosePathConstraints = new PathConstraints(
             maxDriveVelocity * driveToPoseSpeedMultiplier,

@@ -5,13 +5,18 @@
 package frc.robot.commands.AutonFactory;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.pathplanner.lib.util.GeometryUtil;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -58,11 +63,24 @@ public class AutonFactory extends Command {
     startingPose = null;
     poses = new ArrayList<Pose2d>(pathAsString.length());
     Pose2d lastPose = null;
+
+    boolean isRedSide = false;
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    if (alliance.isPresent()) {
+      if (alliance.get() == Alliance.Red) {
+        isRedSide = true;
+      }
+    }
+
     for (int i = 0;i < pathAsString.length();i ++) {
       char c = pathAsString.charAt(i);
       
       Translation2d noteTranslation = Constants.AutonFactoryConstants.noteTranslations.getOrDefault(c, null);
       if (noteTranslation != null) {
+
+        if (isRedSide) {
+          noteTranslation = GeometryUtil.flipFieldPosition(noteTranslation);
+        }
         // we have a target pose!
         Rotation2d desiredRobotAngle = new Rotation2d();
 
@@ -76,6 +94,7 @@ public class AutonFactory extends Command {
         }
 
         Pose2d desiredRobotPose = new Pose2d(noteTranslation, desiredRobotAngle);
+
         lastPose = desiredRobotPose;
         poses.add(desiredRobotPose);
         logger.info("Added another pose onto the path:  " + desiredRobotPose.toString());
@@ -86,8 +105,11 @@ public class AutonFactory extends Command {
       Pose2d receivedPose = Constants.AutonFactoryConstants.startingPoses.getOrDefault(c, null);
       if (receivedPose != null && startingPose == null) {
         startingPose = receivedPose;
+        if (isRedSide) {
+          startingPose = GeometryUtil.flipFieldPose(receivedPose);
+        }
         lastPose = startingPose;
-        logger.debug("Found a starting pose: " + startingPose.toString());
+        logger.info("Found a starting pose: " + startingPose.toString());
       }
     }
   }

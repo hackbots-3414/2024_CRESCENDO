@@ -23,6 +23,7 @@ import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.RotationTarget;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -177,6 +178,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             dashboardPose = VisionHelpers.flipAlliance(dashboardPose);
         }
         field.setRobotPose(dashboardPose);
+        PathPlannerLogging.setLogActivePathCallback((poses) -> {
+            // Do whatever you want with the poses here
+            field.getObject("path").setPoses(poses);
+        });
         SmartDashboard.putData(field);
 
         Pose2d speakerPose = AimConstants.blueSpeakerPos;
