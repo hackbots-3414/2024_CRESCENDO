@@ -56,7 +56,7 @@ public class ShootMaybeCommand extends Command {
         // we need to flip all of the poses
         availableShootingPoses = new ArrayList<Pose2d>();
         for (Pose2d shootPose : Constants.AutonFactoryConstants.shootPoses) {
-          Pose2d flippedPose = GeometryUtil.flipFieldPose(shootPose);
+          Pose2d flippedPose = GeometryUtil.flipFieldPose(shootPose); 
           availableShootingPoses.add(flippedPose);
         }
       }

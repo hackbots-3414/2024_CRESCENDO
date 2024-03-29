@@ -130,6 +130,10 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    boolean usePrebuiltAuton = SmartDashboard.getBoolean("Prebuilt Auto", true);
+    if (usePrebuiltAuton) {
+      return pathChooser.getSelected();
+    }
     return subsystemManager.makeAutonFactoryCommand();
   }
 

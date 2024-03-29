@@ -137,6 +137,7 @@ public class SubsystemManager extends SubsystemBase {
 
 		// send out the thing for auton factory
 		SmartDashboard.putString("Auton Path", "");
+		SmartDashboard.putBoolean("Prebuilt Auto", true);
 
 		shooter.setDefaultCommand(new ShooterFlywheelCommand(shooter, transport));
 		shooterPivot.setDefaultCommand(new AimPresetCommand(shooterPivot, transport, allianceSupplier, this::getAimOutputContainer));
