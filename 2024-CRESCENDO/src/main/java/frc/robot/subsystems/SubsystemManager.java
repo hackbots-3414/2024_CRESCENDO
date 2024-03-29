@@ -22,6 +22,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,6 +33,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.Telemetry;
+import frc.robot.commands.BaseSubsystemCommands.AimAtNote;
 import frc.robot.commands.BaseSubsystemCommands.AimCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
@@ -108,9 +110,10 @@ public class SubsystemManager extends SubsystemBase {
 	ShooterPivot shooterPivot = new ShooterPivot();
 	Transport transport = new Transport();
 	NoteFinder noteFinder = new NoteFinder();
+	Notifier noteNotifier = new Notifier(noteFinder::photonCatcher);
 	Winch winch = new Winch();
 	LedSubsystem ledSubsystem = new LedSubsystem(transport, intake, this::getIsInRange, this::getAimIsReady);
-
+	
 	public Intake getIntake() {return intake;}
 	public Shooter getShooter() {return shooter;}
 	public ShooterPivot getShooterPivot() {return shooterPivot;}
@@ -136,6 +139,9 @@ public class SubsystemManager extends SubsystemBase {
 
 		shooter.setDefaultCommand(new ShooterFlywheelCommand(shooter, transport));
 		shooterPivot.setDefaultCommand(new AimPresetCommand(shooterPivot, transport, allianceSupplier, this::getAimOutputContainer));
+
+		noteNotifier.setName("NoteDetection");
+		noteNotifier.startPeriodic(Constants.NoteFinderConstants.CYCLE_TIME);
 	}
 
 	public static synchronized SubsystemManager getInstance() {
@@ -200,6 +206,10 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public void telemeterize() {
 		drivetrain.registerTelemetry(logger::telemeterize);
+	}
+	public Command makeAimAtNoteCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn){
+
+		return new AimAtNote(drivetrain, noteFinder, x, y, turn, intake, transport);
 	}
 
 

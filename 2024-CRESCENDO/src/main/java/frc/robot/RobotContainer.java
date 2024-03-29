@@ -38,6 +38,7 @@ public class RobotContainer {
   private final JoystickButton resetAtPointButton = new JoystickButton(driver, DriverConstants.resetAtPointButton);
   private final JoystickButton shellyButton = new JoystickButton(driver, DriverConstants.shellyButton);
   private final JoystickButton ampScoreButton = new JoystickButton(driver, DriverConstants.ampScoreButton);
+  private final JoystickButton aimAtNoteButton = new JoystickButton(driver, DriverConstants.aimAtNoteButton);
 
   private final Supplier<Double> driverLeftX = () -> Math.pow(MathUtil.applyDeadband(driver.getRawAxis(DriverConstants.leftX),DriverConstants.deadband)/DriverConstants.leftXMax, DriverConstants.expoPower) * (driver.getRawAxis(DriverConstants.leftX) >= 0.0 ? 1.0 : -1.0);
   private final Supplier<Double> driverLeftY = () -> -Math.pow(MathUtil.applyDeadband(driver.getRawAxis(DriverConstants.leftY), DriverConstants.deadband)/DriverConstants.leftYMax, DriverConstants.expoPower) * (driver.getRawAxis(DriverConstants.leftY) >= 0.0 ? 1.0 : -1.0);
@@ -61,6 +62,7 @@ public class RobotContainer {
     ampScoreButton.onTrue(subsystemManager.makeAmpSequence());
     ampScoreButton.onFalse(new InstantCommand(() -> subsystemManager.stow()));
     // ampScoreButton.onFalse(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));
+    aimAtNoteButton.whileTrue(subsystemManager.makeAimAtNoteCommand(driverRightX, driverLeftY, driverLeftX));
     
     if (Utils.isSimulation()) {subsystemManager.resetAtPose2d(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));}
     subsystemManager.telemeterize();

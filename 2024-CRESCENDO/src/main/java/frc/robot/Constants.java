@@ -59,7 +59,7 @@ public class Constants {
 
     public static final class VisionConstants {
 
-        public static final boolean USE_VISION = true; // Vision enabled or not
+        public static final boolean USE_VISION = false; // Vision enabled or not
 
         /*
          * A note about these transforms: They appear to follow the normal cordinate
@@ -72,6 +72,7 @@ public class Constants {
 
         public static final String leftCameraName = "LeftCam";
         public static final String rightCameraName = "RightCam";
+        public static final String noteCameraName = "NoteCam";
 
         /** Minimum target ambiguity. Targets with higher ambiguity will be discarded */
         public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
@@ -187,6 +188,7 @@ public class Constants {
         public static final int autoAimButton = 13;
         public static final int resetAtPointButton = 12;
         public static final int shellyButton = 2;
+        public static final int aimAtNoteButton = 10;
         public static final int leftX = 0;
         public static final int leftY = 1;
         public static final int rightX = 3; 
@@ -396,10 +398,14 @@ public class Constants {
         public static final double winchManualDownSpeed = -0.7;
     }
 
+
     public class NoteFinderConstants {
         public static final int DATAGRAM_PORT = 5800;
         public static final int BUFFER_SIZE = 512;
         public static final double CYCLE_TIME = 0.015;
+        // TODO Update EXPIRY_SECONDS for comp
+        public static final double EXPIRY_SECONDS = 0.04;
+        public static final double FIELD_LENGTH = 16.54;
     }
 
     public static final class DebugConstants {

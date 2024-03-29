@@ -39,7 +39,6 @@ public class AimCommand extends Command {
 
     boolean blueSide = false;
 
-    Command currentDriveCommand;
     Command shooterCommand;
 
     AimOutputContainer output;
@@ -56,6 +55,7 @@ public class AimCommand extends Command {
         this.ySupplier = ySupplier;
         this.rSupplier = rSupplier;
         this.aSupplier = aSupplier;
+        addRequirements(drivetrain);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         thetaController.setTolerance(SwerveConstants.pidTurnTolerance);
         shooterCommand = new ShooterCommand(shooter, transport);
@@ -74,12 +74,10 @@ public class AimCommand extends Command {
         shooterPivot.setPivotPosition(output.getPivotAngle());
 
         if (!DriverStation.isAutonomous()) {
-            currentDriveCommand = drivetrain.applyRequest(() -> driveRequest.withVelocityX(xSupplier.get() * SwerveConstants.maxDriveVelocity)
+            drivetrain.setControl(driveRequest.withVelocityX(xSupplier.get() * SwerveConstants.maxDriveVelocity)
                                 .withVelocityY(ySupplier.get() * SwerveConstants.maxDriveVelocity)
                                 .withRotationalRate((rSupplier.get() > 0.2 || rSupplier.get() < -0.2) ? (-rSupplier.get() * SwerveConstants.maxAngleVelocity) 
                                 : (thetaController.calculate(robotPosition.getRotation().getRadians(), output.getDrivetrainRotation().getRadians()) * Constants.SwerveConstants.maxAngleVelocity)));
-
-            currentDriveCommand.execute();
         }
 
         shooterCommand.execute();
@@ -92,7 +90,6 @@ public class AimCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        if (!DriverStation.isAutonomous()) currentDriveCommand.end(interrupted);
         shooterCommand.end(interrupted);
     }
 }

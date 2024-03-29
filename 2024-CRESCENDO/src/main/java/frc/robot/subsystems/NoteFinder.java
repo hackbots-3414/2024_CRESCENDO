@@ -11,10 +11,15 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
 
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
+import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.NoteFinderConstants;
 
 /**
@@ -28,13 +33,14 @@ import frc.robot.Constants.NoteFinderConstants;
  * '|'[]' were deleted from dataset.
  */
 public class NoteFinder extends SubsystemBase {
-  // private static final Logger LOG = LoggerFactory.getLogger(NoteFinder.class);
+  private static final Logger LOG = LoggerFactory.getLogger(NoteFinder.class);
   private DatagramChannel noteChannel = null;
   private ByteBuffer byteReceiver = ByteBuffer.allocate(NoteFinderConstants.BUFFER_SIZE);
   private ArrayList<Gamepiece> gamepieces = new ArrayList<>();
   private StringBuffer status = new StringBuffer();
   private long lastUpdateTime = 0;
   StringBuilder stringBuilder = new StringBuilder(NoteFinderConstants.BUFFER_SIZE);
+  private PhotonCamera noteCamera = null;
 
   /** Creates a new NoteFinder. */
   public NoteFinder() {
@@ -45,8 +51,9 @@ public class NoteFinder extends SubsystemBase {
       noteChannel.socket().bind(new InetSocketAddress(NoteFinderConstants.DATAGRAM_PORT));
       // Catching and Logging an error
     } catch (IOException ioe) {
-      // LOG.error("Failure to open note channel", ioe);
+      LOG.error("Failure to open note channel", ioe);
     }
+    noteCamera = new PhotonCamera(Constants.VisionConstants.noteCameraName);
   }
 
   // Synchronizing makes sure that Read and Write don't interfere with eachother
@@ -65,6 +72,11 @@ public class NoteFinder extends SubsystemBase {
 
   @Override
   public void periodic() {
+    photonCatcher();
+    //gamepieces.add(new Gamepiece());
+    //dataReceiver();
+    SmartDashboard.putBoolean("NoteInView", isNoteDetected());
+    purgeStaleNotes();
     // This method will be called once per scheduler run
     // dataReceiver();
   }
@@ -78,15 +90,15 @@ public class NoteFinder extends SubsystemBase {
         return;
       }
       // Tracing the recieve data and Sender address, and logging the error
-      // LOG.trace("receive data: {} Sender: {}", byteReceiver, senderAddress);
+      LOG.trace("receive data: {} Sender: {}", byteReceiver, senderAddress);
     } catch (Exception ioe) {
-      // LOG.error("Failure to receive data", ioe);
+      LOG.error("Failure to receive data", ioe);
     }
     try {
       parseBuffer();
-      // LOG.trace("Updated Game Pieces: {}", gamepieces);
+      LOG.trace("Updated Game Pieces: {}", gamepieces);
     } catch (Exception e) {
-      // LOG.error("Bad MESSAGE", e);
+      LOG.error("Bad MESSAGE", e);
     }
   }
 
@@ -118,7 +130,7 @@ public class NoteFinder extends SubsystemBase {
     secondString = stringBuilder.substring(stringBuilder.indexOf("|") + 2, stringBuilder.lastIndexOf("]"));
     thirdString = stringBuilder.substring(stringBuilder.indexOf("\"") + 1, stringBuilder.lastIndexOf("\""));
     // Logging the data in the right order
-    // LOG.trace("First String: {} Second String: {} Third String: {}", firstString, secondString, thirdString);
+    LOG.trace("First String: {} Second String: {} Third String: {}", firstString, secondString, thirdString);
     status.setLength(0);
     status.append(thirdString);
     if (firstString.length() == 0) {
@@ -152,9 +164,36 @@ public class NoteFinder extends SubsystemBase {
     return returnArray;
   }
 
+  public synchronized void purgeStaleNotes() {
+    if (System.currentTimeMillis() - lastUpdateTime > NoteFinderConstants.EXPIRY_SECONDS * 1000) {
+      gamepieces.clear();
+    }
+  }
+
   public boolean isNoteDetected() {
-    return !gamepieces.isEmpty();
-   }
+   return !gamepieces.isEmpty();
+  }
+  public synchronized void photonCatcher() {
+    if (!noteCamera.isConnected()) {
+      LOG.trace("photonCatcher(): camera not connected");
+      return;
+    }
+    PhotonPipelineResult result = noteCamera.getLatestResult();
+    boolean hasTargets = result.hasTargets();
+    if (!hasTargets) {
+      LOG.trace("photonCatcher(): no targets found");
+      return;
+    }
+    PhotonTrackedTarget target = result.getBestTarget();
+    gamepieces.clear();
+    lastUpdateTime = System.currentTimeMillis();
+    Gamepiece gamepiece = new Gamepiece();
+    gamepiece.setAngle(target.getYaw());
+    gamepieces.add(gamepiece);
+    LOG.trace("photonCatcher(): found best gamepiece: {}", gamepiece);
+
+
+  }
 
   public class Gamepiece {
     private double angle = 0;

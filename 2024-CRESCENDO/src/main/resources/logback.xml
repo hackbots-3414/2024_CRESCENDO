@@ -6,9 +6,9 @@
    </encoder>
  </appender>
 
- <!-- logger name="frc.robot.subsystems.NoteFinder" level="TRACE"/-->
+ <!-- <logger name="frc.robot.subsystems.NoteFinder" level="TRACE"/> -->
  <logger name="frc.robot.commands.BaseSubsystemCommands.IntakeCommand" level="DEBUG"/>
-
+ <logger name="frc.robot.commands.BaseSubsystemCommands.AimAtNote" level="DEBUG"/>
  <root level = "WARN">
    <appender-ref ref="STDOUT"/>
  </root>
