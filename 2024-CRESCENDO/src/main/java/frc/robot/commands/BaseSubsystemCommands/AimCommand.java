@@ -11,6 +11,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -45,7 +47,7 @@ public class AimCommand extends Command {
     AimOutputContainer output;
 
     FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.2).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-    PIDController thetaController = new PIDController(1, 0, 0);
+    PIDController thetaController = new PIDController(0.8, 0, 0);
 
     public AimCommand(ShooterPivot shooterPivot, Shooter shooter, Transport transport, CommandSwerveDrivetrain drivetrain, Supplier<Double> xSupplier, Supplier<Double> ySupplier, Supplier<Double> rSupplier, Supplier<Alliance> aSupplier) {
         this.shooterPivot = shooterPivot;
@@ -74,15 +76,21 @@ public class AimCommand extends Command {
         shooterPivot.setPivotPosition(output.getPivotAngle());
 
         if (!DriverStation.isAutonomous()) {
+            double robotRotation = robotPosition.getRotation().getRadians();
+            double targetRotation = output.getDrivetrainRotation().getRadians();
             currentDriveCommand = drivetrain.applyRequest(() -> driveRequest.withVelocityX(xSupplier.get() * SwerveConstants.maxDriveVelocity)
                                 .withVelocityY(ySupplier.get() * SwerveConstants.maxDriveVelocity)
                                 .withRotationalRate((rSupplier.get() > 0.2 || rSupplier.get() < -0.2) ? (-rSupplier.get() * SwerveConstants.maxAngleVelocity) 
-                                : (thetaController.calculate(robotPosition.getRotation().getRadians(), output.getDrivetrainRotation().getRadians()) * Constants.SwerveConstants.maxAngleVelocity)));
+                                : (thetaController.calculate(robotRotation, targetRotation) * Constants.SwerveConstants.maxAngleVelocity)));
 
             currentDriveCommand.execute();
+            if (thetaController.atSetpoint()) {
+                shooterCommand.execute();
+            }
+        } else {
+            shooterCommand.execute();
         }
 
-        shooterCommand.execute();
     }
 
     @Override
