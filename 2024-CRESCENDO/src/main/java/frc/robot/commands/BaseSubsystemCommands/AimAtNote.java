@@ -39,7 +39,7 @@ public class AimAtNote extends Command {
   private static Logger LOG = LoggerFactory.getLogger(AimAtNote.class);
 
   private FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.2).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-  private PIDController thetaController = new PIDController(1, 0, 0);
+  private PIDController thetaController = new PIDController(0.8, 0, 0);
 
   /** Creates a new AimAtNote. */
   public AimAtNote(CommandSwerveDrivetrain drivetrain, NoteFinder notefinder, Supplier<Double> xSupplier, Supplier<Double> ySupplier, Supplier<Double> rSupplier, Intake intake, Transport transport) {
@@ -83,7 +83,7 @@ public class AimAtNote extends Command {
     drivetrain.setControl(driveRequest.withVelocityX(xSupplier.get() * SwerveConstants.maxDriveVelocity)
     .withVelocityY(ySupplier.get() * SwerveConstants.maxDriveVelocity)
     .withRotationalRate((rSupplier.get() > 0.2 || rSupplier.get() < -0.2) ? (-rSupplier.get() * SwerveConstants.maxAngleVelocity) 
-    : (thetaController.calculate(robotPosition.getRotation().getRadians(), targetRotation.getRadians()) * Constants.SwerveConstants.maxAngleVelocity)));
+    : (-thetaController.calculate(robotPosition.getRotation().getRadians(), targetRotation.getRadians()) * Constants.SwerveConstants.maxAngleVelocity)));
   }
 
   // Called once the command ends or is interrupted.
