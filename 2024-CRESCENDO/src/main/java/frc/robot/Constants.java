@@ -70,7 +70,7 @@ public class Constants {
                 (new Rotation3d(Units.degreesToRadians(177.5), Units.degreesToRadians(-30), Units.degreesToRadians(-10))));
         public static final Transform3d rightTransform = new Transform3d(-0.281, -0.291, 0.636,
                 new Rotation3d(Units.degreesToRadians(182.5), Units.degreesToRadians(-30), Units.degreesToRadians(10)));
-        public static final Transform3d backTransform = new Transform3d(-16.3987, -1.988, 10.5357,
+        public static final Transform3d backTransform = new Transform3d(-0.4165, -0.050, 0.267,
                 new Rotation3d(Units.degreesToRadians(-180), Units.degreesToRadians(-35), Units.degreesToRadians(180)));
 
         public static final String leftCameraName = "LeftCam";
@@ -156,6 +156,8 @@ public class Constants {
                 entry(5.2, 0.0012),
                 entry(5.57, 0.000)
         );
+
+        public static final double howCloseIsTooClose = 0.024; // rotations
 
         // public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
         // entry(0.0, 50.0),
@@ -353,6 +355,18 @@ public class Constants {
             // public static final double kG = 0.0;
         }
 
+        public static final class PivotSlot2ConfigConstants {
+            public static final double kP = 2.0; // output per unit of error in position (output/rotation)
+            public static final double kI = 0.0; // output per unit of integrated error in position
+                                                 // (output/(rotation*s))
+            public static final double kD = 0.05; // output per unit of error in velocity (output/rps)
+            public static final double kS = 0.0; // output to overcome static friction (output)
+            public static final double kV = 20.0; // output per unit of target velocity (output/rps)
+            public static final double kA = 0.0; // output per unit of target acceleration (output/(rps/s))
+            public static final double kG = 0.04; // feedforward Constant, was 0.15 b/c it fixed the
+                                                  // pivot going down 3/27
+        }
+
         public static final class PivotMotionMagicConstants {
             public static final double cruiseVelocity = 0.085693 * 50; // Target cruise velocity
             public static final double acceleration = cruiseVelocity * 0.5; // Target acceleration
@@ -413,7 +427,7 @@ public class Constants {
     }
 
     public static final class DebugConstants {
-        public static final boolean debugMode = false; // setting this to true will increase your network table traffic.
+        public static final boolean debugMode = true; // setting this to true will increase your network table traffic.
     }
 
     /*
