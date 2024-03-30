@@ -25,7 +25,7 @@ public class ShooterFlywheelCommand extends Command {
         if (transport.getNoteOnBoard()) {
             if (!running) {
                 running = true;
-                shooter.setMaxSpeed();
+                shooter.setWarmUpSpeed();
             }
         } else {
             if (running) {
