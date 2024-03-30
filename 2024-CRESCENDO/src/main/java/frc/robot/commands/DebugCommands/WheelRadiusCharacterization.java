@@ -1,15 +1,18 @@
 package frc.robot.commands.DebugCommands;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
+import java.math.BigDecimal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
+
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class WheelRadiusCharacterization extends Command {
@@ -41,15 +44,15 @@ public class WheelRadiusCharacterization extends Command {
     return Units.degreesToRadians(drivetrain.getPigeon2().getAngle());
   }
 
-  public double getWheelRotationRadAvg() {
-    double sum = 0;
+  public BigDecimal getWheelRotationRadAvg() {
+    BigDecimal sum = new BigDecimal(0);
     for (int i = 0; i < 4; i++) {
-      SmartDashboard.putNumber("SWERVE MODULE MOVEMENT RADS" + i,
-          (drivetrain.getModule(i).getDriveMotor().getPosition().getValueAsDouble() / 6.122448979591837) * Math.PI
-              * 2.0);
-              sum += (drivetrain.getModule(i).getDriveMotor().getPosition().getValueAsDouble() / 6.122448979591837) * Math.PI * 2.0;
+      BigDecimal drivetrainRotationsbig = new BigDecimal(drivetrain.getModule(i).getDriveMotor().getPosition().getValueAsDouble());
+      BigDecimal rotationsRad = drivetrainRotationsbig.divide(TunerConstants.kDriveGearRatioBig).multiply(new BigDecimal(Math.PI).multiply(new BigDecimal(2)));
+      SmartDashboard.putNumber("SWERVE MODULE MOVEMENT RADS" + i, rotationsRad.doubleValue());
+      sum = sum.add(rotationsRad);
     }
-    return sum / 4;
+    return sum.divide(new BigDecimal(4));
   }
 
   @Override
@@ -65,9 +68,13 @@ public class WheelRadiusCharacterization extends Command {
     log.debug("command ended");
     SmartDashboard.putNumber("Ending Gyro Position", Units.degreesToRadians(drivetrain.getPigeon2().getAngle()));
     gyroEndingPosition = Units.degreesToRadians(drivetrain.getPigeon2().getAngle());
-    double gyroPositionChange = gyroEndingPosition - gyroStartingPosition;
-    double wheelRadius = ((gyroPositionChange * driveBaseRadius) / getWheelRotationRadAvg())/2.0;
-    SmartDashboard.putNumber("Wheel Radius", wheelRadius);
+    BigDecimal gyroPositionChange = new BigDecimal(gyroEndingPosition).subtract(new BigDecimal(gyroStartingPosition));
+    BigDecimal driveBaseRadiusBig = new BigDecimal(driveBaseRadius);
+
+    BigDecimal wheelRadius = gyroPositionChange.multiply(driveBaseRadiusBig).divide(getWheelRotationRadAvg()).divide(new BigDecimal(2));
+
+    SmartDashboard.putString("Wheel Radius (cm)", wheelRadius.toPlainString());
+    log.info("I got: " + wheelRadius.toPlainString());
   }
 
   @Override
