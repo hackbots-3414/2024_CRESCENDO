@@ -32,14 +32,17 @@ import org.photonvision.targeting.PhotonPipelineResult;
 public class AprilTagVisionIOPhotonVisionSIM implements AprilTagVisionIO {
     private final PhotonCamera rightCamera;
     private final PhotonCamera leftCamera;
+    private final PhotonCamera backCamera;
 
     private final PhotonPoseEstimator photonEstimatorRight;
     private final PhotonPoseEstimator photonEstimatorLeft;
+    private final PhotonPoseEstimator photonEstimatorBack;
 
     private VisionSystemSim visionSim;
 
     private PhotonCameraSim cameraSimRight;
     private PhotonCameraSim cameraSimLeft;
+    private PhotonCameraSim cameraSimBack;
 
     private double lastEstTimestamp = 0;
     private final Supplier<Pose2d> poseSupplier;
@@ -47,14 +50,16 @@ public class AprilTagVisionIOPhotonVisionSIM implements AprilTagVisionIO {
     /**
      * Constructs a new AprilTagVisionIOPhotonVisionSIM instance.
      *
-     * @param identifier The identifier of the PhotonCamera.
-     * @param robotToCamera The transform from the robot's coordinate system to the camera's
-     *     coordinate system.
-     * @param poseSupplier The supplier of the robot's pose.
+     * @param identifier    The identifier of the PhotonCamera.
+     * @param robotToCamera The transform from the robot's coordinate system to the
+     *                      camera's
+     *                      coordinate system.
+     * @param poseSupplier  The supplier of the robot's pose.
      */
     public AprilTagVisionIOPhotonVisionSIM(Supplier<Pose2d> poseSupplier) {
         this.rightCamera = new PhotonCamera(Constants.VisionConstants.rightCameraName);
         this.leftCamera = new PhotonCamera(Constants.VisionConstants.leftCameraName);
+        this.backCamera = new PhotonCamera(Constants.VisionConstants.backCameraName);
 
         photonEstimatorRight = new PhotonPoseEstimator(
                 FieldConstants.aprilTags,
@@ -70,6 +75,13 @@ public class AprilTagVisionIOPhotonVisionSIM implements AprilTagVisionIO {
                 Constants.VisionConstants.leftTransform);
         photonEstimatorLeft.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
+        photonEstimatorBack = new PhotonPoseEstimator(
+                FieldConstants.aprilTags, 
+                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, 
+                backCamera,
+                Constants.VisionConstants.backTransform);
+        photonEstimatorBack.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+
         // Create the vision system simulation which handles cameras and targets on the
         // field.
         visionSim = new VisionSystemSim("main");
@@ -81,18 +93,22 @@ public class AprilTagVisionIOPhotonVisionSIM implements AprilTagVisionIO {
 
         cameraSimRight = new PhotonCameraSim(rightCamera);
         cameraSimLeft = new PhotonCameraSim(leftCamera);
+        cameraSimBack = new PhotonCameraSim(backCamera);
 
         SimCameraProperties cameraProps = getCameraProp();
 
         cameraSimRight = new PhotonCameraSim(rightCamera, cameraProps);
         cameraSimLeft = new PhotonCameraSim(leftCamera, cameraProps);
+        cameraSimBack = new PhotonCameraSim(backCamera, cameraProps);
 
         // Add the simulated camera to view the targets on this simulated field.
         visionSim.addCamera(cameraSimRight, Constants.VisionConstants.rightTransform);
         visionSim.addCamera(cameraSimLeft, Constants.VisionConstants.leftTransform);
+        visionSim.addCamera(cameraSimBack, Constants.VisionConstants.backTransform);
 
         cameraSimRight.enableDrawWireframe(true);
         cameraSimLeft.enableDrawWireframe(true);
+        cameraSimBack.enableDrawWireframe(true);
 
         this.poseSupplier = poseSupplier;
     }
@@ -108,6 +124,7 @@ public class AprilTagVisionIOPhotonVisionSIM implements AprilTagVisionIO {
 
         return cameraProp;
     }
+
     /**
      * Updates the inputs for AprilTag vision.
      *
@@ -118,6 +135,7 @@ public class AprilTagVisionIOPhotonVisionSIM implements AprilTagVisionIO {
 
         updatePoseEstimates(inputs, cameraSimRight, photonEstimatorRight);
         updatePoseEstimates(inputs, cameraSimLeft, photonEstimatorLeft);
+        updatePoseEstimates(inputs, cameraSimBack, photonEstimatorBack);
     }
 
     /** Updates the PhotonPoseEstimator and returns the estimated global pose. */
@@ -131,7 +149,8 @@ public class AprilTagVisionIOPhotonVisionSIM implements AprilTagVisionIO {
                     if (newResult)
                         getSimDebugField().getObject("VisionEstimation").setPoses();
                 });
-        if (newResult) lastEstTimestamp = latestTimestamp;
+        if (newResult)
+            lastEstTimestamp = latestTimestamp;
         return visionEst;
     }
 
@@ -173,7 +192,8 @@ public class AprilTagVisionIOPhotonVisionSIM implements AprilTagVisionIO {
 
     /** A Field2d for visualizing our robot and objects on the field. */
     public Field2d getSimDebugField() {
-        if (!RobotBase.isSimulation()) return null;
+        if (!RobotBase.isSimulation())
+            return null;
         return visionSim.getDebugField();
     }
 }

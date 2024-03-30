@@ -36,7 +36,8 @@ public class Constants {
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
 
-        public static final double driveSupplyCurrentLimit = 75.0; // was 80.0, changed experimentally to prevent brownouts on 3/23
+        public static final double driveSupplyCurrentLimit = 75.0; // was 80.0, changed experimentally to prevent
+                                                                   // brownouts on 3/23
 
         public static final double maxDriveAcceleration = 4;
         public static final double maxAngleAcceleration = 2 * Math.PI;
@@ -69,9 +70,13 @@ public class Constants {
                 (new Rotation3d(Units.degreesToRadians(177.5), Units.degreesToRadians(-30), Units.degreesToRadians(-10))));
         public static final Transform3d rightTransform = new Transform3d(-0.281, -0.291, 0.636,
                 new Rotation3d(Units.degreesToRadians(182.5), Units.degreesToRadians(-30), Units.degreesToRadians(10)));
+        public static final Transform3d backTransform = new Transform3d(-0.4165, -0.050, 0.267,
+                new Rotation3d(Units.degreesToRadians(-180), Units.degreesToRadians(-35), Units.degreesToRadians(180)));
 
         public static final String leftCameraName = "LeftCam";
         public static final String rightCameraName = "RightCam";
+        public static final String backCameraName = "BackCam";
+
 
         /** Minimum target ambiguity. Targets with higher ambiguity will be discarded */
         public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
@@ -88,24 +93,24 @@ public class Constants {
          * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then
          * meters.
          */
-        public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(), 
-                        // if these numbers are less than one, multiplying will do bad things
-                        1, // x
-                        1, // y
-                        1 * Math.PI // theta
-                );
-                
+        public static final Matrix<N3, N1> VISION_MEASUREMENT_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(),
+                // if these numbers are less than one, multiplying will do bad things
+                1, // x
+                1, // y
+                1 * Math.PI // theta
+        );
+
         /**
          * Standard deviations of the vision measurements. Increase these numbers to
          * trust global measurements from vision
          * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and
          * radians.
          */
-        public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(), 
-                        // if these numbers are less than one, multiplying will do bad things
-                        .1, // x
-                        .1, // y
-                        .1);
+        public static final Matrix<N3, N1> STATE_STANDARD_DEVIATIONS = MatBuilder.fill(Nat.N3(), Nat.N1(),
+                // if these numbers are less than one, multiplying will do bad things
+                .1, // x
+                .1, // y
+                .1);
 
         // Pose on the opposite side of the field. Use with `relativeTo` to flip a pose
         // to the opposite alliance
@@ -152,15 +157,17 @@ public class Constants {
                 entry(5.57, 0.000)
         );
 
+        public static final double howCloseIsTooClose = 0.024; // rotations
+
         // public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
-        //         entry(0.0, 50.0),
-        //         entry(1.41, 50.0),
-        //         entry(1.70, 50.0),
-        //         entry(2.31, 50.0),
-        //         entry(2.92, 60.0),
-        //         entry(3.54, 70.0),
-        //         entry(4.14, 92.0),
-        //         entry(50.0, 92.0));
+        // entry(0.0, 50.0),
+        // entry(1.41, 50.0),
+        // entry(1.70, 50.0),
+        // entry(2.31, 50.0),
+        // entry(2.92, 60.0),
+        // entry(3.54, 70.0),
+        // entry(4.14, 92.0),
+        // entry(50.0, 92.0));
     }
 
     public static final class IntakeConstants {
@@ -191,7 +198,7 @@ public class Constants {
         public static final int shellyButton = 2;
         public static final int leftX = 0;
         public static final int leftY = 1;
-        public static final int rightX = 3; 
+        public static final int rightX = 3;
         public static final int rightY = 2;
         public static final int ampScoreButton = 16;
 
@@ -275,7 +282,8 @@ public class Constants {
 
         public static final class ElevatorSlot0ConfigConstants {
             public static final double kP = 15.0; // output per unit of error in position (output/rotation)
-            public static final double kI = 0.0; // output per unit of integrated error in position (output/(rotation*s))
+            public static final double kI = 0.0; // output per unit of integrated error in position
+                                                 // (output/(rotation*s))
             public static final double kD = 0.0; // output per unit of error in velocity (output/rps)
             public static final double kS = 0.0; // output to overcome static friction (output)
             public static final double kV = 2.8; // output per unit of target velocity (output/rps)
@@ -301,7 +309,7 @@ public class Constants {
     public static final class PivotConstants {
         public static final int pivotMotorID = 59;
         public static final int EncoderID = 51;
-        public static final double encoderOffset = 0.324707; 
+        public static final double encoderOffset = 0.324707;
 
         public static final double rotorToSensorRatio = 125;
         public static final double sensorToMechanismRatio = 1.0;
@@ -330,7 +338,8 @@ public class Constants {
             public static final double kS = 0.0; // output to overcome static friction (output)
             public static final double kV = 20.0; // output per unit of target velocity (output/rps)
             public static final double kA = 0.0; // output per unit of target acceleration (output/(rps/s))
-            public static final double kG = 0.15; // feedforward Constant, was 0.1 but we made it 0.15 b/c it fixed the pivot going down 3/27
+            public static final double kG = 0.15; // feedforward Constant, was 0.1 but we made it 0.15 b/c it fixed the
+                                                  // pivot going down 3/27
             // public static final double kG = 0.0;
         }
 
@@ -344,6 +353,18 @@ public class Constants {
             public static final double kA = 0.0; // output per unit of target acceleration (output/(rps/s))
             public static final double kG = 0.05; // feedforward Constant changed onm 3/27
             // public static final double kG = 0.0;
+        }
+
+        public static final class PivotSlot2ConfigConstants {
+            public static final double kP = 2.0; // output per unit of error in position (output/rotation)
+            public static final double kI = 0.0; // output per unit of integrated error in position
+                                                 // (output/(rotation*s))
+            public static final double kD = 0.05; // output per unit of error in velocity (output/rps)
+            public static final double kS = 0.0; // output to overcome static friction (output)
+            public static final double kV = 20.0; // output per unit of target velocity (output/rps)
+            public static final double kA = 0.0; // output per unit of target acceleration (output/(rps/s))
+            public static final double kG = 0.04; // feedforward Constant, was 0.15 b/c it fixed the
+                                                  // pivot going down 3/27
         }
 
         public static final class PivotMotionMagicConstants {
@@ -381,7 +402,8 @@ public class Constants {
 
         public static final double speakerHeightMinusElevatorRaise = speakerHeight - elevatorHeightFromFloorAtRest;
         public static final double gravity = 9.81;
-        public static final double velocity = ShooterConstants.maxSpeed * Units.inchesToMeters(1.5) * Math.PI + AimConstants.compressionAdder;
+        public static final double velocity = ShooterConstants.maxSpeed * Units.inchesToMeters(1.5) * Math.PI
+                + AimConstants.compressionAdder;
 
         public static final double bumperToCenter = Units.inchesToMeters(19.0);
     }
@@ -405,33 +427,33 @@ public class Constants {
     }
 
     public static final class DebugConstants {
-        public static final boolean debugMode = false; // setting this to true will increase your network table traffic.
+        public static final boolean debugMode = true; // setting this to true will increase your network table traffic.
     }
 
     /*
-        pdp - 1
-        winchLeft - 3
-        winchRight - 3
-        shooterLeft - 0
-        shooterRight - 1
-        elevator - 7
-        pivot - 5
-        intake - 8
-        transport - 2
-        frontLeftDrive - 6
-        frontLeftSteer - 4
-        backLeftDrive - 9
-        backLeftSteer - 7
-        frontRightDrive - 5
-        frontRightSteer - 3
-        backRightDrive - 2
-        backRightSteer - 0
-    */
+     * pdp - 1
+     * winchLeft - 3
+     * winchRight - 3
+     * shooterLeft - 0
+     * shooterRight - 1
+     * elevator - 7
+     * pivot - 5
+     * intake - 8
+     * transport - 2
+     * frontLeftDrive - 6
+     * frontLeftSteer - 4
+     * backLeftDrive - 9
+     * backLeftSteer - 7
+     * frontRightDrive - 5
+     * frontRightSteer - 3
+     * backRightDrive - 2
+     * backRightSteer - 0
+     */
 
     public class CurrentLimits {
         public static final double intakeStatorLimit = 35;
         // public static final double intakeSupplyLimit = 0;
-        
+
         public static final double transportStatorLimit = 20;
         // public static final double transportSupplyLimit = 0;
 
@@ -450,7 +472,7 @@ public class Constants {
         // public static final double drivetrainStatorLimit = 0;
         public static final double drivetrainSupplyLimit = 80;
     }
-    
+
     public static class AmpConstants {
         public static final double allowedShootTime = 1.5; // seconds
     }
@@ -470,7 +492,7 @@ public class Constants {
         // public static final int insideNumLED = 2;
         // public static final int topNumLED = 1;
         // public static final int rightNumLED = 1;
-         public static final int leftOffset = 8;
+        public static final int leftOffset = 8;
         public static final int insideOffset = 22;
         public static final int topOffset = 49;
         public static final int rightOffset = 104;
