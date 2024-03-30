@@ -66,15 +66,15 @@ public class Constants {
          * system (x is right when pos. and so on).
          */
         public static final Transform3d leftTransform = new Transform3d(-0.281, 0.291, 0.636,
-                new Rotation3d(Units.degreesToRadians(-2.5), Units.degreesToRadians(-30), Units.degreesToRadians(-10)));
+                (new Rotation3d(Units.degreesToRadians(177.5), Units.degreesToRadians(-30), Units.degreesToRadians(-10))));
         public static final Transform3d rightTransform = new Transform3d(-0.281, -0.291, 0.636,
-                new Rotation3d(Units.degreesToRadians(2.5), Units.degreesToRadians(-30), Units.degreesToRadians(10)));
+                new Rotation3d(Units.degreesToRadians(182.5), Units.degreesToRadians(-30), Units.degreesToRadians(10)));
 
         public static final String leftCameraName = "LeftCam";
         public static final String rightCameraName = "RightCam";
 
         /** Minimum target ambiguity. Targets with higher ambiguity will be discarded */
-        public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.4;
+        public static final double APRILTAG_AMBIGUITY_THRESHOLD = 0.2;
 
         public static final double POSE_AMBIGUITY_SHIFTER = 0.2;
         public static final double POSE_AMBIGUITY_MULTIPLIER = 4;
@@ -126,7 +126,7 @@ public class Constants {
 
         public static final double shooterTolerance = 3.0; // was 1.0
 
-        public static final double warmUpSpeed = 0.5; // duty cycle (0-1)
+        public static final double warmUpSpeed = 0.25; // duty cycle (0-1)
 
         public static final double spitOutSpeed = 50;
         public static final double maxSpeed = 80; // rps
@@ -141,15 +141,15 @@ public class Constants {
                 entry(2.26, 0.039),
                 entry(2.62, 0.034),
                 entry(2.8, 0.027),
-                entry(3.0, 0.029),
+                entry(3.0, 0.024),
                 entry(3.27, 0.020),
                 entry(3.66, 0.015),
                 entry(4.0, 0.012),
-                entry(4.3, 0.0095),
-                entry(4.6, 0.0065),
-                entry(4.9, 0.0025),
-                entry(5.2, 0.0007),
-                entry(6.0, 0.000)
+                entry(4.3, 0.011),
+                entry(4.6, 0.008),
+                entry(4.9, 0.0035),
+                entry(5.2, 0.0012),
+                entry(5.57, 0.000)
         );
 
         // public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
@@ -318,7 +318,7 @@ public class Constants {
         public static final double pivotManualUpSpeed = 0.3;
         public static final double pivotManualDownSpeed = -0.1;
 
-        public static final double pivotTolerance = 0.001; 
+        public static final double pivotTolerance = 0.001;
 
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
@@ -361,7 +361,7 @@ public class Constants {
 
         public static final double compressionAdder = 3;
 
-        public static final double maxRange = 4.0;
+        public static final double maxRange = 4.3;
 
         public static final double aprilTagToHoodGoal = Units.inchesToMeters(8);
 

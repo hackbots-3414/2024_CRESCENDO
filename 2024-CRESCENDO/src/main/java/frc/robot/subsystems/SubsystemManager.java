@@ -138,7 +138,8 @@ public class SubsystemManager extends SubsystemBase {
 		shooter.setDefaultCommand(new ShooterFlywheelCommand(shooter, transport));
 		shooterPivot.setDefaultCommand(new AimPresetCommand(shooterPivot, transport, allianceSupplier, this::getAimOutputContainer));
 
-		// SmartDashboard.putData("hehe", new InstantCommand(() -> drivetrain.seedFieldRelative(GeometryUtil.flipFieldPose(new Pose2d(5.82, 7, Rotation2d.fromDegrees(143.96))))));
+		SmartDashboard.putNumber("Shooter Angle?", 0.0);
+		SmartDashboard.putData("Set Shooter Angle", new InstantCommand(this::customShoot));
 	}
 
 	public static synchronized SubsystemManager getInstance() {
@@ -368,5 +369,10 @@ public class SubsystemManager extends SubsystemBase {
 					return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
 				},
 				drivetrain); // Subsystem for requirements
+	}
+
+	public void customShoot() {
+		double angle = SmartDashboard.getNumber("Shooter Angle?", 0.0);
+		shooterPivot.setPivotPosition(angle);
 	}
 }
