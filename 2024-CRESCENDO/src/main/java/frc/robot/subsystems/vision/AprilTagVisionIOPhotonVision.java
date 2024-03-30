@@ -25,6 +25,7 @@ public class AprilTagVisionIOPhotonVision implements AprilTagVisionIO {
 
     private static PhotonVisionRunnable leftEstimator;
     private static PhotonVisionRunnable rightEstimator;
+    private static PhotonVisionRunnable backEstimator;
     private static Notifier allNotifier;
 
     private OriginPosition originPosition = kBlueAllianceWallRightSide;
@@ -42,10 +43,14 @@ public class AprilTagVisionIOPhotonVision implements AprilTagVisionIO {
             leftEstimator = new PhotonVisionRunnable(
                     Constants.VisionConstants.leftCameraName,
                     Constants.VisionConstants.leftTransform);
+            backEstimator = new PhotonVisionRunnable(
+                    Constants.VisionConstants.backCameraName,
+                    Constants.VisionConstants.backTransform);
 
             allNotifier = new Notifier(() -> {
                 rightEstimator.run();
                 leftEstimator.run();
+                backEstimator.run();
             });
 
             allNotifier.setName("runAll");
@@ -66,6 +71,7 @@ public class AprilTagVisionIOPhotonVision implements AprilTagVisionIO {
         if (Constants.VisionConstants.USE_VISION) {
             updatePoseEstimates(rightEstimator, inputs);
             updatePoseEstimates(leftEstimator, inputs);
+            updatePoseEstimates(backEstimator, inputs);
         }
     }
 
