@@ -1,6 +1,7 @@
 package frc.robot.commands.DebugCommands;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +48,8 @@ public class WheelRadiusCharacterization extends Command {
   public BigDecimal getWheelRotationRadAvg() {
     BigDecimal sum = new BigDecimal(0);
     for (int i = 0; i < 4; i++) {
-      BigDecimal drivetrainRotationsbig = new BigDecimal(drivetrain.getModule(i).getDriveMotor().getPosition().getValueAsDouble());
-      BigDecimal rotationsRad = drivetrainRotationsbig.divide(TunerConstants.kDriveGearRatioBig).multiply(new BigDecimal(Math.PI).multiply(new BigDecimal(2)));
+      BigDecimal drivetrainRotationsbig = new BigDecimal(drivetrain.getModule(i).getDriveMotor().getPosition().getValueAsDouble()).abs();
+      BigDecimal rotationsRad = drivetrainRotationsbig.divide(TunerConstants.kDriveGearRatioBig, 12, RoundingMode.HALF_UP).multiply(new BigDecimal(Math.PI).multiply(new BigDecimal(2)));
       SmartDashboard.putNumber("SWERVE MODULE MOVEMENT RADS" + i, rotationsRad.doubleValue());
       sum = sum.add(rotationsRad);
     }
@@ -71,10 +72,10 @@ public class WheelRadiusCharacterization extends Command {
     BigDecimal gyroPositionChange = new BigDecimal(gyroEndingPosition).subtract(new BigDecimal(gyroStartingPosition));
     BigDecimal driveBaseRadiusBig = new BigDecimal(driveBaseRadius);
 
-    BigDecimal wheelRadius = gyroPositionChange.multiply(driveBaseRadiusBig).divide(getWheelRotationRadAvg()).divide(new BigDecimal(2));
+    BigDecimal wheelRadius = gyroPositionChange.multiply(driveBaseRadiusBig).divide(getWheelRotationRadAvg(), 12, RoundingMode.HALF_UP).divide(new BigDecimal(2), 12, RoundingMode.HALF_UP);
 
     SmartDashboard.putString("Wheel Radius (cm)", wheelRadius.toPlainString());
-    log.info("I got: " + wheelRadius.toPlainString());
+    log.info("wheel radius (cm): " + wheelRadius.toPlainString());
   }
 
   @Override
