@@ -207,7 +207,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     @Override
     public void simulationPeriodic() {
-        // Subsystem.super.simulationPeriodic();
+        Subsystem.super.simulationPeriodic();
         field.setRobotPose(estimatedPose);
     }
 
