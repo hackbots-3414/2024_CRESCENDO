@@ -15,6 +15,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.SwerveDriveBrake;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.util.GeometryUtil;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -66,7 +67,13 @@ public class SubsystemManager extends SubsystemBase {
 	// PowerDistribution pdp = new PowerDistribution(PDPConstants.pdp, ModuleType.kRev);
 	List<SubsystemBase> subsystems = new ArrayList<>();
 
-	Supplier<Alliance> allianceSupplier = () -> DriverStation.getAlliance().get();
+	Supplier<Alliance> allianceSupplier = () -> {
+		Optional<Alliance> alliance = DriverStation.getAlliance();
+		if (alliance.isPresent()) {
+			return alliance.get();
+		}
+		return Alliance.Blue;
+	};
 
 	private boolean noteOnBoard = false;
 	private boolean aimReady = false;
@@ -137,6 +144,9 @@ public class SubsystemManager extends SubsystemBase {
 
 		shooter.setDefaultCommand(new ShooterFlywheelCommand(shooter, transport));
 		shooterPivot.setDefaultCommand(new AimPresetCommand(shooterPivot, transport, allianceSupplier, this::getAimOutputContainer));
+
+		SmartDashboard.putNumber("Shooter Angle?", 0.0);
+		SmartDashboard.putData("Set Shooter Angle", new InstantCommand(this::customShoot));
 	}
 
 	public static synchronized SubsystemManager getInstance() {
@@ -372,5 +382,10 @@ public class SubsystemManager extends SubsystemBase {
 					return alliance.isPresent() ? alliance.get() == DriverStation.Alliance.Red : false;
 				},
 				drivetrain); // Subsystem for requirements
+	}
+
+	public void customShoot() {
+		double angle = SmartDashboard.getNumber("Shooter Angle?", 0.0);
+		shooterPivot.setPivotPosition(angle);
 	}
 }

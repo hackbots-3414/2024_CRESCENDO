@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -9,6 +12,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
+import com.ctre.phoenix6.configs.Slot2Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -29,9 +33,12 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.PivotConstants.PivotMotionMagicConstants;
 import frc.robot.Constants.PivotConstants.PivotSlot0ConfigConstants;
 import frc.robot.Constants.PivotConstants.PivotSlot1ConfigConstants;
+import frc.robot.Constants.PivotConstants.PivotSlot2ConfigConstants;
 import frc.robot.Constants.PositionConstants;
 
 public class ShooterPivot extends SubsystemBase implements AutoCloseable {
+
+  private Logger logger = LoggerFactory.getLogger(ShooterPivot.class);
 
   private final TalonFX pivotMotor = new TalonFX(Constants.PivotConstants.pivotMotorID);
   private final CANcoder cancoder = new CANcoder(Constants.PivotConstants.EncoderID);
@@ -82,6 +89,17 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
             .withKA(PivotSlot1ConfigConstants.kA)
             .withKG(PivotSlot1ConfigConstants.kG)
             .withGravityType(GravityTypeValue.Arm_Cosine))
+        
+        .withSlot2(new Slot2Configs()
+            .withKP(PivotSlot2ConfigConstants.kP)
+            .withKI(PivotSlot2ConfigConstants.kI)
+            .withKD(PivotSlot2ConfigConstants.kD)
+            .withKS(PivotSlot2ConfigConstants.kS)
+            .withKV(PivotSlot2ConfigConstants.kV)
+            .withKA(PivotSlot2ConfigConstants.kA)
+            .withKG(PivotSlot2ConfigConstants.kG)
+            .withGravityType(GravityTypeValue.Arm_Cosine)
+        )
 
         .withMotionMagic(new MotionMagicConfigs()
             .withMotionMagicCruiseVelocity(PivotMotionMagicConstants.cruiseVelocity)
@@ -115,6 +133,12 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
   public void setPivotPosition(double position) { // position is in number of rotations as per documentation.
     this.setpoint = position;
     boolean goingDown = position < getCancoderPos();
+    boolean isTooClose = position > Constants.ShooterConstants.howCloseIsTooClose;
+    if (isTooClose) {
+      pivotMotor.setControl(new MotionMagicVoltage(position).withSlot(2));
+      logger.debug("using slot 2");
+      return;
+    }
     pivotMotor.setControl(new MotionMagicVoltage(position).withSlot(goingDown ? 1 : 0));
   }
 
@@ -139,7 +163,10 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
   }
 
   public boolean isAtSetpoint() {
-    return Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance;
+    if (setpoint > Constants.ShooterConstants.howCloseIsTooClose) {
+      return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance * 12.0);
+    }
+    return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance || getCancoderPos() < 0 && setpoint == 0.0);
   }
 
   public void stop() {
