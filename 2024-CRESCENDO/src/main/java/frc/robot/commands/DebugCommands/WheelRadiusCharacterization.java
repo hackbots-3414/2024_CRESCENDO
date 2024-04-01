@@ -12,6 +12,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class WheelRadiusCharacterization extends Command {
@@ -104,7 +105,10 @@ public class WheelRadiusCharacterization extends Command {
   private BigDecimal calculateWheelRadius(int index) {
     BigDecimal drivebaseRadius = new BigDecimal(drivebaseRadii[index]);
 
-    BigDecimal wheelRotations = new BigDecimal(finalWheelRotation[index]).subtract(new BigDecimal(initialWheelRotation[index])).abs();
+    BigDecimal wheelMotorRotations = new BigDecimal(finalWheelRotation[index]).subtract(new BigDecimal(initialWheelRotation[index])).abs();
+
+    BigDecimal wheelRotations = wheelMotorRotations.divide(TunerConstants.kDriveGearRatioBig, precision, RoundingMode.HALF_UP);
+    // wheelRotations = wheelMotorRotations / gearRatio
 
     BigDecimal wheelRadius = drivebaseRadius.multiply(drivebaseRotations).divide(wheelRotations, precision, RoundingMode.HALF_UP);
 
