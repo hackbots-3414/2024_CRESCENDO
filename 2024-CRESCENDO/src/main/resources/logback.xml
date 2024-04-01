@@ -8,7 +8,7 @@
 
  <!-- logger name="frc.robot.subsystems.NoteFinder" level="TRACE"/-->
  <logger name="frc.robot.commands.BaseSubsystemCommands.IntakeCommand" level="DEBUG"/>
- <logger name="frc.robot.commands.DebugCommands.WheelRadiusCharacterization" level="DEBUG"/>
+ <logger name="frc.robot.commands.DebugCommands.WheelRadiusCharacterization" level="INFO"/>
  <logger name="frc.robot.subsystems.ShooterPivot" level="INFO"/>
 
  <root level = "WARN">

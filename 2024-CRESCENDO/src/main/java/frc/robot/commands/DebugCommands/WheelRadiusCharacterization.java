@@ -10,6 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.generated.TunerConstants;
@@ -84,9 +85,14 @@ public class WheelRadiusCharacterization extends Command {
     BigDecimal averageWheelRadius = sum.divide(new BigDecimal(4));
 
     BigDecimal averageWheelDiameter = averageWheelRadius.multiply(new BigDecimal(2));
+    double averageWheelDiameterInches = Units.metersToInches(averageWheelDiameter.doubleValue());
 
-    SmartDashboard.putString("Average Wheel Diameter", averageWheelDiameter.toPlainString());
-    logger.info("Average wheel diameter: " + averageWheelDiameter.toPlainString());
+    SmartDashboard.putString("Average Wheel Diameter (m)", averageWheelDiameter.toPlainString());
+    SmartDashboard.putNumber("Average Wheel Diameter (inches)", averageWheelDiameterInches);
+
+    logger.info("Average wheel diameter (m): " + averageWheelDiameter.toPlainString());
+    logger.info("Average wheel diameter (inches): " + averageWheelDiameterInches);
+    
   }
 
   private BigDecimal getDriveBaseRotations() {
