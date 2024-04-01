@@ -66,7 +66,13 @@ public class SubsystemManager extends SubsystemBase {
 	// PowerDistribution pdp = new PowerDistribution(PDPConstants.pdp, ModuleType.kRev);
 	List<SubsystemBase> subsystems = new ArrayList<>();
 
-	Supplier<Alliance> allianceSupplier = () -> DriverStation.getAlliance().get();
+	Supplier<Alliance> allianceSupplier = () -> {
+		Optional<Alliance> alliance = DriverStation.getAlliance();
+		if (alliance.isPresent()) {
+			return alliance.get();
+		}
+		return Alliance.Blue;
+	};
 
 	private boolean noteOnBoard = false;
 	private boolean aimReady = false;

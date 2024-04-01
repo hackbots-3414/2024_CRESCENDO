@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.sql.Driver;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix.led.CANdle;
@@ -19,11 +18,11 @@ import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer.JoystickChoice;
 import frc.robot.Constants.DriverConstants;
 // import org.slf4j.Logger;
 // import org.slf4j.LoggerFactory;
 import frc.robot.Constants.LEDConstants;
+import frc.robot.RobotContainer.JoystickChoice;
 
 public class LedSubsystem extends SubsystemBase {
   // final static Logger logger = LoggerFactory.getLogger(LedSubsystem.class);
@@ -146,7 +145,7 @@ public class LedSubsystem extends SubsystemBase {
   // SmartDashboard.putBoolean(element, false);
   // }
   // }
-
+  
   @Override
   public void periodic() {
     // noteOnBoardTest = SmartDashboard.getBoolean("noteOnBoardTest", noteOnBoardTest);
@@ -199,7 +198,6 @@ public class LedSubsystem extends SubsystemBase {
       // When Aligned: Stop Strobe: Fast Flash Blue
       // InRange for shooting: Blue
 
-      // TODO
 
       if (noteOnBoard && isInRange.get()) {
         // noteOnboardTest should be noteOnBoard.get()

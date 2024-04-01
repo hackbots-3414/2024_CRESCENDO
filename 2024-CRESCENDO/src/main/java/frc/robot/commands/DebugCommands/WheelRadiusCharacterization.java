@@ -1,77 +1,126 @@
 package frc.robot.commands.DebugCommands;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class WheelRadiusCharacterization extends Command {
-  CommandSwerveDrivetrain drivetrain;
-  FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-  double driveBaseRadius = 37.268; //centemeters
-  double gyroStartingPosition;
-  double gyroEndingPosition;
-  Logger log = LoggerFactory.getLogger(WheelRadiusCharacterization.class);
+  private CommandSwerveDrivetrain drivetrain;
 
+  private SwerveRequest request = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+    .withVelocityX(0)
+    .withVelocityY(0)
+    .withRotationalRate(1);
+  
+  private double[] initialWheelRotation = new double[4];
+  private double[] finalWheelRotation = new double[4];
+  
+  private double[] drivebaseRadii = new double[4];
+
+  private double initialGyroDegrees;
+  private double finalGyroDegrees;
+  private BigDecimal drivebaseRotations;
+
+  private BigDecimal fullRotationDegrees = new BigDecimal(360);
+
+  private int precision = 12; // higher is more precise
+
+  private Logger logger = LoggerFactory.getLogger(WheelRadiusCharacterization.class);
+  
   public WheelRadiusCharacterization(CommandSwerveDrivetrain drivetrain) {
-    addRequirements(drivetrain);
     this.drivetrain = drivetrain;
+    addRequirements(drivetrain);
   }
 
   @Override
   public void initialize() {
-    log.debug("initialized");
-    for (var moduleLocation : drivetrain.moduleLocations()) {
-      driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
-    }
-    SmartDashboard.putNumber("drivebase radius", driveBaseRadius);
-    SmartDashboard.putNumber("Starting Gyro Position", Units.degreesToRadians(drivetrain.getPigeon2().getAngle()));
+      for (int i = 0;i < 4;i ++) {
+        TalonFX driveMotor = drivetrain.getModule(i).getDriveMotor();
 
-    gyroStartingPosition = Units.degreesToRadians(drivetrain.getPigeon2().getAngle());
-  }
+        initialWheelRotation[i] = driveMotor.getPosition().getValueAsDouble();
 
-  public double getGyroPositionRadians() {
-    return Units.degreesToRadians(drivetrain.getPigeon2().getAngle());
-  }
+        drivebaseRadii[i] = drivetrain.moduleLocations()[i].getNorm();
+      }
 
-  public double getWheelRotationRadAvg() {
-    double sum = 0;
-    for (int i = 0; i < 4; i++) {
-      SmartDashboard.putNumber("SWERVE MODULE MOVEMENT RADS" + i,
-          (drivetrain.getModule(i).getDriveMotor().getPosition().getValueAsDouble() / 6.122448979591837) * Math.PI
-              * 2.0);
-              sum += (drivetrain.getModule(i).getDriveMotor().getPosition().getValueAsDouble() / 6.122448979591837) * Math.PI * 2.0;
-    }
-    return sum / 4;
+      initialGyroDegrees = drivetrain.getPigeon2().getAngle();
+      logger.debug("initialized");
   }
 
   @Override
   public void execute() {
-    log.trace("executed");
-    //drivetrain.applyRequest(() -> driveRequest.withVelocityX(5).withVelocityY(5).withRotationalRate(5));
-    drivetrain.setControl(driveRequest.withVelocityX(0).withVelocityY(0).withRotationalRate(1));
+    drivetrain.setControl(request);
+    logger.debug("applied request");
     
+    drivebaseRotations = new BigDecimal(drivetrain.getPigeon2().getAngle()).divide(fullRotationDegrees);
+
+    // update each wheel's position
+    for (int i = 0;i < 4;i ++) {
+      finalWheelRotation[i] = drivetrain.getModule(i).getDriveMotor().getPosition().getValueAsDouble();
+      SmartDashboard.putNumber("mod " + i + " rotation", finalWheelRotation[i] - initialWheelRotation[i]);
+    }
   }
 
   @Override
   public void end(boolean interrupted) {
-    log.debug("command ended");
-    SmartDashboard.putNumber("Ending Gyro Position", Units.degreesToRadians(drivetrain.getPigeon2().getAngle()));
-    gyroEndingPosition = Units.degreesToRadians(drivetrain.getPigeon2().getAngle());
-    double gyroPositionChange = gyroEndingPosition - gyroStartingPosition;
-    double wheelRadius = ((gyroPositionChange * driveBaseRadius) / getWheelRotationRadAvg())/2.0;
-    SmartDashboard.putNumber("Wheel Radius", wheelRadius);
+    drivebaseRotations = getDriveBaseRotations();
+
+    BigDecimal sum = new BigDecimal(0);
+
+    for (int i = 0;i < 4;i ++) {
+      sum = sum.add(calculateWheelRadius(i));
+    }
+
+    BigDecimal averageWheelRadius = sum.divide(new BigDecimal(4));
+
+    BigDecimal averageWheelDiameter = averageWheelRadius.multiply(new BigDecimal(2));
+    double averageWheelDiameterInches = Units.metersToInches(averageWheelDiameter.doubleValue());
+
+    SmartDashboard.putString("Average Wheel Diameter (m)", averageWheelDiameter.toPlainString());
+    SmartDashboard.putNumber("Average Wheel Diameter (inches)", averageWheelDiameterInches);
+
+    logger.info("Average wheel diameter (m): " + averageWheelDiameter.toPlainString());
+    logger.info("Average wheel diameter (inches): " + averageWheelDiameterInches);
+    
   }
 
-  @Override
-  public boolean isFinished() {
-    return false;
+  private BigDecimal getDriveBaseRotations() {
+    finalGyroDegrees = drivetrain.getPigeon2().getAngle();
+
+    BigDecimal initialGyroRotations = new BigDecimal(initialGyroDegrees).divide(fullRotationDegrees, precision, RoundingMode.HALF_UP);
+    BigDecimal finalGyroRotations = new BigDecimal(finalGyroDegrees).divide(fullRotationDegrees, precision, RoundingMode.HALF_UP);
+
+    BigDecimal drivebaseRotations = finalGyroRotations.subtract(initialGyroRotations);
+
+    logger.info("drive base rotations: " + drivebaseRotations.toPlainString());
+
+    return drivebaseRotations;
+  }
+
+  private BigDecimal calculateWheelRadius(int index) {
+    BigDecimal drivebaseRadius = new BigDecimal(drivebaseRadii[index]);
+
+    BigDecimal wheelMotorRotations = new BigDecimal(finalWheelRotation[index]).subtract(new BigDecimal(initialWheelRotation[index])).abs();
+
+    BigDecimal wheelRotations = wheelMotorRotations.divide(TunerConstants.kDriveGearRatioBig, precision, RoundingMode.HALF_UP);
+    // wheelRotations = wheelMotorRotations / gearRatio
+
+    BigDecimal wheelRadius = drivebaseRadius.multiply(drivebaseRotations).divide(wheelRotations, precision, RoundingMode.HALF_UP);
+
+    logger.info("wheel radius for module " + index + ": " + wheelRadius.toPlainString());
+
+    return wheelRadius;
+
   }
 }

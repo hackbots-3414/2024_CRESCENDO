@@ -427,7 +427,7 @@ public class Constants {
     }
 
     public static final class DebugConstants {
-        public static final boolean debugMode = true; // setting this to true will increase your network table traffic.
+        public static final boolean debugMode = false; // setting this to true will increase your network table traffic.
     }
 
     /*
@@ -495,10 +495,10 @@ public class Constants {
         public static final int leftOffset = 8;
         public static final int insideOffset = 22;
         public static final int topOffset = 49;
-        public static final int rightOffset = 104;
+        public static final int rightOffset = 102;
         public static final int leftNumLED = 14;
         public static final int insideNumLED = 27;
-        public static final int topNumLED = 55;
+        public static final int topNumLED = 53;
         public static final int rightNumLED = 13;
     }
 }
