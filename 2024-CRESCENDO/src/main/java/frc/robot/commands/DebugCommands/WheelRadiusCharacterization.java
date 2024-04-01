@@ -18,9 +18,9 @@ public class WheelRadiusCharacterization extends Command {
   private CommandSwerveDrivetrain drivetrain;
 
   private SwerveRequest request = new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-    .withVelocityX(1)
+    .withVelocityX(0)
     .withVelocityY(0)
-    .withRotationalRate(0);
+    .withRotationalRate(1);
   
   private double[] initialWheelRotation = new double[4];
   private double[] finalWheelRotation = new double[4];
