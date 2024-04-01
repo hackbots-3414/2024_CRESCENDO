@@ -112,7 +112,7 @@ public class SubsystemManager extends SubsystemBase {
 	NoteFinder noteFinder = new NoteFinder();
 	Notifier noteNotifier = new Notifier(noteFinder::photonCatcher);
 	Winch winch = new Winch();
-	LedSubsystem ledSubsystem = new LedSubsystem(transport, intake, this::getIsInRange, this::getAimIsReady);
+	LedSubsystem ledSubsystem = new LedSubsystem(transport, intake, this::getIsInRange, noteFinder, shooterPivot);
 	
 	public Intake getIntake() {return intake;}
 	public Shooter getShooter() {return shooter;}

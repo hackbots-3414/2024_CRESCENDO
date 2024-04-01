@@ -188,7 +188,7 @@ public class NoteFinder extends SubsystemBase {
     gamepieces.clear();
     lastUpdateTime = System.currentTimeMillis();
     Gamepiece gamepiece = new Gamepiece();
-    gamepiece.setAngle(target.getYaw());
+    gamepiece.setAngle(target.getYaw() * -1);
     gamepieces.add(gamepiece);
     LOG.trace("photonCatcher(): found best gamepiece: {}", gamepiece);
 

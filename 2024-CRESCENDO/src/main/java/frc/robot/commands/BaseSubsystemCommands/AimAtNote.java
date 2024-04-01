@@ -64,7 +64,7 @@ public class AimAtNote extends Command {
   }
 
   private Rotation2d gamepieceAngleToRobotRelative(Gamepiece gamepiece, Rotation2d currentRobotRotation){
-    Rotation2d gamepieceRotation = Rotation2d.fromDegrees(gamepiece.getAngle()).rotateBy(Rotation2d.fromDegrees(180));
+    Rotation2d gamepieceRotation = Rotation2d.fromDegrees(gamepiece.getAngle()); //.rotateBy(Rotation2d.fromDegrees(180));
     return currentRobotRotation.rotateBy(gamepieceRotation);
   }
 
