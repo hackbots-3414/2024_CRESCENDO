@@ -29,10 +29,10 @@ public class Constants {
     public static final double irSensorThreshold = 1.0;
 
     public static final class SwerveConstants {
-        public static final double kPDrive = 10;
+        public static final double kPDrive = 20;
         public static final double kIDrive = 0;
         public static final double kDDrive = 0;
-        public static final double kPSteer = 6;
+        public static final double kPSteer = 4;
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
 
@@ -85,7 +85,8 @@ public class Constants {
         public static final double POSE_AMBIGUITY_MULTIPLIER = 4;
         public static final double NOISY_DISTANCE_METERS = 2.5;
         public static final double DISTANCE_WEIGHT = 7;
-        public static final int TAG_PRESENCE_WEIGHT = 10;
+        public static final double TAG_PRESENCE_WEIGHT = 10;
+        public static final double TAG_PRESENCE_WEIGHT_AUTON = 5;
 
         /**
          * Standard deviations of model states. Increase these numbers to trust your
@@ -332,7 +333,7 @@ public class Constants {
 
         public static final class PivotSlot0ConfigConstants { // up
             public static final double kP = 2.0; // output per unit of error in position (output/rotation)
-            public static final double kI = 0.0; // output per unit of integrated error in position
+            public static final double kI = 0.01; // output per unit of integrated error in position
                                                  // (output/(rotation*s))
             public static final double kD = 0.05; // output per unit of error in velocity (output/rps)
             public static final double kS = 0.0; // output to overcome static friction (output)
@@ -345,7 +346,7 @@ public class Constants {
 
         public static final class PivotSlot1ConfigConstants { // down
             public static final double kP = 2.0; // output per unit of error in position (output/rotation)
-            public static final double kI = 0.0; // output per unit of integrated error in position
+            public static final double kI = 0.01; // output per unit of integrated error in position
                                                  // (output/(rotation*s))
             public static final double kD = 0.0; // output per unit of error in velocity (output/rps)
             public static final double kS = 0.0; // output to overcome static friction (output)
@@ -357,7 +358,7 @@ public class Constants {
 
         public static final class PivotSlot2ConfigConstants {
             public static final double kP = 2.0; // output per unit of error in position (output/rotation)
-            public static final double kI = 0.0; // output per unit of integrated error in position
+            public static final double kI = 0.01; // output per unit of integrated error in position
                                                  // (output/(rotation*s))
             public static final double kD = 0.05; // output per unit of error in velocity (output/rps)
             public static final double kS = 0.0; // output to overcome static friction (output)
@@ -427,7 +428,7 @@ public class Constants {
     }
 
     public static final class DebugConstants {
-        public static final boolean debugMode = false; // setting this to true will increase your network table traffic.
+        public static final boolean debugMode = true; // setting this to true will increase your network table traffic.
     }
 
     /*

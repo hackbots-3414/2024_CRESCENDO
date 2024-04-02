@@ -11,11 +11,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.FieldConstants;
 import org.photonvision.EstimatedRobotPose;
@@ -51,8 +53,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                     Constants.VisionConstants.leftCameraName,
                     Constants.VisionConstants.leftTransform);
             backEstimator = new PhotonVisionRunnable(
-                Constants.VisionConstants.backCameraName,
-                Constants.VisionConstants.backTransform);
+                    Constants.VisionConstants.backCameraName,
+                    Constants.VisionConstants.backTransform);
 
             allNotifier = new Notifier(() -> {
                 rightEstimator.run();
@@ -122,7 +124,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             estimatorChecker(leftEstimator);
             estimatorChecker(backEstimator);
         } else {
-            if (allNotifier != null) allNotifier.close();
+            if (allNotifier != null)
+                allNotifier.close();
         }
 
         // estimatorChecker(backEstimator);
@@ -187,27 +190,30 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     // }
 
     private Matrix<N3, N1> confidenceCalculator(EstimatedRobotPose estimation) {
+        double tagPresenceWeight = DriverStation.isAutonomous() ? VisionConstants.TAG_PRESENCE_WEIGHT_AUTON : VisionConstants.TAG_PRESENCE_WEIGHT;
+
         double smallestDistance = Double.POSITIVE_INFINITY;
         for (var target : estimation.targetsUsed) {
             var t3d = target.getBestCameraToTarget();
             var distance = Math.sqrt(Math.pow(t3d.getX(), 2) + Math.pow(t3d.getY(), 2) + Math.pow(t3d.getZ(), 2));
-            if (distance < smallestDistance) smallestDistance = distance;
+            if (distance < smallestDistance)
+                smallestDistance = distance;
         }
         double poseAmbiguityFactor = estimation.targetsUsed.size() != 1
                 ? 1
                 : Math.max(
                         1,
                         (estimation.targetsUsed.get(0).getPoseAmbiguity()
-                                        + Constants.VisionConstants.POSE_AMBIGUITY_SHIFTER)
+                                + Constants.VisionConstants.POSE_AMBIGUITY_SHIFTER)
                                 * Constants.VisionConstants.POSE_AMBIGUITY_MULTIPLIER);
         double confidenceMultiplier = Math.max(
                 1,
                 (Math.max(
-                                        1,
-                                        Math.max(0, smallestDistance - Constants.VisionConstants.NOISY_DISTANCE_METERS)
-                                                * Constants.VisionConstants.DISTANCE_WEIGHT)
-                                * poseAmbiguityFactor)
-                        / (1 + ((estimation.targetsUsed.size() - 1) * Constants.VisionConstants.TAG_PRESENCE_WEIGHT)));
+                        1,
+                        Math.max(0, smallestDistance - Constants.VisionConstants.NOISY_DISTANCE_METERS)
+                                * Constants.VisionConstants.DISTANCE_WEIGHT)
+                        * poseAmbiguityFactor)
+                        / (1 + ((estimation.targetsUsed.size() - 1) * tagPresenceWeight)));
 
         return Constants.VisionConstants.VISION_MEASUREMENT_STANDARD_DEVIATIONS.times(confidenceMultiplier);
     }
