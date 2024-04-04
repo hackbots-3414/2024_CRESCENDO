@@ -110,5 +110,7 @@ public class AimCommand extends Command {
         if (interrupted) {
             logger.info("Endedd via interrupt");
         }
+        shooter.stopMotor();
+        transport.stopMotor();
     }
 }
