@@ -199,8 +199,8 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public Command makeShellyCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
 		Command shellyCommand = drivetrain
-				.applyRequest(() -> driveRequest.withVelocityX(-y.get() * Constants.SwerveConstants.shellyDriveVelocity)
-						.withVelocityY(-x.get() * Constants.SwerveConstants.shellyDriveVelocity)
+				.applyRequest(() -> driveRequest.withVelocityX(-x.get() * Constants.SwerveConstants.shellyDriveVelocity)
+						.withVelocityY(-y.get() * Constants.SwerveConstants.shellyDriveVelocity)
 						.withRotationalRate(-turn.get() * Constants.SwerveConstants.shellyAngleVelocity));
 		shellyCommand.addRequirements(drivetrain);
 		return shellyCommand;
@@ -316,8 +316,8 @@ public class SubsystemManager extends SubsystemBase {
 
 
 	// AUTON COMMANDS
-	public Command makeSpitOutCommand() {
-		return new SpitOutCommand(shooter, transport);
+	public Command makeSpitOutCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
+		return new SpitOutCommand(shooterPivot, shooter, transport, drivetrain, x, y, turn, allianceSupplier);
 	}
 	public Optional<Rotation2d> getRotationTargetOverride() {
 		if (noteOnBoard) {
@@ -353,7 +353,7 @@ public class SubsystemManager extends SubsystemBase {
 
 		eventMarkers.put("Subwoofer", makeSubwooferShootCommand());
 		eventMarkers.put("Intake", makeAutoIntakeCommand());
-		eventMarkers.put("ShootAnywhere", makeAutoAimCommand(() -> 0.0, () -> 0.0, () -> 0.0));
+		eventMarkers.put("ShootAnywhere", makeAutoAimCommand(() -> 0.0, () -> 0.0, () -> 0.0).withTimeout(1.5));
 
 		SmartDashboard.putData("Amp Sequence", makeAmpSequence());
 

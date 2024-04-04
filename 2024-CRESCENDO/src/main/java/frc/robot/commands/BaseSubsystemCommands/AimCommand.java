@@ -5,6 +5,9 @@ package frc.robot.commands.BaseSubsystemCommands;
 
 import java.util.function.Supplier;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
@@ -26,6 +29,8 @@ import frc.robot.subsystems.ShooterPivot;
 import frc.robot.subsystems.Transport;
 
 public class AimCommand extends Command {
+    Logger logger = LoggerFactory.getLogger(AimCommand.class);
+
     ShooterPivot shooterPivot;
     CommandSwerveDrivetrain drivetrain;
     Shooter shooter;
@@ -98,5 +103,12 @@ public class AimCommand extends Command {
     @Override
     public boolean isFinished() {
         return shooterCommand.isFinished();
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        if (interrupted) {
+            logger.info("Endedd via interrupt");
+        }
     }
 }
