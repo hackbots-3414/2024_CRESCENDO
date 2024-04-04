@@ -15,7 +15,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.SwerveDriveBrake;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.util.GeometryUtil;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -29,17 +28,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.Telemetry;
 import frc.robot.commands.BaseSubsystemCommands.AimCommand;
-import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand;
-import frc.robot.commands.BaseSubsystemCommands.IntakeBackupCommand;
-import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.BaseSubsystemCommands.AimPresetCommand;
 import frc.robot.commands.BaseSubsystemCommands.AutoIntakeCommand;
+import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand;
+import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
+import frc.robot.commands.BaseSubsystemCommands.IntakeBackupCommand;
 import frc.robot.commands.BaseSubsystemCommands.IntakeCommand;
 import frc.robot.commands.BaseSubsystemCommands.ShooterCommand;
 import frc.robot.commands.BaseSubsystemCommands.ShooterFlywheelCommand;
@@ -361,7 +359,7 @@ public class SubsystemManager extends SubsystemBase {
 
 		eventMarkers.put("Subwoofer", makeSubwooferShootCommand());
 		eventMarkers.put("Intake", makeAutoIntakeCommand());
-		eventMarkers.put("ShootAnywhere", makeAutoAimCommand(() -> 0.0, () -> 0.0, () -> 0.0).withTimeout(1.5));
+		eventMarkers.put("ShootAnywhere", makeAutoAimCommand(() -> 0.0, () -> 0.0, () -> 0.0));
 
 		SmartDashboard.putData("Amp Sequence", makeAmpSequence());
 

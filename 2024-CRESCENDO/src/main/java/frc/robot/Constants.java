@@ -36,8 +36,9 @@ public class Constants {
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
 
-        public static final double driveSupplyCurrentLimit = 75.0; // was 80.0, changed experimentally to prevent
+        public static final double driveSupplyCurrentLimit = 70.0; // was 80.0, changed experimentally to prevent
                                                                    // brownouts on 3/23
+                                                                   // changed to 70 on 4/4
 
         public static final double maxDriveAcceleration = 4;
         public static final double maxAngleAcceleration = 2 * Math.PI;
@@ -134,7 +135,7 @@ public class Constants {
 
         public static final double warmUpSpeed = 0.25; // duty cycle (0-1)
 
-        public static final double spitOutSpeed = 50;
+        public static final double spitOutSpeed = 30;
         public static final double maxSpeed = 80; // rps
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(

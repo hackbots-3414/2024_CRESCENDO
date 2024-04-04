@@ -62,17 +62,15 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Constants.AimConstants;
 import frc.robot.Constants.PivotConstants;
-import frc.robot.Constants.PositionConstants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.subsystems.AimHelper;
-import frc.robot.subsystems.AimHelper.AimOutputContainer;
-import frc.robot.subsystems.AimHelper.AimStrategies;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
@@ -97,8 +95,6 @@ public class SpitOutCommand extends Command {
     boolean alreadyRanShooter = false;
 
     ShooterCommand shooterCommand;
-
-    AimOutputContainer output;
 
     FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.2).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     PIDController thetaController = new PIDController(0.8, 0, 0);
@@ -129,10 +125,16 @@ public class SpitOutCommand extends Command {
     @Override
     public void execute() {
         Pose2d robotPosition = drivetrain.getPose();
-        output = AimHelper.getAimOutputs(drivetrain, blueSide, AimStrategies.LOOKUP);
+
+        Pose2d speakerPose = blueSide ? AimConstants.blueSpeakerPos.transformBy(new Transform2d(0, 1, Rotation2d.fromDegrees(0))) : AimConstants.redSpeakerPos;
+        Pose2d drivetrainPose = drivetrain.getPose();
+
+        Rotation2d output = speakerPose.getTranslation().minus(drivetrainPose.getTranslation()).getAngle();
+
+
         shooterPivot.setPivotPosition(PivotConstants.forwardSoftLimitThreshold);
         double robotRotation = robotPosition.getRotation().getRadians();
-        double targetRotation = output.getDrivetrainRotation().getRadians();
+        double targetRotation = output.getRadians();
 
         drivetrain.setControl(driveRequest.withVelocityX(xSupplier.get() * SwerveConstants.maxDriveVelocity)
                             .withVelocityY(ySupplier.get() * SwerveConstants.maxDriveVelocity)
