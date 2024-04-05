@@ -3,51 +3,51 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.8968988847068604,
-        "y": 6.99655944766435
+        "x": 4.221580806797977,
+        "y": 5.541275082550166
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.8968988847068604,
-        "y": 6.99655944766435
-      },
-      "isLocked": false,
-      "linkedName": "note1"
-    },
-    {
-      "anchor": {
-        "x": 8.186297827141107,
-        "y": 7.44
-      },
-      "prevControl": {
-        "x": 8.182787528752144,
-        "y": 7.492654475834437
-      },
-      "nextControl": {
-        "x": 8.195626573071328,
-        "y": 7.300068811046714
+        "x": 5.58357771260997,
+        "y": 3.423649756390422
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.8987230701694289,
-        "y": 5.541275082549794
+        "x": 8.288914032373519,
+        "y": 2.4441314337174136
       },
       "prevControl": {
-        "x": 1.6468469300535125,
-        "y": 7.136490636617267
+        "x": 8.341322694401066,
+        "y": 2.463784681977744
+      },
+      "nextControl": {
+        "x": 8.139654097490013,
+        "y": 2.3881589581360982
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.197242939940425,
+        "y": 5.541275082550166
+      },
+      "prevControl": {
+        "x": 6.908259634701087,
+        "y": 3.6661971505761195
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "note1to4end"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": -175.68397248013446,
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": 153.70318009733924,
       "rotateFast": false
     }
   ],
@@ -55,32 +55,15 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
                 "name": "Intake"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 1.65,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": null
               }
             }
           ]
@@ -96,13 +79,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0,
+    "rotation": 179.74980167980252,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "AmpSide5Piece",
+  "folder": "AutoAimCenterPieceCenterRush",
   "previewStartingState": {
-    "rotation": -153.12398428050517,
+    "rotation": 178.905309408147,
     "velocity": 0
   },
   "useDefaultConstraints": true
