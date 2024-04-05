@@ -167,7 +167,7 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
 
   public boolean isAtSetpoint() {
     if (setpoint > PivotConstants.howCloseIsTooCloseSlot2) {
-      return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance * 8.0);
+      return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance * 6.0);
     } 
     return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance || getCancoderPos() < 0 && setpoint == 0.0);
   }

@@ -326,9 +326,9 @@ public class Constants {
         public static final double pivotManualUpSpeed = 0.3;
         public static final double pivotManualDownSpeed = -0.1;
 
-        public static final double pivotTolerance = 0.001;
+        public static final double pivotTolerance = 0.003;
 
-        public static final double howCloseIsTooCloseSlot2 = 0.04; // rotations
+        public static final double howCloseIsTooCloseSlot2 = 0.024; // rotations
         public static final double goingToZeroToleranceSlot1 = 0.005; // rotations
 
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
