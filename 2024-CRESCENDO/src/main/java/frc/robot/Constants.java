@@ -159,8 +159,6 @@ public class Constants {
                 entry(5.57, 0.000)
         );
 
-        public static final double howCloseIsTooClose = 0.024; // rotations
-
         // public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
         // entry(0.0, 50.0),
         // entry(1.41, 50.0),
@@ -330,15 +328,18 @@ public class Constants {
 
         public static final double pivotTolerance = 0.001;
 
+        public static final double howCloseIsTooCloseSlot2 = 0.04; // rotations
+        public static final double goingToZeroToleranceSlot1 = 0.005; // rotations
+
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         public static final class PivotSlot0ConfigConstants { // up
-            public static final double kP = 4; // output per unit of error in position (output/rotation)
-            public static final double kI = 0.01; // output per unit of integrated error in position
+            public static final double kP = 4.5; // output per unit of error in position (output/rotation)
+            public static final double kI = 0.3; // output per unit of integrated error in position
                                                  // (output/(rotation*s))
             public static final double kD = 0.05; // output per unit of error in velocity (output/rps)
             public static final double kS = 0.0; // output to overcome static friction (output)
-            public static final double kV = 22.5; // output per unit of target velocity (output/rps)
+            public static final double kV = 20.0; // output per unit of target velocity (output/rps)
             public static final double kA = 0.0; // output per unit of target acceleration (output/(rps/s))
             public static final double kG = 0.15; // feedforward Constant, was 0.1 but we made it 0.15 b/c it fixed the
                                                   // pivot going down 3/27

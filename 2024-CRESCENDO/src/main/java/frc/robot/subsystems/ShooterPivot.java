@@ -132,14 +132,17 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
 
   public void setPivotPosition(double position) { // position is in number of rotations as per documentation.
     this.setpoint = position;
-    boolean goingDown = position < getCancoderPos();
-    boolean isTooClose = position > Constants.ShooterConstants.howCloseIsTooClose;
+    boolean isTooClose = position > PivotConstants.howCloseIsTooCloseSlot2;
+    boolean goingToZero = position < PivotConstants.goingToZeroToleranceSlot1;
     if (isTooClose) {
-      pivotMotor.setControl(new MotionMagicVoltage(position).withSlot(2));
-      logger.debug("using slot 2");
+      pivotMotor.setControl(new MotionMagicVoltage(position).withSlot(0));
+      // logger.debug("using slot 2");
+      return;
+    } else if (goingToZero) {
+      pivotMotor.setControl(new MotionMagicVoltage(position).withSlot(1));
       return;
     }
-    pivotMotor.setControl(new MotionMagicVoltage(position).withSlot(goingDown ? 1 : 0));
+    pivotMotor.setControl(new MotionMagicVoltage(position).withSlot(0));
   }
 
   public void stow() {
@@ -163,9 +166,9 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
   }
 
   public boolean isAtSetpoint() {
-    if (setpoint > Constants.ShooterConstants.howCloseIsTooClose) {
-      return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance * 12.0);
-    }
+    if (setpoint > PivotConstants.howCloseIsTooCloseSlot2) {
+      return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance * 8.0);
+    } 
     return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance || getCancoderPos() < 0 && setpoint == 0.0);
   }
 
