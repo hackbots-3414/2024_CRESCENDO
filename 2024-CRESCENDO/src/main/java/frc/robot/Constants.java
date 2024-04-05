@@ -177,7 +177,7 @@ public class Constants {
         public static final double slowIntakeVolts = 0.2 * 12;
         public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
-        public static final int intakeIrChannel = 2;
+        public static final int intakeIrChannel = 1;
 
     }
 
@@ -222,8 +222,8 @@ public class Constants {
         public static final double slowTransportVolts = 0.2 * 12;
         public static final double ejectSpeed = -0.6;
         public static final double transportEjectSpeed = -1.0;
-        public static final int transportIrChannel = 1;
-        public static final int flyWheelIrChannel = 0;
+        public static final int transportIrChannel = 2;
+        public static final int flyWheelIrChannel = 3;
 
         public static final double transportEjectDelay = 0.5; // seconds until note leaves shooter
     }
@@ -256,7 +256,7 @@ public class Constants {
 
         public static final class SubwooferPresets {
             public static final double elevator = 0.0;
-            public static final double shooter = 0.068;
+            public static final double shooter = 0.072;
         }
     }
 
@@ -264,7 +264,7 @@ public class Constants {
         public static final int elevatorMotorID = 50;
 
         public static final int forwardLimitChannelID = 0;
-        public static final int reverseLimitChannelID = 1;
+        public static final int reverseLimitChannelID = 2;
 
         public static final double rotorToSensorRatio = 1.0;
         public static final double sensorToMechanismRatio = 25.0;
@@ -334,12 +334,12 @@ public class Constants {
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
         public static final class PivotSlot0ConfigConstants { // up
-            public static final double kP = 4.5; // output per unit of error in position (output/rotation)
+            public static final double kP = 3.0; // output per unit of error in position (output/rotation)
             public static final double kI = 0.3; // output per unit of integrated error in position
                                                  // (output/(rotation*s))
             public static final double kD = 0.05; // output per unit of error in velocity (output/rps)
             public static final double kS = 0.0; // output to overcome static friction (output)
-            public static final double kV = 20.0; // output per unit of target velocity (output/rps)
+            public static final double kV = 15.0; // output per unit of target velocity (output/rps)
             public static final double kA = 0.0; // output per unit of target acceleration (output/(rps/s))
             public static final double kG = 0.15; // feedforward Constant, was 0.1 but we made it 0.15 b/c it fixed the
                                                   // pivot going down 3/27
