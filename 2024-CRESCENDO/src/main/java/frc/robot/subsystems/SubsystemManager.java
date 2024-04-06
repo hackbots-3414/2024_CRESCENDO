@@ -32,7 +32,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.Telemetry;
-import frc.robot.commands.BaseSubsystemCommands.AimCommand;
+import frc.robot.commands.AutoScoreCommands.TurnCommand;
 import frc.robot.commands.BaseSubsystemCommands.AimPresetCommand;
 import frc.robot.commands.BaseSubsystemCommands.AutoIntakeCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand;
@@ -305,7 +305,7 @@ public class SubsystemManager extends SubsystemBase {
 
 	// AIMING COMMANDS
 	public Command makeAutoAimCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
-		return new AimCommand(shooterPivot, shooter, transport, drivetrain, x, y, turn, allianceSupplier);
+		return new TurnCommand(shooterPivot, shooter, transport, drivetrain, x, y, turn, allianceSupplier);
 	}
 	public AimOutputContainer getAimOutputContainer() {
         return AimHelper.getAimOutputs(drivetrain, allianceSupplier.get() == Alliance.Blue, AimStrategies.LOOKUP);

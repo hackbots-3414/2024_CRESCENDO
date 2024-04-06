@@ -110,7 +110,7 @@ public class SpitOutCommand extends Command {
         this.aSupplier = aSupplier;
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         thetaController.setTolerance(SwerveConstants.pidTurnTolerance);
-        shooterCommand = new ShooterCommand(shooter, transport, shooterPivot);
+        shooterCommand = new ShooterCommand(shooter, transport);
         addRequirements(shooter, shooterPivot, transport, drivetrain);
     }
 
@@ -162,7 +162,7 @@ public class SpitOutCommand extends Command {
         }
       
         if(shooter.shooterAtSpeed() && !alreadyRanFeed){
-            if (shooterPivot != null && !shooterPivot.isAtSetpoint()) {
+            if (shooterPivot != null && !shooterPivot.isAtSetpoint()) { // todo this logic makes no sense, 
               return;
             }
             transport.setFast();
