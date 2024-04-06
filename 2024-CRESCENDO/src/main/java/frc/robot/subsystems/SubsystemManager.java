@@ -26,12 +26,14 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.Telemetry;
+import frc.robot.commands.AutoScoreCommands.PivotWait;
 import frc.robot.commands.AutoScoreCommands.TurnCommand;
 import frc.robot.commands.BaseSubsystemCommands.AimPresetCommand;
 import frc.robot.commands.BaseSubsystemCommands.AutoIntakeCommand;
@@ -305,8 +307,22 @@ public class SubsystemManager extends SubsystemBase {
 
 
 	// AIMING COMMANDS
-	public Command makeAutoAimCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
-		return new TurnCommand(shooterPivot, shooter, transport, drivetrain, x, y, turn, allianceSupplier);
+	public Command makeAutoScoreCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
+		// use this code if the default command is able to run during auton
+		// Command setupCommand = new TurnCommand(drivetrain, x, y, turn, allianceSupplier);
+		
+		// otherwise use this code:
+		Command setupCommand = new ParallelCommandGroup(
+			new TurnCommand(drivetrain, x, y, turn, allianceSupplier),
+			new AimPresetCommand(shooterPivot, transport, allianceSupplier, null),
+			new ShooterFlywheelCommand(shooter, transport)
+		);
+
+		return new SequentialCommandGroup(
+			setupCommand,
+			new PivotWait(shooterPivot, transport),
+			new ShooterCommand(shooter, transport)
+		);
 	}
 	public AimOutputContainer getAimOutputContainer() {
         return AimHelper.getAimOutputs(drivetrain, allianceSupplier.get() == Alliance.Blue, AimStrategies.LOOKUP);
@@ -363,7 +379,7 @@ public class SubsystemManager extends SubsystemBase {
 
 		eventMarkers.put("Subwoofer", makeSubwooferShootCommand());
 		eventMarkers.put("Intake", makeAutoIntakeCommand());
-		eventMarkers.put("ShootAnywhere", makeAutoAimCommand(() -> 0.0, () -> 0.0, () -> 0.0));
+		eventMarkers.put("ShootAnywhere", makeAutoScoreCommand(() -> 0.0, () -> 0.0, () -> 0.0));
 
 		SmartDashboard.putData("Amp Sequence", makeAmpSequence());
 

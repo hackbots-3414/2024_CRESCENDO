@@ -162,7 +162,7 @@ public class SpitOutCommand extends Command {
         }
       
         if(shooter.shooterAtSpeed() && !alreadyRanFeed){
-            if (shooterPivot != null && !shooterPivot.isAtSetpoint()) { // todo this logic makes no sense, 
+            if (shooterPivot != null && !shooterPivot.isAtSetpoint()) { // todo this logic makes no sense, it will fail at some point?
               return;
             }
             transport.setFast();

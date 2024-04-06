@@ -56,7 +56,7 @@ public class RobotContainer {
     resetGyroButton.onTrue(subsystemManager.makeResetCommand());
     resetGyroButton.onFalse(subsystemManager.makeResetCommand());
     resetAtPointButton.onTrue(subsystemManager.resetAtPose2d(new Pose2d(15.1968, 5.5, Rotation2d.fromDegrees(0))));
-    autoAimButton.whileTrue(subsystemManager.makeAutoAimCommand(driverLeftY, driverLeftX, driverRightX));
+    autoAimButton.whileTrue(subsystemManager.makeAutoScoreCommand(driverLeftY, driverLeftX, driverRightX));
     shellyButton.whileTrue(subsystemManager.makeShellyCommand(driverLeftY, driverLeftX, driverRightX));
     ampScoreButton.onTrue(subsystemManager.makeAmpSequence());
     ampScoreButton.onFalse(new InstantCommand(() -> subsystemManager.stow()));
