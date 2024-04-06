@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -312,7 +313,7 @@ public class SubsystemManager extends SubsystemBase {
 		// Command setupCommand = new TurnCommand(drivetrain, x, y, turn, allianceSupplier);
 		
 		// otherwise use this code:
-		Command setupCommand = new ParallelCommandGroup(
+		Command setupCommand = new ParallelDeadlineGroup(
 			new TurnCommand(drivetrain, x, y, turn, allianceSupplier),
 			new AimPresetCommand(shooterPivot, transport, allianceSupplier, null),
 			new ShooterFlywheelCommand(shooter, transport)
