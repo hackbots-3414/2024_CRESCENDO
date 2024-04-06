@@ -42,6 +42,7 @@ import frc.robot.commands.BaseSubsystemCommands.IntakeCommand;
 import frc.robot.commands.BaseSubsystemCommands.ShooterCommand;
 import frc.robot.commands.BaseSubsystemCommands.ShooterFlywheelCommand;
 import frc.robot.commands.BaseSubsystemCommands.SpitOutCommand;
+import frc.robot.commands.BaseSubsystemCommands.SpitOutSimpleCommand;
 import frc.robot.commands.ComboCommands.ResetElevatorCommand;
 import frc.robot.commands.ComboCommands.AmpCommands.AmpComboScheduler;
 import frc.robot.commands.ComboCommands.AmpCommands.AmpSetupCommand;
@@ -324,6 +325,9 @@ public class SubsystemManager extends SubsystemBase {
 	// AUTON COMMANDS
 	public Command makeSpitOutCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
 		return new SpitOutCommand(shooterPivot, shooter, transport, drivetrain, x, y, turn, allianceSupplier);
+	}
+	public Command makeSpitOutFlatCommand() {
+		return new SpitOutSimpleCommand(shooter, transport);
 	}
 	public Optional<Rotation2d> getRotationTargetOverride() {
 		if (noteOnBoard) {
