@@ -272,7 +272,7 @@ public class SubsystemManager extends SubsystemBase {
 	}
 
 	public Command makeManualIntakeEjectCommand() {
-		return new ManualIntakeEjectCommand(intake, transport);
+		return new ManualIntakeEjectCommand(intake, transport, shooterPivot);
 	}
 	
 	public Command makeAutoIntakeCommand() {
