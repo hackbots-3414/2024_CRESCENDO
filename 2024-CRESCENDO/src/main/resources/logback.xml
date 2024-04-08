@@ -10,6 +10,7 @@
  <logger name="frc.robot.commands.BaseSubsystemCommands.IntakeCommand" level="DEBUG"/>
  <logger name="frc.robot.commands.DebugCommands.WheelRadiusCharacterization" level="INFO"/>
  <logger name="frc.robot.subsystems.ShooterPivot" level="INFO"/>
+ <logger name="frc.robot.commands.AutoScoreCommands.PivotWait" level="DEBUG"/>
  <!-- <logger name="frc.robot.commands.AimCommand" level="DEBUG"/> -->
 
  <root level = "WARN">
