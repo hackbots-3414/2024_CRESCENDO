@@ -177,7 +177,7 @@ public class Constants {
         public static final double slowIntakeVolts = 0.2 * 12;
         public static final double ejectSpeed = -1;
         public static final boolean intakeMotorInvert = true;
-        public static final int intakeIrChannel = 1;
+        public static final int intakeIrChannel = 2;
 
     }
 
@@ -222,8 +222,8 @@ public class Constants {
         public static final double slowTransportVolts = 0.2 * 12;
         public static final double ejectSpeed = -0.6;
         public static final double transportEjectSpeed = -1.0;
-        public static final int transportIrChannel = 2;
-        public static final int flyWheelIrChannel = 3;
+        public static final int transportIrChannel = 3;
+        public static final int flyWheelIrChannel = 1;
 
         public static final double transportEjectDelay = 0.5; // seconds until note leaves shooter
     }
