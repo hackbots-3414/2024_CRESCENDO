@@ -57,7 +57,7 @@ public class RobotContainer {
     resetGyroButton.onFalse(subsystemManager.makeResetCommand());
     resetAtPointButton.onTrue(subsystemManager.resetAtPose2d(new Pose2d(15.1968, 5.5, Rotation2d.fromDegrees(0))));
     autoAimButton.whileTrue(subsystemManager.makeAutoAimCommand(driverLeftY, driverLeftX, driverRightX));
-    shellyButton.whileTrue(subsystemManager.makeShellyCommand(driverLeftX, driverLeftY, driverRightX));
+    shellyButton.whileTrue(subsystemManager.makeShellyCommand(driverLeftY, driverLeftX, driverRightX));
     ampScoreButton.onTrue(subsystemManager.makeAmpSequence());
     ampScoreButton.onFalse(new InstantCommand(() -> subsystemManager.stow()));
     // ampScoreButton.onFalse(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));
@@ -70,7 +70,7 @@ public class RobotContainer {
     xboxOperator.x().onTrue(subsystemManager.makeAmpSetupCommand());
     xboxOperator.x().onFalse(subsystemManager.makeAmpFinishCommand());
     xboxOperator.y().whileTrue(subsystemManager.makeSubwooferShootCommand());
-    xboxOperator.b().onTrue(subsystemManager.makeSpitOutCommand());
+    xboxOperator.b().onTrue(subsystemManager.makeSpitOutCommand(driverLeftY, driverLeftX, driverRightX));
     xboxOperator.a().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));
 
     xboxOperator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
@@ -81,7 +81,9 @@ public class RobotContainer {
     xboxOperator.back().whileTrue(subsystemManager.makeManualWinchCommand(true)); // create
     xboxOperator.start().whileTrue(subsystemManager.makeManualWinchCommand(false)); // options
 
+    xboxOperator.leftBumper().whileTrue(subsystemManager.makeSpitOutFlatCommand());
     xboxOperator.leftTrigger(0.1).whileTrue(subsystemManager.makeAutoIntakeCommand()); // left trigger
+    xboxOperator.leftTrigger(0.1).onFalse(subsystemManager.makeIntakeBackupCommand());
     xboxOperator.rightBumper().whileTrue(subsystemManager.makeManualIntakeEjectCommand()); // right bumper
     xboxOperator.rightTrigger(0.1).whileTrue(subsystemManager.makeShootCommand()); // right trigger
     
@@ -91,7 +93,7 @@ public class RobotContainer {
     ps5Operator.square().onTrue(subsystemManager.makeAmpSetupCommand()); // x
     ps5Operator.square().onFalse(subsystemManager.makeAmpFinishCommand());
     ps5Operator.triangle().whileTrue(subsystemManager.makeSubwooferShootCommand()); // y
-    ps5Operator.circle().onTrue(subsystemManager.makeSpitOutCommand()); // b
+    ps5Operator.circle().onTrue(subsystemManager.makeSpitOutCommand(driverLeftY, driverLeftX, driverRightX)); // b
     ps5Operator.cross().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW)); // a
     
     ps5Operator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
@@ -102,7 +104,9 @@ public class RobotContainer {
     ps5Operator.create().whileTrue(subsystemManager.makeManualWinchCommand(false)); // back 
     ps5Operator.options().whileTrue(subsystemManager.makeManualWinchCommand(true)); // stard
 
+    ps5Operator.L1().whileTrue(subsystemManager.makeSpitOutFlatCommand());
     ps5Operator.L2().whileTrue(subsystemManager.makeAutoIntakeCommand()); // left trigger
+    ps5Operator.L2().onFalse(subsystemManager.makeIntakeBackupCommand());
     ps5Operator.R1().whileTrue(subsystemManager.makeManualIntakeEjectCommand()); // left bumper
     ps5Operator.R2().whileTrue(subsystemManager.makeShootCommand()); // right trigger
   }

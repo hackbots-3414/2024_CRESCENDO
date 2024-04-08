@@ -24,6 +24,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -34,6 +35,7 @@ import frc.robot.Constants.PivotConstants.PivotMotionMagicConstants;
 import frc.robot.Constants.PivotConstants.PivotSlot0ConfigConstants;
 import frc.robot.Constants.PivotConstants.PivotSlot1ConfigConstants;
 import frc.robot.Constants.PivotConstants.PivotSlot2ConfigConstants;
+import frc.robot.Constants.PositionConstants.SubwooferPresets;
 import frc.robot.Constants.PositionConstants;
 
 public class ShooterPivot extends SubsystemBase implements AutoCloseable {
@@ -132,14 +134,17 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
 
   public void setPivotPosition(double position) { // position is in number of rotations as per documentation.
     this.setpoint = position;
-    boolean goingDown = position < getCancoderPos();
-    boolean isTooClose = position > Constants.ShooterConstants.howCloseIsTooClose;
+    boolean isTooClose = position > PivotConstants.howCloseIsTooCloseSlot2;
+    boolean goingToZero = position < PivotConstants.goingToZeroToleranceSlot1;
     if (isTooClose) {
-      pivotMotor.setControl(new MotionMagicVoltage(position).withSlot(2));
-      logger.debug("using slot 2");
+      pivotMotor.setControl(new MotionMagicVoltage(position).withSlot(0));
+      // logger.debug("using slot 2");
+      return;
+    } else if (goingToZero) {
+      pivotMotor.setControl(new MotionMagicVoltage(position).withSlot(1));
       return;
     }
-    pivotMotor.setControl(new MotionMagicVoltage(position).withSlot(goingDown ? 1 : 0));
+    pivotMotor.setControl(new MotionMagicVoltage(position).withSlot(0));
   }
 
   public void stow() {
@@ -163,9 +168,12 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
   }
 
   public boolean isAtSetpoint() {
-    if (setpoint > Constants.ShooterConstants.howCloseIsTooClose) {
-      return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance * 12.0);
+    if (DriverStation.isAutonomous()) {
+      return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance * 6.0);
     }
+    if (setpoint > PivotConstants.howCloseIsTooCloseSlot2) {
+      return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance * 4.0);
+    } 
     return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance || getCancoderPos() < 0 && setpoint == 0.0);
   }
 
@@ -186,7 +194,8 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
       SmartDashboard.putBoolean("SHOOTER PIVOT SETPOINT", isAtSetpoint());
     }
     
-      SmartDashboard.putNumber("CANCODERPOS", cancoderPosition);
+    SmartDashboard.putNumber("CANCODERPOS", cancoderPosition);
+    SmartDashboard.putNumber("Pivot Error (3 is good)", Math.abs(pivotMotor.getClosedLoopError().getValueAsDouble() * 1000.0));
   }
 
   public void setCurrentLimit(double limit) {

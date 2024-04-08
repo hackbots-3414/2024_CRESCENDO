@@ -15,7 +15,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.SwerveDriveBrake;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.util.GeometryUtil;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -34,14 +33,16 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.Telemetry;
 import frc.robot.commands.BaseSubsystemCommands.AimCommand;
-import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand;
-import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.BaseSubsystemCommands.AimPresetCommand;
 import frc.robot.commands.BaseSubsystemCommands.AutoIntakeCommand;
+import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand;
+import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
+import frc.robot.commands.BaseSubsystemCommands.IntakeBackupCommand;
 import frc.robot.commands.BaseSubsystemCommands.IntakeCommand;
 import frc.robot.commands.BaseSubsystemCommands.ShooterCommand;
 import frc.robot.commands.BaseSubsystemCommands.ShooterFlywheelCommand;
 import frc.robot.commands.BaseSubsystemCommands.SpitOutCommand;
+import frc.robot.commands.BaseSubsystemCommands.SpitOutSimpleCommand;
 import frc.robot.commands.ComboCommands.ResetElevatorCommand;
 import frc.robot.commands.ComboCommands.AmpCommands.AmpComboScheduler;
 import frc.robot.commands.ComboCommands.AmpCommands.AmpSetupCommand;
@@ -199,8 +200,8 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public Command makeShellyCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
 		Command shellyCommand = drivetrain
-				.applyRequest(() -> driveRequest.withVelocityX(-y.get() * Constants.SwerveConstants.shellyDriveVelocity)
-						.withVelocityY(-x.get() * Constants.SwerveConstants.shellyDriveVelocity)
+				.applyRequest(() -> driveRequest.withVelocityX(-x.get() * Constants.SwerveConstants.shellyDriveVelocity)
+						.withVelocityY(-y.get() * Constants.SwerveConstants.shellyDriveVelocity)
 						.withRotationalRate(-turn.get() * Constants.SwerveConstants.shellyAngleVelocity));
 		shellyCommand.addRequirements(drivetrain);
 		return shellyCommand;
@@ -269,8 +270,17 @@ public class SubsystemManager extends SubsystemBase {
 	public Command makeIntakeCommand() {
 		return new IntakeCommand(transport, intake, elevator, shooterPivot);
 	}
+
 	public Command makeManualIntakeEjectCommand() {
-		return new ManualIntakeEjectCommand(intake, transport);
+		return new ManualIntakeEjectCommand(intake, transport, shooterPivot);
+	}
+	
+	public Command makeAutoIntakeCommand() {
+		return new AutoIntakeCommand(transport, intake, elevator, shooterPivot, shooter);
+	}
+
+	public Command makeIntakeBackupCommand() {
+		return new IntakeBackupCommand(transport, shooter);
 	}
 
 
@@ -301,9 +311,6 @@ public class SubsystemManager extends SubsystemBase {
 	public AimOutputContainer getAimOutputContainer() {
         return AimHelper.getAimOutputs(drivetrain, allianceSupplier.get() == Alliance.Blue, AimStrategies.LOOKUP);
 	}
-	public Command makeAutoIntakeCommand() {
-		return new AutoIntakeCommand(transport, intake, elevator, shooterPivot, shooter);
-	}
 
 
 	// LED GETTERS
@@ -316,8 +323,11 @@ public class SubsystemManager extends SubsystemBase {
 
 
 	// AUTON COMMANDS
-	public Command makeSpitOutCommand() {
-		return new SpitOutCommand(shooter, transport);
+	public Command makeSpitOutCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
+		return new SpitOutCommand(shooterPivot, shooter, transport, drivetrain, x, y, turn, allianceSupplier);
+	}
+	public Command makeSpitOutFlatCommand() {
+		return new SpitOutSimpleCommand(shooter, transport);
 	}
 	public Optional<Rotation2d> getRotationTargetOverride() {
 		if (noteOnBoard) {

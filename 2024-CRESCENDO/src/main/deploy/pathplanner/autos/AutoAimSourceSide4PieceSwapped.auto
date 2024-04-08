@@ -2,55 +2,49 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7289985049768751,
-      "y": 4.407675929445818
+      "x": 1.4314718562323023,
+      "y": 4.097761215656659
     },
-    "rotation": 118.82832251222587
+    "rotation": -178.85423716182493
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "AutoAimSourceSide4PieceNote1"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "Subwoofer"
+            "name": "ShootAnywhere"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "4PieceCenterFirst"
+            "pathName": "AutoAimSourceSide4PieceNote2To3"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Subwoofer"
+            "name": "ShootAnywhere"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "4PieceCenterSecond"
+            "pathName": "AutoAimSourceSide4PieceNote1To2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Subwoofer"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "4PieceCenterThird"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Subwoofer"
+            "name": "ShootAnywhere"
           }
         }
       ]

@@ -81,7 +81,7 @@ public class Transport extends SubsystemBase implements AutoCloseable {
   }
 
   public boolean getNoteInPosition() {
-    return getTransportIR() && getFlyWheelIR();
+    return getTransportIR() && !getFlyWheelIR();
   }
 
   public boolean getNoteOnBoard() {

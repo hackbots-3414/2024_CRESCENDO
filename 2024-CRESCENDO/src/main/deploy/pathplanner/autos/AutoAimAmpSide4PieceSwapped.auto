@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.45213283715158,
-      "y": 5.564690860925347
+      "x": 1.459019830791339,
+      "y": 6.997185537995237
     },
     "rotation": -178.85423716182493
   },
@@ -12,27 +12,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "ShootAnywhere"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "AutoAimWingClearAndCenterRushNote1To2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootAnywhere"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AutoAimWingClearAndCenterRushNote2To3"
+            "pathName": "AutoAimAmpSide4PieceNote1"
           }
         },
         {
@@ -44,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "AutoAimWingClearAndCenterRushNote3To4"
+            "pathName": "AutoAimAmpSide4PieceNote1To2"
           }
         },
         {
@@ -56,7 +38,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "AutoAimWingClearAndCenterRushRush"
+            "pathName": "AutoAimAmpSide4PieceNote3To4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootAnywhere"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AutoAimAmpSide4PieceNote2To3"
           }
         },
         {

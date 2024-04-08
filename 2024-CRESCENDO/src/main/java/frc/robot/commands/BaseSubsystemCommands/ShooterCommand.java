@@ -62,6 +62,6 @@ public class ShooterCommand extends Command {
       ticks++;
     }
 
-    return ticks > 15;    
+    return ticks > 15;
   }
 }
