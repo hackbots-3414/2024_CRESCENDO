@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.Telemetry;
@@ -274,7 +275,7 @@ public class SubsystemManager extends SubsystemBase {
 	}
 
 	public Command makeManualIntakeEjectCommand() {
-		return new ManualIntakeEjectCommand(intake, transport);
+		return new ManualIntakeEjectCommand(intake, transport, shooterPivot);
 	}
 	
 	public Command makeAutoIntakeCommand() {
@@ -308,22 +309,25 @@ public class SubsystemManager extends SubsystemBase {
 
 	// AIMING COMMANDS
 	public Command makeAutoScoreCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
-		// use this code if the default command is able to run during auton
-		// Command setupCommand = new TurnCommand(drivetrain, x, y, turn, allianceSupplier);
-		
-		// otherwise use this code:
 		Command setupCommand = new ParallelDeadlineGroup(
 			new TurnCommand(drivetrain, x, y, turn, allianceSupplier),
 			new AimPresetCommand(shooterPivot, transport, allianceSupplier, this::getAimOutputContainer),
 			new ShooterFlywheelCommand(shooter, transport)
 		);
 
+		Command pivotWaitCommand = new PivotWait(shooterPivot, transport);
+
+		if (PivotConstants.useTimeout) {
+			pivotWaitCommand = pivotWaitCommand.withTimeout(PivotConstants.timeout);
+		}
+
 		return new SequentialCommandGroup(
 			setupCommand,
-			new PivotWait(shooterPivot, transport).withTimeout(0.005),
+			pivotWaitCommand,
 			new ShooterCommand(shooter, transport)
 		);
 	}
+
 	public AimOutputContainer getAimOutputContainer() {
         return AimHelper.getAimOutputs(drivetrain, allianceSupplier.get() == Alliance.Blue, AimStrategies.LOOKUP);
 	}

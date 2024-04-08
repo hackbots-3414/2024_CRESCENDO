@@ -2,11 +2,14 @@ package frc.robot.commands.BaseSubsystemCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterPivot;
 import frc.robot.subsystems.Transport;
 
 public class ShooterCommand extends Command {
   Shooter shooter;
   Transport transport;
+  ShooterPivot pivot;
+
   boolean alreadyRanFeed;
   boolean alreadyRanShooter;
   double ticks = 0;
@@ -14,6 +17,13 @@ public class ShooterCommand extends Command {
   public ShooterCommand(Shooter shooter, Transport transport) {
     this.shooter = shooter;
     this.transport = transport;
+    this.pivot = null;
+  }
+
+  public ShooterCommand(Shooter shooter, Transport transport, ShooterPivot pivot) {
+    this.shooter = shooter;
+    this.transport = transport;
+    this.pivot = pivot;
   }
 
   @Override
@@ -29,6 +39,8 @@ public class ShooterCommand extends Command {
       shooter.setMaxSpeed();
       alreadyRanShooter = true;
     }
+
+    if (pivot != null && !pivot.isAtSetpoint()) return;
 
     if(shooter.shooterAtSpeed() && !alreadyRanFeed){
       transport.setFast();
