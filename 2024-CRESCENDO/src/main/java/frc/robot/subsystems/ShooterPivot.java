@@ -168,12 +168,12 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
   }
 
   public boolean isAtSetpoint() {
-    if (DriverStation.isAutonomous()) {
-      return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance * 6.0);
-    }
-    if (setpoint > PivotConstants.howCloseIsTooCloseSlot2) {
-      return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance * 4.0);
-    } 
+    // if (DriverStation.isAutonomous()) {
+    //   return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance * 6.0);
+    // }
+    // if (setpoint > PivotConstants.howCloseIsTooCloseSlot2) {
+    //   return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance * 4.0);
+    // } 
     return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance || getCancoderPos() < 0 && setpoint == 0.0);
   }
 
@@ -220,6 +220,10 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
 
   public TalonFXSimState getSimState() {
     return pivotMotor.getSimState();
+  }
+
+  public void setSubwoofer() {
+    setPivotPosition(PositionConstants.SubwooferPresets.shooter);
   }
 
 }

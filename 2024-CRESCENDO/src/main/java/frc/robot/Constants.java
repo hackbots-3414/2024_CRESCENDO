@@ -140,7 +140,7 @@ public class Constants {
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
                 entry(0.0, 0.088),
-                entry(1.387, 0.068),
+                entry(1.387, 0.072),
                 entry(1.69, 0.062),
                 entry(1.9, 0.054),
                 entry(2.0, 0.048),
@@ -335,7 +335,7 @@ public class Constants {
 
         public static final class PivotSlot0ConfigConstants { // up
             public static final double kP = 3.0; // output per unit of error in position (output/rotation)
-            public static final double kI = 0.3; // output per unit of integrated error in position
+            public static final double kI = 6; // output per unit of integrated error in position
                                                  // (output/(rotation*s))
             public static final double kD = 0.05; // output per unit of error in velocity (output/rps)
             public static final double kS = 0.0; // output to overcome static friction (output)
