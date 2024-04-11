@@ -330,9 +330,9 @@ public class SubsystemManager extends SubsystemBase {
 					new TurnCommand(drivetrain, x, y, turn, allianceSupplier),
 					new RevShooterMaxCommand(shooter)
 				),
-				new ShooterCommand(shooter, transport)
+				new ShooterCommand(shooter, transport, shooterPivot)
 			);
-		} 
+		}
 		
 		// in auton
 		Command deadlineCommand = new PivotWait(shooterPivot, transport).withTimeout(PivotConstants.timeout);
