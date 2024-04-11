@@ -140,7 +140,7 @@ public class Constants {
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
                 entry(0.0, 0.088),
-                entry(1.387, 0.072),
+                entry(1.387, 0.08),
                 entry(1.69, 0.062),
                 entry(1.9, 0.054),
                 entry(2.0, 0.048),
@@ -149,14 +149,14 @@ public class Constants {
                 entry(2.62, 0.034),
                 entry(2.8, 0.027),
                 entry(3.0, 0.024),
-                entry(3.27, 0.020),
-                entry(3.66, 0.015),
-                entry(4.0, 0.012),
-                entry(4.3, 0.011),
-                entry(4.6, 0.008),
-                entry(4.9, 0.0035),
-                entry(5.2, 0.0012),
-                entry(5.57, 0.000)
+                entry(3.27, 0.019),
+                entry(3.66, 0.014), // *
+                entry(4.0, 0.013), // 012
+                entry(4.3, 0.011), // 011 *
+                entry(4.6, 0.007), // 008
+                entry(4.9, 0.0027), // 0035
+                entry(5.2, 0.001), // 0012
+                entry(5.57, 0.000) // 000
         );
 
         // public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
@@ -256,7 +256,7 @@ public class Constants {
 
         public static final class SubwooferPresets {
             public static final double elevator = 0.0;
-            public static final double shooter = 0.072;
+            public static final double shooter = 0.08;
         }
     }
 
@@ -326,10 +326,9 @@ public class Constants {
         public static final double pivotManualUpSpeed = 0.3;
         public static final double pivotManualDownSpeed = -0.1;
 
-        public static final double pivotTolerance = 0.003;
+        public static final double pivotTolerance = 0.0025;
 
-        public static final double howCloseIsTooCloseSlot2 = 0.024; // rotations
-        public static final double goingToZeroToleranceSlot1 = 0.005; // rotations
+        public static final double pivotToleranceCloseRangeValue = 0.035; // rotations
 
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
@@ -347,15 +346,14 @@ public class Constants {
         }
 
         public static final class PivotSlot1ConfigConstants { // down
-            public static final double kP = 2.5; // output per unit of error in position (output/rotation)
-            public static final double kI = 0.01; // output per unit of integrated error in position
+            public static final double kP = 65; // output per unit of error in position (output/rotation)
+            public static final double kI = 3; // output per unit of integrated error in position
                                                  // (output/(rotation*s))
-            public static final double kD = 0.0; // output per unit of error in velocity (output/rps)
-            public static final double kS = 0.0; // output to overcome static friction (output)
-            public static final double kV = 15.0; // output per unit of target velocity (output/rps)
-            public static final double kA = 0.0; // output per unit of target acceleration (output/(rps/s))
-            public static final double kG = 0.05; // feedforward Constant changed onm 3/27
-            // public static final double kG = 0.0;
+            public static final double kD = 0; // output per unit of error in velocity (output/rps)
+            public static final double kS = 0; // output to overcome static friction (output)
+            public static final double kV = 14; // output per unit of target velocity (output/rps)
+            public static final double kA = 0; // output per unit of target acceleration (output/(rps/s))
+            public static final double kG = 0.2; // feedforward Constant changed onm 3/27
         }
 
         public static final class PivotSlot2ConfigConstants {

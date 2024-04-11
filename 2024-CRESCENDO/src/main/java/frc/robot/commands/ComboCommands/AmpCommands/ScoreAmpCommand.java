@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.TransportConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterPivot;
 import frc.robot.subsystems.Transport;
 
 public class ScoreAmpCommand extends Command {
@@ -12,8 +13,8 @@ public class ScoreAmpCommand extends Command {
   private Shooter shooter;
   private Elevator elevator;
   
-  public ScoreAmpCommand(Shooter shooter, Transport transport, Elevator elevator) {
-    addRequirements(transport, shooter);
+  public ScoreAmpCommand(Shooter shooter, Transport transport, Elevator elevator, ShooterPivot pivot) {
+    addRequirements(transport, shooter, pivot);
     this.transport = transport;
     this.shooter = shooter;
     this.elevator = elevator;
