@@ -132,19 +132,10 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
     pivotMotor.getConfigurator().apply(configuration, 0.2);
   }
 
-  public void setPivotPosition(double position) { // position is in number of rotations as per documentation.
+  public void setPivotPosition(double position) {
     this.setpoint = position;
-    boolean isTooClose = position > PivotConstants.howCloseIsTooCloseSlot2;
-    boolean goingToZero = position < PivotConstants.goingToZeroToleranceSlot1;
-    if (isTooClose) {
-      pivotMotor.setControl(new MotionMagicVoltage(position).withSlot(0));
-      // logger.debug("using slot 2");
-      return;
-    } else if (goingToZero) {
-      pivotMotor.setControl(new MotionMagicVoltage(position).withSlot(1));
-      return;
-    }
-    pivotMotor.setControl(new MotionMagicVoltage(position).withSlot(0));
+    // pivotMotor.setControl(new MotionMagicVoltage(position).withSlot(0));
+    pivotMotor.setControl(new MotionMagicVoltage(position).withSlot(1));
   }
 
   public void stow() {
@@ -168,11 +159,8 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
   }
 
   public boolean isAtSetpoint() {
-    if (DriverStation.isAutonomous()) {
-      return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance * 6.0);
-    }
-    if (setpoint > PivotConstants.howCloseIsTooCloseSlot2) {
-      return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance * 4.0);
+    if (setpoint > PivotConstants.pivotToleranceCloseRangeValue) {
+      return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance * 2.0);
     } 
     return (Math.abs(getCancoderPos() - setpoint) < PivotConstants.pivotTolerance || getCancoderPos() < 0 && setpoint == 0.0);
   }
@@ -196,6 +184,7 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
     
     SmartDashboard.putNumber("CANCODERPOS", cancoderPosition);
     SmartDashboard.putNumber("Pivot Error (3 is good)", Math.abs(pivotMotor.getClosedLoopError().getValueAsDouble() * 1000.0));
+    SmartDashboard.putBoolean("Shooter status", (pivotMotor.getStickyFaultField().getValue() == 0));
   }
 
   public void setCurrentLimit(double limit) {
@@ -220,6 +209,10 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
 
   public TalonFXSimState getSimState() {
     return pivotMotor.getSimState();
+  }
+
+  public void setSubwoofer() {
+    setPivotPosition(PositionConstants.SubwooferPresets.shooter);
   }
 
 }

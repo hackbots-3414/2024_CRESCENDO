@@ -46,6 +46,7 @@ import frc.robot.commands.BaseSubsystemCommands.ShooterCommand;
 import frc.robot.commands.BaseSubsystemCommands.ShooterFlywheelCommand;
 import frc.robot.commands.BaseSubsystemCommands.SpitOutCommand;
 import frc.robot.commands.BaseSubsystemCommands.SpitOutSimpleCommand;
+import frc.robot.commands.BaseSubsystemCommands.SubwooferSetupCommand;
 import frc.robot.commands.ComboCommands.ResetElevatorCommand;
 import frc.robot.commands.ComboCommands.AmpCommands.AmpComboScheduler;
 import frc.robot.commands.ComboCommands.AmpCommands.AmpSetupCommand;
@@ -289,11 +290,11 @@ public class SubsystemManager extends SubsystemBase {
 
 	// PRESETS COMMANDS
 	public Command makeAmpSetupCommand() {
-		return new AmpSetupCommand(elevator, shooter);
+		return new AmpSetupCommand(elevator, shooter, shooterPivot, true);
 	}
 	public Command makeAmpFinishCommand() {
 		return new SequentialCommandGroup(
-			new ScoreAmpCommand(shooter, transport, elevator),
+			new ScoreAmpCommand(shooter, transport, elevator, shooterPivot),
 			new InstantCommand(this::stow)
 		);
 	}
@@ -301,9 +302,14 @@ public class SubsystemManager extends SubsystemBase {
 		return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER),
 				makeShootCommand());
 	}
+
+	public Command makeSubwooferRevCommand() {
+		return new SubwooferSetupCommand(shooterPivot, shooter);
+	}
+
 	public Command makeAmpSequence() {
 		// our goal position is the position of the amp plus just enough room for our robot to be aligned with it, and we want to be facing the alliance station so we can score.
-		return new AmpComboScheduler(drivetrain, elevator, shooter, transport);
+		return new AmpComboScheduler(drivetrain, elevator, shooter, transport, shooterPivot);
 	}
 
 
