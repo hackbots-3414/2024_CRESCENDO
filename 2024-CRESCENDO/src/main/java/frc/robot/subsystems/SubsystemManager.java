@@ -43,6 +43,7 @@ import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand;
 import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.BaseSubsystemCommands.IntakeBackupCommand;
 import frc.robot.commands.BaseSubsystemCommands.IntakeCommand;
+import frc.robot.commands.BaseSubsystemCommands.RevShooterMaxCommand;
 import frc.robot.commands.BaseSubsystemCommands.ShooterCommand;
 import frc.robot.commands.BaseSubsystemCommands.ShooterFlywheelCommand;
 import frc.robot.commands.BaseSubsystemCommands.SpitOutCommand;
@@ -325,7 +326,10 @@ public class SubsystemManager extends SubsystemBase {
 	public Command makeAutoScoreCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
 		if (DriverStation.isTeleop()) {
 			return new SequentialCommandGroup(
-				new TurnCommand(drivetrain, x, y, turn, allianceSupplier),
+				new ParallelDeadlineGroup(
+					new TurnCommand(drivetrain, x, y, turn, allianceSupplier),
+					new RevShooterMaxCommand(shooter)
+				),
 				new ShooterCommand(shooter, transport)
 			);
 		} 
@@ -333,8 +337,8 @@ public class SubsystemManager extends SubsystemBase {
 		// in auton
 		Command deadlineCommand = new PivotWait(shooterPivot, transport).withTimeout(PivotConstants.timeout);
 		Command setupCommands = new ParallelCommandGroup(
+			new RevShooterMaxCommand(shooter),
 			new AimPresetCommand(shooterPivot, transport, allianceSupplier, this::getAimOutputContainer),
-			new ShooterFlywheelCommand(shooter, transport)
 		);
 		Command shootCommands = new ShooterCommand(shooter, transport);
 
