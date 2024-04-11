@@ -15,11 +15,10 @@ public class PivotWait extends Command {
   private Logger logger = LoggerFactory.getLogger(PivotWait.class);
   private ShooterPivot pivot;
   private Transport transport;
-  /** Creates a new PivotWait. */
+  
   public PivotWait(ShooterPivot pivot, Transport transport) {
     this.pivot = pivot;
     this.transport = transport;
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -40,6 +39,6 @@ public class PivotWait extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pivot.isAtSetpoint() || !transport.getNoteOnBoard(); // if we failed to intake, then we don't feel like waiting.
+    return (pivot.isAtSetpoint() && pivot.getSetpoint() != 0.0) || !transport.getNoteOnBoard(); // if we failed to intake, then we don't feel like waiting.
   }
 }
