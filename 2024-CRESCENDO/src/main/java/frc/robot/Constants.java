@@ -29,7 +29,7 @@ public class Constants {
     public static final double irSensorThreshold = 1.0;
 
     public static final class SwerveConstants {
-        public static final double kPDrive = 20;
+        public static final double kPDrive = 10;
         public static final double kIDrive = 0;
         public static final double kDDrive = 0;
         public static final double kPSteer = 4;
@@ -153,7 +153,7 @@ public class Constants {
                 entry(3.66, 0.014), // *
                 entry(4.0, 0.013), // 012
                 entry(4.3, 0.011), // 011 *
-                entry(4.6, 0.007), // 008
+                entry(4.6, 0.006), // 008
                 entry(4.9, 0.0027), // 0035
                 entry(5.2, 0.001), // 0012
                 entry(5.57, 0.000) // 000
@@ -348,7 +348,7 @@ public class Constants {
         }
 
         public static final class PivotSlot1ConfigConstants { // down
-            public static final double kP = 65; // output per unit of error in position (output/rotation)
+            public static final double kP = 75; // output per unit of error in position (output/rotation)
             public static final double kI = 3; // output per unit of integrated error in position
                                                  // (output/(rotation*s))
             public static final double kD = 0; // output per unit of error in velocity (output/rps)
