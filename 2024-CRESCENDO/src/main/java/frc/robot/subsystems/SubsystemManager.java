@@ -338,7 +338,7 @@ public class SubsystemManager extends SubsystemBase {
 		Command deadlineCommand = new PivotWait(shooterPivot, transport).withTimeout(PivotConstants.timeout);
 		Command setupCommands = new ParallelCommandGroup(
 			new RevShooterMaxCommand(shooter),
-			new AimPresetCommand(shooterPivot, transport, allianceSupplier, this::getAimOutputContainer),
+			new AimPresetCommand(shooterPivot, transport, allianceSupplier, this::getAimOutputContainer)
 		);
 		Command shootCommands = new ShooterCommand(shooter, transport);
 
