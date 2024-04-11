@@ -340,12 +340,12 @@ public class SubsystemManager extends SubsystemBase {
 			new RevShooterMaxCommand(shooter),
 			new AimPresetCommand(shooterPivot, transport, allianceSupplier, this::getAimOutputContainer)
 		);
-		Command shootCommands = new ShooterCommand(shooter, transport);
+		Command shootCommand = new ShooterCommand(shooter, transport);
 
 		Command setupCommand = new ParallelDeadlineGroup(deadlineCommand, setupCommands);
 		Command autoScoreCommand = new SequentialCommandGroup(
 			setupCommand,
-			shootCommands
+			shootCommand
 		);
 
 		return autoScoreCommand;
