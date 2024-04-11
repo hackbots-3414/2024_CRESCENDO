@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -314,24 +315,42 @@ public class SubsystemManager extends SubsystemBase {
 
 
 	// AIMING COMMANDS
+	/**
+	 * ONLY RUN IN AUTON
+	 * @param x
+	 * @param y
+	 * @param turn
+	 * @return
+	 */
 	public Command makeAutoScoreCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
-		Command setupCommand = new ParallelDeadlineGroup(
-			new TurnCommand(drivetrain, x, y, turn, allianceSupplier),
-			new AimPresetCommand(shooterPivot, transport, allianceSupplier, this::getAimOutputContainer),
-			new ShooterFlywheelCommand(shooter, transport)
-		);
+		Command deadlineCommand;
+		Command setupCommands;
+		Command shootCommands;
 
-		Command pivotWaitCommand = new PivotWait(shooterPivot, transport);
-
-		if (PivotConstants.useTimeout) {
-			pivotWaitCommand = pivotWaitCommand.withTimeout(PivotConstants.timeout);
+		if (DriverStation.isTeleop()) {
+			deadlineCommand = new TurnCommand(drivetrain, x, y, turn, allianceSupplier);
+			setupCommands = new ParallelCommandGroup(
+				new AimPresetCommand(shooterPivot, transport, allianceSupplier, this::getAimOutputContainer),
+				new ShooterFlywheelCommand(shooter, transport)
+			);
+			shootCommands = new ShooterCommand(shooter, transport, shooterPivot);
+		} else { // in auton
+			deadlineCommand = new PivotWait(shooterPivot, transport).withTimeout(PivotConstants.timeout);
+			setupCommands = new ParallelCommandGroup(
+				new AimPresetCommand(shooterPivot, transport, allianceSupplier, this::getAimOutputContainer),
+				new ShooterFlywheelCommand(shooter, transport)
+			);
+			shootCommands = new ShooterCommand(shooter, transport);
 		}
 
-		return new SequentialCommandGroup(
+		Command setupCommand = new ParallelDeadlineGroup(deadlineCommand, setupCommands);
+		Command autoScoreCommand = new SequentialCommandGroup(
 			setupCommand,
-			pivotWaitCommand,
-			new ShooterCommand(shooter, transport)
+			shootCommands
 		);
+
+		return autoScoreCommand;
+		
 	}
 
 	public AimOutputContainer getAimOutputContainer() {

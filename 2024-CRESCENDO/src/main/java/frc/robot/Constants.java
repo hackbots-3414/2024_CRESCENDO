@@ -332,7 +332,6 @@ public class Constants {
 
         public static final AbsoluteSensorRangeValue absoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
 
-        public static final boolean useTimeout = true; // whether there should be a timeout for autoAim command
         public static final double timeout = 1.5; // seconds
 
         public static final class PivotSlot0ConfigConstants { // up
