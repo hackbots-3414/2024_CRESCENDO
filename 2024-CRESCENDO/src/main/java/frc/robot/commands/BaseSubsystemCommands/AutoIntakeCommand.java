@@ -54,6 +54,7 @@ public class AutoIntakeCommand extends Command {
     if (transport.getFlyWheelIR() && !seenNote) {
       transport.setBackup();
       shooter.setBackup();
+      intake.setEject();
       seenNote = true;
     }
   }
