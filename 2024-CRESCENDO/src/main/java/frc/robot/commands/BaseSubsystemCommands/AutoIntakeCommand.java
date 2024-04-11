@@ -63,11 +63,11 @@ public class AutoIntakeCommand extends Command {
   public void end(boolean interrupted) {
     intake.stopMotor();
     transport.stopMotor();
-    if (DriverStation.isAutonomous()) {
-      shooter.setWarmUpSpeed();
-    } else {
+    // if (DriverStation.isAutonomous()) {
+    //   shooter.setWarmUpSpeed();
+    // } else {
       shooter.stopMotor();
-    }
+    // }
   }
 
   @Override
