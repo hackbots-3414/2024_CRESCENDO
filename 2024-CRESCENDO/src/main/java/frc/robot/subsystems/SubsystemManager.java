@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -324,7 +325,7 @@ public class SubsystemManager extends SubsystemBase {
 	 * @return
 	 */
 	public Command makeAutoScoreCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
-		if (DriverStation.isTeleop()) {
+		if (DriverStation.isTeleopEnabled()) {
 			return new SequentialCommandGroup(
 				new ParallelDeadlineGroup(
 					new TurnCommand(drivetrain, x, y, turn, allianceSupplier),
@@ -335,21 +336,26 @@ public class SubsystemManager extends SubsystemBase {
 		}
 		
 		// in auton
-		Command deadlineCommand = new PivotWait(shooterPivot, transport).withTimeout(PivotConstants.timeout);
-		Command setupCommands = new ParallelCommandGroup(
+		Command setupCommand = new ParallelDeadlineGroup(
+			new PivotWait(shooterPivot, transport).withTimeout(PivotConstants.timeout),
 			new RevShooterMaxCommand(shooter),
 			new AimPresetCommand(shooterPivot, transport, allianceSupplier, this::getAimOutputContainer)
 		);
-		Command shootCommand = new ShooterCommand(shooter, transport);
 
-		Command setupCommand = new ParallelDeadlineGroup(deadlineCommand, setupCommands);
 		Command autoScoreCommand = new SequentialCommandGroup(
 			setupCommand,
-			shootCommand
+			new ShooterCommand(shooter, transport)
 		);
 
 		return autoScoreCommand;
-		
+	}
+
+	public Command makeAutoScoreProxy(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
+		return new ProxyCommand(() -> makeAutoScoreCommand(x, y, turn));
+	}
+
+	public Command makeAutoScoreProxy() {
+		return new ProxyCommand(() -> makeAutoScoreCommand(() -> 0.0, () -> 0.0, () -> 0.0));
 	}
 
 	public AimOutputContainer getAimOutputContainer() {
@@ -407,7 +413,7 @@ public class SubsystemManager extends SubsystemBase {
 
 		eventMarkers.put("Subwoofer", makeSubwooferShootCommand());
 		eventMarkers.put("Intake", makeAutoIntakeCommand());
-		eventMarkers.put("ShootAnywhere", makeAutoScoreCommand(() -> 0.0, () -> 0.0, () -> 0.0));
+		eventMarkers.put("ShootAnywhere", makeAutoScoreProxy());
 
 		SmartDashboard.putData("Amp Sequence", makeAmpSequence());
 

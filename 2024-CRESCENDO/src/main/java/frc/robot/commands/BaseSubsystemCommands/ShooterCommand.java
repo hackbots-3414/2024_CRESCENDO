@@ -1,11 +1,15 @@
 package frc.robot.commands.BaseSubsystemCommands;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
 import frc.robot.subsystems.Transport;
 
 public class ShooterCommand extends Command {
+  private Logger logger = LoggerFactory.getLogger(ShooterCommand.class);
   Shooter shooter;
   Transport transport;
   ShooterPivot pivot;
@@ -31,6 +35,7 @@ public class ShooterCommand extends Command {
     alreadyRanFeed = false;
     alreadyRanShooter = false;
     ticks = 0;
+    logger.debug("ShooterCommand started");
   }
 
   @Override
@@ -50,6 +55,7 @@ public class ShooterCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    logger.debug("ShooterCommand ended");
     shooter.stopMotor();
     transport.stopMotor();
   }
