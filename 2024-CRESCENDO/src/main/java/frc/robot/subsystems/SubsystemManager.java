@@ -323,25 +323,20 @@ public class SubsystemManager extends SubsystemBase {
 	 * @return
 	 */
 	public Command makeAutoScoreCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
-		Command deadlineCommand;
-		Command setupCommands;
-		Command shootCommands;
-
 		if (DriverStation.isTeleop()) {
-			deadlineCommand = new TurnCommand(drivetrain, x, y, turn, allianceSupplier);
-			setupCommands = new ParallelCommandGroup(
-				new AimPresetCommand(shooterPivot, transport, allianceSupplier, this::getAimOutputContainer),
-				new ShooterFlywheelCommand(shooter, transport)
+			return new SequentialCommandGroup(
+				new TurnCommand(drivetrain, x, y, turn, allianceSupplier),
+				new ShooterCommand(shooter, transport)
 			);
-			shootCommands = new ShooterCommand(shooter, transport, shooterPivot);
-		} else { // in auton
-			deadlineCommand = new PivotWait(shooterPivot, transport).withTimeout(PivotConstants.timeout);
-			setupCommands = new ParallelCommandGroup(
-				new AimPresetCommand(shooterPivot, transport, allianceSupplier, this::getAimOutputContainer),
-				new ShooterFlywheelCommand(shooter, transport)
-			);
-			shootCommands = new ShooterCommand(shooter, transport);
-		}
+		} 
+		
+		// in auton
+		Command deadlineCommand = new PivotWait(shooterPivot, transport).withTimeout(PivotConstants.timeout);
+		Command setupCommands = new ParallelCommandGroup(
+			new AimPresetCommand(shooterPivot, transport, allianceSupplier, this::getAimOutputContainer),
+			new ShooterFlywheelCommand(shooter, transport)
+		);
+		Command shootCommands = new ShooterCommand(shooter, transport);
 
 		Command setupCommand = new ParallelDeadlineGroup(deadlineCommand, setupCommands);
 		Command autoScoreCommand = new SequentialCommandGroup(
