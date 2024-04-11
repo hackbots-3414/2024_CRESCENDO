@@ -29,10 +29,10 @@ public class Constants {
     public static final double irSensorThreshold = 1.0;
 
     public static final class SwerveConstants {
-        public static final double kPDrive = 10;
+        public static final double kPDrive = 15; // 20
         public static final double kIDrive = 0;
         public static final double kDDrive = 0;
-        public static final double kPSteer = 4;
+        public static final double kPSteer = 4; // 4
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
 
