@@ -26,9 +26,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -36,6 +34,7 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Robot;
 import frc.robot.Telemetry;
+import frc.robot.commands.ManualScheduler;
 import frc.robot.commands.AutoScoreCommands.PivotWait;
 import frc.robot.commands.AutoScoreCommands.TurnCommand;
 import frc.robot.commands.BaseSubsystemCommands.AimPresetCommand;
@@ -351,11 +350,11 @@ public class SubsystemManager extends SubsystemBase {
 	}
 
 	public Command makeAutoScoreProxy(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
-		return new ProxyCommand(() -> makeAutoScoreCommand(x, y, turn));
+		return new ManualScheduler(() -> makeAutoScoreCommand(x, y, turn));
 	}
 
 	public Command makeAutoScoreProxy() {
-		return new ProxyCommand(() -> makeAutoScoreCommand(() -> 0.0, () -> 0.0, () -> 0.0));
+		return makeAutoScoreProxy(() -> 0.0, () -> 0.0, () -> 0.0);
 	}
 
 	public AimOutputContainer getAimOutputContainer() {
