@@ -41,7 +41,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     private final Field2d field2d = new Field2d();
     private static PhotonVisionRunnable rightEstimator;
     private static PhotonVisionRunnable leftEstimator;
-    // private static PhotonVisionRunnable backEstimator;
+    private static PhotonVisionRunnable backEstimator;
     private static Notifier allNotifier;
 
     static {
@@ -52,18 +52,18 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             leftEstimator = new PhotonVisionRunnable(
                     Constants.VisionConstants.leftCameraName,
                     Constants.VisionConstants.leftTransform);
-            // backEstimator = new PhotonVisionRunnable(
-                    // Constants.VisionConstants.backCameraName,
-                    // Constants.VisionConstants.backTransform);
+            backEstimator = new PhotonVisionRunnable(
+                    Constants.VisionConstants.backCameraName,
+                    Constants.VisionConstants.backTransform);
 
             allNotifier = new Notifier(() -> {
                 rightEstimator.run();
                 leftEstimator.run();
-                // backEstimator.run();
+                backEstimator.run();
             });
         }
     }
-    // private final Notifier backNotifier = new Notifier(backEstimator);
+    private final Notifier backNotifier = new Notifier(backEstimator);
 
     private OriginPosition originPosition = kBlueAllianceWallRightSide;
 
@@ -122,13 +122,13 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         if (Constants.VisionConstants.USE_VISION) {
             estimatorChecker(rightEstimator);
             estimatorChecker(leftEstimator);
-            // estimatorChecker(backEstimator);
+            estimatorChecker(backEstimator);
         } else {
             if (allNotifier != null)
                 allNotifier.close();
         }
 
-        // estimatorChecker(backEstimator);
+        estimatorChecker(backEstimator);
 
         // Set the pose on the dashboard
         var dashboardPose = getCurrentPose();

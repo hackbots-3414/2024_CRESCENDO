@@ -50,7 +50,7 @@ public class AprilTagVisionIOPhotonVision implements AprilTagVisionIO {
             allNotifier = new Notifier(() -> {
                 rightEstimator.run();
                 leftEstimator.run();
-                // backEstimator.run();
+                backEstimator.run();
             });
 
             allNotifier.setName("runAll");
