@@ -135,7 +135,7 @@ public class Constants {
 
         public static final double warmUpSpeed = 0.25; // duty cycle (0-1)
 
-        public static final double spitOutSpeed = 30;
+        public static final double spitOutSpeed = 0.6; // % out of 1
         public static final double maxSpeed = 80; // rps
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
@@ -384,7 +384,7 @@ public class Constants {
         public static final double compressionAdder = 3;
 
         public static final double maxRange = 5.5;
-        public static final double badShootRange = 3;
+        public static final double badShootRange = 3.75;
         public static final double badShootRangeTolerance = 0.25;
 
         public static final double aprilTagToHoodGoal = Units.inchesToMeters(8);

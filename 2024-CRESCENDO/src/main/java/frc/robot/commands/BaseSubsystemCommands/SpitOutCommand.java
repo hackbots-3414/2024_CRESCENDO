@@ -99,6 +99,9 @@ public class SpitOutCommand extends Command {
     FieldCentric driveRequest = new SwerveRequest.FieldCentric().withDeadband(Constants.SwerveConstants.maxDriveVelocity * 0.2).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     PIDController thetaController = new PIDController(0.8, 0, 0);
 
+    double goalTicks = 25;
+    double ticks = 0;
+
     public SpitOutCommand(ShooterPivot shooterPivot, Shooter shooter, Transport transport, CommandSwerveDrivetrain drivetrain, Supplier<Double> xSupplier, Supplier<Double> ySupplier, Supplier<Double> rSupplier, Supplier<Alliance> aSupplier) {
         this.shooterPivot = shooterPivot;
         this.drivetrain = drivetrain;
@@ -120,24 +123,29 @@ public class SpitOutCommand extends Command {
         shooterCommand.initialize();
         alreadyRanFeed = false;
         alreadyRanShooter = false;
+        ticks = 0;
     }
 
     @Override
     public void execute() {
         Pose2d robotPosition = drivetrain.getPose();
 
-        Pose2d speakerPose = blueSide ? AimConstants.blueSpeakerPos.transformBy(new Transform2d(0, 1, Rotation2d.fromDegrees(0))) : AimConstants.redSpeakerPos;
+        // Pose2d speakerPose = blueSide ? AimConstants.blueSpeakerPos.transformBy(new Transform2d(0, 1, Rotation2d.fromDegrees(0))) : AimConstants.redSpeakerPos; // WORKING FROM BEFORE WORLDS
+        Pose2d speakerPose = blueSide ? AimConstants.blueSpeakerPos.transformBy(new Transform2d(0, -0.5, Rotation2d.fromDegrees(0))) : AimConstants.redSpeakerPos.transformBy(new Transform2d(0, 0.7, Rotation2d.fromDegrees(0))); // WORKING FROM BEFORE WORLDS
+        // blue curves to the center
+        // positive goes towards the center
+
         Pose2d drivetrainPose = drivetrain.getPose();
 
         Rotation2d output = speakerPose.getTranslation().minus(drivetrainPose.getTranslation()).getAngle();
 
 
-        shooterPivot.setPivotPosition(PivotConstants.forwardSoftLimitThreshold);
+        shooterPivot.setPivotPosition(0.06);
         double robotRotation = robotPosition.getRotation().getRadians();
         double targetRotation = output.getRadians();
 
-        drivetrain.setControl(driveRequest.withVelocityX(xSupplier.get() * SwerveConstants.maxDriveVelocity)
-                            .withVelocityY(ySupplier.get() * SwerveConstants.maxDriveVelocity)
+        drivetrain.setControl(driveRequest.withVelocityX(-xSupplier.get() * SwerveConstants.maxDriveVelocity)
+                            .withVelocityY(-ySupplier.get() * SwerveConstants.maxDriveVelocity)
                             .withRotationalRate((rSupplier.get() > 0.2 || rSupplier.get() < -0.2) ? (-rSupplier.get() * SwerveConstants.maxAngleVelocity) 
                             : (thetaController.calculate(robotRotation, targetRotation) * Constants.SwerveConstants.maxAngleVelocity)));
 
@@ -148,6 +156,7 @@ public class SpitOutCommand extends Command {
         } else {
             shooter.setFeedSpeed();
         }
+        ticks++;
     }
 
     @Override
@@ -161,12 +170,15 @@ public class SpitOutCommand extends Command {
             alreadyRanShooter = true;
         }
       
-        if(shooter.shooterAtSpeed() && !alreadyRanFeed){
-            if (shooterPivot != null && !shooterPivot.isAtSetpoint()) {
-              return;
-            }
+        if(ticks > goalTicks && !alreadyRanFeed){
             transport.setFast();
             alreadyRanFeed = true;
         }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        shooter.stopMotor();
+        transport.stopMotor();
     }
 }
