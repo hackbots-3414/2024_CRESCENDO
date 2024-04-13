@@ -72,7 +72,7 @@ public class Shooter extends SubsystemBase implements AutoCloseable {
       .withCurrentLimits(currentLimitsConfig);
 
     leftMotor.getConfigurator().apply(configuration, 0.2);
-    leftMotor.setNeutralMode(NeutralModeValue.Coast);
+    leftMotor.setNeutralMode(NeutralModeValue.Brake);
 
     rightMotor.setInverted(Constants.ShooterConstants.shooterMotorInvert);
     leftMotor.setControl(new Follower(rightMotor.getDeviceID(), true));

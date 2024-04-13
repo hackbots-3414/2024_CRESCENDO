@@ -42,9 +42,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "AutoAimWingClearAndCenterRushNote3To4"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "AutoAimWingClearAndCenterRushNote3To4"
+                }
+              }
+            ]
           }
         },
         {

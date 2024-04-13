@@ -190,7 +190,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         double robotDistance = speakerPose.relativeTo(getPose()).getTranslation().getNorm();
         SmartDashboard.putNumber("DISTANCE FROM TARGET", robotDistance);
 
-        isInRange = robotDistance < AimConstants.maxRange;
+        isInRange = (robotDistance < (AimConstants.badShootRange + AimConstants.badShootRangeTolerance) && robotDistance > (AimConstants.badShootRange - AimConstants.badShootRangeTolerance)) ? false : (robotDistance < AimConstants.maxRange);
 
         if (DebugConstants.debugMode) {
             for (int i = 0; i < Modules.length; i++) {

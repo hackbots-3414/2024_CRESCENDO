@@ -149,7 +149,7 @@ public class Constants {
                 entry(2.62, 0.034),
                 entry(2.8, 0.027),
                 entry(3.0, 0.024),
-                entry(3.27, 0.019),
+                entry(3.27, 0.018),
                 entry(3.66, 0.014), // *
                 entry(4.0, 0.013), // 012
                 entry(4.3, 0.011), // 011 *
@@ -383,7 +383,9 @@ public class Constants {
 
         public static final double compressionAdder = 3;
 
-        public static final double maxRange = 4.3;
+        public static final double maxRange = 5.5;
+        public static final double badShootRange = 3;
+        public static final double badShootRangeTolerance = 0.5;
 
         public static final double aprilTagToHoodGoal = Units.inchesToMeters(8);
 
