@@ -385,7 +385,7 @@ public class Constants {
 
         public static final double maxRange = 5.5;
         public static final double badShootRange = 3;
-        public static final double badShootRangeTolerance = 0.5;
+        public static final double badShootRangeTolerance = 0.25;
 
         public static final double aprilTagToHoodGoal = Units.inchesToMeters(8);
 

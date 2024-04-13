@@ -82,8 +82,8 @@ public class AimCommand extends Command {
         if (!DriverStation.isAutonomous()) {
             double robotRotation = robotPosition.getRotation().getRadians();
             double targetRotation = output.getDrivetrainRotation().getRadians();
-            drivetrain.setControl(driveRequest.withVelocityX(xSupplier.get() * SwerveConstants.maxDriveVelocity)
-                                .withVelocityY(ySupplier.get() * SwerveConstants.maxDriveVelocity)
+            drivetrain.setControl(driveRequest.withVelocityX(-xSupplier.get() * SwerveConstants.maxDriveVelocity)
+                                .withVelocityY(-ySupplier.get() * SwerveConstants.maxDriveVelocity)
                                 .withRotationalRate((rSupplier.get() > 0.2 || rSupplier.get() < -0.2) ? (-rSupplier.get() * SwerveConstants.maxAngleVelocity) 
                                 : (thetaController.calculate(robotRotation, targetRotation) * Constants.SwerveConstants.maxAngleVelocity)));
 

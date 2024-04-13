@@ -24,7 +24,6 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -35,7 +34,6 @@ import frc.robot.Constants.PivotConstants.PivotMotionMagicConstants;
 import frc.robot.Constants.PivotConstants.PivotSlot0ConfigConstants;
 import frc.robot.Constants.PivotConstants.PivotSlot1ConfigConstants;
 import frc.robot.Constants.PivotConstants.PivotSlot2ConfigConstants;
-import frc.robot.Constants.PositionConstants.SubwooferPresets;
 import frc.robot.Constants.PositionConstants;
 
 public class ShooterPivot extends SubsystemBase implements AutoCloseable {
