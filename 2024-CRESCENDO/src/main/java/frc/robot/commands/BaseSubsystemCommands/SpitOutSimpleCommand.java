@@ -18,7 +18,7 @@ public class SpitOutSimpleCommand extends Command {
 
     @Override
     public void initialize() {
-        shooter.setVelocity(ShooterConstants.spitOutSpeed);
+        shooter.setMaxSpeed();
         ticks = 0;
         alreadyRanFeed = false;
     }
