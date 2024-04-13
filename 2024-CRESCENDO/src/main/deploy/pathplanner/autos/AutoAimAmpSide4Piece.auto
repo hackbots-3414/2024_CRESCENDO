@@ -24,9 +24,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "AutoAimAmpSide4PieceNote1To2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "AutoAimAmpSide4PieceNote1To2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
           }
         },
         {

@@ -29,10 +29,10 @@ public class Constants {
     public static final double irSensorThreshold = 1.0;
 
     public static final class SwerveConstants {
-        public static final double kPDrive = 20;
+        public static final double kPDrive = 15; // 20
         public static final double kIDrive = 0;
         public static final double kDDrive = 0;
-        public static final double kPSteer = 4;
+        public static final double kPSteer = 4; // 4
         public static final double kISteer = 0;
         public static final double kDSteer = 0;
 
@@ -71,8 +71,8 @@ public class Constants {
                 (new Rotation3d(Units.degreesToRadians(177.5), Units.degreesToRadians(-30), Units.degreesToRadians(-10))));
         public static final Transform3d rightTransform = new Transform3d(-0.281, -0.291, 0.636,
                 new Rotation3d(Units.degreesToRadians(182.5), Units.degreesToRadians(-30), Units.degreesToRadians(10)));
-        public static final Transform3d backTransform = new Transform3d(-0.4165, -0.050, 0.267,
-                new Rotation3d(Units.degreesToRadians(-180), Units.degreesToRadians(-35), Units.degreesToRadians(180)));
+        public static final Transform3d backTransform = new Transform3d(Units.inchesToMeters(-16.613), Units.inchesToMeters(0), Units.inchesToMeters(9.285),
+                new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-35), Units.degreesToRadians(180)));
 
         public static final String leftCameraName = "LeftCam";
         public static final String rightCameraName = "RightCam";
@@ -153,7 +153,7 @@ public class Constants {
                 entry(3.66, 0.014), // *
                 entry(4.0, 0.013), // 012
                 entry(4.3, 0.011), // 011 *
-                entry(4.6, 0.007), // 008
+                entry(4.6, 0.006), // 008
                 entry(4.9, 0.0027), // 0035
                 entry(5.2, 0.001), // 0012
                 entry(5.57, 0.000) // 000
@@ -346,7 +346,7 @@ public class Constants {
         }
 
         public static final class PivotSlot1ConfigConstants { // down
-            public static final double kP = 65; // output per unit of error in position (output/rotation)
+            public static final double kP = 75; // output per unit of error in position (output/rotation)
             public static final double kI = 3; // output per unit of integrated error in position
                                                  // (output/(rotation*s))
             public static final double kD = 0; // output per unit of error in velocity (output/rps)

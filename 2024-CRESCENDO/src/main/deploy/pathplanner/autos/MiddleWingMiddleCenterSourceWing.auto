@@ -42,9 +42,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "AutoAimCenterPieceCenterRushNote3To4"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "AutoAimCenterPieceCenterRushNote3To4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
           }
         },
         {
