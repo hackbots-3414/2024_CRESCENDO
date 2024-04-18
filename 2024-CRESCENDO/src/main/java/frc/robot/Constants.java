@@ -157,6 +157,7 @@ public class Constants {
                 entry(4.9, 0.0027), // 0035
                 entry(5.2, 0.001), // 0012
                 entry(5.57, 0.000),
+                entry(6.5, 0.0),
                 entry(8.0, 0.06),
                 entry(20.0, 0.06) // 000
         );

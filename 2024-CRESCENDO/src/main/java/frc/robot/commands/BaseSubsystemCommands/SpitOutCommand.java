@@ -138,7 +138,6 @@ public class SpitOutCommand extends Command {
 
         Rotation2d output = speakerPose.getTranslation().minus(drivetrainPose.getTranslation()).getAngle();
 
-
         shooterPivot.setPivotPosition(0.06);
         double robotRotation = robotPosition.getRotation().getRadians();
         double targetRotation = output.getRadians();
