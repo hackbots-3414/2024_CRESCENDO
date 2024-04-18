@@ -67,7 +67,7 @@ public class Constants {
          * A note about these transforms: They appear to follow the normal cordinate
          * system (x is right when pos. and so on).
          */
-        public static final Transform3d leftTransform = new Transform3d(-0.281, 0.291, 0.636,
+        public static final Transform3d leftTransform = new Transform3d(-0.281, 0.291 + Units.inchesToMeters(0.25), 0.636,
                 (new Rotation3d(Units.degreesToRadians(177.5), Units.degreesToRadians(-30), Units.degreesToRadians(-10))));
         public static final Transform3d rightTransform = new Transform3d(-0.281, -0.291, 0.636,
                 new Rotation3d(Units.degreesToRadians(182.5), Units.degreesToRadians(-30), Units.degreesToRadians(10)));
@@ -135,7 +135,7 @@ public class Constants {
 
         public static final double warmUpSpeed = 0.25; // duty cycle (0-1)
 
-        public static final double spitOutSpeed = 0.6; // % out of 1
+        public static final double spitOutSpeed = 0.45; // % out of 1
         public static final double maxSpeed = 80; // rps
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
