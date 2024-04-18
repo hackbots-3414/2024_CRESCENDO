@@ -27,6 +27,7 @@ public class ScoreAmpCommand extends Command {
       transport.setEject();
       shooter.setMotor(-0.2);
     }
+    ticks = 0;
   }
   
   @Override
