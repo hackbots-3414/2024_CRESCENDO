@@ -135,7 +135,7 @@ public class Constants {
 
         public static final double warmUpSpeed = 0.25; // duty cycle (0-1)
 
-        public static final double spitOutSpeed = 0.45; // % out of 1
+        public static final double spitOutSpeed = 0.6; // % out of 1
         public static final double maxSpeed = 80; // rps
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
