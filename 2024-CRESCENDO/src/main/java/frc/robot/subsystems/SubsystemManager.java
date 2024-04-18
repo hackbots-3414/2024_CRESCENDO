@@ -297,7 +297,7 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public Command makeSubwooferShootCommand() {
 		return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER),
-				makeShootCommand());
+				new ShooterCommand(shooter, transport, Constants.ShooterConstants.subwooferVelocity));
 	}
 
 	public Command makeSubwooferRevCommand() {

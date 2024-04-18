@@ -137,6 +137,7 @@ public class Constants {
 
         public static final double spitOutSpeed = 0.6; // % out of 1
         public static final double maxSpeed = 80; // rps
+        public static final double subwooferVelocity = 60;
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
                 entry(0.0, 0.088),
