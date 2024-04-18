@@ -1,8 +1,6 @@
 package frc.robot.commands.ComboCommands.AmpCommands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.TransportConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
@@ -12,6 +10,9 @@ public class ScoreAmpCommand extends Command {
   private Transport transport;
   private Shooter shooter;
   private Elevator elevator;
+
+  private double goalTicks = 0.5 * 50;
+  private double ticks = 0;
   
   public ScoreAmpCommand(Shooter shooter, Transport transport, Elevator elevator, ShooterPivot pivot) {
     addRequirements(transport, shooter, pivot);
@@ -30,13 +31,13 @@ public class ScoreAmpCommand extends Command {
   
   @Override
   public void end(boolean interrupted) {
-    Timer.delay(TransportConstants.transportEjectDelay); // wait vefore we stop the motors
     shooter.stopMotor();
     transport.stopMotor();
   }
 
   @Override
   public boolean isFinished() {
-    return true;
+    ticks++;
+    return ticks > goalTicks;
   }
 }

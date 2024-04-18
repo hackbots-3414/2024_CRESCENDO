@@ -326,7 +326,7 @@ public class Constants {
         public static final double pivotManualUpSpeed = 0.3;
         public static final double pivotManualDownSpeed = -0.1;
 
-        public static final double pivotTolerance = 0.0025;
+        public static final double pivotTolerance = 0.003;
 
         public static final double pivotToleranceCloseRangeValue = 0.035; // rotations
 
@@ -347,7 +347,7 @@ public class Constants {
 
         public static final class PivotSlot1ConfigConstants { // down
             public static final double kP = 75; // output per unit of error in position (output/rotation)
-            public static final double kI = 3; // output per unit of integrated error in position
+            public static final double kI = 9; // output per unit of integrated error in position
                                                  // (output/(rotation*s))
             public static final double kD = 0; // output per unit of error in velocity (output/rps)
             public static final double kS = 0; // output to overcome static friction (output)
@@ -384,8 +384,8 @@ public class Constants {
         public static final double compressionAdder = 3;
 
         public static final double maxRange = 5.5;
-        public static final double badShootRange = 3.75;
-        public static final double badShootRangeTolerance = 0.25;
+        public static final double badShootRange = 2.95;
+        public static final double badShootRangeTolerance = 0.3;
 
         public static final double aprilTagToHoodGoal = Units.inchesToMeters(8);
 
