@@ -407,6 +407,9 @@ public class Constants {
         public static final Pose2d blueSpeakerPos = new Pose2d(speakerXBlue, speakerY, new Rotation2d(0));
         public static final Pose2d redSpeakerPos = new Pose2d(speakerXRed, speakerY, new Rotation2d(Math.PI));
 
+        public static final double blueFeedLineX = 5.86;
+        public static final double redFeedLineX = 10.71;
+
         public static final double speakerHeightMinusElevatorRaise = speakerHeight - elevatorHeightFromFloorAtRest;
         public static final double gravity = 9.81;
         public static final double velocity = ShooterConstants.maxSpeed * Units.inchesToMeters(1.5) * Math.PI

@@ -118,7 +118,7 @@ public class SubsystemManager extends SubsystemBase {
 	Transport transport = new Transport();
 	NoteFinder noteFinder = new NoteFinder();
 	Winch winch = new Winch();
-	LedSubsystem ledSubsystem = new LedSubsystem(transport, intake, this::getIsInRange, this::getAimIsReady);
+	LedSubsystem ledSubsystem = new LedSubsystem(transport, intake, this::getIsInRange, this::getIsInFeedRange, this::getAimIsReady);
 
 	public Intake getIntake() {return intake;}
 	public Shooter getShooter() {return shooter;}
@@ -325,6 +325,9 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public boolean getIsInRange() {
 		return drivetrain.isInRange();
+	}
+	public boolean getIsInFeedRange() {
+		return drivetrain.isInFeedRange();
 	}
 
 
