@@ -111,7 +111,7 @@ public class SpitOutCommand extends Command {
         this.rSupplier = rSupplier;
         this.aSupplier = aSupplier;
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
-        thetaController.setTolerance(SwerveConstants.pidTurnTolerance);
+        thetaController.setTolerance(SwerveConstants.pidTurnTolerance*2);
         shooterCommand = new ShooterCommand(shooter, transport, shooterPivot);
         addRequirements(shooter, shooterPivot, transport, drivetrain);
     }
