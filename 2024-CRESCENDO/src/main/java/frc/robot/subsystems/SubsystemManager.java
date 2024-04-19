@@ -40,6 +40,7 @@ import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.BaseSubsystemCommands.IntakeBackupCommand;
 import frc.robot.commands.BaseSubsystemCommands.IntakeCommand;
 import frc.robot.commands.BaseSubsystemCommands.ShooterCommand;
+import frc.robot.commands.BaseSubsystemCommands.ShooterEject;
 import frc.robot.commands.BaseSubsystemCommands.ShooterFlywheelCommand;
 import frc.robot.commands.BaseSubsystemCommands.SpitOutCommand;
 import frc.robot.commands.BaseSubsystemCommands.SpitOutSimpleCommand;
@@ -259,6 +260,9 @@ public class SubsystemManager extends SubsystemBase {
 	public Command makeShooterRevCommand() {
 		return new InstantCommand(() -> shooter.setWarmUpSpeed());
 	}
+	public Command makeShooterEjectCommand() {
+		return new ShooterEject(shooter, transport);
+	}
 
 	//TRANSPORT COMMANDS
 		public Command makeManualTransportBackwardsCommand() {
@@ -373,6 +377,7 @@ public class SubsystemManager extends SubsystemBase {
 		eventMarkers.put("Subwoofer", makeSubwooferShootCommand());
 		eventMarkers.put("Intake", makeAutoIntakeCommand());
 		eventMarkers.put("ShootAnywhere", makeAutoAimCommand(() -> 0.0, () -> 0.0, () -> 0.0));
+		eventMarkers.put("ShooterEject", makeShooterEjectCommand());
 
 		SmartDashboard.putData("Amp Sequence", makeAmpSequence());
 
