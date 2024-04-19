@@ -112,7 +112,7 @@ public class TunerConstants {
     private static final int kBackLeftDriveMotorId = 31;
     private static final int kBackLeftSteerMotorId = 32;
     private static final int kBackLeftEncoderId = 33;
-    private static final double kBackLeftEncoderOffset = 0.390625;
+    private static final double kBackLeftEncoderOffset = 0.3989258;
 
     private static final double kBackLeftXPosInches = -10.375;
     private static final double kBackLeftYPosInches = 10.375;
