@@ -67,7 +67,7 @@ public class Constants {
          * A note about these transforms: They appear to follow the normal cordinate
          * system (x is right when pos. and so on).
          */
-        public static final Transform3d leftTransform = new Transform3d(-0.281, 0.291, 0.636,
+        public static final Transform3d leftTransform = new Transform3d(-0.281, 0.291 + Units.inchesToMeters(0.25), 0.636,
                 (new Rotation3d(Units.degreesToRadians(177.5), Units.degreesToRadians(-30), Units.degreesToRadians(-10))));
         public static final Transform3d rightTransform = new Transform3d(-0.281, -0.291, 0.636,
                 new Rotation3d(Units.degreesToRadians(182.5), Units.degreesToRadians(-30), Units.degreesToRadians(10)));
@@ -136,7 +136,9 @@ public class Constants {
         public static final double warmUpSpeed = 0.25; // duty cycle (0-1)
 
         public static final double spitOutSpeed = 0.6; // % out of 1
+        public static final double shooterEjectSpeed = 0.1; // % out of 1
         public static final double maxSpeed = 80; // rps
+        public static final double subwooferVelocity = 60; // normal full speed
 
         public static final Map<Double, Double> rotationLookupTable = Map.ofEntries(
                 entry(0.0, 0.088),
@@ -156,7 +158,10 @@ public class Constants {
                 entry(4.6, 0.006), // 008
                 entry(4.9, 0.0027), // 0035
                 entry(5.2, 0.001), // 0012
-                entry(5.57, 0.000) // 000
+                entry(5.57, 0.000),
+                entry(6.5, 0.0),
+                entry(8.0, 0.06),
+                entry(20.0, 0.06) // 000
         );
 
         // public static final Map<Double, Double> speedLookupTable = Map.ofEntries(
@@ -256,7 +261,7 @@ public class Constants {
 
         public static final class SubwooferPresets {
             public static final double elevator = 0.0;
-            public static final double shooter = 0.08;
+            public static final double shooter = 0.084;
         }
     }
 
@@ -326,7 +331,7 @@ public class Constants {
         public static final double pivotManualUpSpeed = 0.3;
         public static final double pivotManualDownSpeed = -0.1;
 
-        public static final double pivotTolerance = 0.0025;
+        public static final double pivotTolerance = 0.003;
 
         public static final double pivotToleranceCloseRangeValue = 0.035; // rotations
 
@@ -347,7 +352,7 @@ public class Constants {
 
         public static final class PivotSlot1ConfigConstants { // down
             public static final double kP = 75; // output per unit of error in position (output/rotation)
-            public static final double kI = 3; // output per unit of integrated error in position
+            public static final double kI = 9; // output per unit of integrated error in position
                                                  // (output/(rotation*s))
             public static final double kD = 0; // output per unit of error in velocity (output/rps)
             public static final double kS = 0; // output to overcome static friction (output)
@@ -384,8 +389,8 @@ public class Constants {
         public static final double compressionAdder = 3;
 
         public static final double maxRange = 5.5;
-        public static final double badShootRange = 3.75;
-        public static final double badShootRangeTolerance = 0.25;
+        public static final double badShootRange = 2.95;
+        public static final double badShootRangeTolerance = 0.3;
 
         public static final double aprilTagToHoodGoal = Units.inchesToMeters(8);
 
@@ -402,6 +407,9 @@ public class Constants {
 
         public static final Pose2d blueSpeakerPos = new Pose2d(speakerXBlue, speakerY, new Rotation2d(0));
         public static final Pose2d redSpeakerPos = new Pose2d(speakerXRed, speakerY, new Rotation2d(Math.PI));
+
+        public static final double blueFeedLineX = 5.86;
+        public static final double redFeedLineX = 10.71;
 
         public static final double speakerHeightMinusElevatorRaise = speakerHeight - elevatorHeightFromFloorAtRest;
         public static final double gravity = 9.81;

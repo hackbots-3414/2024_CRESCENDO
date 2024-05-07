@@ -92,8 +92,10 @@ public class RobotContainer {
   private void configurePS5OperatorBindings() {
     ps5Operator.square().onTrue(subsystemManager.makeAmpSetupCommand()); // x
     ps5Operator.square().onFalse(subsystemManager.makeAmpFinishCommand());
+
     ps5Operator.triangle().onTrue(subsystemManager.makeSubwooferRevCommand()); // y
-    ps5Operator.triangle().onFalse(subsystemManager.makeShootCommand()); // y
+    ps5Operator.triangle().onFalse(subsystemManager.makeShootCommand().onlyIf(ps5Operator.touchpad().negate())); // y
+
     ps5Operator.circle().onTrue(subsystemManager.makeSpitOutCommand(driverLeftY, driverLeftX, driverRightX)); // b
     ps5Operator.cross().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW)); // a
     

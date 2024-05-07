@@ -181,7 +181,7 @@ public class ShooterPivot extends SubsystemBase implements AutoCloseable {
     }
     
     SmartDashboard.putNumber("CANCODERPOS", cancoderPosition);
-    SmartDashboard.putNumber("Pivot Error (3 is good)", Math.abs(pivotMotor.getClosedLoopError().getValueAsDouble() * 1000.0));
+    SmartDashboard.putNumber("Pivot Error (3.5 is good)", Math.abs(pivotMotor.getClosedLoopError().getValueAsDouble() * 1000.0));
     SmartDashboard.putBoolean("Shooter status", (pivotMotor.getStickyFaultField().getValue() == 0));
   }
 

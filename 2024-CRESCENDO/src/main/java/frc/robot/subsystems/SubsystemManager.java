@@ -40,6 +40,7 @@ import frc.robot.commands.BaseSubsystemCommands.ElevatorCommand.ElevatorPresets;
 import frc.robot.commands.BaseSubsystemCommands.IntakeBackupCommand;
 import frc.robot.commands.BaseSubsystemCommands.IntakeCommand;
 import frc.robot.commands.BaseSubsystemCommands.ShooterCommand;
+import frc.robot.commands.BaseSubsystemCommands.ShooterEject;
 import frc.robot.commands.BaseSubsystemCommands.ShooterFlywheelCommand;
 import frc.robot.commands.BaseSubsystemCommands.SpitOutCommand;
 import frc.robot.commands.BaseSubsystemCommands.SpitOutSimpleCommand;
@@ -118,7 +119,7 @@ public class SubsystemManager extends SubsystemBase {
 	Transport transport = new Transport();
 	NoteFinder noteFinder = new NoteFinder();
 	Winch winch = new Winch();
-	LedSubsystem ledSubsystem = new LedSubsystem(transport, intake, this::getIsInRange, this::getAimIsReady);
+	LedSubsystem ledSubsystem = new LedSubsystem(transport, intake, this::getIsInRange, this::getIsInFeedRange, this::getAimIsReady);
 
 	public Intake getIntake() {return intake;}
 	public Shooter getShooter() {return shooter;}
@@ -259,6 +260,9 @@ public class SubsystemManager extends SubsystemBase {
 	public Command makeShooterRevCommand() {
 		return new InstantCommand(() -> shooter.setWarmUpSpeed());
 	}
+	public Command makeShooterEjectCommand() {
+		return new ShooterEject(shooter, transport);
+	}
 
 	//TRANSPORT COMMANDS
 		public Command makeManualTransportBackwardsCommand() {
@@ -297,7 +301,7 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public Command makeSubwooferShootCommand() {
 		return new SequentialCommandGroup(makeElevatorCommand(ElevatorPresets.SUBWOOFER),
-				makeShootCommand());
+				new ShooterCommand(shooter, transport, Constants.ShooterConstants.subwooferVelocity));
 	}
 
 	public Command makeSubwooferRevCommand() {
@@ -325,6 +329,9 @@ public class SubsystemManager extends SubsystemBase {
 	}
 	public boolean getIsInRange() {
 		return drivetrain.isInRange();
+	}
+	public boolean getIsInFeedRange() {
+		return drivetrain.isInFeedRange();
 	}
 
 
@@ -370,6 +377,7 @@ public class SubsystemManager extends SubsystemBase {
 		eventMarkers.put("Subwoofer", makeSubwooferShootCommand());
 		eventMarkers.put("Intake", makeAutoIntakeCommand());
 		eventMarkers.put("ShootAnywhere", makeAutoAimCommand(() -> 0.0, () -> 0.0, () -> 0.0));
+		eventMarkers.put("ShooterEject", makeShooterEjectCommand());
 
 		SmartDashboard.putData("Amp Sequence", makeAmpSequence());
 

@@ -1,9 +1,5 @@
 package frc.robot.commands.BaseSubsystemCommands;
 
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
-
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;

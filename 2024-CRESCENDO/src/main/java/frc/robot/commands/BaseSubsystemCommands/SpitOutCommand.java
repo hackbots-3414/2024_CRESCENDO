@@ -69,7 +69,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.AimConstants;
-import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Shooter;
@@ -112,7 +111,7 @@ public class SpitOutCommand extends Command {
         this.rSupplier = rSupplier;
         this.aSupplier = aSupplier;
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
-        thetaController.setTolerance(SwerveConstants.pidTurnTolerance);
+        thetaController.setTolerance(SwerveConstants.pidTurnTolerance*2);
         shooterCommand = new ShooterCommand(shooter, transport, shooterPivot);
         addRequirements(shooter, shooterPivot, transport, drivetrain);
     }
@@ -131,7 +130,7 @@ public class SpitOutCommand extends Command {
         Pose2d robotPosition = drivetrain.getPose();
 
         // Pose2d speakerPose = blueSide ? AimConstants.blueSpeakerPos.transformBy(new Transform2d(0, 1, Rotation2d.fromDegrees(0))) : AimConstants.redSpeakerPos; // WORKING FROM BEFORE WORLDS
-        Pose2d speakerPose = blueSide ? AimConstants.blueSpeakerPos.transformBy(new Transform2d(0, -0.5, Rotation2d.fromDegrees(0))) : AimConstants.redSpeakerPos.transformBy(new Transform2d(0, 0.7, Rotation2d.fromDegrees(0))); // WORKING FROM BEFORE WORLDS
+        Pose2d speakerPose = blueSide ? AimConstants.blueSpeakerPos.transformBy(new Transform2d(0, -0.7, Rotation2d.fromDegrees(0))) : AimConstants.redSpeakerPos.transformBy(new Transform2d(0, 0.7, Rotation2d.fromDegrees(0))); // WORKING FROM BEFORE WORLDS
         // blue curves to the center
         // positive goes towards the center
 
@@ -139,14 +138,13 @@ public class SpitOutCommand extends Command {
 
         Rotation2d output = speakerPose.getTranslation().minus(drivetrainPose.getTranslation()).getAngle();
 
-
         shooterPivot.setPivotPosition(0.06);
         double robotRotation = robotPosition.getRotation().getRadians();
         double targetRotation = output.getRadians();
 
         drivetrain.setControl(driveRequest.withVelocityX(-xSupplier.get() * SwerveConstants.maxDriveVelocity)
                             .withVelocityY(-ySupplier.get() * SwerveConstants.maxDriveVelocity)
-                            .withRotationalRate((rSupplier.get() > 0.2 || rSupplier.get() < -0.2) ? (-rSupplier.get() * SwerveConstants.maxAngleVelocity) 
+                            .withRotationalRate((rSupplier.get() > 0.2 || rSupplier.get() < -0.5) ? (-rSupplier.get() * SwerveConstants.maxAngleVelocity) 
                             : (thetaController.calculate(robotRotation, targetRotation) * Constants.SwerveConstants.maxAngleVelocity)));
 
         SmartDashboard.putBoolean("theta controller at setpoint", thetaController.atSetpoint());

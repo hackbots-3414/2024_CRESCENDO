@@ -73,7 +73,7 @@ public class LedSubsystem extends SubsystemBase {
   // private static final LarsonAnimation LARSON_ANIMATION = new
   // LarsonAnimation(255, 0, 255, 0, 0.1, LEDConstants.nbrLED,
   // LarsonAnimation.BounceMode.Back, 1);
-  private Supplier<Boolean> isInRange, noteInView;
+  private Supplier<Boolean> isInRange, noteInView, isInFeedRange;
   private boolean noteOnBoard = false;
   private boolean noteOnBoardTest = false;
   private boolean isInRangeTest = false;
@@ -96,7 +96,7 @@ public class LedSubsystem extends SubsystemBase {
   // Game 15", "End Game 30", "Target Locked" };
 
   private static enum LED_MODE {
-    IN_RANGE, NOTE_ONBOARD, END_GAME_WARNING, END_GAME_ALERT, ALIGNED, DEFAULT, NOTE_IN_VIEW, INTAKE, BADCONTROLLER;
+    IN_RANGE, IN_FEED_RANGE, NOTE_ONBOARD, END_GAME_WARNING, END_GAME_ALERT, ALIGNED, DEFAULT, NOTE_IN_VIEW, INTAKE, BADCONTROLLER;
   };
 
   private static LED_MODE chosenMode = null;
@@ -104,7 +104,7 @@ public class LedSubsystem extends SubsystemBase {
   CANdle ledcontroller = new CANdle(LEDConstants.candleCanid);
   // private int currentMode = 0;
 
-  public LedSubsystem(Transport transport, Intake intake, Supplier<Boolean> isInRange, Supplier<Boolean> noteInView) {
+  public LedSubsystem(Transport transport, Intake intake, Supplier<Boolean> isInRange, Supplier<Boolean> isInFeedRange, Supplier<Boolean> noteInView) {
     this.transport = transport;
     this.intake = intake;
     CANdleConfiguration config = new CANdleConfiguration();
@@ -126,6 +126,7 @@ public class LedSubsystem extends SubsystemBase {
 
     // this.noteOnBoard = noteOnBoard;
     this.isInRange = isInRange;
+    this.isInFeedRange = isInFeedRange;
     this.noteInView = noteInView;
     // Hackbot Purple Code : [0x67, 0x2C, 0x91]
     // #672C91
@@ -205,6 +206,11 @@ public class LedSubsystem extends SubsystemBase {
         if (chosenMode != LED_MODE.IN_RANGE) {
           chosenMode = LED_MODE.IN_RANGE;
           setColor("BLUE", ledStripStartIndex, ledStripEndIndex, "SOLID");
+        }
+      } else if (noteOnBoard && isInFeedRange.get()) {
+        if (chosenMode != LED_MODE.IN_FEED_RANGE) {
+          chosenMode = LED_MODE.IN_FEED_RANGE;
+          setColor("ORANGE", ledStripStartIndex, ledStripEndIndex, "SOLID");
         }
       } else if (noteOnBoard) {
         if (chosenMode != LED_MODE.NOTE_ONBOARD) {
@@ -292,6 +298,10 @@ public class LedSubsystem extends SubsystemBase {
     } else if (color == "YELLOW") {
       r = 255;
       g = 120;
+      b = 0;
+    } else if (color == "ORANGE") {
+      r = 255;
+      g = 85;
       b = 0;
     } else {
       r = 255;

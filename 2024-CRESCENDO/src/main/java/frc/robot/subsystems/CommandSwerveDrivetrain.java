@@ -59,6 +59,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     private Pose2d estimatedPose;
     private boolean isInRange;
+    private boolean isInFeedRange;
     
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
             SwerveModuleConstants... modules) {
@@ -180,6 +181,9 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         SmartDashboard.putData(field);
 
         Pose2d speakerPose = AimConstants.blueSpeakerPos;
+
+        isInFeedRange = getPose().getX() < AimConstants.redFeedLineX && getPose().getX() > AimConstants.blueFeedLineX; //  between colored lines
+
         Optional<Alliance> alliance = DriverStation.getAlliance();
         if (alliance.isPresent()) {
             if (alliance.get() == Alliance.Red) {
@@ -192,6 +196,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
         isInRange = (robotDistance < (AimConstants.badShootRange + AimConstants.badShootRangeTolerance) && robotDistance > (AimConstants.badShootRange - AimConstants.badShootRangeTolerance)) ? false : (robotDistance < AimConstants.maxRange);
 
+        // isInFeedRange = isInFeedRange && !isInRange; // makes sure that you are also out of shoot range - isInRange priority over feed range
+
         if (DebugConstants.debugMode) {
             for (int i = 0; i < Modules.length; i++) {
                 SmartDashboard.putNumber("SWERVE MODULE MOVEMENT RADS" + i, (Modules[i].getDriveMotor().getPosition().getValueAsDouble() / 6.122448979591837) * Math.PI * 2.0);
@@ -203,6 +209,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public boolean isInRange() {
         return isInRange;
+    }
+
+    public boolean isInFeedRange() {
+        return isInFeedRange;
     }
 
     @Override
