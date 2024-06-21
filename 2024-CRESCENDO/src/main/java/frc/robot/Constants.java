@@ -181,7 +181,7 @@ public class Constants {
         public static final double mediumIntakeVolts = 0.4 * 12;
         public static final double slowIntakeVolts = 0.2 * 12;
         public static final double ejectSpeed = -1;
-        public static final boolean intakeMotorInvert = true;
+        public static final boolean intakeMotorInvert = false;
         public static final int intakeIrChannel = 2;
 
     }
