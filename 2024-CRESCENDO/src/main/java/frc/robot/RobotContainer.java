@@ -70,7 +70,9 @@ public class RobotContainer {
     xboxOperator.x().onTrue(subsystemManager.makeAmpSetupCommand());
     xboxOperator.x().onFalse(subsystemManager.makeAmpFinishCommand());
     xboxOperator.y().whileTrue(subsystemManager.makeSubwooferShootCommand());
-    xboxOperator.b().onTrue(subsystemManager.makeSpitOutCommand(driverLeftY, driverLeftX, driverRightX));
+    xboxOperator.b().whileTrue(subsystemManager.makeSpitOutCommand(driverLeftY, driverLeftX, driverRightX, false));
+    xboxOperator.b().onFalse(subsystemManager.makeSpitOutCommand(driverLeftY, driverLeftX, driverRightX, false));
+
     xboxOperator.a().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW));
 
     xboxOperator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));
@@ -96,7 +98,9 @@ public class RobotContainer {
     ps5Operator.triangle().onTrue(subsystemManager.makeSubwooferRevCommand()); // y
     ps5Operator.triangle().onFalse(subsystemManager.makeShootCommand().onlyIf(ps5Operator.touchpad().negate())); // y
 
-    ps5Operator.circle().onTrue(subsystemManager.makeSpitOutCommand(driverLeftY, driverLeftX, driverRightX)); // b
+    ps5Operator.circle().whileTrue(subsystemManager.makeSpitOutCommand(driverLeftY, driverLeftX, driverRightX, false)); // b
+    ps5Operator.circle().onFalse(subsystemManager.makeSpitOutCommand(driverLeftY, driverLeftX, driverRightX, true)); // b
+
     ps5Operator.cross().whileTrue(subsystemManager.makeElevatorCommand(ElevatorPresets.STOW)); // a
     
     ps5Operator.povUp().whileTrue(subsystemManager.makeManualElevatorCommand(true));

@@ -336,8 +336,8 @@ public class SubsystemManager extends SubsystemBase {
 
 
 	// AUTON COMMANDS
-	public Command makeSpitOutCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn) {
-		return new SpitOutCommand(shooterPivot, shooter, transport, drivetrain, x, y, turn, allianceSupplier);
+	public Command makeSpitOutCommand(Supplier<Double> x, Supplier<Double> y, Supplier<Double> turn, boolean useTransport) {
+		return new SpitOutCommand(shooterPivot, shooter, transport, drivetrain, x, y, turn, allianceSupplier, useTransport);
 	}
 	public Command makeSpitOutFlatCommand() {
 		return new SpitOutSimpleCommand(shooter, transport);

@@ -80,6 +80,7 @@ public class SpitOutCommand extends Command {
     CommandSwerveDrivetrain drivetrain;
     Shooter shooter;
     Transport transport;
+    private boolean useTransport;
 
     boolean drivetrainAtGoal;
   
@@ -101,7 +102,7 @@ public class SpitOutCommand extends Command {
     double goalTicks = 25;
     double ticks = 0;
 
-    public SpitOutCommand(ShooterPivot shooterPivot, Shooter shooter, Transport transport, CommandSwerveDrivetrain drivetrain, Supplier<Double> xSupplier, Supplier<Double> ySupplier, Supplier<Double> rSupplier, Supplier<Alliance> aSupplier) {
+    public SpitOutCommand(ShooterPivot shooterPivot, Shooter shooter, Transport transport, CommandSwerveDrivetrain drivetrain, Supplier<Double> xSupplier, Supplier<Double> ySupplier, Supplier<Double> rSupplier, Supplier<Alliance> aSupplier, boolean useTransport) {
         this.shooterPivot = shooterPivot;
         this.drivetrain = drivetrain;
         this.shooter = shooter;
@@ -110,6 +111,7 @@ public class SpitOutCommand extends Command {
         this.ySupplier = ySupplier;
         this.rSupplier = rSupplier;
         this.aSupplier = aSupplier;
+        this.useTransport = useTransport;
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         thetaController.setTolerance(SwerveConstants.pidTurnTolerance*2);
         shooterCommand = new ShooterCommand(shooter, transport, shooterPivot);
@@ -159,7 +161,7 @@ public class SpitOutCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return shooterCommand.isFinished();
+        return shooterCommand.isFinished() && useTransport;
     }
 
     public void executeShooter() {
@@ -169,7 +171,9 @@ public class SpitOutCommand extends Command {
         }
       
         if(ticks > goalTicks && !alreadyRanFeed){
-            transport.setFast();
+            if (useTransport) {
+                transport.setFast();
+            }
             alreadyRanFeed = true;
         }
     }
@@ -177,6 +181,8 @@ public class SpitOutCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         shooter.stopMotor();
-        transport.stopMotor();
+        if (useTransport) {
+            transport.stopMotor();
+        }
     }
 }
