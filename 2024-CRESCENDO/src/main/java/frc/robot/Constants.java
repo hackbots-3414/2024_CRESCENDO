@@ -137,6 +137,7 @@ public class Constants {
 
         public static final double spitOutSpeed = 0.6; // % out of 1
         public static final double shooterEjectSpeed = 0.1; // % out of 1
+        public static final double rotationAdjustmentFromRed = 0.7; // this is to counter the fact that the spinning of the motors can affect where the note ends up.
         public static final double maxSpeed = 80; // rps
         public static final double subwooferVelocity = 60; // normal full speed
 
