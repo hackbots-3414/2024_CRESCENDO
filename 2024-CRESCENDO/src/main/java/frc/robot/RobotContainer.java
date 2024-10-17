@@ -35,7 +35,7 @@ public class RobotContainer {
   private final Joystick driver = new Joystick(InputConstants.kDriverControllerPort);
   private final JoystickButton resetGyroButton = new JoystickButton(driver, DriverConstants.resetGyroButton);
   private final JoystickButton autoAimButton = new JoystickButton(driver, DriverConstants.autoAimButton);
-  private final JoystickButton resetAtPointButton = new JoystickButton(driver, DriverConstants.resetAtPointButton);
+  private final JoystickButton autoAimSwitch = new JoystickButton(driver, DriverConstants.autoAimSwitch);
   private final JoystickButton shellyButton = new JoystickButton(driver, DriverConstants.shellyButton);
   private final JoystickButton ampScoreButton = new JoystickButton(driver, DriverConstants.ampScoreButton);
 
@@ -55,7 +55,7 @@ public class RobotContainer {
     
     resetGyroButton.onTrue(subsystemManager.makeResetCommand());
     resetGyroButton.onFalse(subsystemManager.makeResetCommand());
-    resetAtPointButton.onTrue(subsystemManager.resetAtPose2d(new Pose2d(15.1968, 5.5, Rotation2d.fromDegrees(0))));
+    autoAimSwitch.whileTrue(subsystemManager.makeAutoAimCommand(driverLeftY, driverLeftX, driverRightX));
     autoAimButton.whileTrue(subsystemManager.makeAutoAimCommand(driverLeftY, driverLeftX, driverRightX));
     shellyButton.whileTrue(subsystemManager.makeShellyCommand(driverLeftY, driverLeftX, driverRightX));
     ampScoreButton.onTrue(subsystemManager.makeAmpSequence());
