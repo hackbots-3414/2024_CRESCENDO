@@ -176,26 +176,29 @@ public class AprilTagVision extends SubsystemBase {
      * @return The standard deviation of the x and y coordinates
      */
     private double calculateXYStdDevWithAmbiguity(PoseEstimate poseEstimates, int tagPosesSize) {
-
-        double poseAmbiguityFactor = tagPosesSize != 1
-                ? 1
-                : Math.max(
-                        1,
-                        (poseEstimates.poseAmbiguity() + Constants.VisionConstants.POSE_AMBIGUITY_SHIFTER)
-                                * Constants.VisionConstants.POSE_AMBIGUITY_MULTIPLIER);
-        double confidenceMultiplier = Math.max(
+        // The multiplier based off of the ambiguity of the pose estimate
+        double ambiguityFactor = tagPosesSize != 1
+            ? 1
+            : Math.max(
                 1,
-                (Math.max(
-                                        1,
-                                        Math.max(
-                                                        0,
-                                                        poseEstimates.averageTagDistance()
-                                                                - Constants.VisionConstants.NOISY_DISTANCE_METERS)
-                                                * Constants.VisionConstants.DISTANCE_WEIGHT)
-                                * poseAmbiguityFactor)
-                        / (1 + ((tagPosesSize - 1) * Constants.VisionConstants.TAG_PRESENCE_WEIGHT)));
+                    (poseEstimates.poseAmbiguity() + Constants.VisionConstants.POSE_AMBIGUITY_SHIFTER)
+                        * Constants.VisionConstants.POSE_AMBIGUITY_MULTIPLIER
+            );
 
-        return confidenceMultiplier;
+        // The factor based off of average target distance.
+        double distanceFactor = Math.max(1,
+                (poseEstimates.averageTagDistance() - Constants.VisionConstants.NOISY_DISTANCE_METERS) * Constants.VisionConstants.DISTANCE_WEIGHT
+            );
+        // The quotient based off of the number of targets.
+        double tagQuotient = 1 + (
+            (tagPosesSize - 1) * Constants.VisionConstants.TAG_PRESENCE_WEIGHT
+        );
+        // The final calculation should never be less than 1?
+        double stdDevs =
+            Math.max(1,
+                ambiguityFactor * distanceFactor / tagQuotient
+            );
+        return stdDevs;
     }
 
     /**
